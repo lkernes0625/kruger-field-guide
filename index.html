@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Kruger Field Guide - Krantz Outdoors</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -408,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.0</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.1</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -469,14 +470,7 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div class="gate-btns" id="gateBtns">
-          <button class="gate-btn" onclick="setGate('Kruger Gate','18:00')">Kruger</button>
-          <button class="gate-btn" onclick="setGate('Numbi Gate','18:00')">Numbi</button>
-          <button class="gate-btn" onclick="setGate('Phabeni Gate','18:00')">Phabeni</button>
-          <button class="gate-btn" onclick="setGate('Paul Kruger Gate','18:30')">Paul Kruger</button>
-          <button class="gate-btn" onclick="setGate('Orpen Gate','17:30')">Orpen</button>
-          <button class="gate-btn" onclick="setGate('Phalaborwa Gate','18:30')">Phalaborwa</button>
-          <button class="gate-btn" onclick="setGate('Malelane Gate','18:00')">Malelane</button>
-          <button class="gate-btn" onclick="setGate('Crocodile Bridge','17:30')">Croc Bridge</button>
+          <div id="gateBtnsContainer"></div>
         </div>
       </div>
 
@@ -571,6 +565,20 @@ svg.animal-art{width:100%;height:100%}
     </div>
 
     <!-- === EMERGENCY === -->
+    <!-- === MAP === -->
+    <div class="screen" id="screen-map">
+      <div class="sec-head"><h2>Kruger Map</h2><p>Live GPS &middot; Camps &middot; Roads &middot; Sightings</p></div>
+      <div style="padding:0 16px 8px;display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="mapFilterToggle('camps')" id="mapFlt-camps" class="filter-btn active" style="font-size:10px">&#x1F3D5; Camps</button>
+        <button onclick="mapFilterToggle('gates')" id="mapFlt-gates" class="filter-btn active" style="font-size:10px">&#x1F6AA; Gates</button>
+        <button onclick="mapFilterToggle('dams')" id="mapFlt-dams" class="filter-btn active" style="font-size:10px">&#x1F30A; Dams</button>
+        <button onclick="mapFilterToggle('sightings')" id="mapFlt-sightings" class="filter-btn active" style="font-size:10px">&#x1F98F; Sightings</button>
+        <button onclick="mapCenterOnUser()" class="filter-btn" style="font-size:10px">&#x1F4CD; My Location</button>
+      </div>
+      <div id="krugerMap" style="width:100%;height:calc(100vh - 200px);min-height:400px;background:var(--bg3)"></div>
+    </div>
+
+    <!-- === EMERGENCY === -->
     <div class="screen" id="screen-emergency">
       <div class="sec-head"><h2>Emergency Contacts</h2><p>Tap any number to call directly</p></div>
       <div id="emergencyList"></div>
@@ -579,6 +587,10 @@ svg.animal-art{width:100%;height:100%}
     <!-- === WILDLIFE === -->
     <div class="screen" id="screen-wildlife">
       <div class="sec-head"><h2>Wildlife Guide</h2><p>Tap species to log sighting &middot; Protected species private</p></div>
+      <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 0">
+        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Recently Viewed</div>
+        <div id="recentlyViewedList" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px"></div>
+      </div>
 
       <div style="padding:0 16px 10px">
         <div style="position:relative">
@@ -662,6 +674,16 @@ svg.animal-art{width:100%;height:100%}
     <!-- === MY TRIP === -->
     <div class="screen" id="screen-trip">
       <div class="sec-head"><h2>My Trip</h2><p>Itinerary &middot; Checklist &middot; Sightings &middot; Share</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px">
+        <div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Departure Date</div>
+          <input type="date" id="tripDateFrom" onchange="saveTripDates()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Return Date</div>
+          <input type="date" id="tripDateTo" onchange="saveTripDates()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
+        </div>
+      </div>
       <div class="trip-tabs">
         <div class="trip-tab active" onclick="switchTripTab('itinerary',this)">Itinerary</div>
         <div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div>
@@ -735,6 +757,11 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">More Field Guides on Etsy</div><div class="about-link-url">etsy.com/shop/KrantzOutdoors</div></div>
           <div class="about-link-arrow">&rsaquo;</div>
         </a>
+        <a class="about-link-card" href="https://www.etsy.com/shop/KrantzOutdoors#reviews" target="_blank">
+          <div class="about-link-icon">⭐</div>
+          <div class="about-link-text"><div class="about-link-title">Love the app? Leave a review</div><div class="about-link-url">Rate us on Etsy &mdash; it means the world</div></div>
+          <div class="about-link-arrow">&rsaquo;</div>
+        </a>
         <a class="about-link-card" href="mailto:basecamp@krantzoutdoors.com">
           <div class="about-link-icon">📋</div>
           <div class="about-link-text"><div class="about-link-title">Tour Operator & Affiliate Enquiries</div><div class="about-link-url">basecamp@krantzoutdoors.com</div></div>
@@ -745,7 +772,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.0<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.1<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -855,6 +882,10 @@ svg.animal-art{width:100%;height:100%}
     <button class="nav-item" onclick="showScreen('trip')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
       <span class="nav-label">My Trip</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('map')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span class="nav-label">Map</span>
     </button>
     <button class="nav-item" onclick="showScreen('emergency')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
@@ -1380,7 +1411,7 @@ var PHOTO_HIDES = [
     booking:"No booking required" },
 ];
 
-var LICENSE_URL = 'https://raw.githubusercontent.com/lkernes0625/licenses/main/kruger-keys.json';
+var LICENSE_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/kruger-keys.json';
 var DEMO_KEYS = ['KO-DEMO-2026-KRUGER','KO-TEST-XXXX-0001','KRANTZ-DEMO-2026','KO-FAM1-2026-TEST','KO-FAM2-2026-TEST','KO-FAM3-2026-TEST','KO-FAM4-2026-TEST','KO-FAM5-2026-TEST'];
 var itinStops = [];
 var FEED_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/feed.json';
@@ -1497,9 +1528,11 @@ function showScreen(id) {
   var screen = document.getElementById('screen-' + id);
   if(screen) screen.classList.add('active');
   document.getElementById('content').scrollTop = 0;
-  var map = {home:0,camps:1,wildlife:2,finder:3,trip:4,emergency:5};
+  var map = {home:0,camps:1,wildlife:2,finder:3,trip:4,map:5,emergency:6};
   var navItems = document.querySelectorAll('.nav-item');
   if(map[id] !== undefined && navItems[map[id]]) navItems[map[id]].classList.add('active');
+  // Init map on first visit
+  if(id === 'map') setTimeout(function(){ initMap(); if(_map) _map.invalidateSize(); }, 100);
 }
 
 // ============================================
@@ -2188,7 +2221,10 @@ function updateTripStats() {
               '<div class="card-title">'+s.name+' '+stars+'</div>' +
               '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
             '</div>' +
-            '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">Share</button>' +
+            '<div style="display:flex;gap:6px;flex-shrink:0">' +
+              '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
+              '<button onclick="deleteSighting('+idx+')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
+            '</div>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -3196,7 +3232,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.0 — May 2026';
+    lu.textContent = 'Content v3.1 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3341,7 +3377,30 @@ function findNearest(type, btn) {
 
 
 var _wildlifeFilter = 'all';
-function searchSpecies(val) { renderSpecies(); renderBirds(); renderReptiles(); renderFrogs(); }
+function searchSpecies(val) {
+  var v = (val||'').toLowerCase().trim();
+  // Show results across ALL tabs when searching
+  if(v.length > 0) {
+    ['species','birds','reptiles','frogs'].forEach(function(t){
+      var panel = document.getElementById('wildlifePanel-'+t);
+      if(panel) panel.style.display = 'block';
+    });
+    document.getElementById('wildlifePanel-sightings') && (document.getElementById('wildlifePanel-sightings').style.display='none');
+    // Update tab indicators
+    document.querySelectorAll('.wildlife-tab').forEach(function(b){ b.style.color='var(--text3)'; b.style.borderBottomColor='transparent'; });
+  } else {
+    // Restore to mammals tab when search cleared
+    ['birds','reptiles','frogs','sightings'].forEach(function(t){
+      var panel = document.getElementById('wildlifePanel-'+t);
+      if(panel) panel.style.display = 'none';
+    });
+    var sp = document.getElementById('wildlifePanel-species');
+    if(sp) sp.style.display = 'block';
+    var firstTab = document.querySelector('.wildlife-tab');
+    if(firstTab){ firstTab.style.color='var(--accent)'; firstTab.style.borderBottomColor='var(--accent)'; }
+  }
+  renderSpecies(); renderBirds(); renderReptiles(); renderFrogs();
+}
 
 var REPTILES = [
   { id:'crocodile', name:'Nile Crocodile', latin:'Crocodylus niloticus', classification:'Reptilia', mass:'225-750 kg', trophic:'Apex predator', gestation:'90 days (eggs)', conservation:'Least Concern (LC)', zone:'Rivers and dams', roads:'Sabie River, Olifants River', time:'Morning basking 07:00-10:00', camera:'400-500mm - f/7.1 - from bank', behaviour:'Bask on banks to regulate temperature. Can remain motionless for hours. Sub-adults gather in shallows. Best seen at Sunset Dam and along Sabie River.', category:'reptile', protected:false },
@@ -3386,6 +3445,7 @@ function openWildcardSpecies(type, i) {
   var arr = type==='reptile'?REPTILES:FROGS;
   var sp = arr[i]; if(!sp) return;
   window._spIdx=i; window._spType=type; selectedStars=0;
+  trackRecentlyViewed(type, i);
   var modal=document.getElementById('speciesModal'); if(!modal) return;
   modal.querySelector('.modal-title').textContent=sp.name;
   var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>Waterhole</option><option>Near Camp</option>';
@@ -3502,6 +3562,7 @@ function renderBirds() {
 function openBird(idx) {
   var sp=BIRDS[idx]; if(!sp) return;
   window._spIdx=idx; window._spType='bird'; selectedStars=0;
+  trackRecentlyViewed('bird', idx);
   var modal=document.getElementById('speciesModal'); if(!modal) return;
   modal.querySelector('.modal-title').textContent=sp.name;
   var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>H9</option><option>H10</option><option>H12</option><option>H14</option><option>S1</option><option>S3</option><option>S28</option><option>S65</option><option>S100</option><option>S106</option><option>S114</option><option>Waterhole</option><option>Near Camp</option>';
@@ -3569,7 +3630,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.0';
+var APP_VERSION = '3.1';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -3650,6 +3711,243 @@ function initPullToRefresh() {
   }, { passive: true });
 }
 
+// ============================================
+// RECENTLY VIEWED SPECIES
+// ============================================
+var _recentlyViewed = [];
+function trackRecentlyViewed(type, idx) {
+  var key = type + ':' + idx;
+  _recentlyViewed = _recentlyViewed.filter(function(k){ return k !== key; });
+  _recentlyViewed.unshift(key);
+  if(_recentlyViewed.length > 5) _recentlyViewed = _recentlyViewed.slice(0, 5);
+  renderRecentlyViewed();
+}
+function renderRecentlyViewed() {
+  var wrap = document.getElementById('recentlyViewedWrap');
+  var list = document.getElementById('recentlyViewedList');
+  if(!wrap || !list) return;
+  if(!_recentlyViewed.length) { wrap.style.display='none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = _recentlyViewed.map(function(key) {
+    var parts = key.split(':');
+    var type = parts[0], idx = parseInt(parts[1]);
+    var sp = type==='bird' ? BIRDS[idx] : type==='reptile' ? REPTILES[idx] : type==='frog' ? FROGS[idx] : SPECIES[idx];
+    if(!sp) return '';
+    var fn = type==='bird'?'openBird':type==='reptile'||type==='frog'?'openWildcardSpecies("'+type+'",'+idx+')&&void(0);openWildcardSpecies':'openSpecies';
+    var onclick = type==='bird'?'openBird('+idx+')':type==='reptile'?'openWildcardSpecies("reptile",'+idx+')':type==='frog'?'openWildcardSpecies("frog",'+idx+')':'openSpecies('+idx+')';
+    return '<div onclick="'+onclick+'" style="flex-shrink:0;width:52px;text-align:center;cursor:pointer">' +
+      '<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:3px">' +
+        (ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F43E;</div>')+
+      '</div>' +
+      '<div style="font-size:9px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sp.name+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ============================================
+// DELETE SIGHTING
+// ============================================
+function deleteSighting(idx) {
+  var sightings = loadSightings();
+  var nonProt = sightings.filter(function(s){ return !s.protected; });
+  var s = nonProt[nonProt.length - 1 - idx];
+  if(!s) return;
+  if(!confirm('Remove ' + s.name + ' sighting?')) return;
+  var i = sightings.indexOf(s);
+  if(i >= 0) sightings.splice(i, 1);
+  saveSightings(sightings);
+  renderSightings();
+  updateTripStats();
+  showToast('Sighting removed', 1500);
+}
+
+// ============================================
+// TRIP DATES
+// ============================================
+function saveTripDates() {
+  var from = document.getElementById('tripDateFrom');
+  var to = document.getElementById('tripDateTo');
+  localStorage.setItem('kfg_trip_dates', JSON.stringify({
+    from: from ? from.value : '',
+    to: to ? to.value : ''
+  }));
+}
+function loadTripDates() {
+  try {
+    var d = JSON.parse(localStorage.getItem('kfg_trip_dates')||'{}');
+    var from = document.getElementById('tripDateFrom');
+    var to = document.getElementById('tripDateTo');
+    if(from && d.from) from.value = d.from;
+    if(to && d.to) to.value = d.to;
+  } catch(e) {}
+}
+
+// ============================================
+// SEASONAL GATE TIMES
+// ============================================
+var GATE_SEASONAL = {
+  // [Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec]
+  'Paul Kruger Gate':    ['18:30','18:30','18:30','18:00','17:30','17:30','17:30','17:30','18:00','18:00','18:30','18:30'],
+  'Kruger Gate':         ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Numbi Gate':          ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Phabeni Gate':        ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Malelane Gate':       ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Crocodile Bridge':    ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
+  'Orpen Gate':          ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
+  'Phalaborwa Gate':     ['18:30','18:30','18:30','18:00','17:30','17:30','17:30','17:30','18:00','18:00','18:30','18:30'],
+  'Punda Maria Gate':    ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
+};
+function renderGateButtons() {
+  var container = document.getElementById('gateBtnsContainer');
+  if(!container) return;
+  var month = new Date().getMonth();
+  var labels = {
+    'Paul Kruger Gate':'Paul Kruger','Kruger Gate':'Kruger','Numbi Gate':'Numbi',
+    'Phabeni Gate':'Phabeni','Malelane Gate':'Malelane','Crocodile Bridge':'Croc Bridge',
+    'Orpen Gate':'Orpen','Phalaborwa Gate':'Phalaborwa','Punda Maria Gate':'Punda Maria'
+  };
+  container.innerHTML = Object.keys(GATE_SEASONAL).map(function(name) {
+    var time = GATE_SEASONAL[name][month];
+    return '<button class="gate-btn" onclick="setGate(\''+name+'\',\''+time+'\')">'+labels[name]+'</button>';
+  }).join('');
+  // Restore active gate
+  if(gateData) {
+    container.querySelectorAll('.gate-btn').forEach(function(b) {
+      if(b.getAttribute('onclick').indexOf("'"+gateData.name+"'") >= 0) b.classList.add('active');
+    });
+  }
+}
+
+// ============================================
+// KRUGER MAP
+// ============================================
+var _map = null;
+var _mapLayers = { camps:[], gates:[], dams:[], sightings:[] };
+var _mapFilters = { camps:true, gates:true, dams:true, sightings:true };
+var _userMarker = null;
+
+function initMap() {
+  if(_map) return;
+  if(!document.getElementById('krugerMap')) return;
+
+  // Load Leaflet
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js';
+  script.onload = function() { _buildMap(); };
+  document.head.appendChild(script);
+}
+
+function _buildMap() {
+  var mapEl = document.getElementById('krugerMap');
+  if(!mapEl || _map) return;
+
+  _map = L.map('krugerMap', {
+    center: [-24.0, 31.5],
+    zoom: 8,
+    minZoom: 7,
+    maxZoom: 16
+  });
+
+  // OpenStreetMap tiles — cached by browser
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
+  }).addTo(_map);
+
+  // Kruger boundary approximate
+  var bounds = L.latLngBounds([[-25.55, 30.88], [-22.32, 32.03]]);
+  _map.setMaxBounds(bounds.pad(0.1));
+
+  _plotMapMarkers();
+}
+
+function _makeIcon(emoji, color) {
+  return L.divIcon({
+    html: '<div style="background:'+color+';border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid rgba(255,255,255,.8);box-shadow:0 2px 6px rgba(0,0,0,.4)">'+emoji+'</div>',
+    className: '',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18]
+  });
+}
+
+function _plotMapMarkers() {
+  if(!_map) return;
+
+  // Clear existing
+  Object.keys(_mapLayers).forEach(function(k) {
+    _mapLayers[k].forEach(function(m){ _map.removeLayer(m); });
+    _mapLayers[k] = [];
+  });
+
+  var campIcon = _makeIcon('&#x1F3D5;', '#2a3a2a');
+  var gateIcon = _makeIcon('&#x1F6AA;', '#1a2a3a');
+  var damIcon  = _makeIcon('&#x1F30A;', '#1a3a4a');
+  var sightIcon = _makeIcon('&#x1F98F;', '#c8962a');
+
+  // Camps
+  if(_mapFilters.camps && FACILITIES.fuel) {
+    FACILITIES.fuel.forEach(function(c) {
+      var m = L.marker([c.lat, c.lng], {icon: campIcon})
+        .bindPopup('<b>'+c.name+'</b><br>Fuel: '+c.hours+(c.phone?'<br>'+c.phone:''));
+      if(_mapFilters.camps) { m.addTo(_map); _mapLayers.camps.push(m); }
+    });
+  }
+
+  // Gates
+  if(_mapFilters.gates && FACILITIES.gate) {
+    FACILITIES.gate.forEach(function(g) {
+      var m = L.marker([g.lat, g.lng], {icon: gateIcon})
+        .bindPopup('<b>'+g.name+'</b><br>'+g.note);
+      m.addTo(_map); _mapLayers.gates.push(m);
+    });
+  }
+
+  // Dams
+  if(_mapFilters.dams && FACILITIES.dams) {
+    FACILITIES.dams.forEach(function(d) {
+      var m = L.marker([d.lat, d.lng], {icon: damIcon})
+        .bindPopup('<b>'+d.name+'</b><br>'+d.note);
+      m.addTo(_map); _mapLayers.dams.push(m);
+    });
+  }
+
+  // Logged sightings
+  if(_mapFilters.sightings) {
+    var sightings = loadSightings().filter(function(s){ return !s.protected && s.lat && s.lng; });
+    sightings.forEach(function(s) {
+      var t = new Date(s.time);
+      var m = L.marker([s.lat, s.lng], {icon: sightIcon})
+        .bindPopup('<b>'+s.name+'</b><br>'+(s.road||'')+' &bull; '+t.toLocaleDateString());
+      m.addTo(_map); _mapLayers.sightings.push(m);
+    });
+  }
+}
+
+function mapFilterToggle(type) {
+  _mapFilters[type] = !_mapFilters[type];
+  var btn = document.getElementById('mapFlt-'+type);
+  if(btn) btn.classList.toggle('active', _mapFilters[type]);
+  _plotMapMarkers();
+}
+
+function mapCenterOnUser() {
+  if(!_map) return;
+  if(!navigator.geolocation) { showToast('GPS not available', 2000); return; }
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var latlng = [pos.coords.latitude, pos.coords.longitude];
+    _map.setView(latlng, 13);
+    if(_userMarker) _map.removeLayer(_userMarker);
+    _userMarker = L.circleMarker(latlng, {
+      radius:10, fillColor:'#e8a020', color:'#fff',
+      weight:2, opacity:1, fillOpacity:0.9
+    }).addTo(_map).bindPopup('You are here').openPopup();
+    showToast('GPS location found', 1500);
+  }, function() {
+    showToast('Could not get GPS location', 2000);
+  });
+}
+
 function initApp() {
   // Wrap each module - one failure never stops the countdown
   function safe(fn) { try { fn(); } catch(e) { console.warn('initApp error:', e); } }
@@ -3661,9 +3959,12 @@ function initApp() {
   safe(renderFrogs);
   safe(renderSightings);
   safe(loadItinState);
+  safe(loadTripDates);
   safe(loadChecklistState);
   safe(renderChecklist);
   safe(renderPhotoIntel);
+  safe(renderGateButtons);
+  safe(renderRecentlyViewed);
   safe(loadWeather);
   safe(loadFeed);
   safe(updateTripStats);
