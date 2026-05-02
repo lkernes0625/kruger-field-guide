@@ -409,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.1</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.2</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -445,6 +445,7 @@ svg.animal-art{width:100%;height:100%}
         <div class="gate-pill-label">Gate closes</div>
         <div class="gate-pill-time" id="headerCountdown">--:--</div>
       </div>
+      <button class="header-info-btn" onclick="showScreen('emergency')" aria-label="SOS" style="background:rgba(204,51,34,.15);border-color:rgba(204,51,34,.4);color:#e05545;font-size:11px;font-weight:700;letter-spacing:.04em">SOS</button>
       <button class="header-info-btn" onclick="showScreen('about')" aria-label="About">i</button>
     </div>
   </div>
@@ -692,28 +693,39 @@ svg.animal-art{width:100%;height:100%}
 
       <!-- ITINERARY TAB -->
       <div class="trip-tab-content active" id="tab-itinerary">
-        <div class="itin-input-row">
-          <div><div class="itin-label">Entry Gate</div>
-          <select class="itin-select" id="itinEntry">
-            <option value="">Select entry gate...</option>
-            <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
-            <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
-            <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
-          </select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px">
+          <div>
+            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Arrival Date</div>
+            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Departure Date</div>
+            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
+          </div>
         </div>
-        <div class="divlabel" style="margin:0 0 8px">Overnight Stops &mdash; in order</div>
-        <div id="itinStops"></div>
-        <div class="itin-add-stop" onclick="addItinStop()">+ Add overnight stop</div>
-        <div class="itin-input-row" style="padding-top:4px">
-          <div><div class="itin-label">Exit Gate</div>
-          <select class="itin-select" id="itinExit">
-            <option value="">Select exit gate...</option>
-            <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
-            <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
-            <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
-          </select></div>
+        <div style="padding:0 16px 8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Entry Gate</div>
+              <select class="itin-select" id="itinEntry" onchange="saveTripDates()">
+                <option value="">Select entry gate...</option>
+                <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
+                <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
+                <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Exit Gate</div>
+              <select class="itin-select" id="itinExit" onchange="saveTripDates()">
+                <option value="">Select exit gate...</option>
+                <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
+                <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
+                <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <button class="itin-calc-btn" onclick="calculateItinerary()">Calculate My Itinerary &rarr;</button>
+        <div id="tripSchedule" style="padding:0 16px 16px"></div>
         <div id="itinResults"></div>
       </div>
 
@@ -772,7 +784,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.1<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.2<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -886,10 +898,6 @@ svg.animal-art{width:100%;height:100%}
     <button class="nav-item" onclick="showScreen('map')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
       <span class="nav-label">Map</span>
-    </button>
-    <button class="nav-item" onclick="showScreen('emergency')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
-      <span class="nav-label">SOS</span>
     </button>
   </div></div>
 </div><!-- /app -->
@@ -1528,7 +1536,7 @@ function showScreen(id) {
   var screen = document.getElementById('screen-' + id);
   if(screen) screen.classList.add('active');
   document.getElementById('content').scrollTop = 0;
-  var map = {home:0,camps:1,wildlife:2,finder:3,trip:4,map:5,emergency:6};
+  var map = {home:0,camps:1,wildlife:2,finder:3,trip:4,map:5};
   var navItems = document.querySelectorAll('.nav-item');
   if(map[id] !== undefined && navItems[map[id]]) navItems[map[id]].classList.add('active');
   // Init map on first visit
@@ -1797,7 +1805,7 @@ function openSpecies(idx) {
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div class="modal-section-label">Rate Your Sighting</div>'+
       '<div class="star-row" id="starRow">'+ [1,2,3,4,5].map(function(n){return '<span class="modal-star" id="mstar'+n+'" onclick="selectStar('+n+')" style="font-size:28px;opacity:.35;cursor:pointer">&#9733;</span>';}).join('') +'</div>'+
-      '<div id="roadPickerWrap" style="padding:0 0 10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Where did you see it?</div><select id="sightingRoad" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px">'+roadOpts+'</select></div>'+
+      '<div style="padding:0 0 10px"><button id="gpsStatusBtn" onclick="openGPSCapture()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:left">&#x1F4CD; Tap to capture your GPS location</button></div>'+
       '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
     '</div>';
   // Clean up any lingering fullscreen overlay from previous open
@@ -1809,12 +1817,32 @@ function openSpecies(idx) {
   modal.classList.add('open');
 }
 
+function openGPSCapture() {
+  window._sightingLat = null;
+  window._sightingLng = null;
+  window._sightingRoad = null;
+  captureGPSForSighting(function(lat, lng, road) {
+    window._sightingLat = lat;
+    window._sightingLng = lng;
+    window._sightingRoad = road;
+  });
+}
+
 function openSightingPanel() {
   var panel = document.getElementById('sightingPanel');
   if(panel) {
     panel.style.display = 'block';
     setTimeout(function(){ panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 50);
   }
+  // Auto-trigger GPS capture when panel opens
+  window._sightingLat = null;
+  window._sightingLng = null;
+  window._sightingRoad = null;
+  captureGPSForSighting(function(lat, lng, road) {
+    window._sightingLat = lat;
+    window._sightingLng = lng;
+    window._sightingRoad = road;
+  });
 }
 
 var selectedStars = 0;
@@ -1838,40 +1866,51 @@ function triggerSightingNotification(spName) {
 function confirmLogSighting() {
   var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : SPECIES[window._spIdx];
   if(!sp) return;
-  var roadEl = document.getElementById('sightingRoad');
-  var road = roadEl ? roadEl.value : '';
+  var road = window._sightingRoad || '';
+  var lat = window._sightingLat || null;
+  var lng = window._sightingLng || null;
   var stars = selectedStars || 3;
   var sightings = loadSightings();
   var entry = {
     id:sp.id, name:sp.name, latin:sp.latin,
     stars:stars, time:new Date().toISOString(),
-    road:road, protected:false,
+    road:road, lat:lat, lng:lng,
+    protected:false,
     svgPath:sp.svgPath||'', color:sp.color||'#5a6b75'
   };
   sightings.push(entry);
   saveSightings(sightings);
-  // Push to local feed immediately so it shows in Sightings tab right away
   var starFull = String.fromCharCode(9733);
   var starEmpty = String.fromCharCode(9734);
   var rating = starFull.repeat(stars) + starEmpty.repeat(5-stars);
   var feedEntry = {
     type:'sighting', tag:'sighting', icon:'&#x1F98F;',
-    title: sp.name + ' sighted' + (road ? ' – ' + road : '') + ' ' + rating,
-    desc: sp.name + ' (' + (sp.latin||'') + ')' + (road ? ' on ' + road : ' in Kruger National Park') + '.',
+    title: sp.name + ' sighted' + (road ? ' \u2013 ' + road : '') + ' ' + rating,
+    desc: sp.name + (sp.latin ? ' (' + sp.latin + ')' : '') + (road ? ' on ' + road : ' in Kruger National Park') + '.',
     source: 'My Sightings',
-    time: new Date().toISOString()
+    time: new Date().toISOString(),
+    _local: true
   };
-  var currentFeed = window._feedAllItems || [];
-  window._feedAllItems = [feedEntry].concat(currentFeed);
+  var currentFeed = (window._feedAllItems || []).slice();
+  currentFeed.unshift(feedEntry);
+  window._feedAllItems = currentFeed;
   renderFeed(window._feedAllItems);
   renderSpecies();
   if(typeof renderBirds === 'function') renderBirds();
   renderSightings();
   updateTripStats();
+  if(_map && lat && lng && typeof L !== 'undefined') {
+    var sightIcon = _makeIcon('&#x1F98F;', '#c8962a');
+    var m = L.marker([lat, lng], {icon: sightIcon})
+      .bindPopup('<b>'+sp.name+'</b><br>'+(road||'')+' &bull; Just now')
+      .addTo(_map);
+    _mapLayers.sightings.push(m);
+  }
   pushSightingToFeed(entry);
   closeModal('speciesModal');
-  showToast('Sighting logged! ' + sp.name + (road?' on '+road:''), 2500);
+  showToast('Sighting logged!' + (road ? ' ' + road : ''), 2500);
 }
+
 
 function logProtectedSighting() {
   var sp = SPECIES[window._spIdx];
@@ -2185,7 +2224,10 @@ function renderSightings() {
           '<div class="card-title">'+s.name+' '+stars+'</div>' +
           '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
         '</div>' +
-        '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">Share</button>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+          '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
+          '<button onclick="deleteSightingFromWildlife('+i+')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -3047,7 +3089,10 @@ function _loadSavedRoadReports() {
 function _applyDateFilter(items) {
   var cutoff = Date.now() - (30 * 24 * 60 * 60 * 1000);
   return items.filter(function(f) {
-    if(f.source === 'KFG Advisory' || f.source === 'KFG Intelligence' || f.source === 'User Report') return true;
+    // Always keep these — user content, pinned notices, Firebase sightings
+    if(f.source === 'KFG Advisory' || f.source === 'KFG Intelligence' ||
+       f.source === 'User Report' || f.source === 'My Sightings' ||
+       f.source === 'Kruger Field Guide' || f._local) return true;
     if(!f.time) return true;
     try { return new Date(f.time).getTime() >= cutoff; } catch(e) { return true; }
   });
@@ -3056,12 +3101,20 @@ function _applyDateFilter(items) {
 // Helper: merge road reports + DEFAULT_FEED to front, apply 30-day filter, render
 function _mergeAndRender(feedData) {
   var roads = _loadSavedRoadReports();
-  // Always keep DEFAULT_FEED pinned items — filter out stale ones from incoming data first
   var filtered = _applyDateFilter(feedData || []);
-  // Remove any duplicate DEFAULT_FEED items already in filtered
+  // Remove duplicate DEFAULT_FEED items
   var defaultIds = DEFAULT_FEED.map(function(d){ return d.title; });
   var withoutDefaults = filtered.filter(function(f){ return defaultIds.indexOf(f.title) < 0; });
-  var merged = roads.concat(DEFAULT_FEED).concat(withoutDefaults);
+  // Preserve any local sightings already in _feedAllItems (from this session)
+  var existingLocal = (window._feedAllItems || []).filter(function(f){
+    return f._local || f.source === 'My Sightings';
+  });
+  // Merge: road reports + DEFAULT_FEED + local sightings + incoming feed (deduped)
+  var incomingIds = withoutDefaults.map(function(f){ return f.title + f.time; });
+  var localNotDuped = existingLocal.filter(function(f){
+    return incomingIds.indexOf(f.title + f.time) < 0;
+  });
+  var merged = roads.concat(DEFAULT_FEED).concat(localNotDuped).concat(withoutDefaults);
   window._feedAllItems = merged;
   renderFeed(merged);
 }
@@ -3232,7 +3285,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.1 — May 2026';
+    lu.textContent = 'Content v3.2 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3469,7 +3522,7 @@ function openWildcardSpecies(type, i) {
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div class="modal-section-label">Rate Your Sighting</div>'+
       '<div class="star-row" id="starRow">'+ [1,2,3,4,5].map(function(n){return '<span class="modal-star" id="mstar'+n+'" onclick="selectStar('+n+')" style="font-size:28px;opacity:.35;cursor:pointer">&#9733;</span>';}).join('') +'</div>'+
-      '<div id="roadPickerWrap" style="padding:0 0 10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Where did you see it?</div><select id="sightingRoad" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px">'+roadOpts+'</select></div>'+
+      '<div style="padding:0 0 10px"><button id="gpsStatusBtn" onclick="openGPSCapture()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:left">&#x1F4CD; Tap to capture your GPS location</button></div>'+
       '<button id="logSightingBtn" onclick="confirmLogSighting()" style="display:none;width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
     '</div>';
   var existingOv = document.getElementById('imgFullscreenOverlay');
@@ -3585,7 +3638,7 @@ function openBird(idx) {
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div class="modal-section-label">Rate Your Sighting</div>'+
       '<div class="star-row" id="starRow">'+ [1,2,3,4,5].map(function(n){return '<span class="modal-star" id="mstar'+n+'" onclick="selectStar('+n+')" style="font-size:28px;opacity:.35;cursor:pointer">&#9733;</span>';}).join('') +'</div>'+
-      '<div id="roadPickerWrap" style="padding:0 0 10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Where did you see it?</div><select id="sightingRoad" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px">'+roadOpts+'</select></div>'+
+      '<div style="padding:0 0 10px"><button id="gpsStatusBtn" onclick="openGPSCapture()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:left">&#x1F4CD; Tap to capture your GPS location</button></div>'+
       '<button id="logSightingBtn" onclick="confirmLogSighting()" style="display:none;width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
     '</div>';
   var existingOv = document.getElementById('imgFullscreenOverlay');
@@ -3630,7 +3683,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.1';
+var APP_VERSION = '3.2';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -3767,9 +3820,13 @@ function deleteSighting(idx) {
 function saveTripDates() {
   var from = document.getElementById('tripDateFrom');
   var to = document.getElementById('tripDateTo');
+  var entry = document.getElementById('itinEntry');
+  var exit = document.getElementById('itinExit');
   localStorage.setItem('kfg_trip_dates', JSON.stringify({
     from: from ? from.value : '',
-    to: to ? to.value : ''
+    to: to ? to.value : '',
+    entry: entry ? entry.value : '',
+    exit: exit ? exit.value : ''
   }));
 }
 function loadTripDates() {
@@ -3777,8 +3834,13 @@ function loadTripDates() {
     var d = JSON.parse(localStorage.getItem('kfg_trip_dates')||'{}');
     var from = document.getElementById('tripDateFrom');
     var to = document.getElementById('tripDateTo');
+    var entry = document.getElementById('itinEntry');
+    var exit = document.getElementById('itinExit');
     if(from && d.from) from.value = d.from;
     if(to && d.to) to.value = d.to;
+    if(entry && d.entry) entry.value = d.entry;
+    if(exit && d.exit) exit.value = d.exit;
+    if(d.from && d.to) generateTripSchedule();
   } catch(e) {}
 }
 
@@ -3946,6 +4008,165 @@ function mapCenterOnUser() {
   }, function() {
     showToast('Could not get GPS location', 2000);
   });
+}
+
+// ============================================
+// TRIP PLANNER — DATE-DRIVEN SCHEDULE
+// ============================================
+var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function generateTripSchedule() {
+  saveTripDates();
+  var fromEl = document.getElementById('tripDateFrom');
+  var toEl = document.getElementById('tripDateTo');
+  var container = document.getElementById('tripSchedule');
+  if(!fromEl || !toEl || !container) return;
+  var from = fromEl.value, to = toEl.value;
+  if(!from || !to) { container.innerHTML = ''; return; }
+
+  var start = new Date(from + 'T12:00:00');
+  var end = new Date(to + 'T12:00:00');
+  if(end <= start) {
+    container.innerHTML = '<div style="padding:10px;color:var(--red);font-size:11px;text-align:center">Departure must be after arrival</div>';
+    return;
+  }
+
+  var nights = Math.round((end - start) / 86400000);
+  if(nights > 21) {
+    container.innerHTML = '<div style="padding:10px;color:var(--text3);font-size:11px;text-align:center">Maximum 21 nights</div>';
+    return;
+  }
+
+  var campOpts = (CAMPS||[]).map(function(c){ return '<option value="'+c.name+'">'+c.name+'</option>'; }).join('');
+  var extraOpts = '<option value="Sabi Sands">Sabi Sands</option><option value="Timbavati">Timbavati</option><option value="MalaMala">MalaMala</option>';
+
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
+
+  var html = '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px">'+nights+' Night Itinerary</div>';
+
+  for(var i = 0; i < nights; i++) {
+    var d = new Date(start.getTime() + i * 86400000);
+    var dayName = DAYS[d.getDay()];
+    var dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()];
+    var key = 'night_' + i;
+    var savedCamp = saved[key] || '';
+
+    html += '<div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-bottom:8px">' +
+      '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 12px;min-width:120px">' +
+        '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
+        '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
+      '</div>' +
+      '<select onchange="saveTripSchedule('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px">' +
+        '<option value="">Select camp...</option>' + campOpts + extraOpts +
+      '</select>' +
+    '</div>';
+  }
+
+  html += '<button onclick="calculateFromSchedule()" class="itin-calc-btn" style="margin-top:4px">Calculate Driving Times &rarr;</button>';
+  container.innerHTML = html;
+
+  // Restore saved selections
+  var selects = container.querySelectorAll('select');
+  for(var j = 0; j < nights; j++) {
+    var k = 'night_' + j;
+    if(saved[k] && selects[j]) selects[j].value = saved[k];
+  }
+}
+
+function saveTripSchedule(nightIdx, campName) {
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
+  saved['night_' + nightIdx] = campName;
+  localStorage.setItem('kfg_trip_schedule', JSON.stringify(saved));
+}
+
+function calculateFromSchedule() {
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
+  var stops = Object.keys(saved).sort().map(function(k){ return saved[k]; }).filter(Boolean);
+  if(!stops.length) { showToast('Select at least one camp first', 2000); return; }
+  // Wire into existing itinerary calculator
+  itinStops = stops;
+  calculateItinerary();
+}
+
+// ============================================
+// GPS CAPTURE + NEAREST ROAD MATCHING
+// ============================================
+var ROAD_WAYPOINTS = [
+  {road:'H1-1', lat:-25.05, lng:31.49}, {road:'H1-2', lat:-24.90, lng:31.57},
+  {road:'H1-3', lat:-24.70, lng:31.70}, {road:'H1-4', lat:-24.50, lng:31.72},
+  {road:'H1-5', lat:-24.20, lng:31.72}, {road:'H1-6', lat:-23.95, lng:31.70},
+  {road:'H1-7', lat:-23.60, lng:31.55}, {road:'H1-8', lat:-23.10, lng:31.45},
+  {road:'H3',   lat:-25.00, lng:31.65}, {road:'H4-1', lat:-25.05, lng:31.68},
+  {road:'H4-2', lat:-25.15, lng:31.85}, {road:'H7',   lat:-24.40, lng:31.95},
+  {road:'H9',   lat:-24.55, lng:31.55}, {road:'H10',  lat:-24.25, lng:31.60},
+  {road:'H12',  lat:-23.85, lng:31.70}, {road:'S1',   lat:-25.10, lng:31.55},
+  {road:'S3',   lat:-25.15, lng:31.30}, {road:'S28',  lat:-24.80, lng:31.85},
+  {road:'S41',  lat:-24.30, lng:31.80}, {road:'S44',  lat:-23.90, lng:31.65},
+  {road:'S65',  lat:-24.60, lng:31.75}, {road:'S100', lat:-24.50, lng:31.90},
+  {road:'S106', lat:-23.70, lng:31.75}, {road:'S114', lat:-25.20, lng:31.90},
+];
+
+function findNearestRoad(lat, lng) {
+  var best = null, bestDist = Infinity;
+  ROAD_WAYPOINTS.forEach(function(wp) {
+    var dlat = wp.lat - lat, dlng = wp.lng - lng;
+    var dist = Math.sqrt(dlat*dlat + dlng*dlng);
+    if(dist < bestDist) { bestDist = dist; best = wp.road; }
+  });
+  // Also check camps
+  if(FACILITIES && FACILITIES.fuel) {
+    FACILITIES.fuel.forEach(function(c) {
+      var dlat = c.lat - lat, dlng = c.lng - lng;
+      var dist = Math.sqrt(dlat*dlat + dlng*dlng);
+      if(dist < bestDist) { bestDist = dist; best = 'Near ' + c.name; }
+    });
+  }
+  return best || 'Kruger National Park';
+}
+
+function captureGPSForSighting(callback) {
+  if(!navigator.geolocation) {
+    callback(null, null, null);
+    return;
+  }
+  var btn = document.getElementById('gpsStatusBtn');
+  if(btn) btn.textContent = '&#x1F4CD; Getting GPS...';
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude;
+      var lng = pos.coords.longitude;
+      var road = findNearestRoad(lat, lng);
+      if(btn) btn.textContent = '&#x1F4CD; ' + road;
+      callback(lat, lng, road);
+    },
+    function() {
+      if(btn) btn.textContent = '&#x1F4CD; GPS unavailable';
+      callback(null, null, null);
+    },
+    {timeout: 8000, enableHighAccuracy: true}
+  );
+}
+
+// ============================================
+// DELETE SIGHTING FROM WILDLIFE SIGHTINGS TAB
+// ============================================
+function deleteSightingFromWildlife(idx) {
+  var sightings = loadSightings();
+  var nonProt = sightings.filter(function(s){ return !s.protected; });
+  var s = nonProt[nonProt.length - 1 - idx];
+  if(!s) return;
+  if(!confirm('Remove ' + s.name + ' sighting?')) return;
+  var i = sightings.indexOf(s);
+  if(i >= 0) sightings.splice(i, 1);
+  saveSightings(sightings);
+  renderSightings();
+  updateTripStats();
+  showToast('Sighting removed', 1500);
 }
 
 function initApp() {
