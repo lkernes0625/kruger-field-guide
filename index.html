@@ -52,7 +52,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 #content::-webkit-scrollbar-thumb{background:var(--border2)}
 
 /* BOTTOM NAV */
-#nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+#nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
 .nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 2px 8px;cursor:pointer;-webkit-user-select:none;user-select:none;color:var(--text3);border:none;background:none;transition:color .15s;min-height:48px;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation}
 .nav-item.active{color:var(--accent)}
 .nav-item svg{width:20px;height:20px;margin-bottom:2px;flex-shrink:0}
@@ -409,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.2</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.3</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -674,17 +674,7 @@ svg.animal-art{width:100%;height:100%}
 
     <!-- === MY TRIP === -->
     <div class="screen" id="screen-trip">
-      <div class="sec-head"><h2>My Trip</h2><p>Itinerary &middot; Checklist &middot; Sightings &middot; Share</p></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px">
-        <div>
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Departure Date</div>
-          <input type="date" id="tripDateFrom" onchange="saveTripDates()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
-        </div>
-        <div>
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Return Date</div>
-          <input type="date" id="tripDateTo" onchange="saveTripDates()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
-        </div>
-      </div>
+      <div class="sec-head"><h2>My Trip</h2><p>Plan &middot; Track &middot; Share</p></div>
       <div class="trip-tabs">
         <div class="trip-tab active" onclick="switchTripTab('itinerary',this)">Itinerary</div>
         <div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div>
@@ -725,9 +715,13 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div id="tripSchedule" style="padding:0 16px 16px"></div>
+        <div id="tripSchedule" style="padding:0 16px 8px"></div>
         <div id="itinResults"></div>
-      </div>
+        <!-- Save / Clear trip buttons — show only when dates are set -->
+        <div id="tripActionBtns" style="display:none;padding:0 16px 16px;display:grid;grid-template-columns:1fr auto;gap:8px">
+          <button onclick="saveTripPlan()" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4BE; Save Trip Plan</button>
+          <button onclick="clearTripPlan()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F5D1; Clear</button>
+        </div>
 
       <!-- CHECKLIST TAB -->
       <div class="trip-tab-content" id="tab-checklist">
@@ -784,7 +778,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.2<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.3<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -3285,7 +3279,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.2 — May 2026';
+    lu.textContent = 'Content v3.3 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3683,7 +3677,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.2';
+var APP_VERSION = '3.3';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -4021,20 +4015,27 @@ function generateTripSchedule() {
   var fromEl = document.getElementById('tripDateFrom');
   var toEl = document.getElementById('tripDateTo');
   var container = document.getElementById('tripSchedule');
+  var actionBtns = document.getElementById('tripActionBtns');
   if(!fromEl || !toEl || !container) return;
   var from = fromEl.value, to = toEl.value;
-  if(!from || !to) { container.innerHTML = ''; return; }
+  if(!from || !to) {
+    container.innerHTML = '';
+    if(actionBtns) actionBtns.style.display = 'none';
+    return;
+  }
 
   var start = new Date(from + 'T12:00:00');
   var end = new Date(to + 'T12:00:00');
   if(end <= start) {
     container.innerHTML = '<div style="padding:10px;color:var(--red);font-size:11px;text-align:center">Departure must be after arrival</div>';
+    if(actionBtns) actionBtns.style.display = 'none';
     return;
   }
 
   var nights = Math.round((end - start) / 86400000);
   if(nights > 21) {
     container.innerHTML = '<div style="padding:10px;color:var(--text3);font-size:11px;text-align:center">Maximum 21 nights</div>';
+    if(actionBtns) actionBtns.style.display = 'none';
     return;
   }
 
@@ -4051,10 +4052,9 @@ function generateTripSchedule() {
     var dayName = DAYS[d.getDay()];
     var dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()];
     var key = 'night_' + i;
-    var savedCamp = saved[key] || '';
 
     html += '<div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-bottom:8px">' +
-      '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 12px;min-width:120px">' +
+      '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 12px;min-width:110px">' +
         '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
         '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
         '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
@@ -4074,6 +4074,41 @@ function generateTripSchedule() {
     var k = 'night_' + j;
     if(saved[k] && selects[j]) selects[j].value = saved[k];
   }
+
+  // Show save/clear buttons
+  if(actionBtns) actionBtns.style.display = 'grid';
+}
+
+function saveTripPlan() {
+  var fromEl = document.getElementById('tripDateFrom');
+  var toEl = document.getElementById('tripDateTo');
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
+  var hasCamps = Object.keys(saved).some(function(k){ return saved[k]; });
+  if(!hasCamps) { showToast('Select at least one camp first', 2000); return; }
+  saveTripDates();
+  showToast('Trip plan saved! \u2705', 2000);
+}
+
+function clearTripPlan() {
+  if(!confirm('Clear your entire trip plan?')) return;
+  var fromEl = document.getElementById('tripDateFrom');
+  var toEl = document.getElementById('tripDateTo');
+  var entryEl = document.getElementById('itinEntry');
+  var exitEl = document.getElementById('itinExit');
+  if(fromEl) fromEl.value = '';
+  if(toEl) toEl.value = '';
+  if(entryEl) entryEl.value = '';
+  if(exitEl) exitEl.value = '';
+  localStorage.removeItem('kfg_trip_dates');
+  localStorage.removeItem('kfg_trip_schedule');
+  var container = document.getElementById('tripSchedule');
+  if(container) container.innerHTML = '';
+  var results = document.getElementById('itinResults');
+  if(results) results.innerHTML = '';
+  var actionBtns = document.getElementById('tripActionBtns');
+  if(actionBtns) actionBtns.style.display = 'none';
+  showToast('Trip plan cleared', 1500);
 }
 
 function saveTripSchedule(nightIdx, campName) {
