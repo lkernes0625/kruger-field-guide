@@ -421,7 +421,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.11</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.12</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -810,7 +810,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.11<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.12<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -3391,11 +3391,11 @@ function _mergeAndRender(feedData) {
 }
 
 async function loadFeed() {
-  // Migrate: remove old kfg_feed key (it stored Firebase data as RSS, causing sightings to vanish)
+  // Migrate: remove old cache keys that caused issues
   localStorage.removeItem('kfg_feed');
+  localStorage.removeItem('kfg_feed_full_cache');
 
-  // Firebase sightings are stored in a SEPARATE variable so RSS cascades can NEVER overwrite them
-  // Load from localStorage FIRST so they are present before the very first renderFeed call
+  // Load Firebase sightings from cache FIRST — present before first render
   window._firebaseSightings = [];
   try {
     var cachedFb = localStorage.getItem('kfg_firebase_sightings');
@@ -3405,25 +3405,13 @@ async function loadFeed() {
     }
   } catch(e) {}
 
-  // Load road reports cache on startup
+  // Load road reports from cache
   window._roadReports = [];
   try {
     var cachedRoads = localStorage.getItem('kfg_road_reports_v2');
     if(cachedRoads) {
       var parsedRoads = JSON.parse(cachedRoads);
       if(Array.isArray(parsedRoads) && parsedRoads.length) window._roadReports = parsedRoads;
-    }
-  } catch(e) {}
-
-  // Load full feed cache immediately — feed never disappears even offline
-  try {
-    var fullCache = localStorage.getItem('kfg_feed_full_cache');
-    if(fullCache) {
-      var cachedFeed = JSON.parse(fullCache);
-      if(Array.isArray(cachedFeed) && cachedFeed.length) {
-        window._feedAllItems = cachedFeed;
-        renderFeed(cachedFeed);
-      }
     }
   } catch(e) {}
 
@@ -3438,34 +3426,30 @@ async function loadFeed() {
     var rssDeduped = filtered.filter(function(f){
       return firebaseTitles.indexOf(f.title) < 0 && roadTitles.indexOf(f.title + f.time) < 0;
     });
-    var combined = (window._firebaseSightings || []).concat(window._roadReports || []).concat(DEFAULT_FEED).concat(rssDeduped);
-    // Normalise and sort all items newest first
+    var combined = (window._firebaseSightings || [])
+      .concat(window._roadReports || [])
+      .concat(DEFAULT_FEED)
+      .concat(rssDeduped);
     function toMs(f) {
       if(f.timestamp) return f.timestamp;
       if(!f.time) return 0;
-      try {
-        var d = new Date(f.time);
-        if(!isNaN(d.getTime())) return d.getTime();
-      } catch(e) {}
+      try { var d = new Date(f.time); if(!isNaN(d.getTime())) return d.getTime(); } catch(e) {}
       return 0;
     }
     combined.sort(function(a, b) { return toMs(b) - toMs(a); });
     return combined;
   }
 
-  // Show cached RSS + cached Firebase sightings immediately — zero flash
+  // Load cached RSS for immediate display
   var rssData = DEFAULT_FEED;
   try {
-    var cached = localStorage.getItem('kfg_feed_rss');
-    if(cached) rssData = JSON.parse(cached);
+    var cachedRss = localStorage.getItem('kfg_feed_rss');
+    if(cachedRss) rssData = JSON.parse(cachedRss);
   } catch(e) {}
 
-  // Only rebuild from RSS if we have no full cache — otherwise full cache already showing
-  var hasCachedFeed = window._feedAllItems && window._feedAllItems.length > 0;
-  if(!hasCachedFeed) {
-    window._feedAllItems = rebuildFeed(rssData);
-    renderFeed(window._feedAllItems);
-  }
+  // Render immediately from cache — shows sightings + road reports + cached RSS instantly
+  window._feedAllItems = rebuildFeed(rssData);
+  renderFeed(window._feedAllItems);
 
   // 1. Load Firebase sightings FIRST — these are user-generated and must persist
   try {
@@ -3594,7 +3578,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.11 — May 2026';
+    lu.textContent = 'Content v3.12 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3603,8 +3587,6 @@ async function loadFeed() {
 function renderFeed(feedData) {
   if(feedData && feedData.length) {
     window._feedAllItems = feedData;
-    // Always cache the full feed so it survives offline/refresh
-    try { localStorage.setItem('kfg_feed_full_cache', JSON.stringify(feedData.slice(0,30))); } catch(e) {}
   }
   var all = window._feedAllItems || feedData || [];
 
@@ -4061,7 +4043,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.11';
+var APP_VERSION = '3.12';
 
 // Clear stale caches when version changes
 (function() {
@@ -4070,8 +4052,6 @@ var APP_VERSION = '3.11';
     // Only clear RSS cache — never touch Firebase sightings, road reports or user data
     localStorage.removeItem('kfg_feed_rss');
     localStorage.removeItem('kfg_feed');
-    // Rebuild full cache from Firebase + road reports on next load
-    // kfg_feed_full_cache is intentionally kept so feed shows immediately
   }
   localStorage.setItem('kfg_app_version', APP_VERSION);
 })();
@@ -4978,7 +4958,8 @@ window.addEventListener('offline', function(){
     var manifest = {
       name:'Kruger Field Guide',
       short_name:'Kruger Guide',
-      start_url:'.',
+      start_url:'https://app.krantzoutdoors.com/',
+      scope:'https://app.krantzoutdoors.com/',
       display:'standalone',
       background_color:'#15191c',
       theme_color:'#e8a020',
