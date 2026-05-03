@@ -694,7 +694,7 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="padding:0 16px 8px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
             <div>
               <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Entry Gate</div>
               <select class="itin-select" id="itinEntry" onchange="saveTripDates()">
@@ -717,13 +717,11 @@ svg.animal-art{width:100%;height:100%}
         </div>
         <div id="tripSchedule" style="padding:0 16px 8px"></div>
         <div id="itinResults"></div>
-        <!-- Save / Clear trip buttons — show only when dates are set -->
-        <div id="tripActionBtns" style="display:none;padding:0 16px 16px;display:grid;grid-template-columns:1fr auto;gap:8px">
+        <div id="tripActionBtns" style="display:none;padding:0 16px 16px;gap:8px;grid-template-columns:1fr auto">
           <button onclick="saveTripPlan()" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4BE; Save Trip Plan</button>
           <button onclick="clearTripPlan()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F5D1; Clear</button>
         </div>
-
-      <!-- CHECKLIST TAB -->
+      </div><!-- /tab-itinerary -->
       <div class="trip-tab-content" id="tab-checklist">
         <div style="padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:11px;color:var(--text3);font-weight:500" id="checklistProgress">Loading...</div>
@@ -750,9 +748,9 @@ svg.animal-art{width:100%;height:100%}
 
     <!-- === ABOUT === -->
     <div class="screen" id="screen-about">
-      <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap">
         <div><h2>About</h2><p>Krantz Outdoors Field Intelligence</p></div>
-        <button onclick="showScreen('home')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:20px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer">&#8592; Back</button>
+        <button onclick="showScreen('home')" style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:20px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">&#8592; Back</button>
       </div>
       
       <div class="about-links">
@@ -1877,12 +1875,11 @@ function confirmLogSighting() {
   };
   sightings.push(entry);
   saveSightings(sightings);
-  // Update species/sightings lists immediately
+  // Update species/sightings lists immediately — DO NOT touch the feed here
   renderSpecies();
   if(typeof renderBirds === 'function') renderBirds();
   renderSightings();
   updateTripStats();
-  // Add map marker if GPS available
   if(_map && lat && lng && typeof L !== 'undefined') {
     var sightIcon = _makeIcon('&#x1F98F;', '#c8962a');
     var m = L.marker([lat, lng], {icon: sightIcon})
@@ -1891,8 +1888,8 @@ function confirmLogSighting() {
     _mapLayers.sightings.push(m);
   }
   closeModal('speciesModal');
-  showToast('Sighting logged!' + (road ? ' ' + road : ''), 2500);
-  // Push to Firebase — this is the ONLY place the feed gets updated
+  showToast('Sighting logged!' + (road ? ' \u2013 ' + road : ''), 2500);
+  // Feed update — ONE path only, via Firebase
   pushSightingToFeed(entry);
 }
 
@@ -1938,51 +1935,52 @@ async function pushSightingToFeed(entry) {
     for(var i=0;i<stars;i++) rating += String.fromCharCode(9733);
     for(var j=stars;j<5;j++) rating += String.fromCharCode(9734);
 
-    // Build the new entry
     var newEntry = {
-      type: 'sighting',
-      tag: 'sighting',
-      icon: '&#x1F98F;',
+      type:'sighting', tag:'sighting', icon:'&#x1F98F;',
       title: entry.name + ' sighted \u2013 ' + rating,
       desc: entry.name + (entry.latin ? ' (' + entry.latin + ')' : '') + ' logged at ' + timeStr + ' on ' + dateStr + (entry.road ? ' near ' + entry.road : '') + '.',
-      source: 'Kruger Field Guide',
+      source:'Kruger Field Guide',
       time: entry.time,
       timestamp: Date.now()
     };
 
-    // Read current Firebase feed
-    var readResp = await fetch(FIREBASE_URL + '/feed.json');
+    // Read → prepend → write to Firebase
     var current = [];
-    if(readResp.ok) {
-      var existing = await readResp.json();
-      if(Array.isArray(existing)) current = existing;
-    }
+    try {
+      var readResp = await fetch(FIREBASE_URL + '/feed.json');
+      if(readResp.ok) {
+        var existing = await readResp.json();
+        if(Array.isArray(existing)) current = existing;
+      }
+    } catch(e) {}
 
-    // Prepend and cap at 20 entries
     current.unshift(newEntry);
     if(current.length > 20) current = current.slice(0, 20);
 
-    // Write to Firebase
     var writeResp = await fetch(FIREBASE_URL + '/feed.json', {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(current)
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(current)
     });
 
     if(writeResp.ok) {
-      // Merge into live feed: remove any stale placeholder for this entry, prepend Firebase version
-      var existing = (window._feedAllItems || []).filter(function(f) {
-        return !(f._local && f.title && f.title.indexOf(entry.name) >= 0);
+      // Prepend to live feed — strip any old entry for same animal within last 10s to avoid duplicates
+      var base = (window._feedAllItems || []).filter(function(f) {
+        if(f.source === 'Kruger Field Guide' && f.title && f.title.indexOf(entry.name) >= 0) {
+          var age = Date.now() - (f.timestamp || 0);
+          return age > 10000; // keep entries older than 10s
+        }
+        return true;
       });
-      window._feedAllItems = [newEntry].concat(existing);
+      window._feedAllItems = [newEntry].concat(base);
       renderFeed(window._feedAllItems);
-      showToast('Sighting live on feed! &#x1F98F;', 2000);
+      showToast('&#x1F98F; Sighting live on feed!', 2000);
     } else {
-      showToast('Sighting saved locally', 1500);
+      showToast('Saved locally \u2014 no connection', 1800);
     }
   } catch(e) {
-    console.warn('Sighting feed push failed:', e);
-    showToast('Sighting saved locally', 1500);
+    console.warn('Feed push failed:', e);
+    showToast('Saved locally \u2014 no connection', 1800);
   }
 }
 
@@ -3088,19 +3086,11 @@ function _applyDateFilter(items) {
 function _mergeAndRender(feedData) {
   var roads = _loadSavedRoadReports();
   var filtered = _applyDateFilter(feedData || []);
-  // Remove duplicate DEFAULT_FEED items
+  // Remove duplicate DEFAULT_FEED items by title
   var defaultIds = DEFAULT_FEED.map(function(d){ return d.title; });
   var withoutDefaults = filtered.filter(function(f){ return defaultIds.indexOf(f.title) < 0; });
-  // Preserve any local sightings already in _feedAllItems (from this session)
-  var existingLocal = (window._feedAllItems || []).filter(function(f){
-    return f._local || f.source === 'My Sightings';
-  });
-  // Merge: road reports + DEFAULT_FEED + local sightings + incoming feed (deduped)
-  var incomingIds = withoutDefaults.map(function(f){ return f.title + f.time; });
-  var localNotDuped = existingLocal.filter(function(f){
-    return incomingIds.indexOf(f.title + f.time) < 0;
-  });
-  var merged = roads.concat(DEFAULT_FEED).concat(localNotDuped).concat(withoutDefaults);
+  // Merge: road reports first, then DEFAULT_FEED, then incoming (which already includes Firebase sightings)
+  var merged = roads.concat(DEFAULT_FEED).concat(withoutDefaults);
   window._feedAllItems = merged;
   renderFeed(merged);
 }
@@ -4215,21 +4205,15 @@ function initApp() {
   safe(renderRecentlyViewed);
   safe(loadWeather);
   safe(loadFeed);
-  // Live feed poll — checks Firebase every 30s so other users' sightings appear automatically
-  var _feedPollTimer = setInterval(function() {
-    fetch(FIREBASE_URL + '/feed.json').then(function(r) {
-      if(!r.ok) return;
-      return r.json();
-    }).then(function(data) {
+  // Poll Firebase every 30s — picks up sightings from other users automatically
+  setInterval(function() {
+    fetch(FIREBASE_URL + '/feed.json').then(function(r){ return r.ok ? r.json() : null; }).then(function(data) {
       if(!Array.isArray(data) || !data.length) return;
-      // Check if there are new entries vs what we already have
-      var topTimestamp = data[0] && data[0].timestamp ? data[0].timestamp : 0;
-      var currentTop = window._feedAllItems && window._feedAllItems[0] && window._feedAllItems[0].timestamp ? window._feedAllItems[0].timestamp : 0;
-      if(topTimestamp > currentTop) {
-        // New sightings from other users — merge into feed
-        var nonFirebase = (window._feedAllItems || []).filter(function(f) {
-          return f.source !== 'Kruger Field Guide';
-        });
+      var newTop = data[0] && data[0].timestamp ? data[0].timestamp : 0;
+      var curTop = window._feedAllItems && window._feedAllItems[0] && window._feedAllItems[0].timestamp ? window._feedAllItems[0].timestamp : 0;
+      if(newTop > curTop) {
+        // New entries exist — merge Firebase sightings on top, keep RSS/road items below
+        var nonFirebase = (window._feedAllItems || []).filter(function(f){ return f.source !== 'Kruger Field Guide'; });
         window._feedAllItems = data.concat(nonFirebase);
         renderFeed(window._feedAllItems);
       }
