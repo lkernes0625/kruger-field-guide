@@ -121,7 +121,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);align-items:flex-end}
 .modal-overlay.open{display:flex}
-.modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;width:100%;max-height:85dvh;overflow-y:auto;padding-bottom:max(env(safe-area-inset-bottom,20px),60px);animation:slideUp .22s ease}
+.modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;width:100%;max-height:85dvh;overflow-y:auto;padding-bottom:max(env(safe-area-inset-bottom,20px),60px);animation:slideUp .22s ease;touch-action:pan-y}
+.modal-drag-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 4px;cursor:pointer}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0}
 .modal-header{padding:14px 18px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
@@ -409,7 +410,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.7</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.8</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -595,10 +596,11 @@ svg.animal-art{width:100%;height:100%}
 
       <div style="padding:0 16px 10px">
         <div style="position:relative">
-          <input type="text" placeholder="Search species, birds, category..."
+          <input type="text" placeholder="Search all species, birds, reptiles, frogs..."
             id="wildlifeSearch" oninput="searchSpecies(this.value)"
-            style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px 12px 10px 36px;font-family:Montserrat,sans-serif;font-size:12px;box-sizing:border-box">
+            style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px 36px 10px 36px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">
           <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px">&#128269;</span>
+          <button onclick="clearWildlifeSearch()" id="wildlifeSearchClear" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:20px;height:20px;border-radius:50%;font-size:12px;cursor:pointer;line-height:1;padding:0">&#x2715;</button>
         </div>
       </div>
 
@@ -717,6 +719,7 @@ svg.animal-art{width:100%;height:100%}
           <button onclick="saveTripPlan()" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4BE; Save Trip Plan</button>
           <button onclick="clearTripPlan()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F5D1; Clear</button>
         </div>
+        <div id="savedTripsWrap" style="display:none;padding:0 16px 16px"></div>
       </div><!-- /tab-itinerary -->
       <div class="trip-tab-content" id="tab-checklist">
         <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center">
@@ -777,7 +780,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.7<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.8<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -898,6 +901,7 @@ svg.animal-art{width:100%;height:100%}
 <!-- SPECIES MODAL -->
 <div class="modal-overlay" id="speciesModal">
   <div class="modal-sheet">
+    <div class="modal-drag-handle" onclick="closeModal('speciesModal')"></div>
     <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">Species</div>
@@ -1737,10 +1741,14 @@ function renderSpecies() {
   var filter=typeof _wildlifeFilter!=='undefined'?_wildlifeFilter:'all';
   var filtered=SPECIES.filter(function(sp){
     if(sp.classification && sp.classification !== 'Mammalia') return false;
-    if(search&&sp.name.toLowerCase().indexOf(search)<0&&(sp.latin||'').toLowerCase().indexOf(search)<0) return false;
+    if(search) {
+      var nameMatch = sp.name.toLowerCase().indexOf(search) >= 0;
+      var latinMatch = (sp.latin||'').toLowerCase().indexOf(search) >= 0;
+      if(!nameMatch && !latinMatch) return false;
+    }
     if(filter==='all') return true;
     if(filter==='big5') return sp.category==='big5';
-    if(filter==='endangered') return sp.conservation&&(sp.conservation.indexOf('Critically Endangered')>=0||sp.conservation.indexOf('Endangered (EN)')>=0);
+    if(filter==='endangered') return sp.conservation&&(sp.conservation.indexOf('Critically Endangered')>=0||sp.conservation.indexOf('Endangered (EN)')>=0)||sp.protected;
     if(filter==='rare') return sp.protected||sp.category==='rare';
     return true;
   });
@@ -1814,9 +1822,7 @@ function openSpecies(idx) {
     '<div class="drow" style="display:block"><div class="dlabel">Behaviour</div><div class="dval" style="margin-top:4px">'+sp.behaviour+'</div></div>'+
     (sp.protected?'<div style="background:rgba(204,51,34,.12);border:1px solid rgba(204,51,34,.3);border-radius:10px;padding:10px 14px;margin:12px 0;color:#e05545;font-size:11px;font-weight:600">&#x26A0; PROTECTED SPECIES – Sighting logged privately only. Location not shared.</div><button onclick="logProtectedSighting()" style="width:100%;background:rgba(204,51,34,.2);border:1px solid rgba(204,51,34,.4);color:#e05545;border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Protected Sighting</button>':'')+
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
-      '<div class="modal-section-label">Rate Your Sighting</div>'+
-      '<div class="star-row" id="starRow">'+ [1,2,3,4,5].map(function(n){return '<span class="modal-star" id="mstar'+n+'" onclick="selectStar('+n+')" style="font-size:28px;opacity:.35;cursor:pointer">&#9733;</span>';}).join('') +'</div>'+
-      '<div style="padding:0 0 10px"><button id="gpsStatusBtn" onclick="openGPSCapture()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:left">&#x1F4CD; Tap to capture your GPS location</button></div>'+
+      '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
       '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
     '</div>';
   // Clean up any lingering fullscreen overlay from previous open
@@ -1845,14 +1851,17 @@ function openSightingPanel() {
     panel.style.display = 'block';
     setTimeout(function(){ panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 50);
   }
-  // Auto-trigger GPS capture when panel opens
   window._sightingLat = null;
   window._sightingLng = null;
   window._sightingRoad = null;
+  var gpsBtn = document.getElementById('gpsStatusBtn');
+  if(gpsBtn) gpsBtn.textContent = '📍 Getting your GPS location...';
   captureGPSForSighting(function(lat, lng, road) {
     window._sightingLat = lat;
     window._sightingLng = lng;
     window._sightingRoad = road;
+    var btn = document.getElementById('gpsStatusBtn');
+    if(btn) btn.textContent = '📍 GPS captured' + (road ? ' \u2013 ' + road : ' \u2013 location saved');
   });
 }
 
@@ -1880,11 +1889,10 @@ function confirmLogSighting() {
   var road = window._sightingRoad || '';
   var lat = window._sightingLat || null;
   var lng = window._sightingLng || null;
-  var stars = selectedStars || 3;
   var sightings = loadSightings();
   var entry = {
     id:sp.id, name:sp.name, latin:sp.latin,
-    stars:stars, time:new Date().toISOString(),
+    stars:3, time:new Date().toISOString(),
     road:road, lat:lat, lng:lng,
     protected:false,
     svgPath:sp.svgPath||'', color:sp.color||'#5a6b75'
@@ -2920,6 +2928,53 @@ function toggleCard(headerEl) {
   if(b && b.classList.contains('card-body')) b.classList.toggle('open');
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Swipe down to close any modal sheet
+(function() {
+  function addSwipeClose(modalId) {
+    var modal = document.getElementById(modalId);
+    if(!modal) return;
+    var sheet = modal.querySelector('.modal-sheet');
+    if(!sheet) return;
+    var startY = 0, startScroll = 0, dragging = false;
+    sheet.addEventListener('touchstart', function(e) {
+      startY = e.touches[0].clientY;
+      startScroll = sheet.scrollTop;
+      dragging = true;
+    }, {passive:true});
+    sheet.addEventListener('touchmove', function(e) {
+      if(!dragging) return;
+      var dy = e.touches[0].clientY - startY;
+      // Only close-swipe when at top of sheet
+      if(dy > 0 && startScroll <= 0) {
+        sheet.style.transform = 'translateY(' + Math.min(dy, 200) + 'px)';
+        sheet.style.transition = 'none';
+      }
+    }, {passive:true});
+    sheet.addEventListener('touchend', function(e) {
+      if(!dragging) return;
+      dragging = false;
+      var dy = e.changedTouches[0].clientY - startY;
+      sheet.style.transition = 'transform .2s ease';
+      if(dy > 80 && startScroll <= 0) {
+        sheet.style.transform = 'translateY(100%)';
+        setTimeout(function() {
+          modal.classList.remove('open');
+          sheet.style.transform = '';
+          sheet.style.transition = '';
+        }, 200);
+      } else {
+        sheet.style.transform = '';
+        setTimeout(function(){ sheet.style.transition = ''; }, 200);
+      }
+    }, {passive:true});
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    addSwipeClose('speciesModal');
+    addSwipeClose('shareModal');
+    addSwipeClose('logModal');
+  });
+})();
 function switchTripTab(tab, el) {
   document.querySelectorAll('#screen-trip .trip-tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('#screen-trip .trip-tab-content').forEach(function(t){ t.classList.remove('active'); });
@@ -3129,17 +3184,35 @@ async function loadFeed() {
     }
   } catch(e) {}
 
-  // Helper: rebuild full feed = firebase sightings + road reports + rss/default items (deduped by title)
+  // Load road reports cache on startup
+  window._roadReports = [];
+  try {
+    var cachedRoads = localStorage.getItem('kfg_road_reports_v2');
+    if(cachedRoads) {
+      var parsedRoads = JSON.parse(cachedRoads);
+      if(Array.isArray(parsedRoads) && parsedRoads.length) window._roadReports = parsedRoads;
+    }
+  } catch(e) {}
+
+  // Helper: rebuild full feed — firebase sightings + road reports + rss/default, sorted newest first
   function rebuildFeed(rssItems) {
-    var roads = _loadSavedRoadReports();
     var defaultTitles = DEFAULT_FEED.map(function(d){ return d.title; });
     var filtered = _applyDateFilter(rssItems || []).filter(function(f){
       return defaultTitles.indexOf(f.title) < 0;
     });
-    // Firebase sightings always go first, then road reports, then DEFAULT_FEED, then RSS
     var firebaseTitles = window._firebaseSightings.map(function(f){ return f.title; });
-    var rssDeduped = filtered.filter(function(f){ return firebaseTitles.indexOf(f.title) < 0; });
-    return window._firebaseSightings.concat(roads).concat(DEFAULT_FEED).concat(rssDeduped);
+    var roadTitles = (window._roadReports||[]).map(function(f){ return f.title + f.time; });
+    var rssDeduped = filtered.filter(function(f){
+      return firebaseTitles.indexOf(f.title) < 0 && roadTitles.indexOf(f.title + f.time) < 0;
+    });
+    var combined = (window._firebaseSightings || []).concat(window._roadReports || []).concat(DEFAULT_FEED).concat(rssDeduped);
+    // Sort all items by date — newest first
+    combined.sort(function(a, b) {
+      var ta = a.timestamp || (a.time ? new Date(a.time).getTime() : 0);
+      var tb = b.timestamp || (b.time ? new Date(b.time).getTime() : 0);
+      return tb - ta;
+    });
+    return combined;
   }
 
   // Show cached RSS + cached Firebase sightings immediately — zero flash
@@ -3159,6 +3232,20 @@ async function loadFeed() {
       if(Array.isArray(fbData) && fbData.length) {
         window._firebaseSightings = fbData;
         localStorage.setItem('kfg_firebase_sightings', JSON.stringify(fbData));
+        window._feedAllItems = rebuildFeed(rssData);
+        renderFeed(window._feedAllItems);
+      }
+    }
+  } catch(e) {}
+
+  // Load Firebase road reports
+  try {
+    var rr = await fetch(FIREBASE_URL + '/road_reports.json');
+    if(rr.ok) {
+      var rrData = await rr.json();
+      if(Array.isArray(rrData) && rrData.length) {
+        window._roadReports = rrData;
+        localStorage.setItem('kfg_road_reports_v2', JSON.stringify(rrData));
         window._feedAllItems = rebuildFeed(rssData);
         renderFeed(window._feedAllItems);
       }
@@ -3259,7 +3346,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.7 — May 2026';
+    lu.textContent = 'Content v3.8 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3392,10 +3479,19 @@ function findNearest(type, btn) {
       }).join('');
     },
     function(err) {
-      var msg = err.code === 1 ? 'Location access denied. Enable in phone settings.' :
-                err.code === 2 ? 'Location unavailable. Try moving to open ground.' :
-                'Location request timed out. Try again.';
-      results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">Location Error</div><p>' + msg + '</p></div>';
+      if(err.code === 1) {
+        // Permission denied — show actionable popup
+        results.innerHTML = '<div style="background:var(--bg3);border:1px solid var(--amber);border-radius:12px;padding:16px;text-align:center">' +
+          '<div style="font-size:24px;margin-bottom:8px">📍</div>' +
+          '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Location Access Needed</div>' +
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5">To find the nearest facilities, please enable location access for this app.</div>' +
+          '<div style="font-size:11px;color:var(--text3);margin-bottom:12px"><b>iPhone:</b> Settings → Privacy → Location Services → Safari → While Using<br><b>Android:</b> Settings → Apps → Browser → Permissions → Location</div>' +
+          '<button onclick="findNearest(\''+type+'\',null)" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:10px 20px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button>' +
+        '</div>';
+      } else {
+        var msg = err.code === 2 ? 'Location unavailable. Try moving to open ground.' : 'Location request timed out. Try again.';
+        results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">Location Error</div><p>' + msg + '</p><button onclick="findNearest(\''+type+'\',null)" style="margin-top:10px;background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button></div>';
+      }
     },
     { timeout: 10000, enableHighAccuracy: true }
   );
@@ -3406,17 +3502,16 @@ function findNearest(type, btn) {
 var _wildlifeFilter = 'all';
 function searchSpecies(val) {
   var v = (val||'').toLowerCase().trim();
-  // Show results across ALL tabs when searching
+  var clearBtn = document.getElementById('wildlifeSearchClear');
+  if(clearBtn) clearBtn.style.display = v.length ? 'block' : 'none';
   if(v.length > 0) {
     ['species','birds','reptiles','frogs'].forEach(function(t){
       var panel = document.getElementById('wildlifePanel-'+t);
       if(panel) panel.style.display = 'block';
     });
     document.getElementById('wildlifePanel-sightings') && (document.getElementById('wildlifePanel-sightings').style.display='none');
-    // Update tab indicators
     document.querySelectorAll('.wildlife-tab').forEach(function(b){ b.style.color='var(--text3)'; b.style.borderBottomColor='transparent'; });
   } else {
-    // Restore to mammals tab when search cleared
     ['birds','reptiles','frogs','sightings'].forEach(function(t){
       var panel = document.getElementById('wildlifePanel-'+t);
       if(panel) panel.style.display = 'none';
@@ -3427,6 +3522,12 @@ function searchSpecies(val) {
     if(firstTab){ firstTab.style.color='var(--accent)'; firstTab.style.borderBottomColor='var(--accent)'; }
   }
   renderSpecies(); renderBirds(); renderReptiles(); renderFrogs();
+}
+
+function clearWildlifeSearch() {
+  var inp = document.getElementById('wildlifeSearch');
+  if(inp) { inp.value = ''; inp.focus(); }
+  searchSpecies('');
 }
 
 var REPTILES = [
@@ -3493,12 +3594,7 @@ function openWildcardSpecies(type, i) {
     '<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>'+
     '<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>'+
     '<div class="drow" style="display:block"><div class="dlabel">Behaviour</div><div class="dval" style="margin-top:4px">'+sp.behaviour+'</div></div>'+
-    '<div id="sightingPanel" style="display:none;margin-top:12px">'+
-      '<div class="modal-section-label">Rate Your Sighting</div>'+
-      '<div class="star-row" id="starRow">'+ [1,2,3,4,5].map(function(n){return '<span class="modal-star" id="mstar'+n+'" onclick="selectStar('+n+')" style="font-size:28px;opacity:.35;cursor:pointer">&#9733;</span>';}).join('') +'</div>'+
-      '<div style="padding:0 0 10px"><button id="gpsStatusBtn" onclick="openGPSCapture()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:left">&#x1F4CD; Tap to capture your GPS location</button></div>'+
-      '<button id="logSightingBtn" onclick="confirmLogSighting()" style="display:none;width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
-    '</div>';
+    '<div id="sightingPanel" style="display:none;margin-top:12px">'+ '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">📍 Getting your GPS location...</div>'+ '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+ '</div>';
   var existingOv = document.getElementById('imgFullscreenOverlay');
   if(existingOv) existingOv.remove();
   var sheet = modal.querySelector('.modal-sheet');
@@ -3531,30 +3627,74 @@ function openRoadReport() {
   modal.querySelector('.modal-body').innerHTML =
     '<div style="font-size:11px;color:var(--text2);margin-bottom:14px">Report a road closure, camp issue, or access problem. This posts to the Roads & Camps feed for all users.</div>'+
     '<div style="margin-bottom:10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Type</div>'+
-    '<select id="reportType" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px">'+
+    '<select id="reportType" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;-webkit-appearance:none;appearance:none;box-sizing:border-box">'+
     '<option>Road Closed</option><option>Road Open Again</option><option>Flooded Road</option><option>Camp Closed</option><option>Gate Closed Early</option><option>Other</option></select></div>'+
-    '<div style="margin-bottom:10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Location / Road</div>'+
-    '<input id="reportLocation" type="text" placeholder="e.g. H1-2, Skukuza Gate..." style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px;box-sizing:border-box"></div>'+
+    '<div id="reportGPSStatus" style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:var(--text2)">&#x1F4CD; Getting your location...</div>'+
+    '<div style="margin-bottom:10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Location / Road <span style="color:var(--text3);font-weight:400">(or describe manually)</span></div>'+
+    '<input id="reportLocation" type="text" placeholder="e.g. H1-2, Skukuza Gate..." style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none"></div>'+
     '<div style="margin-bottom:14px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Details (optional)</div>'+
-    '<textarea id="reportDetails" placeholder="Additional details..." rows="3" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px;box-sizing:border-box;resize:none"></textarea></div>'+
+    '<textarea id="reportDetails" placeholder="Additional details..." rows="3" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;resize:none"></textarea></div>'+
     '<button onclick="submitRoadReport()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Submit Report</button>';
   modal.classList.add('open');
+  // Auto-capture GPS for road report
+  window._reportLat = null; window._reportLng = null; window._reportRoad = null;
+  var gpsEl = document.getElementById('reportGPSStatus');
+  var locEl = document.getElementById('reportLocation');
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      window._reportLat = pos.coords.latitude;
+      window._reportLng = pos.coords.longitude;
+      captureGPSForSighting(function(lat, lng, road) {
+        window._reportLat = lat; window._reportLng = lng; window._reportRoad = road;
+        if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS captured' + (road ? ' \u2013 near ' + road : '');
+        if(locEl && road && !locEl.value) locEl.value = road;
+      });
+      if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS captured \u2013 tap Submit to report';
+    }, function() {
+      if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS unavailable \u2013 enter location manually';
+    }, {timeout:8000});
+  } else {
+    if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS not supported \u2013 enter location manually';
+  }
 }
 
 function submitRoadReport() {
   var type = (document.getElementById('reportType')||{}).value||'Road Report';
   var loc  = (document.getElementById('reportLocation')||{}).value||'';
   var det  = (document.getElementById('reportDetails')||{}).value||'';
-  if(!loc){ showToast('Please enter a location', 2000); return; }
-  var report = { type:'road', tag:'road', title:type+(loc?' \u2013 '+loc:''), desc:det||type, time:new Date().toISOString(), source:'User Report', icon:'&#x1F6A7;' };
-  // Persist to localStorage first — survives refresh
+  var location = loc || window._reportRoad || '';
+  if(!location){ showToast('Please enter a location', 2000); return; }
+  var report = {
+    type:'road', tag:'road',
+    title: type + (location ? ' \u2013 ' + location : ''),
+    desc: det || type,
+    time: new Date().toISOString(),
+    timestamp: Date.now(),
+    source: 'User Report',
+    icon: '&#x1F6A7;',
+    lat: window._reportLat || null,
+    lng: window._reportLng || null
+  };
+  // Save to localStorage
   try {
     var saved = JSON.parse(localStorage.getItem('kfg_road_reports')||'[]');
     saved.unshift(report);
+    if(saved.length > 20) saved = saved.slice(0,20);
     localStorage.setItem('kfg_road_reports', JSON.stringify(saved));
   } catch(e) {}
-  // Also add to live feed immediately
-  var all = window._feedAllItems||[];
+  // Push to Firebase so other users see it
+  fetch(FIREBASE_URL + '/road_reports.json').then(function(r){ return r.ok?r.json():null; }).then(function(existing) {
+    var arr = Array.isArray(existing) ? existing : [];
+    arr.unshift(report);
+    if(arr.length > 20) arr = arr.slice(0,20);
+    return fetch(FIREBASE_URL + '/road_reports.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(arr)});
+  }).catch(function(){});
+  // Update protected road reports store
+  window._roadReports = window._roadReports || [];
+  window._roadReports.unshift(report);
+  localStorage.setItem('kfg_road_reports_v2', JSON.stringify(window._roadReports));
+  // Add to live feed immediately
+  var all = window._feedAllItems || [];
   all.unshift(report);
   window._feedAllItems = all;
   renderFeed(all);
@@ -3610,10 +3750,8 @@ function openBird(idx) {
     '<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>'+
     '<div class="drow" style="display:block"><div class="dlabel">Behaviour</div><div class="dval" style="margin-top:4px">'+sp.behaviour+'</div></div>'+
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
-      '<div class="modal-section-label">Rate Your Sighting</div>'+
-      '<div class="star-row" id="starRow">'+ [1,2,3,4,5].map(function(n){return '<span class="modal-star" id="mstar'+n+'" onclick="selectStar('+n+')" style="font-size:28px;opacity:.35;cursor:pointer">&#9733;</span>';}).join('') +'</div>'+
-      '<div style="padding:0 0 10px"><button id="gpsStatusBtn" onclick="openGPSCapture()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:left">&#x1F4CD; Tap to capture your GPS location</button></div>'+
-      '<button id="logSightingBtn" onclick="confirmLogSighting()" style="display:none;width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
+      '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
+      '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
     '</div>';
   var existingOv = document.getElementById('imgFullscreenOverlay');
   if(existingOv) existingOv.remove();
@@ -3657,7 +3795,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.7';
+var APP_VERSION = '3.8';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -3742,11 +3880,14 @@ function initPullToRefresh() {
 // RECENTLY VIEWED SPECIES
 // ============================================
 var _recentlyViewed = [];
+try { _recentlyViewed = JSON.parse(localStorage.getItem('kfg_recently_viewed')||'[]'); } catch(e) {}
+
 function trackRecentlyViewed(type, idx) {
   var key = type + ':' + idx;
   _recentlyViewed = _recentlyViewed.filter(function(k){ return k !== key; });
   _recentlyViewed.unshift(key);
   if(_recentlyViewed.length > 5) _recentlyViewed = _recentlyViewed.slice(0, 5);
+  try { localStorage.setItem('kfg_recently_viewed', JSON.stringify(_recentlyViewed)); } catch(e) {}
   renderRecentlyViewed();
 }
 function renderRecentlyViewed() {
@@ -4062,12 +4203,88 @@ function generateTripSchedule() {
 function saveTripPlan() {
   var fromEl = document.getElementById('tripDateFrom');
   var toEl = document.getElementById('tripDateTo');
+  var entryEl = document.getElementById('itinEntry');
+  var exitEl = document.getElementById('itinExit');
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
   var hasCamps = Object.keys(saved).some(function(k){ return saved[k]; });
-  if(!hasCamps) { showToast('Select at least one camp first', 2000); return; }
+  if(!fromEl || !fromEl.value){ showToast('Please set arrival and departure dates first', 2000); return; }
   saveTripDates();
-  showToast('Trip plan saved! \u2705', 2000);
+  var tripData = {
+    id: 'trip_' + Date.now(),
+    savedAt: new Date().toISOString(),
+    from: fromEl ? fromEl.value : '',
+    to: toEl ? toEl.value : '',
+    entry: entryEl ? entryEl.value : '',
+    exit: exitEl ? exitEl.value : '',
+    schedule: saved
+  };
+  // Save to localStorage
+  try {
+    var trips = JSON.parse(localStorage.getItem('kfg_saved_trips')||'[]');
+    trips.unshift(tripData);
+    if(trips.length > 5) trips = trips.slice(0,5);
+    localStorage.setItem('kfg_saved_trips', JSON.stringify(trips));
+  } catch(e) {}
+  // Save to Firebase under device ID
+  var deviceId = localStorage.getItem('kfg_device_id') || ('dev_' + Math.random().toString(36).substr(2,9));
+  localStorage.setItem('kfg_device_id', deviceId);
+  fetch(FIREBASE_URL + '/trips/' + deviceId + '.json', {
+    method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(tripData)
+  }).catch(function(){});
+  showToast('Trip plan saved \u2705', 2000);
+  renderSavedTrips();
+}
+
+function renderSavedTrips() {
+  var wrap = document.getElementById('savedTripsWrap');
+  if(!wrap) return;
+  var trips = [];
+  try { trips = JSON.parse(localStorage.getItem('kfg_saved_trips')||'[]'); } catch(e) {}
+  if(!trips.length) { wrap.style.display='none'; return; }
+  wrap.style.display = 'block';
+  wrap.innerHTML = '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">Saved Trips</div>' +
+    trips.map(function(t, i) {
+      var label = (t.from||'?') + ' → ' + (t.to||'?');
+      var gates = (t.entry||'') + (t.exit ? ' / '+t.exit : '');
+      return '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">' +
+        '<div style="flex:1;min-width:0" onclick="loadSavedTrip('+i+')" style="cursor:pointer">' +
+          '<div style="font-size:12px;font-weight:600;color:var(--text)">'+label+'</div>' +
+          (gates?'<div style="font-size:10px;color:var(--text3);margin-top:2px">'+gates+'</div>':'')+
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0;margin-left:10px">' +
+          '<button onclick="loadSavedTrip('+i+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:7px;padding:5px 10px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Load</button>' +
+          '<button onclick="deleteSavedTrip('+i+')" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text3);border-radius:7px;padding:5px 8px;font-family:Montserrat,sans-serif;font-size:10px;cursor:pointer">✕</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+}
+
+function loadSavedTrip(idx) {
+  var trips = [];
+  try { trips = JSON.parse(localStorage.getItem('kfg_saved_trips')||'[]'); } catch(e) {}
+  var t = trips[idx]; if(!t) return;
+  var fromEl = document.getElementById('tripDateFrom');
+  var toEl = document.getElementById('tripDateTo');
+  var entryEl = document.getElementById('itinEntry');
+  var exitEl = document.getElementById('itinExit');
+  if(fromEl) fromEl.value = t.from || '';
+  if(toEl) toEl.value = t.to || '';
+  if(entryEl) entryEl.value = t.entry || '';
+  if(exitEl) exitEl.value = t.exit || '';
+  if(t.schedule) localStorage.setItem('kfg_trip_schedule', JSON.stringify(t.schedule));
+  saveTripDates();
+  if(t.from && t.to) generateTripSchedule();
+  showToast('Trip loaded \u2705', 1500);
+}
+
+function deleteSavedTrip(idx) {
+  var trips = [];
+  try { trips = JSON.parse(localStorage.getItem('kfg_saved_trips')||'[]'); } catch(e) {}
+  trips.splice(idx, 1);
+  localStorage.setItem('kfg_saved_trips', JSON.stringify(trips));
+  renderSavedTrips();
+  showToast('Trip deleted', 1500);
 }
 
 function clearTripPlan() {
@@ -4196,6 +4413,8 @@ function initApp() {
   safe(renderSightings);
   safe(loadItinState);
   safe(loadTripDates);
+  safe(renderSavedTrips);
+  safe(renderRecentlyViewed);
   safe(loadChecklistState);
   safe(renderChecklist);
   safe(renderPhotoIntel);
