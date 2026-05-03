@@ -47,19 +47,19 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
 
 /* CONTENT */
-#content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 #content::-webkit-scrollbar{width:2px}
 #content::-webkit-scrollbar-thumb{background:var(--border2)}
 
 /* BOTTOM NAV */
-#nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+#nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
 .nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 2px 8px;cursor:pointer;-webkit-user-select:none;user-select:none;color:var(--text3);border:none;background:none;transition:color .15s;min-height:48px;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation}
 .nav-item.active{color:var(--accent)}
 .nav-item svg{width:20px;height:20px;margin-bottom:2px;flex-shrink:0}
 .nav-label{font-size:7.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;white-space:nowrap}
 
 /* SCREENS */
-.screen{display:none;min-height:100%;padding-bottom:20px}
+.screen{display:none;padding-bottom:20px}
 .screen.active{display:block}
 
 /* SECTION HEADER */
@@ -409,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.3</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.4</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -683,14 +683,14 @@ svg.animal-art{width:100%;height:100%}
 
       <!-- ITINERARY TAB -->
       <div class="trip-tab-content active" id="tab-itinerary">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding:16px 16px 12px">
           <div>
-            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Arrival Date</div>
-            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
+            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
+            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box">
           </div>
           <div>
-            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Departure Date</div>
-            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px">
+            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Departure Date</div>
+            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box">
           </div>
         </div>
         <div style="padding:0 16px 8px">
@@ -750,7 +750,10 @@ svg.animal-art{width:100%;height:100%}
 
     <!-- === ABOUT === -->
     <div class="screen" id="screen-about">
-      <div class="sec-head"><h2>About</h2><p>Krantz Outdoors Field Intelligence</p></div>
+      <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between">
+        <div><h2>About</h2><p>Krantz Outdoors Field Intelligence</p></div>
+        <button onclick="showScreen('home')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:20px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;cursor:pointer">&#8592; Back</button>
+      </div>
       
       <div class="about-links">
         <a class="about-link-card" href="https://www.krantzoutdoors.com" target="_blank">
@@ -778,7 +781,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.3<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.4<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -1874,25 +1877,12 @@ function confirmLogSighting() {
   };
   sightings.push(entry);
   saveSightings(sightings);
-  var starFull = String.fromCharCode(9733);
-  var starEmpty = String.fromCharCode(9734);
-  var rating = starFull.repeat(stars) + starEmpty.repeat(5-stars);
-  var feedEntry = {
-    type:'sighting', tag:'sighting', icon:'&#x1F98F;',
-    title: sp.name + ' sighted' + (road ? ' \u2013 ' + road : '') + ' ' + rating,
-    desc: sp.name + (sp.latin ? ' (' + sp.latin + ')' : '') + (road ? ' on ' + road : ' in Kruger National Park') + '.',
-    source: 'My Sightings',
-    time: new Date().toISOString(),
-    _local: true
-  };
-  var currentFeed = (window._feedAllItems || []).slice();
-  currentFeed.unshift(feedEntry);
-  window._feedAllItems = currentFeed;
-  renderFeed(window._feedAllItems);
+  // Update species/sightings lists immediately
   renderSpecies();
   if(typeof renderBirds === 'function') renderBirds();
   renderSightings();
   updateTripStats();
+  // Add map marker if GPS available
   if(_map && lat && lng && typeof L !== 'undefined') {
     var sightIcon = _makeIcon('&#x1F98F;', '#c8962a');
     var m = L.marker([lat, lng], {icon: sightIcon})
@@ -1900,9 +1890,10 @@ function confirmLogSighting() {
       .addTo(_map);
     _mapLayers.sightings.push(m);
   }
-  pushSightingToFeed(entry);
   closeModal('speciesModal');
   showToast('Sighting logged!' + (road ? ' ' + road : ''), 2500);
+  // Push to Firebase — this is the ONLY place the feed gets updated
+  pushSightingToFeed(entry);
 }
 
 
@@ -1947,14 +1938,6 @@ async function pushSightingToFeed(entry) {
     for(var i=0;i<stars;i++) rating += String.fromCharCode(9733);
     for(var j=stars;j<5;j++) rating += String.fromCharCode(9734);
 
-    // Read current Firebase feed
-    var readResp = await fetch(FIREBASE_URL + '/feed.json');
-    var current = [];
-    if(readResp.ok) {
-      var existing = await readResp.json();
-      if(Array.isArray(existing)) current = existing;
-    }
-
     // Build the new entry
     var newEntry = {
       type: 'sighting',
@@ -1963,9 +1946,19 @@ async function pushSightingToFeed(entry) {
       title: entry.name + ' sighted \u2013 ' + rating,
       desc: entry.name + (entry.latin ? ' (' + entry.latin + ')' : '') + ' logged at ' + timeStr + ' on ' + dateStr + (entry.road ? ' near ' + entry.road : '') + '.',
       source: 'Kruger Field Guide',
-      time: new Date().toISOString(),
+      time: entry.time,
       timestamp: Date.now()
     };
+
+    // Read current Firebase feed
+    var readResp = await fetch(FIREBASE_URL + '/feed.json');
+    var current = [];
+    if(readResp.ok) {
+      var existing = await readResp.json();
+      if(Array.isArray(existing)) current = existing;
+    }
+
+    // Prepend and cap at 20 entries
     current.unshift(newEntry);
     if(current.length > 20) current = current.slice(0, 20);
 
@@ -1977,20 +1970,19 @@ async function pushSightingToFeed(entry) {
     });
 
     if(writeResp.ok) {
-      // Merge the new entry into the existing local feed directly
-      // DO NOT call loadFeed() — it will overwrite _feedAllItems with RSS data
-      var localFeed = (window._feedAllItems || []).filter(function(f) {
-        return !(f.source === 'My Sightings' && f.title && f.title.indexOf(entry.name) >= 0 && f.timestamp && Date.now() - f.timestamp < 5000);
+      // Merge into live feed: remove any stale placeholder for this entry, prepend Firebase version
+      var existing = (window._feedAllItems || []).filter(function(f) {
+        return !(f._local && f.title && f.title.indexOf(entry.name) >= 0);
       });
-      // Replace the local "My Sightings" placeholder with the proper Firebase entry
-      newEntry.timestamp = Date.now();
-      var merged = [newEntry].concat(localFeed.filter(function(f){ return f.source !== 'My Sightings' || f.title !== newEntry.title; }));
-      window._feedAllItems = merged;
-      renderFeed(merged);
-      showToast('Sighting live on feed!', 2000);
+      window._feedAllItems = [newEntry].concat(existing);
+      renderFeed(window._feedAllItems);
+      showToast('Sighting live on feed! &#x1F98F;', 2000);
+    } else {
+      showToast('Sighting saved locally', 1500);
     }
   } catch(e) {
     console.warn('Sighting feed push failed:', e);
+    showToast('Sighting saved locally', 1500);
   }
 }
 
@@ -3279,7 +3271,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.3 — May 2026';
+    lu.textContent = 'Content v3.4 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3677,7 +3669,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.3';
+var APP_VERSION = '3.4';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -4223,6 +4215,26 @@ function initApp() {
   safe(renderRecentlyViewed);
   safe(loadWeather);
   safe(loadFeed);
+  // Live feed poll — checks Firebase every 30s so other users' sightings appear automatically
+  var _feedPollTimer = setInterval(function() {
+    fetch(FIREBASE_URL + '/feed.json').then(function(r) {
+      if(!r.ok) return;
+      return r.json();
+    }).then(function(data) {
+      if(!Array.isArray(data) || !data.length) return;
+      // Check if there are new entries vs what we already have
+      var topTimestamp = data[0] && data[0].timestamp ? data[0].timestamp : 0;
+      var currentTop = window._feedAllItems && window._feedAllItems[0] && window._feedAllItems[0].timestamp ? window._feedAllItems[0].timestamp : 0;
+      if(topTimestamp > currentTop) {
+        // New sightings from other users — merge into feed
+        var nonFirebase = (window._feedAllItems || []).filter(function(f) {
+          return f.source !== 'Kruger Field Guide';
+        });
+        window._feedAllItems = data.concat(nonFirebase);
+        renderFeed(window._feedAllItems);
+      }
+    }).catch(function(){});
+  }, 30000);
   safe(updateTripStats);
   safe(initPullToRefresh);
   checkForUpdate();
