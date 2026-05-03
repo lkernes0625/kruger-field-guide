@@ -409,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.6</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.7</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -683,36 +683,32 @@ svg.animal-art{width:100%;height:100%}
 
       <!-- ITINERARY TAB -->
       <div class="trip-tab-content active" id="tab-itinerary">
-        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding:16px 16px 12px;overflow:hidden">
-          <div style="min-width:0;overflow:hidden">
+        <div style="padding:16px 16px 12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+          <div style="min-width:0">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
-            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;max-width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 8px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box;-webkit-appearance:none;appearance:none;display:block">
+            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:500;box-sizing:border-box;-webkit-appearance:none;appearance:none;display:block">
           </div>
-          <div style="min-width:0;overflow:hidden">
+          <div style="min-width:0">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Departure Date</div>
-            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;max-width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 8px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box;-webkit-appearance:none;appearance:none;display:block">
+            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:500;box-sizing:border-box;-webkit-appearance:none;appearance:none;display:block">
           </div>
-        </div>
-        <div style="padding:0 16px 8px">
-          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
-            <div>
-              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Entry Gate</div>
-              <select class="itin-select" id="itinEntry" onchange="saveTripDates()">
-                <option value="">Select entry gate...</option>
-                <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
-                <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
-                <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
-              </select>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Exit Gate</div>
-              <select class="itin-select" id="itinExit" onchange="saveTripDates()">
-                <option value="">Select exit gate...</option>
-                <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
-                <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
-                <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
-              </select>
-            </div>
+          <div style="min-width:0">
+            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Entry Gate</div>
+            <select class="itin-select" id="itinEntry" onchange="saveTripDates()">
+              <option value="">Select entry gate...</option>
+              <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
+              <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
+              <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
+            </select>
+          </div>
+          <div style="min-width:0">
+            <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Exit Gate</div>
+            <select class="itin-select" id="itinExit" onchange="saveTripDates()">
+              <option value="">Select exit gate...</option>
+              <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
+              <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
+              <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
+            </select>
           </div>
         </div>
         <div id="tripSchedule" style="padding:0 16px 8px"></div>
@@ -781,7 +777,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.6<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.7<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -1417,6 +1413,7 @@ var PHOTO_HIDES = [
 ];
 
 var LICENSE_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/kruger-keys.json';
+var VERCEL_VALIDATE_URL = 'https://kruger-feed-function.vercel.app/api/validate';
 var DEMO_KEYS = ['KO-DEMO-2026-KRUGER','KO-TEST-XXXX-0001','KRANTZ-DEMO-2026','KO-FAM1-2026-TEST','KO-FAM2-2026-TEST','KO-FAM3-2026-TEST','KO-FAM4-2026-TEST','KO-FAM5-2026-TEST'];
 var itinStops = [];
 var FEED_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/feed.json';
@@ -1481,45 +1478,62 @@ async function validateLicense() {
   var key = inp.value.trim().toUpperCase();
   if(!key) { showLicenseError('Please enter your license key'); return; }
 
-  // Check demo keys first — instant, no network needed
+  // Demo keys — instant, no network needed
   if(DEMO_KEYS.indexOf(key) >= 0) {
     localStorage.setItem('kfg_v2_license', key);
     var gate = document.getElementById('licenseGate');
     if(gate) gate.classList.remove('show');
-    applyLogos();
-    initApp();
-    return;
+    applyLogos(); initApp(); return;
   }
 
-  // Must start with KO-
   if(!key.startsWith('KO-')) {
     showLicenseError('Invalid key — check your Etsy order email');
     return;
   }
 
-  // Check against remote keys file
-  try {
-    var btn = document.querySelector('.license-btn');
-    if(btn) { btn.textContent = 'Checking...'; btn.disabled = true; }
-    var resp = await fetch(LICENSE_URL + '?t=' + Date.now());
+  var btn = document.querySelector('.license-btn');
+  if(btn) { btn.textContent = 'Checking\u2026'; btn.disabled = true; }
+
+  var unlock = function() {
+    localStorage.setItem('kfg_v2_license', key);
+    localStorage.setItem('kfg_license_expiry', Date.now() + (365*24*60*60*1000));
+    var gate = document.getElementById('licenseGate');
+    if(gate) gate.classList.remove('show');
+    applyLogos(); initApp();
+  };
+  var resetBtn = function() {
     if(btn) { btn.textContent = 'Unlock My Guide \u2192'; btn.disabled = false; }
+  };
+
+  // 1. Try Vercel endpoint first (server-side, secure)
+  try {
+    var resp = await fetch(VERCEL_VALIDATE_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({key: key})
+    });
     if(resp.ok) {
       var data = await resp.json();
-      var validKeys = Array.isArray(data) ? data : (data.keys || []);
-      if(validKeys.indexOf(key) >= 0) {
-        localStorage.setItem('kfg_v2_license', key);
-        localStorage.setItem('kfg_license_expiry', Date.now() + (365 * 24 * 60 * 60 * 1000));
-        var gate = document.getElementById('licenseGate');
-        if(gate) gate.classList.remove('show');
-        applyLogos();
-        initApp();
-        return;
-      }
+      if(data.valid) { resetBtn(); unlock(); return; }
+      resetBtn();
+      showLicenseError('Invalid key — check your Etsy order email');
+      return;
     }
   } catch(e) {
-    var btn = document.querySelector('.license-btn');
-    if(btn) { btn.textContent = 'Unlock My Guide \u2192'; btn.disabled = false; }
+    // Vercel unreachable — fall through to GitHub raw fallback
   }
+
+  // 2. Fallback: read raw keys file from GitHub (works offline from cache)
+  try {
+    var resp2 = await fetch(LICENSE_URL + '?t=' + Date.now());
+    if(resp2.ok) {
+      var data2 = await resp2.json();
+      var validKeys = Array.isArray(data2) ? data2 : (data2.keys || []);
+      if(validKeys.indexOf(key) >= 0) { resetBtn(); unlock(); return; }
+    }
+  } catch(e) {}
+
+  resetBtn();
   showLicenseError('Invalid key — check your Etsy order email');
 }
 
@@ -3101,8 +3115,19 @@ function _mergeAndRender(feedData) {
 }
 
 async function loadFeed() {
+  // Migrate: remove old kfg_feed key (it stored Firebase data as RSS, causing sightings to vanish)
+  localStorage.removeItem('kfg_feed');
+
   // Firebase sightings are stored in a SEPARATE variable so RSS cascades can NEVER overwrite them
-  window._firebaseSightings = window._firebaseSightings || [];
+  // Load from localStorage FIRST so they are present before the very first renderFeed call
+  window._firebaseSightings = [];
+  try {
+    var cachedFb = localStorage.getItem('kfg_firebase_sightings');
+    if(cachedFb) {
+      var parsedFb = JSON.parse(cachedFb);
+      if(Array.isArray(parsedFb) && parsedFb.length) window._firebaseSightings = parsedFb;
+    }
+  } catch(e) {}
 
   // Helper: rebuild full feed = firebase sightings + road reports + rss/default items (deduped by title)
   function rebuildFeed(rssItems) {
@@ -3117,19 +3142,11 @@ async function loadFeed() {
     return window._firebaseSightings.concat(roads).concat(DEFAULT_FEED).concat(rssDeduped);
   }
 
-  // Show cached content immediately while fetching
+  // Show cached RSS + cached Firebase sightings immediately — zero flash
   var rssData = DEFAULT_FEED;
   try {
     var cached = localStorage.getItem('kfg_feed_rss');
     if(cached) rssData = JSON.parse(cached);
-  } catch(e) {}
-  // Also restore cached Firebase sightings instantly — no flash on refresh
-  try {
-    var cachedFb = localStorage.getItem('kfg_firebase_sightings');
-    if(cachedFb) {
-      var parsed = JSON.parse(cachedFb);
-      if(Array.isArray(parsed) && parsed.length) window._firebaseSightings = parsed;
-    }
   } catch(e) {}
   window._feedAllItems = rebuildFeed(rssData);
   renderFeed(window._feedAllItems);
@@ -3242,7 +3259,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.6 — May 2026';
+    lu.textContent = 'Content v3.7 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3640,7 +3657,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.6';
+var APP_VERSION = '3.7';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -4186,20 +4203,23 @@ function initApp() {
   safe(renderRecentlyViewed);
   safe(loadWeather);
   safe(loadFeed);
-  // Poll Firebase every 30s — picks up sightings from other users automatically
+  // Poll Firebase every 15s — picks up sightings from other users automatically
   setInterval(function() {
     fetch(FIREBASE_URL + '/feed.json').then(function(r){ return r.ok ? r.json() : null; }).then(function(data) {
       if(!Array.isArray(data) || !data.length) return;
-      var newTop = data[0] && data[0].timestamp ? data[0].timestamp : 0;
-      var curTop = window._feedAllItems && window._feedAllItems[0] && window._feedAllItems[0].timestamp ? window._feedAllItems[0].timestamp : 0;
-      if(newTop > curTop) {
-        // New entries exist — merge Firebase sightings on top, keep RSS/road items below
+      // Compare by stringifying first entry to detect any change
+      var newSig = JSON.stringify(data[0]);
+      var curSig = window._firebaseSightings && window._firebaseSightings[0] ? JSON.stringify(window._firebaseSightings[0]) : '';
+      if(newSig !== curSig) {
+        window._firebaseSightings = data;
+        localStorage.setItem('kfg_firebase_sightings', JSON.stringify(data));
+        // Rebuild keeping all current RSS items, just updating Firebase sightings at top
         var nonFirebase = (window._feedAllItems || []).filter(function(f){ return f.source !== 'Kruger Field Guide'; });
         window._feedAllItems = data.concat(nonFirebase);
         renderFeed(window._feedAllItems);
       }
     }).catch(function(){});
-  }, 30000);
+  }, 15000);
   safe(updateTripStats);
   safe(initPullToRefresh);
   checkForUpdate();
