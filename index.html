@@ -409,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.5</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.6</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -683,14 +683,14 @@ svg.animal-art{width:100%;height:100%}
 
       <!-- ITINERARY TAB -->
       <div class="trip-tab-content active" id="tab-itinerary">
-        <div style="padding:16px 16px 4px">
-          <div style="margin-bottom:12px">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding:16px 16px 12px;overflow:hidden">
+          <div style="min-width:0;overflow:hidden">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
-            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;display:block">
+            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;max-width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 8px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box;-webkit-appearance:none;appearance:none;display:block">
           </div>
-          <div style="margin-bottom:12px">
+          <div style="min-width:0;overflow:hidden">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Departure Date</div>
-            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;display:block">
+            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;max-width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 8px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box;-webkit-appearance:none;appearance:none;display:block">
           </div>
         </div>
         <div style="padding:0 16px 8px">
@@ -781,7 +781,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.5<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.6<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -1968,6 +1968,7 @@ async function pushSightingToFeed(entry) {
     if(writeResp.ok) {
       // Update the protected firebase sightings store — this survives all RSS merges
       window._firebaseSightings = current;
+      localStorage.setItem('kfg_firebase_sightings', JSON.stringify(current));
       // Prepend to live feed — strip any old entry for same animal within last 10s to avoid duplicates
       var base = (window._feedAllItems || []).filter(function(f) {
         if(f.source === 'Kruger Field Guide' && f.title && f.title.indexOf(entry.name) >= 0) {
@@ -3122,6 +3123,14 @@ async function loadFeed() {
     var cached = localStorage.getItem('kfg_feed_rss');
     if(cached) rssData = JSON.parse(cached);
   } catch(e) {}
+  // Also restore cached Firebase sightings instantly — no flash on refresh
+  try {
+    var cachedFb = localStorage.getItem('kfg_firebase_sightings');
+    if(cachedFb) {
+      var parsed = JSON.parse(cachedFb);
+      if(Array.isArray(parsed) && parsed.length) window._firebaseSightings = parsed;
+    }
+  } catch(e) {}
   window._feedAllItems = rebuildFeed(rssData);
   renderFeed(window._feedAllItems);
 
@@ -3132,6 +3141,7 @@ async function loadFeed() {
       var fbData = await r.json();
       if(Array.isArray(fbData) && fbData.length) {
         window._firebaseSightings = fbData;
+        localStorage.setItem('kfg_firebase_sightings', JSON.stringify(fbData));
         window._feedAllItems = rebuildFeed(rssData);
         renderFeed(window._feedAllItems);
       }
@@ -3232,7 +3242,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.5 — May 2026';
+    lu.textContent = 'Content v3.6 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3630,7 +3640,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.5';
+var APP_VERSION = '3.6';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
