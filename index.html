@@ -122,8 +122,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);align-items:flex-end}
 .modal-overlay.open{display:flex}
 .modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;width:100%;max-height:85dvh;overflow-y:auto;padding-bottom:max(env(safe-area-inset-bottom,20px),60px);animation:slideUp .22s ease;touch-action:pan-y}
-.modal-drag-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 4px;cursor:pointer}
+.modal-drag-handle{width:40px;height:5px;background:var(--border2);border-radius:3px;margin:12px auto 6px;cursor:pointer}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:none}}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0}
 .modal-header{padding:14px 18px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
 .modal-title{font-family:'Montserrat',sans-serif;font-size:17px;color:var(--text);font-weight:700}
@@ -410,7 +411,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.8</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.9</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -589,12 +590,8 @@ svg.animal-art{width:100%;height:100%}
     <!-- === WILDLIFE === -->
     <div class="screen" id="screen-wildlife">
       <div class="sec-head"><h2>Wildlife Guide</h2><p>Tap species to log sighting &middot; Protected species private</p></div>
-      <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 0">
-        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Recently Viewed</div>
-        <div id="recentlyViewedList" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px"></div>
-      </div>
 
-      <div style="padding:0 16px 10px">
+      <div style="padding:10px 16px 10px">
         <div style="position:relative">
           <input type="text" placeholder="Search all species, birds, reptiles, frogs..."
             id="wildlifeSearch" oninput="searchSpecies(this.value)"
@@ -612,11 +609,16 @@ svg.animal-art{width:100%;height:100%}
         <button class="wildlife-tab" onclick="switchWildlifeTab('sightings',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:10px 0;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">SIGHTINGS</button>
       </div>
 
-      <div id="wildlifeFilters" style="display:flex;gap:6px;padding:10px 16px 12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+      <div id="wildlifeFilters" style="display:flex;gap:6px;padding:10px 16px 4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
         <button class="filter-btn active" onclick="setWildlifeFilter('all',this)">All</button>
         <button class="filter-btn" onclick="setWildlifeFilter('big5',this)">Big 5</button>
         <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)">Endangered</button>
         <button class="filter-btn" onclick="setWildlifeFilter('rare',this)">Rare</button>
+      </div>
+
+      <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
+        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Recently Viewed</div>
+        <div id="recentlyViewedList" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px"></div>
       </div>
 
       <div id="wildlifePanel-species">
@@ -780,7 +782,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.8<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.9<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -902,10 +904,8 @@ svg.animal-art{width:100%;height:100%}
 <div class="modal-overlay" id="speciesModal">
   <div class="modal-sheet">
     <div class="modal-drag-handle" onclick="closeModal('speciesModal')"></div>
-    <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">Species</div>
-      <div class="modal-close" onclick="closeModal('speciesModal')">&times;</div>
     </div>
     <div class="modal-body" id="modalBody"></div>
   </div>
@@ -1433,9 +1433,9 @@ var FEED_SOURCES = [
 var FIREBASE_URL = 'https://kruger-feed-default-rtdb.europe-west1.firebasedatabase.app';
 var WEBHOOK_URL = 'https://hook.eu1.make.com/72i6x44nqnonn39hfdardx15w6u87qy3';
 var DEFAULT_FEED = [
-  { type:'road', tag:'road', icon:'&#x1F6A7;', title:'Road Advisory', desc:'S65 gravel section may be restricted after heavy rain. Call Orpen Camp 013 735 6355 before travelling.', source:'KFG Advisory', time:new Date().toISOString() },
-  { type:'sighting', tag:'sighting', icon:'&#x1F418;', title:'Elephant Herd \u2013 H3', desc:'Large elephant breeding herd active on H3 between Skukuza and Lower Sabie. Approach cautiously.', source:'KFG Intelligence', time:new Date().toISOString() },
-  { type:'news', tag:'news', icon:'&#x1F3DE;', title:'Park Notice', desc:'Day visitor bookings now mandatory for all SANParks rest camps. Book via sanparks.org before arrival.', source:'SANParks', time:new Date().toISOString() },
+  { type:'road', tag:'road', icon:'&#x1F6A7;', title:'Road Advisory', desc:'S65 gravel section may be restricted after heavy rain. Call Orpen Camp 013 735 6355 before travelling.', source:'KFG Advisory', time:new Date().toISOString(), timestamp:Date.now()-7200000 },
+  { type:'sighting', tag:'sighting', icon:'&#x1F418;', title:'Elephant Herd \u2013 H3', desc:'Large elephant breeding herd active on H3 between Skukuza and Lower Sabie. Approach cautiously.', source:'KFG Intelligence', time:new Date().toISOString(), timestamp:Date.now()-14400000 },
+  { type:'news', tag:'news', icon:'&#x1F3DE;', title:'Park Notice', desc:'Day visitor bookings now mandatory for all SANParks rest camps. Book via sanparks.org before arrival.', source:'SANParks', time:new Date().toISOString(), timestamp:Date.now()-21600000 },
 ];
 
 
@@ -1846,23 +1846,65 @@ function openGPSCapture() {
 }
 
 function openSightingPanel() {
-  var panel = document.getElementById('sightingPanel');
-  if(panel) {
-    panel.style.display = 'block';
-    setTimeout(function(){ panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 50);
-  }
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : SPECIES[window._spIdx];
+  if(!sp) return;
+  // Auto-capture GPS first, then show confirm popup
   window._sightingLat = null;
   window._sightingLng = null;
   window._sightingRoad = null;
-  var gpsBtn = document.getElementById('gpsStatusBtn');
-  if(gpsBtn) gpsBtn.textContent = '📍 Getting your GPS location...';
   captureGPSForSighting(function(lat, lng, road) {
     window._sightingLat = lat;
     window._sightingLng = lng;
     window._sightingRoad = road;
-    var btn = document.getElementById('gpsStatusBtn');
-    if(btn) btn.textContent = '📍 GPS captured' + (road ? ' \u2013 ' + road : ' \u2013 location saved');
+    showSightingConfirmPopup(sp, road);
   });
+  // Show popup immediately with GPS loading state, don't wait
+  showSightingConfirmPopup(sp, null);
+}
+
+function showSightingConfirmPopup(sp, road) {
+  // Remove any existing popup
+  var existing = document.getElementById('sightingConfirmPopup');
+  if(existing) existing.remove();
+  var gpsText = road ? '&#x1F4CD; Near ' + road : (window._sightingLat ? '&#x1F4CD; GPS captured' : '&#x1F4CD; Getting location...');
+  var popup = document.createElement('div');
+  popup.id = 'sightingConfirmPopup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:24px';
+  popup.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:320px;text-align:center">' +
+      '<div style="font-size:32px;margin-bottom:8px">&#x1F98F;</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">' + sp.name + '</div>' +
+      '<div id="sightingPopupGPS" style="font-size:12px;color:var(--text3);margin-bottom:20px">' + gpsText + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+        '<button onclick="cancelSightingPopup()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Cancel</button>' +
+        '<button onclick="confirmSightingPopup()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Log Sighting</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(popup);
+  // Update GPS text when location arrives
+  var gpsCheckInterval = setInterval(function() {
+    var gpsEl = document.getElementById('sightingPopupGPS');
+    if(!gpsEl) { clearInterval(gpsCheckInterval); return; }
+    if(window._sightingRoad) {
+      gpsEl.textContent = '📍 Near ' + window._sightingRoad;
+      clearInterval(gpsCheckInterval);
+    } else if(window._sightingLat) {
+      gpsEl.textContent = '📍 GPS captured';
+      clearInterval(gpsCheckInterval);
+    }
+  }, 500);
+  setTimeout(function(){ clearInterval(gpsCheckInterval); }, 15000);
+}
+
+function cancelSightingPopup() {
+  var p = document.getElementById('sightingConfirmPopup');
+  if(p) p.remove();
+}
+
+function confirmSightingPopup() {
+  var p = document.getElementById('sightingConfirmPopup');
+  if(p) p.remove();
+  confirmLogSighting();
 }
 
 var selectedStars = 0;
@@ -1879,8 +1921,38 @@ function selectStar(n) {
 
 function triggerSightingNotification(spName) {
   if('Notification' in window && Notification.permission==='granted' && localStorage.getItem('kfg_feed_notify')==='1') {
-    try { new Notification('Kruger Sighting: '+spName, { body:'New sighting logged in Kruger National Park' }); } catch(e) {}
+    try { new Notification('Kruger Sighting: '+spName, { body:'New sighting logged in Kruger National Park', icon:'' }); } catch(e) {}
   }
+}
+
+function showFeedNotificationBanner(item) {
+  if(localStorage.getItem('kfg_feed_notify') !== '1') return;
+  var existing = document.getElementById('feedNotifBanner');
+  if(existing) existing.remove();
+  var icon = item.type === 'road' ? '🚧' : '🦁';
+  var banner = document.createElement('div');
+  banner.id = 'feedNotifBanner';
+  banner.style.cssText = 'position:fixed;top:env(safe-area-inset-top,0);left:0;right:0;z-index:9999;padding:12px 16px;background:var(--bg2);border-bottom:2px solid var(--accent);display:flex;align-items:center;gap:10px;animation:slideDown .3s ease;cursor:pointer';
+  banner.innerHTML =
+    '<span style="font-size:20px">'+icon+'</span>' +
+    '<div style="flex:1;min-width:0">' +
+      '<div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(item.title||'New Update')+'</div>' +
+      '<div style="font-size:10px;color:var(--text3)">'+(item.source||'')+'</div>' +
+    '</div>' +
+    '<button onclick="document.getElementById(\'feedNotifBanner\').remove()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0;line-height:1">&#x2715;</button>';
+  banner.onclick = function(e) {
+    if(e.target.tagName !== 'BUTTON') {
+      showScreen('home');
+      setFeedTab(item.type === 'road' ? 'roads' : 'sightings', null);
+      banner.remove();
+    }
+  };
+  document.body.appendChild(banner);
+  // Also fire true push notification if permission granted
+  if('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification(item.title||'Kruger Update', { body: item.desc||'', icon:'' }); } catch(e) {}
+  }
+  setTimeout(function(){ var b=document.getElementById('feedNotifBanner'); if(b) b.remove(); }, 6000);
 }
 
 function confirmLogSighting() {
@@ -1951,17 +2023,13 @@ function logSightingDirect(spId, isProtected, stars) {
 
 async function pushSightingToFeed(entry) {
   try {
-    var stars = entry.stars || 3;
     var t = new Date(entry.time);
     var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
-    var rating = '';
-    for(var i=0;i<stars;i++) rating += String.fromCharCode(9733);
-    for(var j=stars;j<5;j++) rating += String.fromCharCode(9734);
 
     var newEntry = {
       type:'sighting', tag:'sighting', icon:'&#x1F98F;',
-      title: entry.name + ' sighted \u2013 ' + rating,
+      title: entry.name + ' sighted',
       desc: entry.name + (entry.latin ? ' (' + entry.latin + ')' : '') + ' logged at ' + timeStr + ' on ' + dateStr + (entry.road ? ' near ' + entry.road : '') + '.',
       source:'Kruger Field Guide',
       time: entry.time,
@@ -3100,9 +3168,22 @@ function toggleFeedNotify() {
   localStorage.setItem('kfg_feed_notify', on ? '1' : '0');
   updateFeedToggleUI(on);
   if(on) {
-    showToast('Notifications ON for Sightings & Roads', 2000);
-    if('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().then(function(perm){ if(perm==='granted') showToast('You will be notified of new sightings & road updates', 3000); });
+    if('Notification' in window) {
+      if(Notification.permission === 'default') {
+        Notification.requestPermission().then(function(perm) {
+          if(perm === 'granted') {
+            showToast('Notifications ON \u2014 you\'ll see banners for new sightings & road reports', 3000);
+          } else {
+            showToast('Notification banners ON \u2014 enable system notifications in Settings for full alerts', 3500);
+          }
+        });
+      } else if(Notification.permission === 'granted') {
+        showToast('Notifications ON \u2014 banners will appear for new sightings & roads', 2500);
+      } else {
+        showToast('Notification banners ON \u2014 enable in Settings \u203a Safari \u203a Notifications for alerts when app is closed', 4000);
+      }
+    } else {
+      showToast('Notification banners ON', 2000);
     }
   } else {
     showToast('Notifications OFF', 2000);
@@ -3206,12 +3287,17 @@ async function loadFeed() {
       return firebaseTitles.indexOf(f.title) < 0 && roadTitles.indexOf(f.title + f.time) < 0;
     });
     var combined = (window._firebaseSightings || []).concat(window._roadReports || []).concat(DEFAULT_FEED).concat(rssDeduped);
-    // Sort all items by date — newest first
-    combined.sort(function(a, b) {
-      var ta = a.timestamp || (a.time ? new Date(a.time).getTime() : 0);
-      var tb = b.timestamp || (b.time ? new Date(b.time).getTime() : 0);
-      return tb - ta;
-    });
+    // Normalise and sort all items newest first
+    function toMs(f) {
+      if(f.timestamp) return f.timestamp;
+      if(!f.time) return 0;
+      try {
+        var d = new Date(f.time);
+        if(!isNaN(d.getTime())) return d.getTime();
+      } catch(e) {}
+      return 0;
+    }
+    combined.sort(function(a, b) { return toMs(b) - toMs(a); });
     return combined;
   }
 
@@ -3262,6 +3348,11 @@ async function loadFeed() {
       var d2 = await r2.json();
       if(Array.isArray(d2) && d2.length) {
         rssData = d2; rssLoaded = true;
+        // Add timestamps to RSS items for reliable sorting
+        rssData = rssData.map(function(f) {
+          if(!f.timestamp && f.time) { try { f.timestamp = new Date(f.time).getTime(); } catch(e){} }
+          return f;
+        });
         localStorage.setItem('kfg_feed_rss', JSON.stringify(rssData));
         window._feedAllItems = rebuildFeed(rssData); renderFeed(window._feedAllItems);
       }
@@ -3346,7 +3437,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.8 — May 2026';
+    lu.textContent = 'Content v3.9 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3404,7 +3495,12 @@ function renderFeed(feedData) {
 // ============================================
 // FIELD FINDER
 // ============================================
+var _lastFinderType = null;
+function retryFinder() {
+  if(_lastFinderType) findNearest(_lastFinderType, null);
+}
 function findNearest(type, btn) {
+  _lastFinderType = type;
   // Map finder button types to FACILITIES keys
   var typeMap = { 'restaurant':'food', 'shop':'shops', 'dam':'dams', 'landmark':'landmarks', 'toilet':'toilet', 'fuel':'fuel', 'wifi':'wifi', 'medical':'medical', 'lookout':'lookout', 'picnic':'picnic', 'camp':'gate', 'gate':'gate' };
   var facilityType = typeMap[type] || type;
@@ -3631,7 +3727,10 @@ function openRoadReport() {
     '<option>Road Closed</option><option>Road Open Again</option><option>Flooded Road</option><option>Camp Closed</option><option>Gate Closed Early</option><option>Other</option></select></div>'+
     '<div id="reportGPSStatus" style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:var(--text2)">&#x1F4CD; Getting your location...</div>'+
     '<div style="margin-bottom:10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Location / Road <span style="color:var(--text3);font-weight:400">(or describe manually)</span></div>'+
-    '<input id="reportLocation" type="text" placeholder="e.g. H1-2, Skukuza Gate..." style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none"></div>'+
+    '<div style="position:relative">'+
+    '<input id="reportLocation" type="text" placeholder="e.g. H1-2, Skukuza Gate..." oninput="document.getElementById(\'reportLocClear\').style.display=this.value?\'flex\':\'none\'" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 36px 10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">'+
+    '<button id="reportLocClear" onclick="document.getElementById(\'reportLocation\').value=\'\';this.style.display=\'none\'" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:20px;height:20px;border-radius:50%;font-size:12px;cursor:pointer;align-items:center;justify-content:center;padding:0">&#x2715;</button>'+
+    '</div></div>'+
     '<div style="margin-bottom:14px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Details (optional)</div>'+
     '<textarea id="reportDetails" placeholder="Additional details..." rows="3" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;resize:none"></textarea></div>'+
     '<button onclick="submitRoadReport()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Submit Report</button>';
@@ -3714,9 +3813,12 @@ function renderBirds() {
   var grid=document.getElementById('birdsGrid');
   if(!grid||typeof BIRDS==='undefined') return;
   var sightings=loadSightings();
-  grid.innerHTML = BIRDS.map(function(sp,i) {
+  var search=(document.getElementById('wildlifeSearch')?document.getElementById('wildlifeSearch').value.toLowerCase().trim():'');
+  var filtered=BIRDS.filter(function(sp){ return !search||sp.name.toLowerCase().indexOf(search)>=0||(sp.latin||'').toLowerCase().indexOf(search)>=0; });
+  grid.innerHTML = filtered.map(function(sp,i) {
+    var actualIdx = BIRDS.indexOf(sp);
     var ticked=sightings.some(function(s){return s.id===sp.id;});
-    return '<div class="sp-card" onclick="openBird('+i+')">' +
+    return '<div class="sp-card" onclick="openBird('+actualIdx+')">' +
       '<div class="sp-img-wrap">' +
         (ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" class="sp-img">':'<div style="width:100%;height:100%;background:#0e1418"></div>') +
         (ticked?'<div class="sp-tick">&#10003;</div>':'') +
@@ -3724,7 +3826,7 @@ function renderBirds() {
       '<div class="sp-name">'+sp.name+'</div>' +
       '<div class="sp-latin">'+sp.latin+'</div>' +
     '</div>';
-  }).join('');
+  }).join('')||'<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No results.</div>';
 }
 function openBird(idx) {
   var sp=BIRDS[idx]; if(!sp) return;
@@ -3795,7 +3897,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.8';
+var APP_VERSION = '3.9';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -4432,10 +4534,13 @@ function initApp() {
       if(newSig !== curSig) {
         window._firebaseSightings = data;
         localStorage.setItem('kfg_firebase_sightings', JSON.stringify(data));
-        // Rebuild keeping all current RSS items, just updating Firebase sightings at top
         var nonFirebase = (window._feedAllItems || []).filter(function(f){ return f.source !== 'Kruger Field Guide'; });
         window._feedAllItems = data.concat(nonFirebase);
         renderFeed(window._feedAllItems);
+        // Show banner for newest sighting/road item
+        if(data[0] && (data[0].type === 'sighting' || data[0].type === 'road')) {
+          showFeedNotificationBanner(data[0]);
+        }
       }
     }).catch(function(){});
   }, 15000);
