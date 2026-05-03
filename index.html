@@ -3459,8 +3459,13 @@ async function loadFeed() {
     var cached = localStorage.getItem('kfg_feed_rss');
     if(cached) rssData = JSON.parse(cached);
   } catch(e) {}
-  window._feedAllItems = rebuildFeed(rssData);
-  renderFeed(window._feedAllItems);
+
+  // Only rebuild from RSS if we have no full cache — otherwise full cache already showing
+  var hasCachedFeed = window._feedAllItems && window._feedAllItems.length > 0;
+  if(!hasCachedFeed) {
+    window._feedAllItems = rebuildFeed(rssData);
+    renderFeed(window._feedAllItems);
+  }
 
   // 1. Load Firebase sightings FIRST — these are user-generated and must persist
   try {
