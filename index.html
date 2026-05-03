@@ -421,7 +421,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.13</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.14</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -810,7 +810,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.13<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.14<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -3312,15 +3312,15 @@ function toggleFeedNotify() {
       if(Notification.permission === 'default') {
         Notification.requestPermission().then(function(perm) {
           if(perm === 'granted') {
-            showToast('Notifications ON \u2014 you\'ll see banners for new sightings & road reports', 3000);
+            showToast('Notifications ON ✓', 2000);
           } else {
-            showToast('Notification banners ON \u2014 enable system notifications in Settings for full alerts', 3500);
+            showToast('Banners ON — enable in Settings for full alerts', 3000);
           }
         });
       } else if(Notification.permission === 'granted') {
-        showToast('Notifications ON \u2014 banners will appear for new sightings & roads', 2500);
+        showToast('Notifications ON ✓', 2000);
       } else {
-        showToast('Notification banners ON \u2014 enable in Settings \u203a Safari \u203a Notifications for alerts when app is closed', 4000);
+        showToast('Banners ON — enable notifications in Safari Settings', 3000);
       }
     } else {
       showToast('Notification banners ON', 2000);
@@ -3444,16 +3444,20 @@ async function loadFeed() {
     return combined;
   }
 
-  // Load cached RSS for immediate display
-  var rssData = DEFAULT_FEED;
-  try {
-    var cachedRss = localStorage.getItem('kfg_feed_rss');
-    if(cachedRss) rssData = JSON.parse(cachedRss);
-  } catch(e) {}
+  // Render immediately from cached Firebase + road reports only
+  // Do NOT render stale RSS cache — it causes the "old feed" problem
+  // RSS will be added once freshly fetched below
+  if(window._firebaseSightings.length > 0 || window._roadReports.length > 0) {
+    window._feedAllItems = rebuildFeed([]);
+    renderFeed(window._feedAllItems);
+  } else {
+    // Nothing cached yet — show default feed as placeholder
+    window._feedAllItems = rebuildFeed(DEFAULT_FEED);
+    renderFeed(window._feedAllItems);
+  }
 
-  // Render immediately from cache — shows sightings + road reports + cached RSS instantly
-  window._feedAllItems = rebuildFeed(rssData);
-  renderFeed(window._feedAllItems);
+  // rssData accumulates as RSS sources load — starts empty, filled below
+  var rssData = [];
 
   // 1. Load Firebase sightings FIRST — these are user-generated and must persist
   try {
@@ -3582,7 +3586,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.13 — May 2026';
+    lu.textContent = 'Content v3.14 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -4039,15 +4043,15 @@ function showToast(msg, duration) {
   if(existing) existing.remove();
   var toast = document.createElement('div');
   toast.id = 'kfg-toast';
-  toast.textContent = msg;
-  toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(30,36,42,.96);color:#fff;padding:10px 20px;border-radius:22px;font-size:12px;font-family:Montserrat,sans-serif;font-weight:600;z-index:9999;white-space:nowrap;border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 20px rgba(0,0,0,.4)';
+  toast.innerHTML = msg;
+  toast.style.cssText = 'position:fixed;bottom:90px;left:16px;right:16px;text-align:center;background:rgba(30,36,42,.96);color:#fff;padding:10px 20px;border-radius:22px;font-size:12px;font-family:Montserrat,sans-serif;font-weight:600;z-index:9999;white-space:normal;word-wrap:break-word;border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 20px rgba(0,0,0,.4)';
   document.body.appendChild(toast);
   setTimeout(function(){ if(toast.parentNode) toast.remove(); }, duration||2500);
 }
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.13';
+var APP_VERSION = '3.14';
 
 // Clear stale caches when version changes
 (function() {
