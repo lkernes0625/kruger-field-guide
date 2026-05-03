@@ -409,7 +409,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.4</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.5</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -683,20 +683,20 @@ svg.animal-art{width:100%;height:100%}
 
       <!-- ITINERARY TAB -->
       <div class="trip-tab-content active" id="tab-itinerary">
-        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding:16px 16px 12px">
-          <div>
+        <div style="padding:16px 16px 4px">
+          <div style="margin-bottom:12px">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
-            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box">
+            <input type="date" id="tripDateFrom" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;display:block">
           </div>
-          <div>
+          <div style="margin-bottom:12px">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Departure Date</div>
-            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box">
+            <input type="date" id="tripDateTo" onchange="generateTripSchedule()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;display:block">
           </div>
         </div>
         <div style="padding:0 16px 8px">
           <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
             <div>
-              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Entry Gate</div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Entry Gate</div>
               <select class="itin-select" id="itinEntry" onchange="saveTripDates()">
                 <option value="">Select entry gate...</option>
                 <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
@@ -705,7 +705,7 @@ svg.animal-art{width:100%;height:100%}
               </select>
             </div>
             <div>
-              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px">Exit Gate</div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Exit Gate</div>
               <select class="itin-select" id="itinExit" onchange="saveTripDates()">
                 <option value="">Select exit gate...</option>
                 <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Kruger Gate</option>
@@ -723,7 +723,7 @@ svg.animal-art{width:100%;height:100%}
         </div>
       </div><!-- /tab-itinerary -->
       <div class="trip-tab-content" id="tab-checklist">
-        <div style="padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center">
+        <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:11px;color:var(--text3);font-weight:500" id="checklistProgress">Loading...</div>
           <button onclick="resetChecklist()" style="background:none;border:none;color:var(--text3);font-size:11px;font-family:Montserrat,sans-serif;cursor:pointer;text-decoration:underline">Reset all</button>
         </div>
@@ -732,6 +732,7 @@ svg.animal-art{width:100%;height:100%}
 
       <!-- SIGHTINGS TAB -->
       <div class="trip-tab-content" id="tab-sightings">
+        <div style="padding-top:4px">
         <div class="trip-summary-banner">
           <div class="trip-summary-title">Trip Summary</div>
           <div class="trip-summary-stats">
@@ -743,6 +744,7 @@ svg.animal-art{width:100%;height:100%}
         </div>
         <div style="padding:4px 16px 8px"><div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Your Sightings</div></div>
         <div id="tripSightingsList" style="padding:0 16px 16px"><div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">No sightings logged yet.<br>Tap any species in Wildlife to log a sighting.</div></div>
+        </div>
       </div>
     </div>
 
@@ -779,7 +781,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.4<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.5<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -1964,6 +1966,8 @@ async function pushSightingToFeed(entry) {
     });
 
     if(writeResp.ok) {
+      // Update the protected firebase sightings store — this survives all RSS merges
+      window._firebaseSightings = current;
       // Prepend to live feed — strip any old entry for same animal within last 10s to avoid duplicates
       var base = (window._feedAllItems || []).filter(function(f) {
         if(f.source === 'Kruger Field Guide' && f.title && f.title.indexOf(entry.name) >= 0) {
@@ -3096,161 +3100,128 @@ function _mergeAndRender(feedData) {
 }
 
 async function loadFeed() {
-  var feedData = DEFAULT_FEED;
-  try {
-    var cached = localStorage.getItem('kfg_feed');
-    if(cached) feedData = JSON.parse(cached);
-  } catch(e) {}
-  _mergeAndRender(feedData);
-  var loaded = false;
+  // Firebase sightings are stored in a SEPARATE variable so RSS cascades can NEVER overwrite them
+  window._firebaseSightings = window._firebaseSightings || [];
 
-  // 1. Try Firebase (live user sightings)
+  // Helper: rebuild full feed = firebase sightings + road reports + rss/default items (deduped by title)
+  function rebuildFeed(rssItems) {
+    var roads = _loadSavedRoadReports();
+    var defaultTitles = DEFAULT_FEED.map(function(d){ return d.title; });
+    var filtered = _applyDateFilter(rssItems || []).filter(function(f){
+      return defaultTitles.indexOf(f.title) < 0;
+    });
+    // Firebase sightings always go first, then road reports, then DEFAULT_FEED, then RSS
+    var firebaseTitles = window._firebaseSightings.map(function(f){ return f.title; });
+    var rssDeduped = filtered.filter(function(f){ return firebaseTitles.indexOf(f.title) < 0; });
+    return window._firebaseSightings.concat(roads).concat(DEFAULT_FEED).concat(rssDeduped);
+  }
+
+  // Show cached content immediately while fetching
+  var rssData = DEFAULT_FEED;
+  try {
+    var cached = localStorage.getItem('kfg_feed_rss');
+    if(cached) rssData = JSON.parse(cached);
+  } catch(e) {}
+  window._feedAllItems = rebuildFeed(rssData);
+  renderFeed(window._feedAllItems);
+
+  // 1. Load Firebase sightings FIRST — these are user-generated and must persist
   try {
     var r = await fetch(FIREBASE_URL + '/feed.json');
     if(r.ok) {
-      var data = await r.json();
-      if(Array.isArray(data) && data.length) {
-        feedData = data;
-        localStorage.setItem('kfg_feed', JSON.stringify(feedData));
-        localStorage.setItem('kfg_feed_time', Date.now());
-        _mergeAndRender(feedData); loaded = true;
+      var fbData = await r.json();
+      if(Array.isArray(fbData) && fbData.length) {
+        window._firebaseSightings = fbData;
+        window._feedAllItems = rebuildFeed(rssData);
+        renderFeed(window._feedAllItems);
       }
     }
   } catch(e) {}
 
-  // 2. GitHub fallback
-  if(!loaded) {
-    try {
-      var r2 = await fetch(FEED_URL);
-      if(r2.ok) {
-        var data2 = await r2.json();
-        if(Array.isArray(data2) && data2.length) {
-          feedData = data2;
-          localStorage.setItem('kfg_feed', JSON.stringify(feedData));
-          localStorage.setItem('kfg_feed_time', Date.now());
-          _mergeAndRender(feedData); loaded = true;
-        }
-      }
-    } catch(e) {}
-  }
+  // 2. RSS sources — each one updates rssData and rebuilds WITHOUT touching _firebaseSightings
+  var rssLoaded = false;
 
-  // 3. krugerpark.co.za via rss2json
-  if(!loaded) {
-    try {
-      var rssUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.krugerpark.co.za/feed/') + '&count=5';
-      var r3 = await fetch(rssUrl);
-      if(r3.ok) {
-        var data3 = await r3.json();
-        if(data3.items && data3.items.length) {
-          var parsed = data3.items.slice(0,4).map(function(item) {
-            return { type:'news', tag:'news', icon:'&#x1F4F0;', title:(item.title||'').substring(0,60), desc:(item.description||'').replace(/<[^>]+>/g,'').substring(0,150), time:item.pubDate||'', source:'krugerpark.co.za' };
-          });
-          feedData = DEFAULT_FEED.slice(0,1).concat(parsed);
-          localStorage.setItem('kfg_feed', JSON.stringify(feedData));
-          localStorage.setItem('kfg_feed_time', Date.now());
-          _mergeAndRender(feedData); loaded = true;
-        }
-      }
-    } catch(e) {}
-  }
-
-  // 4. Africa Geographic wildlife RSS via rss2json
-  if(!loaded) {
-    try {
-      var rssUrl2 = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://africageographic.com/stories/category/wildlife/feed/') + '&count=4';
-      var r4 = await fetch(rssUrl2);
-      if(r4.ok) {
-        var data4 = await r4.json();
-        if(data4.items && data4.items.length) {
-          var parsed2 = data4.items.slice(0,4).map(function(item) {
-            return { type:'news', tag:'news', icon:'&#x1F98F;', title:(item.title||'').substring(0,60), desc:(item.description||'').replace(/<[^>]+>/g,'').substring(0,150), time:item.pubDate||'', source:'Africa Geographic' };
-          });
-          feedData = DEFAULT_FEED.slice(0,1).concat(parsed2);
-          localStorage.setItem('kfg_feed', JSON.stringify(feedData));
-          localStorage.setItem('kfg_feed_time', Date.now());
-          _mergeAndRender(feedData); loaded = true;
-        }
-      }
-    } catch(e) {}
-  }
-
-  // 5. SANParks Volunteers RSS
-  if(!loaded) {
-    try {
-      var r4b = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.sanparksvolunteers.org%2Ffeed%2F&count=5');
-      if(r4b.ok){ var r4d=await r4b.json(); if(r4d.items&&r4d.items.length){ var rss4=r4d.items.map(function(it){return{type:'news',tag:'news',title:it.title||'',desc:it.description?it.description.replace(/<[^>]+>/g,'').substring(0,120):'',time:it.pubDate||'',source:'SANParks Volunteers',icon:'&#x1F331;'};}); feedData=rss4.concat(feedData); _mergeAndRender(feedData); loaded=true; } }
-    } catch(e) {}
-  }
-
-  // 6. SANParks News RSS
-  if(!loaded) {
-    try {
-      var r5 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.sanparks.org%2Fnews%2Ffeed&count=5');
-      if(r5.ok){ var r5d=await r5.json(); if(r5d.items&&r5d.items.length){ var rss5=r5d.items.map(function(it){return{type:'news',tag:'news',title:it.title||'',desc:it.description?it.description.replace(/<[^>]+>/g,'').substring(0,120):'',time:it.pubDate||'',source:'SANParks',icon:'&#x1F3DE;'};}); feedData=rss5.concat(feedData); _mergeAndRender(feedData); loaded=true; } }
-    } catch(e) {}
-  }
-
-  // 7. Wildlife.co.za RSS
+  // GitHub fallback feed
   try {
-    var r6 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwildlife.co.za%2Ffeed%2F&count=5');
-    if(r6.ok){ var r6d=await r6.json(); if(r6d.items&&r6d.items.length){ var rss6=r6d.items.map(function(it){return{type:'news',tag:'news',title:it.title||'',desc:it.description?it.description.replace(/<[^>]+>/g,'').substring(0,120):'',time:it.pubDate||'',source:'Wildlife.co.za',icon:'&#x1F98C;'};}); feedData=(feedData||[]).concat(rss6); _mergeAndRender(feedData); loaded=true; } }
+    var r2 = await fetch(FEED_URL);
+    if(r2.ok) {
+      var d2 = await r2.json();
+      if(Array.isArray(d2) && d2.length) {
+        rssData = d2; rssLoaded = true;
+        localStorage.setItem('kfg_feed_rss', JSON.stringify(rssData));
+        window._feedAllItems = rebuildFeed(rssData); renderFeed(window._feedAllItems);
+      }
+    }
   } catch(e) {}
 
-  if(!loaded) _mergeAndRender(DEFAULT_FEED);
+  // krugerpark.co.za
+  if(!rssLoaded) try {
+    var r3 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.krugerpark.co.za/feed/') + '&count=5');
+    if(r3.ok) {
+      var d3 = await r3.json();
+      if(d3.items && d3.items.length) {
+        rssData = d3.items.slice(0,4).map(function(it){ return {type:'news',tag:'news',icon:'&#x1F4F0;',title:(it.title||'').substring(0,60),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',source:'krugerpark.co.za'}; });
+        rssLoaded = true; localStorage.setItem('kfg_feed_rss', JSON.stringify(rssData));
+        window._feedAllItems = rebuildFeed(rssData); renderFeed(window._feedAllItems);
+      }
+    }
+  } catch(e) {}
 
-  // Kruger Status — live camp, gate and road status from krugerstatus.co.za
-  // Fetched separately and always merged in regardless of other sources
+  // Africa Geographic
+  if(!rssLoaded) try {
+    var r4 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://africageographic.com/stories/category/wildlife/feed/') + '&count=4');
+    if(r4.ok) {
+      var d4 = await r4.json();
+      if(d4.items && d4.items.length) {
+        rssData = d4.items.slice(0,4).map(function(it){ return {type:'news',tag:'news',icon:'&#x1F98F;',title:(it.title||'').substring(0,60),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',source:'Africa Geographic'}; });
+        rssLoaded = true; localStorage.setItem('kfg_feed_rss', JSON.stringify(rssData));
+        window._feedAllItems = rebuildFeed(rssData); renderFeed(window._feedAllItems);
+      }
+    }
+  } catch(e) {}
+
+  // Kruger Status (always merge in regardless)
   try {
     var rkStatus = await fetch(KRUGER_STATUS_URL);
     if(rkStatus.ok) {
       var statusData = await rkStatus.json();
       if(Array.isArray(statusData) && statusData.length) {
-        // Decode HTML entities in icon field for proper display
         statusData.forEach(function(item) {
           if(item.icon && item.icon.indexOf('&#x') >= 0) {
-            var tmp = document.createElement('span');
-            tmp.innerHTML = item.icon;
-            item.icon = tmp.textContent || item.icon;
+            var tmp = document.createElement('span'); tmp.innerHTML = item.icon; item.icon = tmp.textContent || item.icon;
           }
         });
-        var baseItems = (window._feedAllItems || feedData).filter(function(f) {
-          return f.source !== 'Kruger Status';
-        });
-        var merged = statusData.concat(baseItems);
-        window._feedAllItems = merged;
-        renderFeed(merged);
+        var base = (window._feedAllItems || []).filter(function(f){ return f.source !== 'Kruger Status'; });
+        window._feedAllItems = statusData.concat(base);
+        renderFeed(window._feedAllItems);
       }
     }
   } catch(e) {}
 
-  // SANParks News — official park news
+  // SANParks News — merge preserving firebase sightings
   try {
     var rSAN = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.sanparks.org%2Fnews%2Ffeed&count=6');
     if(rSAN.ok) {
       var rSANd = await rSAN.json();
       if(rSANd.items && rSANd.items.length) {
-        var sanItems = rSANd.items.map(function(it) {
-          return { type:'news', tag:'news', icon:'&#x1F3DE;', title:(it.title||'').substring(0,80), desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150), time:it.pubDate||'', source:'SANParks News' };
-        });
-        var withSAN = sanItems.concat((window._feedAllItems||feedData).filter(function(f){ return f.source !== 'SANParks News'; }));
-        window._feedAllItems = withSAN;
-        renderFeed(withSAN);
+        var sanItems = rSANd.items.map(function(it){ return {type:'news',tag:'news',icon:'&#x1F3DE;',title:(it.title||'').substring(0,80),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',source:'SANParks News'}; });
+        var withSAN = (window._feedAllItems||[]).filter(function(f){ return f.source !== 'SANParks News'; });
+        window._feedAllItems = sanItems.concat(withSAN);
+        renderFeed(window._feedAllItems);
       }
     }
   } catch(e) {}
 
-  // Latest Sightings RSS — Kruger wildlife sightings
+  // Latest Sightings RSS — merge preserving firebase sightings
   try {
     var rLS = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Flatestsightings.com%2Ffeed%2F&count=8');
     if(rLS.ok) {
       var rLSd = await rLS.json();
       if(rLSd.items && rLSd.items.length) {
-        var lsItems = rLSd.items.map(function(it) {
-          return { type:'sighting', tag:'sighting', icon:'&#x1F98F;', title:(it.title||'').substring(0,80), desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150), time:it.pubDate||'', source:'Latest Sightings' };
-        });
-        var withLS = lsItems.concat((window._feedAllItems||feedData).filter(function(f){ return f.source !== 'Latest Sightings'; }));
-        window._feedAllItems = withLS;
-        renderFeed(withLS);
+        var lsItems = rLSd.items.map(function(it){ return {type:'sighting',tag:'sighting',icon:'&#x1F98F;',title:(it.title||'').substring(0,80),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',source:'Latest Sightings'}; });
+        var withLS = (window._feedAllItems||[]).filter(function(f){ return f.source !== 'Latest Sightings'; });
+        window._feedAllItems = lsItems.concat(withLS);
+        renderFeed(window._feedAllItems);
       }
     }
   } catch(e) {}
@@ -3261,7 +3232,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.4 — May 2026';
+    lu.textContent = 'Content v3.5 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -3659,7 +3630,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.4';
+var APP_VERSION = '3.5';
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
