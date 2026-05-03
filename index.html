@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Kruger Field Guide - Krantz Outdoors</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kruger Guide">
@@ -421,7 +421,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.14</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.15</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -810,7 +810,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.14<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.15<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -3544,9 +3544,13 @@ async function loadFeed() {
           if(item.icon && item.icon.indexOf('&#x') >= 0) {
             var tmp = document.createElement('span'); tmp.innerHTML = item.icon; item.icon = tmp.textContent || item.icon;
           }
+          // Ensure timestamp for sorting
+          if(!item.timestamp && item.time) { try { item.timestamp = new Date(item.time).getTime(); } catch(e){} }
         });
-        var base = (window._feedAllItems || []).filter(function(f){ return f.source !== 'Kruger Status'; });
-        window._feedAllItems = statusData.concat(base);
+        // Merge into window._roadReports so rebuildFeed picks them up correctly
+        var existingRoads = (window._roadReports||[]).filter(function(f){ return f.source !== 'Kruger Status'; });
+        window._roadReports = statusData.concat(existingRoads);
+        window._feedAllItems = rebuildFeed(rssData);
         renderFeed(window._feedAllItems);
       }
     }
@@ -3558,9 +3562,12 @@ async function loadFeed() {
     if(rSAN.ok) {
       var rSANd = await rSAN.json();
       if(rSANd.items && rSANd.items.length) {
-        var sanItems = rSANd.items.map(function(it){ return {type:'news',tag:'news',icon:'&#x1F3DE;',title:(it.title||'').substring(0,80),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',source:'SANParks News'}; });
-        var withSAN = (window._feedAllItems||[]).filter(function(f){ return f.source !== 'SANParks News'; });
-        window._feedAllItems = sanItems.concat(withSAN);
+        var sanItems = rSANd.items.map(function(it){
+          var ts = it.pubDate ? new Date(it.pubDate).getTime() : 0;
+          return {type:'news',tag:'news',icon:'&#x1F3DE;',title:(it.title||'').substring(0,80),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',timestamp:ts,source:'SANParks News'};
+        });
+        rssData = sanItems.concat(rssData.filter(function(f){ return f.source !== 'SANParks News'; }));
+        window._feedAllItems = rebuildFeed(rssData);
         renderFeed(window._feedAllItems);
       }
     }
@@ -3572,9 +3579,12 @@ async function loadFeed() {
     if(rLS.ok) {
       var rLSd = await rLS.json();
       if(rLSd.items && rLSd.items.length) {
-        var lsItems = rLSd.items.map(function(it){ return {type:'sighting',tag:'sighting',icon:'&#x1F98F;',title:(it.title||'').substring(0,80),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',source:'Latest Sightings'}; });
-        var withLS = (window._feedAllItems||[]).filter(function(f){ return f.source !== 'Latest Sightings'; });
-        window._feedAllItems = lsItems.concat(withLS);
+        var lsItems = rLSd.items.map(function(it){
+          var ts = it.pubDate ? new Date(it.pubDate).getTime() : 0;
+          return {type:'sighting',tag:'sighting',icon:'&#x1F98F;',title:(it.title||'').substring(0,80),desc:(it.description||'').replace(/<[^>]+>/g,'').substring(0,150),time:it.pubDate||'',timestamp:ts,source:'Latest Sightings'};
+        });
+        rssData = lsItems.concat(rssData.filter(function(f){ return f.source !== 'Latest Sightings'; }));
+        window._feedAllItems = rebuildFeed(rssData);
         renderFeed(window._feedAllItems);
       }
     }
@@ -3586,7 +3596,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.14 — May 2026';
+    lu.textContent = 'Content v3.15 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -4051,7 +4061,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.14';
+var APP_VERSION = '3.15';
 
 // Clear stale caches when version changes
 (function() {
