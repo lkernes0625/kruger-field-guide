@@ -232,7 +232,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .finder-status-closed{font-size:9px;color:#e05545;font-weight:700}
 
 /* WEATHER CARD */
-.weather-card{margin:0 16px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.weather-card{margin:14px 16px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .weather-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .weather-card-title{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-weight:700}
 .weather-online-badge{font-size:8px;padding:2px 7px;border-radius:10px;font-weight:600}
@@ -421,7 +421,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.10</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.11</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -810,7 +810,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.10<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide v3.11<br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div></div>
       </div>
     </div>
 
@@ -1616,7 +1616,7 @@ function updateCountdown() {
   var header = document.getElementById('headerCountdown');
   var status = document.getElementById('gateStatusText');
   if(diff <= 0) {
-    // Gate is closed - count down to opening time tomorrow
+    // Gate is closed — count to next opening time
     var openMap = {
       'Paul Kruger Gate':'06:00','Numbi Gate':'06:00','Phabeni Gate':'06:00',
       'Kruger Gate':'06:00','Malelane Gate':'05:30','Crocodile Bridge':'05:30',
@@ -1624,17 +1624,25 @@ function updateCountdown() {
     };
     var opensAt = openMap[gateData.name] || '06:00';
     var openParts = opensAt.split(':').map(Number);
-    var tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(openParts[0], openParts[1], 0, 0);
-    var tillOpen = tomorrow - now;
+    // Check if opening time is still ahead today
+    var openToday = new Date();
+    openToday.setHours(openParts[0], openParts[1], 0, 0);
+    var nextOpen;
+    if(openToday > now) {
+      nextOpen = openToday; // Opens later today
+    } else {
+      nextOpen = new Date();
+      nextOpen.setDate(nextOpen.getDate() + 1);
+      nextOpen.setHours(openParts[0], openParts[1], 0, 0); // Opens tomorrow
+    }
+    var tillOpen = nextOpen - now;
     var oHrs = Math.floor(tillOpen/3600000);
     var oMins = Math.floor((tillOpen%3600000)/60000);
     var oSecs = Math.floor((tillOpen%60000)/1000);
-    var openStr = String(oHrs).padStart(2,'0')+':'+String(oMins).padStart(2,'0')+':'+String(oSecs).padStart(2,'0');
+    var timeLabel = nextOpen.getDate() === now.getDate() ? 'today' : 'tomorrow';
     if(main) { main.textContent = 'CLOSED'; main.className = 'countdown-time urgent'; }
     if(header) { header.textContent = 'CLOSED'; header.className = 'gate-pill-time urgent'; }
-    if(status) status.textContent = gateData.name + ' closed. Opens at ' + opensAt + ' (' + oHrs + 'h ' + oMins + 'm away)';
+    if(status) status.textContent = gateData.name + ' closed. Opens ' + timeLabel + ' at ' + opensAt + ' (' + oHrs + 'h ' + oMins + 'm ' + oSecs + 's)';
     return;
   }
   var hrs = Math.floor(diff/3600000);
@@ -3581,7 +3589,7 @@ async function loadFeed() {
     var d = new Date(parseInt(t));
     lu.textContent = 'Feed updated: ' + d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) + ' at ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   } else if(lu) {
-    lu.textContent = 'Content v3.10 — May 2026';
+    lu.textContent = 'Content v3.11 — May 2026';
   }
   setTimeout(applyLogos, 200);
   setTimeout(applyLogos, 1000);
@@ -4048,16 +4056,17 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.10';
+var APP_VERSION = '3.11';
 
 // Clear stale caches when version changes
 (function() {
   var lastVersion = localStorage.getItem('kfg_app_version');
   if(lastVersion && lastVersion !== APP_VERSION) {
-    localStorage.removeItem('kfg_feed_full_cache');
+    // Only clear RSS cache — never touch Firebase sightings, road reports or user data
     localStorage.removeItem('kfg_feed_rss');
     localStorage.removeItem('kfg_feed');
-    // Keep firebase sightings, road reports, trip data, recently viewed — those are user data
+    // Rebuild full cache from Firebase + road reports on next load
+    // kfg_feed_full_cache is intentionally kept so feed shows immediately
   }
   localStorage.setItem('kfg_app_version', APP_VERSION);
 })();
@@ -4153,7 +4162,7 @@ function trackRecentlyViewed(type, idx) {
   var key = type + ':' + sp.id; // Use ID not index
   _recentlyViewed = _recentlyViewed.filter(function(k){ return k !== key; });
   _recentlyViewed.unshift(key);
-  if(_recentlyViewed.length > 5) _recentlyViewed = _recentlyViewed.slice(0, 5);
+  if(_recentlyViewed.length > 6) _recentlyViewed = _recentlyViewed.slice(0, 6);
   try { localStorage.setItem('kfg_recently_viewed', JSON.stringify(_recentlyViewed)); } catch(e) {}
   renderRecentlyViewed();
 }
