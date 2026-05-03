@@ -1827,6 +1827,7 @@ function renderSpecies() {
 function openSpecies(idx) {
   var sp=SPECIES[idx]; if(!sp) return;
   window._spIdx=idx; window._spType='species'; selectedStars=0;
+  trackRecentlyViewed('species', idx);
   var modal=document.getElementById('speciesModal'); if(!modal) return;
   modal.querySelector('.modal-title').textContent=sp.name;
   var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>H9</option><option>H10</option><option>H12</option><option>H14</option><option>S1</option><option>S3</option><option>S28</option><option>S65</option><option>S100</option><option>S106</option><option>S114</option><option>Waterhole</option><option>Near Camp</option>';
@@ -3892,7 +3893,11 @@ function openRoadReport() {
       captureGPSForSighting(function(lat, lng, road) {
         window._reportLat = lat; window._reportLng = lng; window._reportRoad = road;
         if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS captured' + (road ? ' \u2013 near ' + road : '');
-        if(locEl && road && !locEl.value) locEl.value = road;
+        if(locEl && road && !locEl.value) {
+          locEl.value = road;
+          var clrBtn = document.getElementById('reportLocClear');
+          if(clrBtn) clrBtn.style.display = 'block';
+        }
       });
       if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS captured \u2013 tap Submit to report';
     }, function() {
@@ -4044,6 +4049,18 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 var APP_VERSION = '3.10';
+
+// Clear stale caches when version changes
+(function() {
+  var lastVersion = localStorage.getItem('kfg_app_version');
+  if(lastVersion && lastVersion !== APP_VERSION) {
+    localStorage.removeItem('kfg_feed_full_cache');
+    localStorage.removeItem('kfg_feed_rss');
+    localStorage.removeItem('kfg_feed');
+    // Keep firebase sightings, road reports, trip data, recently viewed — those are user data
+  }
+  localStorage.setItem('kfg_app_version', APP_VERSION);
+})();
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
 function forceUpdate() {
@@ -4299,45 +4316,66 @@ function submitTagLocation() {
 
 function exportTripJournal() {
   var entries = loadJournalEntries();
-  var sightings = loadSightings();
   var dates = {};
   try { dates = JSON.parse(localStorage.getItem('kfg_trip_dates')||'{}'); } catch(e) {}
   var nick = getUserNickname() || 'Field Guide User';
+
+  // Separate sightings from other tags in the journal
+  var sightingEntries = entries.filter(function(e){ return e.type === 'sighting'; });
+  var tagEntries = entries.filter(function(e){ return e.type !== 'sighting'; });
 
   var lines = [
     'KRUGER FIELD GUIDE — TRIP JOURNAL',
     nick + "'s Kruger Trip",
     (dates.from && dates.to) ? dates.from + ' to ' + dates.to : '',
     (dates.entry || dates.exit) ? 'Entry: ' + (dates.entry||'?') + '  Exit: ' + (dates.exit||'?') : '',
-    '',
-    '── SIGHTINGS (' + sightings.length + ' total) ──'
+    ''
   ];
-  sightings.slice().reverse().forEach(function(s) {
-    var t = new Date(s.time);
-    lines.push((s.name||'Unknown') + ' — ' + (s.road||'Kruger') + ' — ' + t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'}) + ' ' + t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
-  });
 
-  var tags = entries.filter(function(e){ return e.type !== 'sighting'; });
-  if(tags.length) {
-    lines.push('', '── LOCATIONS TAGGED ──');
-    tags.forEach(function(e) {
-      var t = new Date(e.time);
-      lines.push((e.title||'Location') + (e.road ? ' — near ' + e.road : '') + ' — ' + t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'}) + ' ' + t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  if(sightingEntries.length) {
+    lines.push('── SIGHTINGS (' + sightingEntries.length + ') ──');
+    sightingEntries.forEach(function(s) {
+      var t = new Date(s.time);
+      lines.push((s.title||'Sighting') + (s.road ? ' — ' + s.road : '') + ' — ' +
+        t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'}) + ' ' +
+        t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
     });
+    lines.push('');
   }
 
-  lines.push('', '── STATS ──');
-  var uniqueSpecies = [...new Set(sightings.map(function(s){ return s.id; }))].length;
-  lines.push('Total sightings: ' + sightings.length);
-  lines.push('Unique species: ' + uniqueSpecies);
-  var big5 = ['lion','elephant','leopard','rhino','white_rhino','black_rhino','buffalo','hippo'].filter(function(id){
-    return sightings.some(function(s){ return s.id===id; });
+  if(tagEntries.length) {
+    lines.push('── LOCATIONS TAGGED ──');
+    tagEntries.forEach(function(e) {
+      var t = new Date(e.time);
+      lines.push((e.title||'Location') + (e.road ? ' — near ' + e.road : '') + ' — ' +
+        t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'}) + ' ' +
+        t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    });
+    lines.push('');
+  }
+
+  lines.push('── STATS ──');
+  var uniqueSpecies = [];
+  sightingEntries.forEach(function(s){
+    var name = (s.title||'').replace(' sighted','').trim();
+    if(uniqueSpecies.indexOf(name) < 0) uniqueSpecies.push(name);
   });
-  lines.push('Big 5 seen: ' + big5.length + '/5' + (big5.length===5?' ✓ COMPLETE!':''));
-  lines.push('', 'Generated by Kruger Field Guide — krantzoutdoors.com');
+  lines.push('Sightings this trip: ' + sightingEntries.length);
+  lines.push('Unique species: ' + uniqueSpecies.length);
+  lines.push('Locations tagged: ' + tagEntries.length);
+
+  var big5Names = ['Lion','Elephant','Leopard','Rhino','White Rhino','Black Rhino','Buffalo'];
+  var big5seen = big5Names.filter(function(n){
+    return sightingEntries.some(function(s){ return (s.title||'').indexOf(n) >= 0; });
+  });
+  if(big5seen.length) lines.push('Big 5 seen: ' + big5seen.join(', ') + (big5seen.length >= 5 ? ' ✓ COMPLETE!' : ''));
+
+  lines.push('');
+  lines.push('Generated by Kruger Field Guide — krantzoutdoors.com');
   lines.push('Wild by Nature. Africa by Choice.');
 
-  var text = lines.filter(Boolean).join('\n');
+  var text = lines.filter(function(l){ return l !== undefined; }).join('\n');
+
   if(navigator.share) {
     navigator.share({ title: nick + "'s Kruger Trip Journal", text: text }).catch(function(){});
   } else {
@@ -4345,7 +4383,7 @@ function exportTripJournal() {
     ta.value = text;
     document.body.appendChild(ta);
     ta.select();
-    document.execCommand('copy');
+    try { document.execCommand('copy'); } catch(e) {}
     document.body.removeChild(ta);
     showToast('Journal copied to clipboard! &#x1F4CB;', 2500);
   }
