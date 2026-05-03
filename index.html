@@ -33,7 +33,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var(--text);font-family:'Montserrat',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
-#app{display:flex;flex-direction:column;height:100dvh;width:100%;overflow:hidden;padding-top:env(safe-area-inset-top,0px)}
+#app{display:flex;flex-direction:column;height:100dvh;width:100%;padding-top:env(safe-area-inset-top,0px)}
 
 /* HEADER */
 #header{flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;z-index:10}
@@ -52,7 +52,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 #content::-webkit-scrollbar-thumb{background:var(--border2)}
 
 /* BOTTOM NAV */
-#nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 2px 8px;cursor:pointer;-webkit-user-select:none;user-select:none;color:var(--text3);border:none;background:none;transition:color .15s;min-height:48px;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation}
+#nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 2px 8px;cursor:pointer;-webkit-user-select:none;user-select:none;color:var(--text3);border:none;background:none;transition:color .15s;min-height:48px;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation}
 .nav-item.active{color:var(--accent)}
 .nav-item svg{width:20px;height:20px;margin-bottom:2px;flex-shrink:0}
 .nav-label{font-size:7.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;white-space:nowrap}
@@ -5032,20 +5032,6 @@ window.addEventListener('offline', function(){
     document.head.appendChild(link);
   } catch(e){}
 })();
-
-// DIAGNOSTIC
-window.addEventListener("load", function(){
-  setTimeout(function(){
-    var nav = document.getElementById("nav");
-    var app = document.getElementById("app");
-    var navRect = nav.getBoundingClientRect();
-    var appRect = app.getBoundingClientRect();
-    var d = document.createElement("div");
-    d.style.cssText = "position:fixed;top:60px;left:10px;right:10px;z-index:9999;background:rgba(0,0,0,0.92);color:#fff;font-size:12px;padding:14px;border-radius:8px;border:2px solid #e8a020;font-family:monospace;line-height:2";
-    d.innerHTML = "<b style=color:#e8a020>DIAG - screenshot this</b><br>window.innerHeight: "+window.innerHeight+"<br>screen.height: "+screen.height+"<br>app.bottom: "+Math.round(appRect.bottom)+"<br>app.height: "+Math.round(appRect.height)+"<br>nav.top: "+Math.round(navRect.top)+"<br>nav.bottom: "+Math.round(navRect.bottom)+"<br>nav.height: "+Math.round(navRect.height)+"<br>GAP below nav: "+(window.innerHeight - Math.round(navRect.bottom))+"<br>vv.height: "+(window.visualViewport?Math.round(window.visualViewport.height):"na");
-    document.body.appendChild(d);
-  }, 1500);
-});
 
 // Start the app
 window.addEventListener('DOMContentLoaded', function(){
