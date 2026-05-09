@@ -417,7 +417,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.32</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.33</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -876,7 +876,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.32</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.32 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.33</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.33 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -1571,38 +1571,38 @@ var FACILITIES = {
     { name:'Pretoriuskop - Wi-Fi', lat:-25.1718, lng:31.2721, hours:'07:00-21:00', note:'Reception area' },
   ],
   lookout: [
-    { name:'Olifants Lookout (Skukuza Road)', lat:-23.9964, lng:31.7369, hours:'06:00-18:30', amenities:['shade','toilets'], note:'Elevated views over Olifants River gorge - best at dawn' },
-    { name:'Nkumbe Lookout (S110)', lat:-24.8500, lng:31.6200, hours:'06:00-18:00', amenities:['shade'], note:'360-degree view over central Kruger plains' },
-    { name:'Shipandani Hide (Letaba)', lat:-23.8700, lng:31.5600, hours:'Overnight possible', amenities:['hide','overnight','booking','toilets'], note:'Sleep-out hide at Tsendze River. Book at Letaba reception.' },
-    { name:'Matjulu Viewpoint', lat:-24.9600, lng:31.5400, hours:'06:00-18:30', amenities:['shade'], note:'Sabie River viewpoint near Skukuza' },
-    { name:'Timbavati', lat:-24.3000, lng:31.6500, hours:'06:00-18:00', amenities:['shade','toilets','picnic'], note:'Central Kruger elevated viewpoint' },
-    { name:'Windmill Near Lower Sabie', lat:-25.1300, lng:31.8800, hours:'Sunrise-sunset', amenities:[], note:'Classic sunrise lookout point' },
-    { name:'N\'wanetsi Dam', lat:-24.5000, lng:31.9500, hours:'06:00-18:00', amenities:['shade','waterhole','picnic'], note:'Eastern plains views. Check for lion on flat rocks.' },
-    { name:'Mooiplaas', lat:-23.7500, lng:31.7000, hours:'06:00-18:00', amenities:['toilets','shade','picnic'], note:'Northern Kruger - good for eland and roan' },
+    { name:'Olifants Lookout (Skukuza Road)', lat:-23.9964, lng:31.7369, zone:'Central', hours:'06:00-18:30', amenities:['shade','toilets'], badges:[], note:'Elevated views over Olifants River gorge - best at dawn' },
+    { name:'Nkumbe Lookout (S110)', lat:-24.8500, lng:31.6200, zone:'South', hours:'06:00-18:00', amenities:['shade'], badges:[], note:'360-degree view over central Kruger plains' },
+    { name:'Shipandani Hide (Letaba)', lat:-23.8700, lng:31.5600, zone:'Central', hours:'Overnight possible', amenities:['overnight','booking','toilets'], badges:['hide'], note:'Sleep-out hide at Tsendze River. Book at Letaba reception.', detail:{"location":"Tsendze River, northern Kruger. Access via S142 Shongololo loop from Mopani or Letaba. Book through Letaba reception.","wildlife":"Elephant herds arrive through the night. Lion and leopard regularly heard or seen. Exceptional nocturnal viewing.","facilities":"Sleepover hide with basic shelter and deck. Bring own food, water and bedding. Booking essential.","tips":"One of the most extraordinary wildlife experiences in Africa. Book well in advance — limited spaces."} },
+    { name:'Matjulu Viewpoint', lat:-24.9600, lng:31.5400, zone:'South', hours:'06:00-18:30', amenities:['shade'], badges:[], note:'Sabie River viewpoint near Skukuza' },
+    { name:'Timbavati', lat:-24.3000, lng:31.6500, zone:'Central', hours:'06:00-18:00', amenities:['shade','toilets'], badges:['picnic'], note:'Central Kruger elevated viewpoint', detail:{"location":"Central Kruger on the H7, ~30km from Orpen Gate on the Timbavati River.","wildlife":"Central Kruger lion and wild dog territory. Giraffe and elephant common. Famous for the white lion bloodline.","facilities":"Shaded picnic tables and ablution facilities. Basic kiosk in peak season.","tips":"Combine with the S40 Timbavati road — consistently one of the best routes for lion and wild dog in the park."} },
+    { name:'Windmill Near Lower Sabie', lat:-25.1300, lng:31.8800, zone:'South', hours:'Sunrise-sunset', amenities:[], badges:[], note:'Classic sunrise lookout point' },
+    { name:'N\'wanetsi Dam', lat:-24.5000, lng:31.9500, hours:'06:00-18:00', amenities:['shade','waterhole','picnic'], note:'Eastern plains views. Check for lion on flat rocks.', detail:{"location":"End of the H6 tar road, ~25km east of Satara at the foot of the Lebombo Mountains.","wildlife":"Premier lion, cheetah and wild dog territory. Hippo and crocodile in the dam. Elephant and buffalo regular. Famous for white lion genetics.","facilities":"Picnic tables under shade and thatched boma. Skottel braai hire available. Kiosk for cold drinks and braai supplies. Bring own food. Cash only.","tips":"Short steep walk to thatched viewing deck overlooking N'wanetsi and Sweni rivers. Arrive early. The H6 and S100 en route are legendary for predators."} },
+    { name:'Mooiplaas', lat:-23.7500, lng:31.7000, zone:'Central', hours:'06:00-18:00', amenities:['toilets','shade'], badges:['picnic'], note:'Northern Kruger - good for eland and roan', detail:{"location":"Northern Kruger between Letaba and Mopani, an elevated viewpoint rarely visited by day-trippers.","wildlife":"Excellent for eland, roan antelope and sable. Elephant regular on the plains below. Lions have been seen in the area.","facilities":"Basic shade and toilets. Very quiet — often have the spot to yourself.","tips":"The surrounding mopane woodland roads are excellent for rarer northern species. Combine with the H1-6 corridor."} },
     { name:'Crooks\' Corner Viewpoint', lat:-22.4500, lng:31.2200, hours:'06:00-17:30', amenities:['toilets','shade','heritage'], note:'Limpopo confluence - outstanding birding' },
-    { name:'Lake Panic Hide (Skukuza)', lat:-24.9800, lng:31.5800, hours:'06:00-18:30', amenities:['hide','dam','shade','disabled'], note:'Africa\'s most famous bird hide — not a dam, a small natural pond. Hippo, crocodile, African Fish Eagle at close range daily. Walk-in from Skukuza. Arrive at first light.' },,
-    { name:'Stevenson-Hamilton Memorial Lookout', lat:-24.9950, lng:31.5950, hours:'06:00-18:30', amenities:['shade'], note:'Memorial to the first warden of Kruger near Skukuza. Historical plaque and elevated viewpoint over Sabie River bushveld.' },
-    { name:'Bobbejaankrans Lookout', lat:-25.1800, lng:31.3200, hours:'06:00-18:00', amenities:['shade'], note:'Granite koppie viewpoint in the Pretoriuskop area. Baboon territory. Sweeping views over southern Kruger sourveld.' },
-    { name:'Red Rocks Lookout', lat:-25.1600, lng:31.2900, hours:'06:00-18:00', amenities:[], note:'Southern Kruger rocky outcrop. Named for the red granite boulders. Good for klipspringer and leopard.' },
-    { name:'Mlondozi Lookout', lat:-25.0600, lng:31.8400, hours:'06:00-18:00', amenities:['picnic','shade','toilets'], note:'Elevated viewpoint overlooking Mlondozi Dam near Lower Sabie. Reliable hippo, elephant and buffalo. Picnic tables available.' },
-    { name:'Crocodile River Viewpoint', lat:-25.3600, lng:31.8900, hours:'06:00-17:30', amenities:['shade'], note:'Southern boundary viewpoint over the Crocodile River. Excellent for crocodile and waterbirds. Good white rhino territory.' },
-    { name:'Steilberg Loop Lookout', lat:-25.2200, lng:31.4800, hours:'06:00-18:00', amenities:[], note:'Southern Kruger elevated viewpoint on the Steilberg Loop. Good for white rhino and general game on the plains below.' },
-    { name:'Thulamela Lookout', lat:-22.5000, lng:31.2000, hours:'06:00-17:30', amenities:['shade'], note:'Near the Thulamela archaeological site in the far north. Views over the Pafuri floodplains.' },
-    { name:'Hippo Pools Viewpoint', lat:-22.6500, lng:31.3500, hours:'06:00-17:30', amenities:['shade'], note:'Far north viewpoint overlooking permanent river pools. Hippo herds and large crocodile concentrations. Good birding.' },
-    { name:'Shibavantsengele Lookout', lat:-23.3500, lng:31.5500, hours:'06:00-18:00', amenities:[], note:'Northern Kruger elevated viewpoint in mopane woodland. Excellent for elephant and buffalo.' },
-    { name:'Tshanga Lookout', lat:-23.2000, lng:31.5000, hours:'06:00-18:00', amenities:['shade'], note:'North-central Kruger viewpoint. Wide plains views. Good for eland, roan and sable in the mopane woodland below.' },
+    { name:'Lake Panic Hide (Skukuza)', lat:-24.9800, lng:31.5800, hours:'06:00-18:30', amenities:['hide','dam','shade','disabled'], note:'Africa\'s most famous bird hide — not a dam, a small natural pond. Hippo, crocodile, African Fish Eagle at close range daily. Walk-in from Skukuza. Arrive at first light.', detail:{"location":"Short walk from Skukuza main camp — a natural spring-fed pond, not a dam. Walk-in from camp on foot.","wildlife":"African Fish Eagle, Malachite Kingfisher, Giant Kingfisher daily. Hippo and crocodile at close range. Exceptional waterbird diversity.","facilities":"Walk-in day hide. No booking required. Wheelchair accessible. Open during park hours.","tips":"Arrive at first light. Stay low at the front slot for ground-level shots. Animals approach to within metres — stay silent and still."} },,
+    { name:'Stevenson-Hamilton Memorial Lookout', lat:-24.9950, lng:31.5950, zone:'South', hours:'06:00-18:30', amenities:['shade'], badges:[], note:'Memorial to the first warden of Kruger near Skukuza. Historical plaque and elevated viewpoint over Sabie River bushveld.' },
+    { name:'Bobbejaankrans Lookout', lat:-25.1800, lng:31.3200, zone:'South', hours:'06:00-18:00', amenities:['shade'], badges:[], note:'Granite koppie viewpoint in the Pretoriuskop area. Baboon territory. Sweeping views over southern Kruger sourveld.' },
+    { name:'Red Rocks Lookout', lat:-25.1600, lng:31.2900, zone:'South', hours:'06:00-18:00', amenities:[], badges:[], note:'Southern Kruger rocky outcrop. Named for the red granite boulders. Good for klipspringer and leopard.' },
+    { name:'Mlondozi Lookout', lat:-25.0600, lng:31.8400, zone:'South', hours:'06:00-18:00', amenities:['shade','toilets'], badges:['picnic'], note:'Elevated viewpoint overlooking Mlondozi Dam near Lower Sabie. Reliable hippo, elephant and buffalo. Picnic tables available.' },
+    { name:'Crocodile River Viewpoint', lat:-25.3600, lng:31.8900, zone:'South', hours:'06:00-17:30', amenities:['shade'], badges:[], note:'Southern boundary viewpoint over the Crocodile River. Excellent for crocodile and waterbirds. Good white rhino territory.' },
+    { name:'Steilberg Loop Lookout', lat:-25.2200, lng:31.4800, zone:'South', hours:'06:00-18:00', amenities:[], badges:[], note:'Southern Kruger elevated viewpoint on the Steilberg Loop. Good for white rhino and general game on the plains below.' },
+    { name:'Thulamela Lookout', lat:-22.5000, lng:31.2000, zone:'Far North', hours:'06:00-17:30', amenities:['shade'], badges:[], note:'Near the Thulamela archaeological site in the far north. Views over the Pafuri floodplains.' },
+    { name:'Hippo Pools Viewpoint', lat:-22.6500, lng:31.3500, zone:'Far North', hours:'06:00-17:30', amenities:['shade'], badges:[], note:'Far north viewpoint overlooking permanent river pools. Hippo herds and large crocodile concentrations. Good birding.' },
+    { name:'Shibavantsengele Lookout', lat:-23.3500, lng:31.5500, zone:'North', hours:'06:00-18:00', amenities:[], badges:[], note:'Northern Kruger elevated viewpoint in mopane woodland. Excellent for elephant and buffalo.' },
+    { name:'Tshanga Lookout', lat:-23.2000, lng:31.5000, zone:'North', hours:'06:00-18:00', amenities:['shade'], badges:[], note:'North-central Kruger viewpoint. Wide plains views. Good for eland, roan and sable in the mopane woodland below.' },
     { name:"N'wamanzi Lookout", lat:-23.9964, lng:31.7369, hours:'06:00-18:30', amenities:['shade'], note:'Elevated lookout near Olifants Camp. Spectacular Olifants River gorge views. One of the finest viewpoints in Africa.' },
-    { name:'Gardenia Hide', lat:-24.6500, lng:31.8800, hours:'06:00-18:00', amenities:['hide','shade'], note:'Photography hide named after the wild gardenia trees. Eastern Kruger. Reliable waterbirds and small mammals.' },
-    { name:'Matambeni Hide', lat:-24.5500, lng:31.5000, hours:'06:00-18:00', amenities:['hide'], note:'Central Kruger hide at a productive waterhole. Regular elephant, buffalo and lion activity.' },
-    { name:'Nyawutsi Hide', lat:-24.9500, lng:31.5500, hours:'06:00-18:30', amenities:['hide','shade'], note:'Hide near Skukuza in riverine woodland. Good for smaller species, waterbirds and leopard approaching the water at dawn.' }
+    { name:'Gardenia Hide', lat:-24.6500, lng:31.8800, zone:'South', hours:'06:00-18:00', amenities:['shade'], badges:['hide'], note:'Photography hide named after the wild gardenia trees. Eastern Kruger. Reliable waterbirds and small mammals.' },
+    { name:'Matambeni Hide', lat:-24.5500, lng:31.5000, zone:'South', hours:'06:00-18:00', amenities:[], badges:['hide'], note:'Central Kruger hide at a productive waterhole. Regular elephant, buffalo and lion activity.' },
+    { name:'Nyawutsi Hide', lat:-24.9500, lng:31.5500, zone:'South', hours:'06:00-18:30', amenities:['shade'], badges:['hide'], note:'Hide near Skukuza in riverine woodland. Good for smaller species, waterbirds and leopard approaching the water at dawn.' }
   ],
   picnic: [
-    { name:'Tshokwane Picnic Site', lat:-24.7941, lng:31.8695, hours:'06:00-18:00', amenities:['toilets','braai','shade','water','kiosk','restaurant','disabled'], note:'Central Kruger - restaurant, toilets, curio shop, braai' },
+    { name:'Tshokwane Picnic Site', lat:-24.7941, lng:31.8695, hours:'06:00-18:00', amenities:['toilets','braai','shade','water','kiosk','restaurant','disabled'], note:'Central Kruger - restaurant, toilets, curio shop, braai', detail:{"location":"S50 gravel road, ~38km south-east of Shingwedzi, near Grootvlei Dam close to the Mozambique border.","wildlife":"Premier birding: Malachite Kingfisher, African Hawk-Eagle, storks and herons. Elephant and leopard occasionally visit the waterhole.","facilities":"Wheelchair-friendly with ramp and ample space. No toilets on site — nearest at Shingwedzi. Day-use only, no overnight.","tips":"Remote location — often have the hide to yourself. Confirm current status at Shingwedzi reception before visiting."} },
     { name:'Afsaal Picnic Site', lat:-25.0506, lng:31.6801, hours:'06:00-18:00', amenities:['toilets','braai','shade','water','kiosk'], note:'Southern Kruger - toilets, braai, skottel hire' },
     { name:'Nkuhlu Picnic Site', lat:-25.0031, lng:31.8247, hours:'06:00-18:00', amenities:['toilets','hide','shade','water','kiosk'], note:'Sabie River bank - photography hide, toilets, kiosk' },
     { name:'Muzandzeni Picnic Site', lat:-24.6513, lng:31.9026, hours:'06:00-18:00', amenities:['toilets','braai','shade'], note:'Eastern Kruger riverside - toilets, braai' },
     { name:'Mopani Rest Camp', lat:-23.5336, lng:31.3882, hours:'06:00-18:00', amenities:['toilets','shade','water'], note:'Pioneer Dam view - hippo and croc' },
-    { name:'Pafuri Picnic Site', lat:-22.4500, lng:31.2200, hours:'06:00-17:30', amenities:['toilets','shade'], note:'Far north - Limpopo floodplain - exceptional birding' },,
+    { name:'Pafuri Picnic Site', lat:-22.4500, lng:31.2200, hours:'06:00-17:30', amenities:['toilets','shade'], note:'Far north - Limpopo floodplain - exceptional birding' },
     { name:'Albasini Ruins Picnic Site', lat:-23.5500, lng:30.9500, hours:'06:00-18:00', amenities:['toilets','shade'], note:'Near the Albasini Ruins historical site in the far west. Picnic tables and basic ablutions. Heritage area.' },
     { name:'Nhlanguleni Picnic Site', lat:-25.2000, lng:31.4000, hours:'06:00-18:00', amenities:['toilets','braai','shade'], note:'Southern Kruger picnic site with braai facilities. Good white rhino and general game area.' },
     { name:'Masorini Picnic Site', lat:-23.9300, lng:31.2000, hours:'06:00-18:30', amenities:['toilets','shade'], note:'Adjacent to the Masorini archaeological site near Phalaborwa Gate. Combined heritage and picnic experience.' },
@@ -1611,60 +1611,60 @@ var FACILITIES = {
     { name:'Letaba Picnic Site', lat:-23.8561, lng:31.5802, hours:'06:00-18:30', amenities:['toilets','shade','water'], note:'Picnic area near Letaba Camp on the Letaba River. Good elephant viewing and birding along the river banks.' }
   ],
   dams: [
-    { name:'Balalala Picnic Site', lat:-22.6500, lng:31.3000, zone:'North', amenities:['picnic'], type:'waterhole', note:'Far north near Babalala picnic site. Elephant and lion in dry season.' },
+    { name:'Balalala Picnic Site', lat:-22.6500, lng:31.3000, zone:'North', amenities:[], badges:['picnic','waterhole'], type:'waterhole', note:'Far north near Babalala picnic site. Elephant and lion in dry season.' },
     { name:'Duke\'s Waterhole (H13 area)', lat:-22.7000, lng:31.5000, zone:'North', amenities:[], type:'waterhole', note:'Known cheetah territory in far north. Good for rarer antelope species.' },
-    { name:'Elephant Waterhole (H1-2)', lat:-24.7000, lng:31.7600, zone:'Central', amenities:[], type:'waterhole', note:'Between Tshokwane and Skukuza. Reliable elephant waterhole visible from road.' },
-    { name:'Engelhard Dam (S47 - Letaba)', lat:-23.8561, lng:31.5802, zone:'North', amenities:['shade','lookout','heritage'], note:'World-class elephant viewing at dawn. Lion and buffalo regular. Best dam in Africa for elephant photography.' },
-    { name:'Girivana Dam (S29)', lat:-23.6500, lng:31.6000, zone:'North', amenities:[], note:'Remote northern dam. Buffalo and kudu reliable.' },
-    { name:'Gudzane Dam (S65)', lat:-24.2000, lng:31.5500, zone:'Central', amenities:[], note:'Photography hide. Buffalo and elephant reliable. Northern central Kruger.' },
-    { name:'Kanniedood Dam (Shingwedzi)', lat:-22.8500, lng:31.4200, zone:'North', amenities:['hide'], note:'Best waterhole in far north. Elephant and lion reliable. Excellent photography hide.' },
-    { name:'Kumana Dam (S28)', lat:-24.7200, lng:31.7800, zone:'Central', amenities:['waterhole'], note:'Photography hide at reliable waterhole. Lion, buffalo and elephant consistent.' },
-    { name:'Malopenyana Waterhole (H1-6)', lat:-23.5500, lng:31.4000, zone:'North', amenities:[], type:'waterhole', note:'Named waterhole on H1-6 north of Letaba. Elephant and buffalo territory.' },
-    { name:'Matukwale Dam (S99)', lat:-22.5800, lng:31.2200, zone:'North', amenities:[], note:'Far north Punda Maria area. Remote dam. Nyala and elephant in riverine setting.' },
-    { name:'Mazithi Dam (S86)', lat:-24.2500, lng:31.7000, zone:'Central', amenities:[], note:'Central-north Kruger. Elephant and giraffe at water. Less visited.' },
-    { name:'Middelvlei Waterhole (H1-6)', lat:-23.6000, lng:31.4200, zone:'North', amenities:[], type:'waterhole', note:'H1-6 corridor waterhole. Elephant and zebra regular visitors.' },
-    { name:'Mingerhout Dam (S4 - Letaba River)', lat:-23.7000, lng:31.4500, zone:'North', amenities:['lookout'], note:'Letaba River road. Hippo and crocodile below dam wall. Reliable year-round.' },
-    { name:'Mlondozi Dam (H10)', lat:-25.0600, lng:31.8400, zone:'South', amenities:['shade','toilets','lookout','picnic'], note:'Lower Sabie area. Reliable hippo, elephant and buffalo. Picnic tables available.' },
-    { name:'Mpondo Dam (H3)', lat:-25.2500, lng:31.5500, zone:'South', amenities:[], note:'Southern Kruger. White rhino and buffalo at water.' },
-    { name:'Ngotso Dam (H7)', lat:-24.5000, lng:31.7200, zone:'Central', amenities:[], note:'Central Kruger. Elephant and impala. Can dry in drought years.' },
-    { name:'Ngwenya Dam (S114)', lat:-25.1500, lng:31.8800, zone:'South', amenities:['shade'], note:'Large scenic dam south of Lower Sabie. Classic African setting. Elephant, hippo, waterbirds.' },
-        { name:'Nhlanhlayati Dam (H4-2)', lat:-25.1700, lng:31.7500, zone:'South', amenities:['hide'], note:'Reliable hippo dam near Lower Sabie. Crocodile and waterbirds.' },
-    { name:'Nkorho Pan (S114)', lat:-24.6500, lng:31.8700, zone:'South', amenities:[], type:'waterhole', note:'Productive pan east of Lower Sabie. Consistent elephant and lion.' },
-    { name:'Nsemani Dam (H7)', lat:-24.4500, lng:31.7000, zone:'Central', amenities:[], note:'Central Kruger between Satara and Orpen. Buffalo and giraffe waterhole.' },
-        { name:'Olifantsbad Pan (H1-6)', lat:-23.6200, lng:31.4500, zone:'North', amenities:[], type:'waterhole', note:'Named pan on H1-6 north of Letaba. Elephant and buffalo regular.' },
-    { name:'Orpen Dam (H7)', lat:-24.4152, lng:31.4002, zone:'Central', amenities:['toilets','shade','picnic'], note:'One of the best central Kruger waterholes. Lion, elephant and cheetah territory.' },
-    { name:'Pioneer Dam (S142 - Mopani)', lat:-23.5336, lng:31.3882, zone:'North', amenities:['hide'], note:'Remote northern dam near Shipandani hide. Buffalo and elephant.' },
-    { name:'Sable Dam (S51 - Phalaborwa)', lat:-23.9400, lng:31.7800, zone:'North', amenities:['hide','overnight','booking'], note:'Best spot for rare sable antelope. Photography hide overlooks dam. Also lion and buffalo territory.' },
-    { name:'Shibotwana Waterhole (S100)', lat:-25.1000, lng:31.3800, zone:'South', amenities:[], type:'waterhole', note:'White lion country. Lion prides concentrate here in dry season.' },
-    { name:'Shitlave Dam (Pretoriuskop)', lat:-25.1700, lng:31.3000, zone:'South', amenities:[], note:'Southern Kruger. White rhino territory.' },
-    { name:'Shitmani Dam (Satara area)', lat:-24.3500, lng:31.7500, zone:'Central', amenities:[], note:'Satara area reliable game waterhole. Buffalo and zebra consistent.' },
-    { name:'Silolweni Dam (S1 - Tshokwane)', lat:-24.9000, lng:31.8500, zone:'South', amenities:[], note:'Eastern Kruger. Reliable elephant and giraffe year-round.' },
-    { name:'Sunset Dam (Lower Sabie)', lat:-25.1200, lng:31.9000, zone:'South', amenities:['shade','toilets'], note:'Iconic hippo and crocodile dam. Best at sunset. Reliable waterbird sightings daily.' },
-    { name:'Sweni Dam (S36)', lat:-24.4000, lng:31.9000, zone:'Central', amenities:['hide'], note:'Eastern Kruger lion territory. Remote and productive.' },
-    { name:'Transport Dam (H1-1)', lat:-25.0200, lng:31.5300, zone:'South', amenities:[], note:'One of the most reliable dams in the south. Rhino, lion and buffalo. H1-1 road.' },
-    { name:'Twisappel Dam (H1-6)', lat:-23.5800, lng:31.3800, zone:'North', amenities:[], note:'North of Letaba. Elephant and buffalo dam on H1-6 main road north.' },
-    { name:'Welverdiend Waterhole (Sweni Road)', lat:-24.3800, lng:31.9500, zone:'Central', amenities:[], type:'waterhole', note:'Eastern central Kruger. Lion prides concentrate here in dry season.' },
+    { name:'Elephant Waterhole (H1-2)', lat:-24.7000, lng:31.7600, zone:'Central', amenities:[], badges:['waterhole'], type:'waterhole', note:'Between Tshokwane and Skukuza. Reliable elephant waterhole visible from road.' },
+    { name:'Engelhard Dam (S47 - Letaba)', lat:-23.8561, lng:31.5802, zone:'North', amenities:['shade'], badges:['lookout','heritage'], note:'World-class elephant viewing at dawn. Lion and buffalo regular. Best dam in Africa for elephant photography.', detail:{"location":"S47 loop road from Letaba Camp along the Letaba River. Drive the dam wall at first light.","wildlife":"World-class elephant viewing — often 50-100+ elephants at dawn. Lion and buffalo regular. Outstanding waterbird diversity.","facilities":"Road-side viewing only. Letaba Camp nearby for all facilities.","tips":"Arrive by 06:30 for peak elephant activity. The S47 loop is the finest elephant road in Africa. Afternoons excellent for mud-bath sequences."} },
+    { name:'Girivana Dam (S29)', lat:-23.6500, lng:31.6000, zone:'North', amenities:[], badges:[], note:'Remote northern dam. Buffalo and kudu reliable.' },
+    { name:'Gudzane Dam (S65)', lat:-24.2000, lng:31.5500, zone:'Central', amenities:[], badges:[], badges:[], note:'Photography hide. Buffalo and elephant reliable. Northern central Kruger.' },
+    { name:'Kanniedood Dam (Shingwedzi)', lat:-22.8500, lng:31.4200, zone:'North', amenities:[], badges:['hide'], note:'Best waterhole in far north. Elephant and lion reliable. Excellent photography hide.' },
+    { name:'Kumana Dam (S28)', lat:-24.7200, lng:31.7800, zone:'Central', amenities:[], badges:['waterhole'], type:'waterhole', badges:[], note:'Photography hide at reliable waterhole. Lion, buffalo and elephant consistent.' },
+    { name:'Malopenyana Waterhole (H1-6)', lat:-23.5500, lng:31.4000, zone:'North', amenities:[], badges:['waterhole'], type:'waterhole', note:'Named waterhole on H1-6 north of Letaba. Elephant and buffalo territory.' },
+    { name:'Matukwale Dam (S99)', lat:-22.5800, lng:31.2200, zone:'North', amenities:[], badges:[], note:'Far north Punda Maria area. Remote dam. Nyala and elephant in riverine setting.' },
+    { name:'Mazithi Dam (S86)', lat:-24.2500, lng:31.7000, zone:'Central', amenities:[], badges:[], note:'Central-north Kruger. Elephant and giraffe at water. Less visited.' },
+    { name:'Middelvlei Waterhole (H1-6)', lat:-23.6000, lng:31.4200, zone:'North', amenities:[], badges:['waterhole'], type:'waterhole', note:'H1-6 corridor waterhole. Elephant and zebra regular visitors.' },
+    { name:'Mingerhout Dam (S4 - Letaba River)', lat:-23.7000, lng:31.4500, zone:'North', amenities:[], badges:['lookout'], note:'Letaba River road. Hippo and crocodile below dam wall. Reliable year-round.' },
+    { name:'Mlondozi Dam (H10)', lat:-25.0600, lng:31.8400, zone:'South', amenities:['shade','toilets'], badges:['lookout','picnic'], note:'Lower Sabie area. Reliable hippo, elephant and buffalo. Picnic tables available.' },
+    { name:'Mpondo Dam (H3)', lat:-25.2500, lng:31.5500, zone:'South', amenities:[], badges:[], note:'Southern Kruger. White rhino and buffalo at water.' },
+    { name:'Ngotso Dam (H7)', lat:-24.5000, lng:31.7200, zone:'Central', amenities:[], badges:[], note:'Central Kruger. Elephant and impala. Can dry in drought years.' },
+    { name:'Ngwenya Dam (S114)', lat:-25.1500, lng:31.8800, zone:'South', amenities:['shade'], badges:[], note:'Large scenic dam south of Lower Sabie. Classic African setting. Elephant, hippo, waterbirds.' },
+        { name:'Nhlanhlayati Dam (H4-2)', lat:-25.1700, lng:31.7500, zone:'South', amenities:[], badges:['hide'], note:'Reliable hippo dam near Lower Sabie. Crocodile and waterbirds.' },
+    { name:'Nkorho Pan (S114)', lat:-24.6500, lng:31.8700, zone:'South', amenities:[], badges:['waterhole'], type:'waterhole', note:'Productive pan east of Lower Sabie. Consistent elephant and lion.' },
+    { name:'Nsemani Dam (H7)', lat:-24.4500, lng:31.7000, zone:'Central', amenities:[], badges:[], note:'Central Kruger between Satara and Orpen. Buffalo and giraffe waterhole.' },
+        { name:'Olifantsbad Pan (H1-6)', lat:-23.6200, lng:31.4500, zone:'North', amenities:[], badges:['waterhole'], type:'waterhole', note:'Named pan on H1-6 north of Letaba. Elephant and buffalo regular.' },
+    { name:'Orpen Dam (H7)', lat:-24.4152, lng:31.4002, zone:'Central', amenities:['toilets','shade'], badges:['picnic'], note:'One of the best central Kruger waterholes. Lion, elephant and cheetah territory.', detail:{"location":"H7 road near Orpen Gate, central Kruger. One of the most reliable waterholes in the park.","wildlife":"Lion, cheetah and elephant territory. Buffalo herds drink daily. Wild dog packs sighted regularly.","facilities":"Roadside picnic spot with shade and ablutions. Orpen Camp facilities nearby.","tips":"Often overlooked by visitors rushing to Satara. Excellent mid-morning activity after heat shimmer closes telephoto shots elsewhere."} },
+    { name:'Pioneer Dam (S142 - Mopani)', lat:-23.5336, lng:31.3882, zone:'North', amenities:[], badges:['hide'], note:'Remote northern dam near Shipandani hide. Buffalo and elephant.' },
+    { name:'Sable Dam (S51 - Phalaborwa)', lat:-23.9400, lng:31.7800, zone:'North', hours:'Overnight possible', amenities:['overnight','booking'], badges:['hide'], badges:['hide'], note:'Best spot for rare sable antelope. Photography hide overlooks dam. Also lion and buffalo territory.', detail:{"location":"S51 road, ~8km from Phalaborwa Gate. Overlooks Sable Dam in northern Kruger.","wildlife":"Best location in Kruger for sable antelope photography. Lion and buffalo also regular. Superb shooting at dawn.","facilities":"Overnight hide with sleepover facility. Book through Letaba or Phalaborwa Gate. Bring own food, water and bedding.","tips":"Arrive before sunrise for the best sable sightings. The S51 road is also excellent for roan antelope and eland."} },
+    { name:'Shibotwana Waterhole (S100)', lat:-25.1000, lng:31.3800, zone:'South', amenities:[], badges:['waterhole'], type:'waterhole', note:'White lion country. Lion prides concentrate here in dry season.' },
+    { name:'Shitlave Dam (Pretoriuskop)', lat:-25.1700, lng:31.3000, zone:'South', amenities:[], badges:[], note:'Southern Kruger. White rhino territory.' },
+    { name:'Shitmani Dam (Satara area)', lat:-24.3500, lng:31.7500, zone:'Central', amenities:[], badges:[], note:'Satara area reliable game waterhole. Buffalo and zebra consistent.' },
+    { name:'Silolweni Dam (S1 - Tshokwane)', lat:-24.9000, lng:31.8500, zone:'South', amenities:[], badges:[], note:'Eastern Kruger. Reliable elephant and giraffe year-round.' },
+    { name:'Sunset Dam (Lower Sabie)', lat:-25.1200, lng:31.9000, zone:'South', amenities:['shade','toilets'], badges:[], note:'Iconic hippo and crocodile dam. Best at sunset. Reliable waterbird sightings daily.', detail:{"location":"Adjacent to Lower Sabie Camp entrance. One of the most accessible productive dams in the park.","wildlife":"Permanent hippo pod. Nile crocodile basking daily. African Fish Eagle, Yellow-billed Stork, Giant Kingfisher. Elephant and buffalo at water regularly.","facilities":"Roadside viewing from vehicle. Lower Sabie Camp facilities minutes away.","tips":"Visit at 17:00-18:00 for outstanding golden light photography. Hippos frequently exit to graze on the banks at dusk."} },
+    { name:'Sweni Dam (S36)', lat:-24.4000, lng:31.9000, zone:'Central', amenities:[], badges:['hide'], note:'Eastern Kruger lion territory. Remote and productive.' },
+    { name:'Transport Dam (H1-1)', lat:-25.0200, lng:31.5300, zone:'South', amenities:[], badges:[], note:'One of the most reliable dams in the south. Rhino, lion and buffalo. H1-1 road.' },
+    { name:'Twisappel Dam (H1-6)', lat:-23.5800, lng:31.3800, zone:'North', amenities:[], badges:[], note:'North of Letaba. Elephant and buffalo dam on H1-6 main road north.' },
+    { name:'Welverdiend Waterhole (Sweni Road)', lat:-24.3800, lng:31.9500, zone:'Central', amenities:[], badges:['waterhole'], type:'waterhole', note:'Eastern central Kruger. Lion prides concentrate here in dry season.' },
   ],  landmarks: [
-    { name:'Lanner Gorge - Punda Maria', lat:-22.7000, lng:31.0000, amenities:['booking','shade','lookout'], note:'Ancient gorge - rock engravings - superb viewpoint. Guided tours from Punda Maria.' },
-    { name:'Thulamela Archaeological Site', lat:-22.5000, lng:31.2000, amenities:['booking'], note:'Late Iron Age site - stone walled settlement. Guided tours only. Book at Punda Maria.' },
-    { name:'Crocodile Bridge Historical Gate', lat:-25.3596, lng:31.8854, amenities:[], note:'Original 1902 Kruger entrance point - historical plaque' },
-    { name:'Paul Kruger Memorial', lat:-25.0052, lng:31.4932, amenities:[], note:'Statue near Paul Kruger Gate - historical monument' },
-    { name:'Stevenson-Hamilton Library', lat:-24.9966, lng:31.5960, amenities:['disabled'], note:'At Skukuza - first warden\'s heritage - open to visitors' },
-    { name:'Makuleke Contractual Park', lat:-22.5000, lng:31.3000, amenities:[], note:'Pafuri region - Makuleke community land - Crooks Corner' },
-    { name:'James Stevenson-Hamilton Grave', lat:-24.9900, lng:31.5900, amenities:[], note:'First warden\'s grave at Skukuza - open to visitors' },
-    { name:'Tshokwane Historical Site', lat:-24.7941, lng:31.8695, amenities:['toilets','kiosk','shade'], note:'Named after chief Tshokwane - original ranger post site' },
-    { name:'Orpen Memorial', lat:-24.4152, lng:31.3967, amenities:[], note:'Named after James Orpen - heritage plaque at gate' },
-        { name:'Mathekenyane Hill Lookout', lat:-25.1500, lng:31.8600, amenities:['lookout'], note:'Classic granite koppie. Outstanding for klipspringer and leopard. Magnificent views.', type:'poi' },
-    { name:'Lebombo Mountain Viewpoint', lat:-24.6000, lng:31.9800, amenities:[], note:'Eastern boundary ridge. Sunrise views into Mozambique. Access via Nwanetsi Picnic.', type:'poi' },
-    { name:'Engelhard Dam Viewpoint', lat:-23.8561, lng:31.5802, amenities:['shade'], note:'Best elephant viewing in central Kruger. Dawn drives past the dam edge are world-class.', type:'poi' },
-    { name:'Nkumbe Hill (S110)', lat:-24.8500, lng:31.6200, amenities:['lookout'], note:'Highest point in southern Kruger. 360-degree panoramic view over central plains.', type:'poi' },
-    { name:'Olifants River Gorge Viewpoint', lat:-23.9964, lng:31.7369, amenities:['shade'], note:'Viewed from Olifants Camp. One of the most spectacular views in Africa. Best at sunset.', type:'poi' },
-    { name:'Baobab Trees (Pafuri Triangle)', lat:-22.5500, lng:31.2500, amenities:[], note:'Ancient baobab grove near Pafuri. Some trees estimated 2000+ years old.', type:'poi' },
-    { name:'Flood Plains of the Luvuvhu', lat:-22.4500, lng:31.2000, amenities:['shade','toilets'], note:'Pafuri area. Birding hotspot. Riverine forest with nyala, buffalo and elephant.', type:'poi' },
+    { name:'Lanner Gorge - Punda Maria', lat:-22.7000, lng:31.0000, zone:'Far North', amenities:['booking','shade'], badges:['heritage','lookout'], note:'Ancient gorge - rock engravings - superb viewpoint. Guided tours from Punda Maria.' },
+    { name:'Thulamela Archaeological Site', lat:-22.5000, lng:31.2000, zone:'Far North', amenities:['booking'], badges:['heritage'], note:'Late Iron Age site - stone walled settlement. Guided tours only. Book at Punda Maria.' },
+    { name:'Crocodile Bridge Historical Gate', lat:-25.3596, lng:31.8854, zone:'South', amenities:[], badges:['heritage'], note:'Original 1902 Kruger entrance point - historical plaque' },
+    { name:'Paul Kruger Memorial', lat:-25.0052, lng:31.4932, zone:'South', amenities:[], badges:['heritage'], note:'Statue near Paul Kruger Gate - historical monument' },
+    { name:'Stevenson-Hamilton Library', lat:-24.9966, lng:31.5960, zone:'South', amenities:['disabled'], badges:['heritage'], note:'At Skukuza - first warden\'s heritage - open to visitors' },
+    { name:'Makuleke Contractual Park', lat:-22.5000, lng:31.3000, zone:'Far North', amenities:[], badges:['heritage'], note:'Pafuri region - Makuleke community land - Crooks Corner' },
+    { name:'James Stevenson-Hamilton Grave', lat:-24.9900, lng:31.5900, zone:'South', amenities:[], badges:['heritage'], note:'First warden\'s grave at Skukuza - open to visitors' },
+    { name:'Tshokwane Historical Site', lat:-24.7941, lng:31.8695, zone:'South', amenities:['toilets','kiosk','shade'], badges:['heritage'], note:'Named after chief Tshokwane - original ranger post site' },
+    { name:'Orpen Memorial', lat:-24.4152, lng:31.3967, zone:'Central', amenities:[], badges:['heritage'], note:'Named after James Orpen - heritage plaque at gate' },
+        { name:'Mathekenyane Hill Lookout', lat:-25.1500, lng:31.8600, zone:'South', amenities:[], badges:['poi','lookout'], note:'Classic granite koppie. Outstanding for klipspringer and leopard. Magnificent views.', type:'poi' },
+    { name:'Lebombo Mountain Viewpoint', lat:-24.6000, lng:31.9800, zone:'South', amenities:[], badges:['poi'], note:'Eastern boundary ridge. Sunrise views into Mozambique. Access via Nwanetsi Picnic.', type:'poi' },
+    { name:'Engelhard Dam Viewpoint', lat:-23.8561, lng:31.5802, zone:'Central', amenities:['shade'], badges:['poi'], note:'Best elephant viewing in central Kruger. Dawn drives past the dam edge are world-class.', type:'poi' },
+    { name:'Nkumbe Hill (S110)', lat:-24.8500, lng:31.6200, zone:'South', amenities:[], badges:['poi','lookout'], note:'Highest point in southern Kruger. 360-degree panoramic view over central plains.', type:'poi' },
+    { name:'Olifants River Gorge Viewpoint', lat:-23.9964, lng:31.7369, zone:'Central', amenities:['shade'], badges:['poi'], note:'Viewed from Olifants Camp. One of the most spectacular views in Africa. Best at sunset.', type:'poi' },
+    { name:'Baobab Trees (Pafuri Triangle)', lat:-22.5500, lng:31.2500, zone:'Far North', amenities:[], badges:['poi'], note:'Ancient baobab grove near Pafuri. Some trees estimated 2000+ years old.', type:'poi' },
+    { name:'Flood Plains of the Luvuvhu', lat:-22.4500, lng:31.2000, zone:'Far North', amenities:['shade','toilets'], badges:['poi'], note:'Pafuri area. Birding hotspot. Riverine forest with nyala, buffalo and elephant.', type:'poi' },
 ,
-    { name:"Von Weilligh's Baobab", lat:-22.6000, lng:31.2000, amenities:[], note:"Famous ancient baobab tree in the far north. Named after early explorer. One of the largest baobabs in Kruger. Approximate age 1500+ years.", type:'poi' },
-    { name:'Albasini Ruins', lat:-23.5500, lng:30.9500, amenities:[], note:'Historical ruins of João Albasini trading post near the western boundary. Important 19th century heritage site. Combined with nearby picnic site.' },
-    { name:'Masorini Archaeological Site', lat:-23.9300, lng:31.2000, amenities:['booking'], note:'Reconstructed Iron Age village near Phalaborwa Gate. Guided tours available. Outstanding example of pre-colonial settlement. Book through Phalaborwa Gate.' }
+    { name:"Von Weilligh's Baobab", lat:-22.6000, lng:31.2000, zone:'Far North', amenities:[], badges:['poi'], note:"Famous ancient baobab tree in the far north. Named after early explorer. One of the largest baobabs in Kruger. Approximate age 1500+ years.", type:'poi' },
+    { name:'Albasini Ruins', lat:-23.5500, lng:30.9500, zone:'Central', amenities:[], badges:['heritage'], note:'Historical ruins of João Albasini trading post near the western boundary. Important 19th century heritage site. Combined with nearby picnic site.' },
+    { name:'Masorini Archaeological Site', lat:-23.9300, lng:31.2000, zone:'Central', amenities:['booking'], badges:['heritage'], note:'Reconstructed Iron Age village near Phalaborwa Gate. Guided tours available. Outstanding example of pre-colonial settlement. Book through Phalaborwa Gate.' }
   ]
 };
 
@@ -2162,6 +2162,7 @@ function showScreen(id) {
   var navItems = document.querySelectorAll('.nav-item');
   if(map[id] !== undefined && navItems[map[id]]) navItems[map[id]].classList.add('active');
   window._currentScreenId = id;
+  setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
   // Init map on first visit
   if(id === 'map') setTimeout(function(){ initMap(); if(_map) _map.invalidateSize(); }, 100);
 }
@@ -2437,6 +2438,7 @@ function renderCamps() {
               (camp.atm?'<span class="atag yes">ATM</span>':'') +
               (camp.clinic?'<span class="atag yes">Clinic</span>':'') +
               (camp.wifi?'<span class="atag yes">WiFi</span>':'') +
+              '<span class="atag yes">Restrooms</span>' +
             '</div>' +
           '</div>' +
           '<div style="display:flex;flex-direction:row;gap:4px;align-items:center;flex-shrink:0">' +
@@ -2448,6 +2450,7 @@ function renderCamps() {
           (camp.highlights?'<div class="drow"><div class="dlabel">About</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+camp.highlights+'</div></div>':'') +
           '<div class="drow"><div class="dlabel">Fuel</div><div class="dval hi">'+(camp.fuel?camp.fuelType:'No fuel')+'</div></div>' +
           '<div class="drow"><div class="dlabel">Facilities</div><div class="dval"><div class="atags">' +
+            '<span class="atag yes">Restrooms</span>' +
             '<span class="atag '+(camp.shop?'yes':'no')+'">Shop</span>' +
             '<span class="atag '+(camp.restaurant?'yes':'no')+'">Restaurant</span>' +
             '<span class="atag '+(camp.atm?'yes':'no')+'">ATM</span>' +
@@ -4062,7 +4065,7 @@ function renderFamilyFeedHeader() {
 
 function _amenityBadges(a) {
   if(!a || !a.length) return '';
-  var icons = { toilets:'&#x1F6BE;', braai:'&#x1F525;', shade:'&#x1F333;', water:'&#x1F4A7;', kiosk:'&#x2615;', hide:'&#x1F50D;', disabled:'&#x267F;', overnight:'&#x1F319;', booking:'&#x1F4CB;', restaurant:'&#x1F374;' };
+  var icons = { toilets:'&#x1F6BE;', braai:'&#x1F525;', shade:'&#x1F333;', water:'&#x1F4A7;', kiosk:'&#x2615;', disabled:'&#x267F;', overnight:'&#x1F319;', booking:'&#x1F4CB;', restaurant:'&#x1F374;' };
   return '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">' +
     a.map(function(item){ return '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)">'+(icons[item]||'&#x2713;')+' '+item.charAt(0).toUpperCase()+item.slice(1)+'</div>'; }).join('') +
   '</div>';
@@ -4365,121 +4368,6 @@ function makeSVG(sp) {
     '<rect width="100" height="100" fill="' + (sp.protected ? '#1a0808' : '#0e1418') + '"/>' +
     '<text x="50" y="55" text-anchor="middle" fill="#5a6b75" font-size="10" font-family="Montserrat,sans-serif">' + sp.name + '</text>' +
     '</svg></div>';
-}
-
-function renderSpecies() {
-  var grid=document.getElementById('speciesGrid'), rareList=document.getElementById('rareList');
-  if(!grid) return;
-  var sightings=loadSightings();
-  var search=(document.getElementById('wildlifeSearch')?document.getElementById('wildlifeSearch').value:'').toLowerCase().trim();
-  var filter=typeof _wildlifeFilter!=='undefined'?_wildlifeFilter:'all';
-  var filtered=SPECIES.filter(function(sp){
-    if(sp.classification && sp.classification !== 'Mammalia') return false;
-    if(search) {
-      var nameMatch = sp.name.toLowerCase().indexOf(search) >= 0;
-      var latinMatch = (sp.latin||'').toLowerCase().indexOf(search) >= 0;
-      if(!nameMatch && !latinMatch) return false;
-    }
-    if(filter==='all') return true;
-    if(filter==='big5') return sp.category==='big5';
-    if(filter==='endangered') return sp.conservation&&(sp.conservation.indexOf('Critically Endangered')>=0||sp.conservation.indexOf('Endangered (EN)')>=0)||sp.protected;
-    if(filter==='rare') return sp.protected||sp.category==='rare';
-    return true;
-  });
-  var main=filtered.filter(function(sp){return !sp.protected;});
-  var rare=filtered.filter(function(sp){return sp.protected;});
-  if(filter !== 'endangered') { main.sort(function(a,b){ return a.name.localeCompare(b.name); }); }
-  // When endangered filter is active, sort: CR protected first, then EN
-  if(filter==='endangered') {
-    main.sort(function(a,b){
-      var aCR=a.conservation&&a.conservation.indexOf('Critically')>=0?0:1;
-      var bCR=b.conservation&&b.conservation.indexOf('Critically')>=0?0:1;
-      return aCR-bCR;
-    });
-    // For endangered filter: protected species go FIRST, then non-protected
-    var combined = rare.concat(main);
-    grid.innerHTML=combined.map(function(sp){
-      var idx=SPECIES.indexOf(sp), ticked=sightings.some(function(s){return s.id===sp.id;});
-      if(sp.protected) {
-        return '<div class="sp-card protected" onclick="openSpecies('+idx+')">' +
-          '<div class="sp-img-wrap">'+(ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" class="sp-img">':'<div style="width:100%;height:100%;background:#1a0808"></div>')+'<div class="sp-img-protected">PROTECTED</div></div>' +
-          '<div class="sp-name">'+sp.name+'</div><div class="sp-latin">'+sp.latin+'</div></div>';
-      }
-      return '<div class="sp-card" onclick="openSpecies('+idx+')">' +
-        '<div class="sp-img-wrap">'+(ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" class="sp-img">':'<div style="width:100%;height:100%;background:#0e1418"></div>')+(ticked?'<div class="sp-tick">&#10003;</div>':'')+
-        '</div><div class="sp-name">'+sp.name+'</div><div class="sp-latin">'+sp.latin+'</div></div>';
-    }).join('')||'<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No species match this filter.</div>';
-    if(rareList) rareList.innerHTML='';
-    return;
-  }
-  // ALL / BIG5 / RARE: render all in one flat grid below
-  // Render ALL species — non-protected first, protected after — in ONE flat grid
-  // This guarantees no gap regardless of count. Protected cards carry the PROTECTED badge.
-  var allToRender = main.concat(rare);
-  grid.innerHTML = allToRender.map(function(sp){
-    var idx=SPECIES.indexOf(sp);
-    var ticked=sightings.some(function(s){return s.id===sp.id;});
-    if(sp.protected) {
-      return '<div class="sp-card protected" onclick="openSpecies('+idx+')">' +
-        '<div class="sp-img-wrap">'+(ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" class="sp-img">':'<div style="width:100%;height:100%;background:#1a0808"></div>')+'<div class="sp-img-protected">PROTECTED</div></div>' +
-        '<div class="sp-name">'+sp.name+'</div><div class="sp-latin">'+sp.latin+'</div></div>';
-    }
-    return '<div class="sp-card" onclick="openSpecies('+idx+')">' +
-      '<div class="sp-img-wrap">'+(ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" class="sp-img">':'<div style="width:100%;height:100%;background:#0e1418"></div>')+(ticked?'<div class="sp-tick">&#10003;</div>':'')+
-      '</div><div class="sp-name">'+sp.name+'</div><div class="sp-latin">'+sp.latin+'</div></div>';
-  }).join('') || '<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No species match this filter.</div>';
-  if(rareList) rareList.innerHTML = '';
-}
-
-function openSpecies(idx) {
-  var sp=SPECIES[idx]; if(!sp) return;
-  window._spIdx=idx; window._spType='species'; selectedStars=0;
-  trackRecentlyViewed('species', idx);
-  var modal=document.getElementById('speciesModal'); if(!modal) return;
-  modal.querySelector('.modal-title').textContent=sp.name;
-  var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>H9</option><option>H10</option><option>H12</option><option>H14</option><option>S1</option><option>S3</option><option>S28</option><option>S65</option><option>S100</option><option>S106</option><option>S114</option><option>Waterhole</option><option>Near Camp</option>';
-  modal.querySelector('.modal-body').innerHTML=
-    (ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':'')+
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
-      '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
-      (sp.protected?
-        '<div style="background:rgba(204,51,34,.15);border:1px solid rgba(204,51,34,.4);border-radius:8px;padding:6px 12px;color:#e05545;font-size:10px;font-weight:700">&#x26A0; PROTECTED</div>':
-        '<button onclick="openSightingPanel()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:7px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Sighting</button>')+
-    '</div>'+
-    (sp.classification?'<div class="drow"><div class="dlabel">Classification</div><div class="dval">'+sp.classification+'</div></div>':'')+
-    (sp.conservation?'<div class="drow"><div class="dlabel">Conservation</div><div class="dval" style="color:'+(sp.conservation.indexOf('Critical')>=0?'#e05545':sp.conservation.indexOf('Endangered')>=0?'#e07545':sp.conservation.indexOf('Vulnerable')>=0?'#c8962a':'var(--text)')+'">'+(sp.conservation.indexOf('Critical')>=0||sp.conservation.indexOf('Endangered')>=0?'&#x26A0; ':'')+sp.conservation+'</div></div>':'')+
-    ((sp.totalLength||sp.shoulderHeight||sp.mass)?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Size</div>':'')+
-    (sp.totalLength?'<div class="drow"><div class="dlabel">Total Length</div><div class="dval">'+sp.totalLength+'</div></div>':'')+
-    (sp.shoulderHeight?'<div class="drow"><div class="dlabel">Shoulder Height</div><div class="dval">'+sp.shoulderHeight+'</div></div>':'')+
-    (sp.mass?'<div class="drow"><div class="dlabel">Mass</div><div class="dval">'+sp.mass+'</div></div>':'')+
-'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Field Intelligence</div>'+
-    (sp.trophic?'<div class="drow"><div class="dlabel">Trophic Level</div><div class="dval">'+sp.trophic+'</div></div>':'')+
-    (sp.gestation?'<div class="drow"><div class="dlabel">Gestation</div><div class="dval">'+sp.gestation+'</div></div>':'')+
-    '<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+sp.zone+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Best Roads</div><div class="dval">'+sp.roads+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>'+
-    '<div class="drow" style="display:block"><div class="dlabel">Field Notes</div><div class="dval" style="margin-top:4px">'+sp.behaviour+'</div></div>'+
-    getSpeciesLanguagesHtml(sp.id)+
-    (sp.keyFeatures?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Key Features</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.keyFeatures+'</div>':'')+
-    (sp.description?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Description</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.description+'</div>':'')+
-    (sp.distribution?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Distribution</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.distribution+'</div>':'')+
-    (sp.habitat?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Habitat</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.habitat+'</div>':'')+
-    (sp.behavior?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Behavior</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.behavior+'</div>':'')+
-    (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
-    (sp.breeding?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>':'')+
-    (sp.protected?'<div style="background:rgba(204,51,34,.12);border:1px solid rgba(204,51,34,.3);border-radius:10px;padding:10px 14px;margin:12px 0;color:#e05545;font-size:11px;font-weight:600">&#x26A0; PROTECTED SPECIES – Sighting logged privately only. Location not shared.</div><button onclick="logProtectedSighting()" style="width:100%;background:rgba(204,51,34,.2);border:1px solid rgba(204,51,34,.4);color:#e05545;border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Protected Sighting</button>':'')+
-    '<div id="sightingPanel" style="display:none;margin-top:12px">'+
-      '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
-      '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
-    '</div>';
-  // Clean up any lingering fullscreen overlay from previous open
-  var existingOv = document.getElementById('imgFullscreenOverlay');
-  if(existingOv) existingOv.remove();
-  // Scroll modal to top
-  var sheet = modal.querySelector('.modal-sheet');
-  if(sheet) sheet.scrollTop = 0;
-  modal.classList.add('open');
 }
 
 function openGPSCapture() {
@@ -5862,14 +5750,6 @@ function renderFamilyFeedHeader() {
   '</div>';
 }
 
-function _amenityBadges(a) {
-  if(!a || !a.length) return '';
-  var icons = { toilets:'&#x1F6BE;', braai:'&#x1F525;', shade:'&#x1F333;', water:'&#x1F4A7;', kiosk:'&#x2615;', hide:'&#x1F50D;', disabled:'&#x267F;', overnight:'&#x1F319;', booking:'&#x1F4CB;', restaurant:'&#x1F374;' };
-  return '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">' +
-    a.map(function(item){ return '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)">'+(icons[item]||'&#x2713;')+' '+item.charAt(0).toUpperCase()+item.slice(1)+'</div>'; }).join('') +
-  '</div>';
-}
-
 function switchParkInfoTab(tab, btn) {
   _parkInfoTab = tab;
   document.querySelectorAll('.pkinfo-tab').forEach(function(b){
@@ -5884,10 +5764,9 @@ function renderLookouts() {
   var el = document.getElementById('lookoutsList'); if(!el) return;
   var af = window._lookoutFilter || 'all';
   var lkts = (FACILITIES.lookout||[]).slice();
-  (FACILITIES.dams||[]).filter(function(d){ return (d.amenities||[]).indexOf('hide')>=0; })
+  (FACILITIES.dams||[]).filter(function(d){ return (d.badges||[]).indexOf('hide')>=0; })
     .forEach(function(d){ lkts.push(Object.assign({},d,{fromDam:true})); });
-  // Also include dams with 'lookout' badge when showing Lookouts filter
-  (FACILITIES.dams||[]).filter(function(d){ return (d.amenities||[]).indexOf('lookout')>=0; })
+  (FACILITIES.dams||[]).filter(function(d){ return (d.badges||[]).indexOf('lookout')>=0; })
     .forEach(function(d){ lkts.push(Object.assign({},d,{fromDam:true,lookoutFromDam:true})); });
   lkts = lkts.filter(function(p){
     var isHide=(p.amenities||[]).indexOf('hide')>=0||(p.fromDam&&!p.lookoutFromDam);
@@ -5897,22 +5776,29 @@ function renderLookouts() {
   }).sort(function(a,b){ return a.name.localeCompare(b.name); });
   if(!lkts.length){ el.innerHTML='<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No entries match this filter.</div>'; return; }
   el.innerHTML=lkts.map(function(p){
-    var am=p.amenities||[], isHide=(am.indexOf('hide')>=0||(p.fromDam&&!p.lookoutFromDam));
+    var am=p.amenities||[], bdgs=p.badges||[];
+    var isHide=bdgs.indexOf('hide')>=0||(p.fromDam&&!p.lookoutFromDam);
     var isLookoutDam=!!p.lookoutFromDam;
     var icon=isHide?'&#x1F50D;':'&#x1F441;';
-    var bdg=isLookoutDam
-      ?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><div class="badge badge-accent">Lookout</div><div class="badge badge-blue">Dam</div></div>'
+    var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
+    var typeBdg=isLookoutDam
+      ?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-accent">Lookout</div><div class="badge badge-blue">Dam</div>'+zoneBdg+'</div>'
       :isHide
-        ?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><div class="badge badge-amber">Hide</div>'+(p.fromDam?'<div class="badge badge-blue">Dam</div>':'')+'</div>'
-        :'<div class="badge badge-accent">Lookout</div>';
+        ?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-amber">Hide</div>'+(bdgs.indexOf('dam')>=0||p.fromDam?'<div class="badge badge-blue">Dam</div>':'')+zoneBdg+'</div>'
+        :'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-accent">Lookout</div>'+zoneBdg+'</div>';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div>'
       +'<div class="card-meta">'+(p.hours||'')+(p.fromDam?' &bull; Also in Dams':'')+'</div></div>'
-      +bdg+'</div>'
+      +typeBdg+'</div>'
       +'<div class="card-body">'
+      +(p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')
       +(p.hours?'<div class="drow"><div class="dlabel">Hours</div><div class="dval">'+p.hours+'</div></div>':'')
       +(am.length?'<div class="drow"><div class="dlabel">Amenities</div><div class="dval" style="text-align:left">'+_amenityBadges(am)+'</div></div>':'')
+      +(p.detail&&p.detail.location?'<div class="drow"><div class="dlabel">Location</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.location+'</div></div>':'')
+      +(p.detail&&p.detail.wildlife?'<div class="drow"><div class="dlabel">Wildlife</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.wildlife+'</div></div>':'')
+      +(p.detail&&p.detail.facilities?'<div class="drow"><div class="dlabel">Facilities</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.facilities+'</div></div>':'')
+      +(p.detail&&p.detail.tips?'<div class="drow"><div class="dlabel">Tips</div><div class="dval" style="text-align:left;font-size:11px;color:var(--accent)">'+p.detail.tips+'</div></div>':'')
       +'<div class="drow" style="border:none"><div class="dlabel">Notes</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+(p.note||'')+'</div></div></div></div>';
   }).join('');
 }
@@ -5925,24 +5811,29 @@ function setLookoutFilter(f,btn){
 
 function renderPicnic() {
   var el = document.getElementById('picnicList'); if(!el) return;
-  // Combine: picnic array + lookouts with picnic badge + dams with picnic badge
   var sites = (FACILITIES.picnic||[]).slice();
-  (FACILITIES.lookout||[]).filter(function(l){ return (l.amenities||[]).indexOf('picnic')>=0; })
+  (FACILITIES.lookout||[]).filter(function(l){ return (l.badges||[]).indexOf('picnic')>=0; })
     .forEach(function(l){ sites.push(Object.assign({},l,{fromLookout:true})); });
-  (FACILITIES.dams||[]).filter(function(d){ return (d.amenities||[]).indexOf('picnic')>=0; })
+  (FACILITIES.dams||[]).filter(function(d){ return (d.badges||[]).indexOf('picnic')>=0; })
     .forEach(function(d){ sites.push(Object.assign({},d,{fromDam:true})); });
   sites.sort(function(a,b){ return a.name.localeCompare(b.name); });
   if(!sites.length) { el.innerHTML='<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No picnic data available.</div>'; return; }
   el.innerHTML = sites.map(function(p) {
     var amenities = p.amenities || [];
     var src = p.fromLookout?' &bull; Also in Lookouts':p.fromDam?' &bull; Also in Dams':'';
+    var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">' +
       '<div class="card-icon">&#x1F9FA;</div>' +
       '<div class="card-titles"><div class="card-title">'+p.name+'</div><div class="card-meta">'+(p.hours||'')+src+'</div></div>' +
-      '<div class="badge badge-green">Picnic</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-green">Picnic</div>'+zoneBdg+'</div></div>' +
       '<div class="card-body">'+
+      (p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')+
       '<div class="drow"><div class="dlabel">Hours</div><div class="dval">'+(p.hours||'N/A')+'</div></div>' +
       (amenities.length?'<div class="drow"><div class="dlabel">Amenities</div><div class="dval" style="text-align:left">'+_amenityBadges(amenities)+'</div></div>':'')+
+      (p.detail&&p.detail.access?'<div class="drow"><div class="dlabel">Access</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.access+'</div></div>':'')+
+      (p.detail&&p.detail.wildlife?'<div class="drow"><div class="dlabel">Wildlife</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.wildlife+'</div></div>':'')+
+      (p.detail&&p.detail.facilities?'<div class="drow"><div class="dlabel">Facilities</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.facilities+'</div></div>':'')+
+      (p.detail&&p.detail.tips?'<div class="drow"><div class="dlabel">Tips</div><div class="dval" style="text-align:left;font-size:11px;color:var(--accent)">'+p.detail.tips+'</div></div>':'')+
       '<div class="drow" style="border:none"><div class="dlabel">Notes</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+(p.note||'')+'</div></div></div></div>';
   }).join('');
 }
@@ -5960,25 +5851,30 @@ function renderDams() {
   }).sort(function(a,b){ return a.name.localeCompare(b.name); });
   if(!dams.length){ el.innerHTML='<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No entries match this filter.</div>'; return; }
   el.innerHTML=dams.map(function(p){
-    var am=p.amenities||[], isHide=am.indexOf('hide')>=0;
+    var am=p.amenities||[], bdgs=p.badges||[];
     var nl=p.name.toLowerCase();
-    var isWH=p.type==='waterhole'||nl.indexOf('pan')>=0||nl.indexOf('waterhole')>=0||p.waterhole;
+    var isHide=bdgs.indexOf('hide')>=0;
+    var isWH=bdgs.indexOf('waterhole')>=0||p.type==='waterhole'||nl.indexOf('pan')>=0||(nl.indexOf('waterhole')>=0&&nl.indexOf('dam')<0);
     var isDam=!isWH||nl.indexOf('dam')>=0;
     var icon=isHide?'&#x1F50D;':(isWH&&!isDam?'&#x1F4A7;':'&#x1F30A;');
+    var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
     var bdg=isHide&&isDam
-      ?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><div class="badge badge-blue">Dam</div><div class="badge badge-amber">Hide</div></div>'
-      :isHide?'<div class="badge badge-amber">Hide</div>'
-      :(isWH&&!isDam)?'<div class="badge badge-green">Waterhole</div>'
-      :'<div class="badge badge-blue">Dam</div>';
-    var meta=isHide&&isDam?'Dam · Hide':isWH&&!isDam?'Waterhole / Pan':'Dam · Waterhole';
+      ?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-blue">Dam</div><div class="badge badge-amber">Hide</div>'+zoneBdg+'</div>'
+      :isHide?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-amber">Hide</div>'+zoneBdg+'</div>'
+      :(isWH&&!isDam)?'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-green">Waterhole</div>'+zoneBdg+'</div>'
+      :'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="badge badge-blue">Dam</div>'+zoneBdg+'</div>';
+    var meta=isHide&&isDam?'Dam · Hide':isWH&&!isDam?'Waterhole / Pan':'Dam';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div>'
-      +'<div class="card-meta">'+meta+(p.zone?' · '+p.zone:'')+'</div></div>'
+      +'<div class="card-meta">'+meta+'</div></div>'
       +bdg+'</div>'
       +'<div class="card-body">'
+      +(p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')
       +(am.length?'<div class="drow"><div class="dlabel">Amenities</div><div class="dval" style="text-align:left">'+_amenityBadges(am)+'</div></div>':'')
-      +(isHide?'<div class="drow"><div class="dlabel">Info</div><div class="dval" style="font-size:11px;color:#4488cc">Also appears in Lookouts → Hides</div></div>':'')
+      +(p.detail&&p.detail.wildlife?'<div class="drow"><div class="dlabel">Wildlife</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.wildlife+'</div></div>':'')
+      +(p.detail&&p.detail.facilities?'<div class="drow"><div class="dlabel">Facilities</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.facilities+'</div></div>':'')
+      +(p.detail&&p.detail.tips?'<div class="drow"><div class="dlabel">Tips</div><div class="dval" style="text-align:left;font-size:11px;color:var(--accent)">'+p.detail.tips+'</div></div>':'')
       +'<div class="drow" style="border:none"><div class="dlabel">Wildlife</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+(p.note||'')+'</div></div></div></div>';
   }).join('');
 }
@@ -5999,15 +5895,22 @@ function renderLandmarks() {
   }).sort(function(a,b){ return a.name.localeCompare(b.name); });
   if(!marks.length){ el.innerHTML='<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No entries match this filter.</div>'; return; }
   el.innerHTML=marks.map(function(p){
-    var am=p.amenities||[], isPOI=p.type==='poi';
+    var am=p.amenities||[], bdgs=p.badges||[];
+    var isPOI=p.type==='poi'||bdgs.indexOf('poi')>=0;
+    var hasLookout=bdgs.indexOf('lookout')>=0;
     var icon=isPOI?'&#x1F4CC;':'&#x1F5FF;';
     var meta=isPOI?'Point of Interest':'Heritage · Landmark';
+    var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
+    var lookBdg=hasLookout?'<div class="badge badge-accent" style="margin-top:3px">Lookout</div>':'';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div><div class="card-meta">'+meta+'</div></div>'
-      +'<div class="'+(isPOI?'badge badge-green':'badge badge-amber')+'">'+(isPOI?'POI':'Heritage')+'</div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end"><div class="'+(isPOI?'badge badge-green':'badge badge-amber')+'">'+(isPOI?'POI':'Heritage')+'</div>'+lookBdg+zoneBdg+'</div></div>'
       +'<div class="card-body">'
+      +(p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')
       +(am.length?'<div class="drow"><div class="dlabel">Amenities</div><div class="dval" style="text-align:left">'+_amenityBadges(am)+'</div></div>':'')
+      +(p.detail&&p.detail.access?'<div class="drow"><div class="dlabel">Access</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+p.detail.access+'</div></div>':'')
+      +(p.detail&&p.detail.tips?'<div class="drow"><div class="dlabel">Tips</div><div class="dval" style="text-align:left;font-size:11px;color:var(--accent)">'+p.detail.tips+'</div></div>':'')
       +'<div class="drow" style="border:none"><div class="dlabel">Notes</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+(p.note||'')+'</div></div></div></div>';
   }).join('');
 }
@@ -6822,6 +6725,7 @@ function openBird(idx) {
 }
 
 function switchWildlifeTab(tab, btn) {
+  setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
   ['species','birds','reptiles','frogs','sightings'].forEach(function(t) {
     var panel = document.getElementById('wildlifePanel-'+t);
     if(panel) panel.style.display = t === tab ? 'block' : 'none';
@@ -6856,7 +6760,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.32';
+var APP_VERSION = '3.33';
 
 // Clear stale caches when version changes
 (function() {
@@ -7361,7 +7265,7 @@ function _plotMapMarkers() {
       var nl=d.name.toLowerCase();
       var isWH=d.type==='waterhole'||nl.indexOf('pan')>=0||nl.indexOf('waterhole')>=0||d.waterhole;
       var isDam=!isWH||nl.indexOf('dam')>=0;
-      return isDam && (d.amenities||[]).indexOf('hide')<0;
+      return isDam && (d.badges||[]).indexOf('hide')<0;
     }).forEach(function(d) {
       var m = L.marker([d.lat, d.lng], {icon: damIcon})
         .bindPopup('<b>'+d.name+'</b><br>'+d.note);
@@ -7385,7 +7289,7 @@ function _plotMapMarkers() {
   // Lookouts (viewpoints only — not hides)
   if(_mapFilters.lookouts && FACILITIES.lookout) {
     var lookIcon = _makeIcon('&#x1F441;','#4a7a9a');
-    FACILITIES.lookout.filter(function(l){ return (l.amenities||[]).indexOf('hide')<0; })
+    FACILITIES.lookout.filter(function(l){ return (l.badges||[]).indexOf('hide')<0; })
     .forEach(function(l) {
       var m = L.marker([l.lat, l.lng], {icon: lookIcon})
         .bindPopup('<b>'+l.name+'</b><br>'+(l.hours||'')+' &bull; '+l.note);
@@ -7396,8 +7300,8 @@ function _plotMapMarkers() {
   // Hides (from lookouts array AND dam hides)
   if(_mapFilters.hides) {
     var hideIcon = _makeIcon('&#x1F50D;','#8a5a2a');
-    var allHides = (FACILITIES.lookout||[]).filter(function(l){ return (l.amenities||[]).indexOf('hide')>=0; })
-      .concat((FACILITIES.dams||[]).filter(function(d){ return (d.amenities||[]).indexOf('hide')>=0; }));
+    var allHides = (FACILITIES.lookout||[]).filter(function(l){ return (l.badges||[]).indexOf('hide')>=0; })
+      .concat((FACILITIES.dams||[]).filter(function(d){ return (d.badges||[]).indexOf('hide')>=0; }));
     allHides.forEach(function(h) {
       var m = L.marker([h.lat, h.lng], {icon: hideIcon})
         .bindPopup('<b>'+h.name+'</b><br>Hide<br>'+h.note);
@@ -7408,7 +7312,7 @@ function _plotMapMarkers() {
   // Heritage landmarks
   if(_mapFilters.heritage && FACILITIES.landmarks) {
     var heritIcon = _makeIcon('&#x1F5FF;','#8a6a2a');
-    FACILITIES.landmarks.filter(function(l){ return l.type!=='poi'; })
+    FACILITIES.landmarks.filter(function(l){ return (l.badges||[]).indexOf('heritage')>=0||l.type!=='poi'; })
     .forEach(function(l) {
       var m = L.marker([l.lat, l.lng], {icon: heritIcon})
         .bindPopup('<b>'+l.name+'</b><br>Heritage<br>'+l.note);
@@ -7419,7 +7323,7 @@ function _plotMapMarkers() {
   // Points of Interest
   if(_mapFilters.poi && FACILITIES.landmarks) {
     var poiIcon = _makeIcon('&#x1F4CC;','#3a8a5a');
-    FACILITIES.landmarks.filter(function(l){ return l.type==='poi'; })
+    FACILITIES.landmarks.filter(function(l){ return (l.badges||[]).indexOf('poi')>=0||l.type==='poi'; })
     .forEach(function(l) {
       var m = L.marker([l.lat, l.lng], {icon: poiIcon})
         .bindPopup('<b>'+l.name+'</b><br>Point of Interest<br>'+l.note);
@@ -7428,11 +7332,14 @@ function _plotMapMarkers() {
   }
 
   // Picnic sites
-  if(_mapFilters.picnic && FACILITIES.toilet) {
+  if(_mapFilters.picnic) {
     var picIcon = _makeIcon('&#x1F9FA;','#5a5a2a');
-    FACILITIES.toilet.forEach(function(p) {
+    var picSites = (FACILITIES.picnic||[]).slice();
+    (FACILITIES.lookout||[]).filter(function(l){return (l.badges||[]).indexOf('picnic')>=0;}).forEach(function(l){picSites.push(l);});
+    (FACILITIES.dams||[]).filter(function(d){return (d.badges||[]).indexOf('picnic')>=0;}).forEach(function(d){picSites.push(d);});
+    picSites.forEach(function(p) {
       var m = L.marker([p.lat, p.lng], {icon: picIcon})
-        .bindPopup('<b>'+p.name+'</b><br>'+p.note);
+        .bindPopup('<b>'+p.name+'</b><br>'+(p.note||''));
       m.addTo(_map); _mapLayers.picnic.push(m);
     });
   }
@@ -7794,21 +7701,21 @@ function clearAZFilter() {
   });
   renderSpecies();
 }
-// Show/hide A-Z based on scroll position
+// Show/hide A-Z based on active tab
 function initAZScroll() {
   buildAZIndex();
-  var content = document.getElementById('content');
-  if(!content) return;
-  content.addEventListener('scroll', function() {
+  function updateAZ() {
     var az = document.getElementById('azIndex');
-    var panel = document.getElementById('wildlifePanel-species');
-    if(!az || !panel) return;
+    if(!az) return;
     var screenId = window._currentScreenId;
     if(screenId !== 'wildlife') { az.style.display = 'none'; return; }
     var activeTab = document.querySelector('.wildlife-tab.active');
     if(!activeTab || activeTab.textContent.trim() !== 'MAMMALS') { az.style.display = 'none'; return; }
-    az.style.display = content.scrollTop > 80 ? 'flex' : 'none';
-  }, {passive:true});
+    az.style.display = 'flex';
+  }
+  var content = document.getElementById('content');
+  if(content) content.addEventListener('scroll', updateAZ, {passive:true});
+  window._updateAZ = updateAZ;
 }
 
 function initApp() {
