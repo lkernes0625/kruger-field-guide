@@ -419,7 +419,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.40</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.41</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -575,13 +575,12 @@ svg.animal-art{width:100%;height:100%}
       <div class="trip-tab-content active" id="parktab-camps">
         <div style="padding:10px 14px 0">
           <div style="position:relative">
-          <input type="text" id="campSearch" placeholder="&#x1F50D; Search or browse all camps..." autocomplete="off"
-            oninput="renderCamps();if(document.getElementById('allCampsPanel')&&document.getElementById('allCampsPanel').style.display!='none')showAllCampsPanel();"
-            onfocus="showAllCampsPanel()"
-            onblur="setTimeout(function(){var p=document.getElementById('allCampsPanel');if(p)p.style.display='none';},250)"
-            style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">
+            <div id="campSearchBtn" onclick="toggleCampsPanel()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent;user-select:none">
+              <span id="campSearchLabel">&#x1F50D; Browse all camps...</span>
+              <span style="font-size:11px">&#x25BC;</span>
+            </div>
           </div>
-          <div id="allCampsPanel" style="display:none;max-height:240px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;margin-top:4px;z-index:100;position:relative">
+          <div id="allCampsPanel" style="display:none;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;margin-top:4px;z-index:200;position:relative">
             <div id="allCampsList"></div>
           </div>
           <div style="display:flex;gap:6px;margin:8px 0 10px;padding:0 0;align-items:stretch">
@@ -692,6 +691,7 @@ svg.animal-art{width:100%;height:100%}
         <span id="mammalOnlyFilters" style="display:flex;gap:6px"><button class="filter-btn" onclick="setWildlifeFilter('big5',this)">Big 5</button>
         <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)">Endangered</button>
         <button class="filter-btn" onclick="setWildlifeFilter('rare',this)">Rare</button></span>
+        <span id="birdOnlyFilters" style="display:none;gap:6px"><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)">TOP 6</button></span>
       </div>
 
       <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
@@ -709,8 +709,7 @@ svg.animal-art{width:100%;height:100%}
       <div id="wildlifePanel-birds" style="display:none">
         <div style="padding:10px 14px 6px">
           <div style="display:flex;gap:6px;margin-bottom:10px">
-            <button onclick="setBirdFilter('habitat','')" id="birdFltAll" class="bfilter active" data-ftype="habitat" data-fval="" style="flex:1">All Birds</button>
-            <button onclick="setBirdFilter('habitat','top6')" class="bfilter" data-ftype="habitat" data-fval="top6" style="flex:1;border-color:rgba(232,160,32,.4);color:var(--accent)">⭐ Top 6</button>
+          
           </div>
           <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px">Identify by Visual Cue</div>
           <div style="margin-bottom:6px">
@@ -952,7 +951,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.40</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.40 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.41</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.41 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -2560,28 +2559,40 @@ function selectCampSearchItem(e, name) {
 }
 
 
-function showAllCampsPanel() {
+function toggleCampsPanel() {
   var panel = document.getElementById('allCampsPanel');
   var list = document.getElementById('allCampsList');
-  if(!panel || !list) return;
-  var q = (document.getElementById('campSearch').value||'').toLowerCase().trim();
-  var sorted = CAMPS.filter(function(c){ return !q || c.name.toLowerCase().indexOf(q)>=0; }).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  if(!panel) return;
+  if(panel.style.display !== 'none') { panel.style.display='none'; return; }
+  // Build list
+  var sorted = CAMPS.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
   list.innerHTML = sorted.map(function(camp) {
-    var safeName = camp.name.replace(/'/g,'&#39;');
-    return '<div ontouchstart="selectCampFromPanel(\'' + safeName + '\')" onmousedown="selectCampFromPanel(\'' + safeName + '\')" style="padding:11px 14px;font-size:13px;color:var(--text1);cursor:pointer;border-bottom:1px solid var(--border);font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent">'+camp.name+' <span style="font-size:10px;color:var(--text3)">'+camp.type+'</span></div>';
+    var sn = camp.name;
+    return '<div ontouchstart="selectCampFromPanel(event,\''+sn+'\')" onmousedown="selectCampFromPanel(event,\''+sn+'\')" style="padding:13px 14px;font-size:13px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border);font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent;user-select:none">'+camp.name+'<span style="font-size:10px;color:var(--text3);margin-left:6px">'+camp.type+'</span></div>';
   }).join('');
   panel.style.display = 'block';
 }
-function selectCampFromPanel(name) {
-  var inp = document.getElementById('campSearch');
+function showAllCampsPanel() { toggleCampsPanel(); }
+function selectCampFromPanel(e, name) {
+  if(e) { e.preventDefault(); e.stopPropagation(); }
+  selectCampDirect(name);
+}
+function selectCampByData(el) {
+  var name = decodeURIComponent(el.getAttribute('data-cn')||'');
+  selectCampDirect(name);
+}
+function selectCampDirect(name) {
   var panel = document.getElementById('allCampsPanel');
-  if(inp) { inp.value = name; renderCamps(); inp.blur(); }
+  var label = document.getElementById('campSearchLabel');
   if(panel) panel.style.display = 'none';
+  if(label) { label.textContent = '✓ ' + name; label.style.color = 'var(--text)'; }
+  window._campSearchFilter = name;
+  renderCamps();
 }
 function renderCamps() {
   var el = document.getElementById('campsList');
   if(!el) return;
-  var search = (document.getElementById('campSearch')||{}).value||'';
+  var search = window._campSearchFilter || '';
   var zoneFilter = (document.getElementById('campZoneFilter')||{}).value||'';
   var typeFilter = (document.getElementById('campTypeFilter')||{}).value||'';
   search = search.toLowerCase().trim();
@@ -7017,159 +7028,6 @@ function renderFrogs() {
   }).join('')||'<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No results.</div>';
 }
 
-function openWildcardSpecies(type, i) {
-  var arr = type==='reptile'?REPTILES:FROGS;
-  var sp = arr[i]; if(!sp) return;
-  window._spIdx=i; window._spType=type; selectedStars=0;
-  trackRecentlyViewed(type, i);
-  var modal=document.getElementById('speciesModal'); if(!modal) return;
-  modal.querySelector('.modal-title').textContent=sp.name;
-  var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>Waterhole</option><option>Near Camp</option>';
-  modal.querySelector('.modal-body').innerHTML=
-    (ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
-    '<div style="width:100%;height:120px;background:#1a2a1a;border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">'+(type==='reptile'?'&#x1F40A;':'&#x1F438;')+'</div>')+
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
-      '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
-      '<button onclick="openSightingPanel()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:7px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Sighting</button>'+
-    '</div>'+
-    (sp.classification?'<div class="drow"><div class="dlabel">Classification</div><div class="dval">'+sp.classification+'</div></div>':'')+
-    (sp.conservation?'<div class="drow"><div class="dlabel">Conservation</div><div class="dval">'+sp.conservation+'</div></div>':'')+
-    (sp.mass?'<div class="drow"><div class="dlabel">Mass</div><div class="dval">'+sp.mass+'</div></div>':'')+
-    (sp.trophic?'<div class="drow"><div class="dlabel">Trophic Level</div><div class="dval">'+sp.trophic+'</div></div>':'')+
-    (sp.gestation?'<div class="drow"><div class="dlabel">Gestation</div><div class="dval">'+sp.gestation+'</div></div>':'')+
-    '<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+sp.zone+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Best Roads</div><div class="dval">'+sp.roads+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>'+
-    '<div class="drow" style="display:block"><div class="dlabel">Behaviour</div><div class="dval" style="margin-top:4px">'+sp.behaviour+'</div></div>'+
-    (sp.behaviour||sp.behavior?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Behaviour</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+(sp.behaviour||sp.behavior)+'</div>':'')+ 
-    (sp.description?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Description</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.description+'</div>':'')+
-    (sp.habitat?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Habitat</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.habitat+'</div>':'')+
-    (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
-    '<div id="sightingPanel" style="display:none;margin-top:12px">'+ '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">📍 Getting your GPS location...</div>'+ '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+'</div>';
-  var existingOv = document.getElementById('imgFullscreenOverlay');
-  if(existingOv) existingOv.remove();
-  var sheet = modal.querySelector('.modal-sheet');
-  if(sheet) sheet.scrollTop = 0;
-  modal.classList.add('open');
-}
-
-window._feedTab = 'all';
-var _feedTab = 'all';
-function setFeedTab(tab, btn) {
-  window._feedTab = _feedTab = tab;
-  document.querySelectorAll('.feed-tab').forEach(function(b){
-    b.style.borderBottomColor='transparent';
-    b.style.color='var(--text3)';
-  });
-  if(btn){ btn.style.borderBottomColor='var(--accent)'; btn.style.color='var(--accent)'; }
-  var banner = document.getElementById('feedReportBanner');
-  if(banner) banner.style.display = tab==='roads'?'block':'none';
-  var allItems = window._feedAllItems;
-  if(allItems && allItems.length) {
-    renderFeed(allItems);
-  } else {
-    loadFeed();
-  }
-}
-
-function openRoadReport() {
-  var modal = document.getElementById('speciesModal'); if(!modal) return;
-  modal.querySelector('.modal-title').textContent = 'Report Road / Camp Issue';
-  modal.querySelector('.modal-body').innerHTML =
-    '<div style="font-size:11px;color:var(--text2);margin-bottom:14px">Report a road closure, camp issue, or access problem. This posts to the Roads & Camps feed for all users.</div>'+
-    '<div style="margin-bottom:10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Type</div>'+
-    '<select id="reportType" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;-webkit-appearance:none;appearance:none;box-sizing:border-box">'+
-    '<option>Road Closed</option><option>Road Open Again</option><option>Flooded Road</option><option>Camp Closed</option><option>Gate Closed Early</option><option>Other</option></select></div>'+
-    '<div id="reportGPSStatus" style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:var(--text2)">&#x1F4CD; Getting your location...</div>'+
-    '<div style="margin-bottom:10px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Location / Road <span style="color:var(--text3);font-weight:400">(or describe manually)</span></div>'+
-    '<div style="position:relative">'+
-    '<input id="reportLocation" type="text" placeholder="e.g. H1-2, Skukuza Gate..." oninput="document.getElementById(\'reportLocClear\').style.display=this.value?\'block\':\'none\'" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 36px 10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">'+
-    '<button id="reportLocClear" onclick="document.getElementById(\'reportLocation\').value=\'\';this.style.display=\'none\'" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:22px;height:22px;border-radius:50%;font-size:12px;cursor:pointer;padding:0;line-height:22px;text-align:center">&#x2715;</button>'+
-    '</div></div>'+
-    '<div style="margin-bottom:14px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Details (optional)</div>'+
-    '<textarea id="reportDetails" placeholder="Additional details..." rows="3" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;resize:none"></textarea></div>'+
-    '<button onclick="submitRoadReport()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Submit Report</button>';
-  modal.classList.add('open');
-  // Auto-capture GPS for road report
-  window._reportLat = null; window._reportLng = null; window._reportRoad = null;
-  var gpsEl = document.getElementById('reportGPSStatus');
-  var locEl = document.getElementById('reportLocation');
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      window._reportLat = pos.coords.latitude;
-      window._reportLng = pos.coords.longitude;
-      captureGPSForSighting(function(lat, lng, road) {
-        window._reportLat = lat; window._reportLng = lng; window._reportRoad = road;
-        if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS captured' + (road ? ' \u2013 near ' + road : '');
-        if(locEl && road && !locEl.value) {
-          locEl.value = road;
-          var clrBtn = document.getElementById('reportLocClear');
-          if(clrBtn) clrBtn.style.display = 'block';
-        }
-      });
-      if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS captured \u2013 tap Submit to report';
-    }, function() {
-      if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS unavailable \u2013 enter location manually';
-    }, {timeout:8000});
-  } else {
-    if(gpsEl) gpsEl.innerHTML = '&#x1F4CD; GPS not supported \u2013 enter location manually';
-  }
-}
-
-function submitRoadReport() {
-  var type = (document.getElementById('reportType')||{}).value||'Road Report';
-  var loc  = (document.getElementById('reportLocation')||{}).value||'';
-  var det  = (document.getElementById('reportDetails')||{}).value||'';
-  var location = loc || window._reportRoad || '';
-  if(!location){ showToast('Please enter a location', 2000); return; }
-  var report = {
-    type:'road', tag:'road',
-    title: type + (location ? ' \u2013 ' + location : ''),
-    desc: det || type,
-    time: new Date().toISOString(),
-    timestamp: Date.now(),
-    source: 'User Report',
-    icon: '&#x1F6A7;',
-    lat: window._reportLat || null,
-    lng: window._reportLng || null
-  };
-  // Save to localStorage
-  try {
-    var saved = JSON.parse(localStorage.getItem('kfg_road_reports')||'[]');
-    saved.unshift(report);
-    if(saved.length > 20) saved = saved.slice(0,20);
-    localStorage.setItem('kfg_road_reports', JSON.stringify(saved));
-  } catch(e) {}
-  // Push to Firebase so other users see it
-  fetch(FIREBASE_URL + '/road_reports.json').then(function(r){ return r.ok?r.json():null; }).then(function(existing) {
-    var arr = Array.isArray(existing) ? existing : [];
-    arr.unshift(report);
-    if(arr.length > 20) arr = arr.slice(0,20);
-    return fetch(FIREBASE_URL + '/road_reports.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(arr)});
-  }).catch(function(){});
-  // Update protected road reports store
-  window._roadReports = window._roadReports || [];
-  window._roadReports.unshift(report);
-  localStorage.setItem('kfg_road_reports_v2', JSON.stringify(window._roadReports));
-  // Add to live feed immediately
-  var all = window._feedAllItems || [];
-  all.unshift(report);
-  window._feedAllItems = all;
-  renderFeed(all);
-  showToast('Report added to Roads & Camps feed', 2500);
-  closeModal('speciesModal');
-  setFeedTab('roads', document.getElementById('feedTab-roads'));
-}
-
-function setWildlifeFilter(f, btn) {
-  _wildlifeFilter = f;
-  document.querySelectorAll('#wildlifeFilters .filter-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn) btn.classList.add('active');
-  renderSpecies();
-}
-function filterWildlife() { renderSpecies(); }
-
 // ─── Bird Visual Filters ─────────────────────────────────
 var _birdColorFilter = '';
 var _birdSizeFilter = '';
@@ -7213,29 +7071,60 @@ function renderBirds() {
     '</div>';
   }).join('')||'<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No results.</div>';
 }
-function openBird(idx) {
-  var sp=BIRDS[idx]; if(!sp) return;
-  window._spIdx=idx; window._spType='bird'; selectedStars=0;
-  trackRecentlyViewed('bird', idx);
+function setBirdTop6Filter(btn) {
+  var isActive = btn && btn.classList.contains('active');
+  document.querySelectorAll('#wildlifeFilters .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(!isActive) {
+    if(btn) btn.classList.add('active');
+    _birdHabitatFilter = 'top6';
+  } else {
+    _birdHabitatFilter = '';
+    var allBtn = document.querySelector('#wildlifeFilters .filter-btn');
+    if(allBtn) allBtn.classList.add('active');
+  }
+  renderBirds();
+}
+
+function openWildcardSpecies(type, i) {
+  var arr = type==='reptile'?REPTILES:FROGS;
+  var sp = arr[i]; if(!sp) return;
+  window._spIdx=i; window._spType=type; selectedStars=0;
+  trackRecentlyViewed(type, i);
   var modal=document.getElementById('speciesModal'); if(!modal) return;
   modal.querySelector('.modal-title').textContent=sp.name;
-  var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>H9</option><option>H10</option><option>H12</option><option>H14</option><option>S1</option><option>S3</option><option>S28</option><option>S65</option><option>S100</option><option>S106</option><option>S114</option><option>Waterhole</option><option>Near Camp</option>';
+  var imgSrc=ANIMAL_IMG[sp.id]||'';
+  var hasSize=(sp.totalLength&&sp.totalLength!=='N/A')||(sp.shoulderHeight&&sp.shoulderHeight!=='N/A')||(sp.mass&&sp.mass!=='N/A');
   modal.querySelector('.modal-body').innerHTML=
-    (ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':'')+
+    (imgSrc?'<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
+    '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">'+(type==='reptile'?'&#x1F40A;':'&#x1F438;')+'</div>')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
-      '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
+      '<div>'+
+        '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
+        (sp.latin?'<div style="font-size:12px;color:var(--text3);font-style:italic">'+sp.latin+'</div>':'')+
+      '</div>'+
       '<button onclick="openSightingPanel()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:7px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Sighting</button>'+
     '</div>'+
     (sp.classification?'<div class="drow"><div class="dlabel">Classification</div><div class="dval">'+sp.classification+'</div></div>':'')+
-    (sp.conservation?'<div class="drow"><div class="dlabel">Conservation</div><div class="dval" style="color:'+(sp.conservation.indexOf('Critical')>=0?'#e05545':sp.conservation.indexOf('Endangered')>=0?'#e07545':sp.conservation.indexOf('Vulnerable')>=0?'#c8962a':'var(--text)')+'">'+(sp.conservation.indexOf('Critical')>=0||sp.conservation.indexOf('Endangered')>=0?'&#x26A0; ':'')+sp.conservation+'</div></div>':'')+
-    (sp.mass?'<div class="drow"><div class="dlabel">Mass</div><div class="dval">'+sp.mass+'</div></div>':'')+
     (sp.trophic?'<div class="drow"><div class="dlabel">Trophic Level</div><div class="dval">'+sp.trophic+'</div></div>':'')+
-    (sp.gestation?'<div class="drow"><div class="dlabel">Incubation</div><div class="dval">'+sp.gestation+'</div></div>':'')+
+    (sp.conservation?'<div class="drow"><div class="dlabel">Conservation</div><div class="dval" style="color:'+(sp.conservation.indexOf('Critical')>=0?'#e05545':sp.conservation.indexOf('Endangered')>=0?'#e07545':sp.conservation.indexOf('Vulnerable')>=0?'#c8962a':'var(--text)')+'">'+(sp.conservation.indexOf('Critical')>=0||sp.conservation.indexOf('Endangered')>=0?'&#x26A0; ':'')+sp.conservation+'</div></div>':'')+
+    (hasSize?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Size</div>':'')+
+    (sp.totalLength&&sp.totalLength!=='N/A'?'<div class="drow"><div class="dlabel">Total Length</div><div class="dval">'+sp.totalLength+'</div></div>':'')+
+    (sp.shoulderHeight&&sp.shoulderHeight!=='N/A'?'<div class="drow"><div class="dlabel">Shoulder Height</div><div class="dval">'+sp.shoulderHeight+'</div></div>':'')+
+    (sp.mass&&sp.mass!=='N/A'?'<div class="drow"><div class="dlabel">Mass</div><div class="dval">'+sp.mass+'</div></div>':'')+
+    (sp.gestation?'<div class="drow"><div class="dlabel">Gestation Period</div><div class="dval">'+sp.gestation+'</div></div>':'')+
+    '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Field Intelligence</div>'+
     '<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+sp.zone+'</div></div>'+
     '<div class="drow"><div class="dlabel">Best Roads</div><div class="dval">'+sp.roads+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>'+
-    '<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>'+
-    '<div class="drow" style="display:block"><div class="dlabel">Behaviour</div><div class="dval" style="margin-top:4px">'+sp.behaviour+'</div></div>'+
+    (sp.time?'<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>':'')+
+    (sp.camera?'<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>':'')+
+    ((sp.behaviour||sp.behavior)?'<div class="drow" style="display:block"><div class="dlabel">Field Notes</div><div class="dval" style="margin-top:4px">'+(sp.behaviour||sp.behavior)+'</div></div>':'')+
+    (sp.keyFeatures?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Key Features</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.keyFeatures+'</div>':'')+
+    (sp.description?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Description</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.description+'</div>':'')+
+    (sp.distribution?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Distribution</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.distribution+'</div>':'')+
+    (sp.habitat?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Habitat</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.habitat+'</div>':'')+
+    (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
+    (sp.breeding?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>':'')+
+    getSpeciesLanguagesHtml(sp.id)+
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
       '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
@@ -7246,11 +7135,65 @@ function openBird(idx) {
   if(sheet) sheet.scrollTop = 0;
   modal.classList.add('open');
 }
-
+function openBird(idx) {
+  var sp=BIRDS[idx]; if(!sp) return;
+  window._spIdx=idx; window._spType='bird'; selectedStars=0;
+  trackRecentlyViewed('bird', idx);
+  var modal=document.getElementById('speciesModal'); if(!modal) return;
+  modal.querySelector('.modal-title').textContent=sp.name;
+  var imgSrc=(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id])||ANIMAL_IMG[sp.id]||'';
+  var hasSize=(sp.totalLength&&sp.totalLength!=='N/A')||(sp.wingSpan)||(sp.shoulderHeight&&sp.shoulderHeight!=='N/A')||(sp.mass&&sp.mass!=='N/A');
+  modal.querySelector('.modal-body').innerHTML=
+    (imgSrc?'<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
+    '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
+      '<div>'+
+        '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
+        (sp.latin?'<div style="font-size:12px;color:var(--text3);font-style:italic">'+sp.latin+'</div>':'')+
+      '</div>'+
+      '<button onclick="openSightingPanel()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:7px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Sighting</button>'+
+    '</div>'+
+    (sp.classification?'<div class="drow"><div class="dlabel">Classification</div><div class="dval">'+sp.classification+'</div></div>':'')+
+    (sp.trophic?'<div class="drow"><div class="dlabel">Trophic Level</div><div class="dval">'+sp.trophic+'</div></div>':'')+
+    (sp.conservation?'<div class="drow"><div class="dlabel">Conservation</div><div class="dval" style="color:'+(sp.conservation.indexOf('Critical')>=0?'#e05545':sp.conservation.indexOf('Endangered')>=0?'#e07545':sp.conservation.indexOf('Vulnerable')>=0?'#c8962a':'var(--text)')+'">'+(sp.conservation.indexOf('Critical')>=0||sp.conservation.indexOf('Endangered')>=0?'&#x26A0; ':'')+sp.conservation+'</div></div>':'')+
+    (hasSize?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Size</div>':'')+
+    (sp.totalLength&&sp.totalLength!=='N/A'?'<div class="drow"><div class="dlabel">Total Length</div><div class="dval">'+sp.totalLength+'</div></div>':'')+
+    (sp.wingSpan?'<div class="drow"><div class="dlabel">Wingspan</div><div class="dval">'+sp.wingSpan+'</div></div>':'')+
+    (sp.shoulderHeight&&sp.shoulderHeight!=='N/A'?'<div class="drow"><div class="dlabel">Shoulder Height</div><div class="dval">'+sp.shoulderHeight+'</div></div>':'')+
+    (sp.mass&&sp.mass!=='N/A'?'<div class="drow"><div class="dlabel">Mass</div><div class="dval">'+sp.mass+'</div></div>':'')+
+    (sp.gestation?'<div class="drow"><div class="dlabel">Incubation Period</div><div class="dval">'+sp.gestation+'</div></div>':'')+
+    '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Field Intelligence</div>'+
+    '<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+sp.zone+'</div></div>'+
+    '<div class="drow"><div class="dlabel">Best Roads</div><div class="dval">'+sp.roads+'</div></div>'+
+    (sp.time?'<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>':'')+
+    (sp.camera?'<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>':'')+
+    ((sp.behaviour||sp.behavior)?'<div class="drow" style="display:block"><div class="dlabel">Field Notes</div><div class="dval" style="margin-top:4px">'+(sp.behaviour||sp.behavior)+'</div></div>':'')+
+    (sp.keyFeatures?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Key Features</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.keyFeatures+'</div>':'')+
+    (sp.description?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Description</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.description+'</div>':'')+
+    (sp.distribution?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Distribution</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.distribution+'</div>':'')+
+    (sp.habitat?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Habitat</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.habitat+'</div>':'')+
+    (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
+    (sp.breeding?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>':'')+
+    (sp.voice?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Voice</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.voice+'</div>':'')+
+    getSpeciesLanguagesHtml(sp.id)+
+    '<div id="sightingPanel" style="display:none;margin-top:12px">'+
+      '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
+      '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>'+
+    '</div>';
+  var existingOv = document.getElementById('imgFullscreenOverlay');
+  if(existingOv) existingOv.remove();
+  var sheet = modal.querySelector('.modal-sheet');
+  if(sheet) sheet.scrollTop = 0;
+  modal.classList.add('open');
+}
 function switchWildlifeTab(tab, btn) {
   setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
   var mammalBtns = document.getElementById('mammalOnlyFilters');
   if(mammalBtns) mammalBtns.style.display = tab==='species' ? 'flex' : 'none';
+  var birdBtns = document.getElementById('birdOnlyFilters');
+  if(birdBtns) birdBtns.style.display = tab==='birds' ? 'flex' : 'none';
+  // Reset top6 when leaving birds tab
+  if(tab!=='birds'){ _birdHabitatFilter=''; var t6=document.getElementById('top6Btn'); if(t6)t6.classList.remove('active'); }
   ['species','birds','reptiles','frogs','sightings'].forEach(function(t) {
     var panel = document.getElementById('wildlifePanel-'+t);
     if(panel) panel.style.display = t === tab ? 'block' : 'none';
@@ -7285,7 +7228,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.40';
+var APP_VERSION = '3.41';
 
 // Clear stale caches when version changes
 (function() {
