@@ -417,7 +417,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.35</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.36</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -628,6 +628,32 @@ svg.animal-art{width:100%;height:100%}
         <div id="familyFeedHeader" style="padding:12px 14px 0"></div>
         <div id="familyFeedList"></div>
       </div>
+
+      <!-- ACHIEVEMENTS TAB -->
+      <div class="trip-tab-content" id="tab-achievements">
+        <div style="padding:16px 16px 8px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Earn badges by logging sightings on your trip.</div>
+          <div id="achievementsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"></div>
+        </div>
+      </div>
+
+      <!-- BINGO TAB -->
+      <div class="trip-tab-content" id="tab-bingo">
+        <div style="padding:16px 16px 8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text)">Kruger Bingo</div>
+              <div style="font-size:10px;color:var(--text3)">Tap a square when you spot the animal</div>
+            </div>
+            <button onclick="resetBingo()" style="background:none;border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:5px 10px;font-family:Montserrat,sans-serif;font-size:10px;cursor:pointer">Reset</button>
+          </div>
+          <div id="bingoStatus" style="background:rgba(232,160,32,.08);border:1px solid rgba(232,160,32,.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:none">
+            <div style="font-size:12px;font-weight:700;color:var(--accent)" id="bingoStatusText"></div>
+          </div>
+          <div id="bingoGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- === EMERGENCY === -->
@@ -645,6 +671,7 @@ svg.animal-art{width:100%;height:100%}
         <button onclick="mapFilterToggle('heritage')" id="mapFlt-heritage" class="filter-btn active" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F5FF; Heritage</button>
         <button onclick="mapFilterToggle('poi')" id="mapFlt-poi" class="filter-btn active" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F4CC; POI</button>
         <button onclick="mapFilterToggle('sightings')" id="mapFlt-sightings" class="filter-btn active" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F98F; Sightings</button>
+        <button onclick="toggleHeatmap()" id="mapFlt-heatmap" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F525; Heatmap</button>
         <button onclick="mapCenterOnUser()" id="mapFlt-myloc" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F4CD; My Loc</button>
       </div>
       <div id="krugerMap" style="width:100%;height:calc(100vh - 200px);min-height:400px;background:var(--bg3)"></div>
@@ -754,11 +781,13 @@ svg.animal-art{width:100%;height:100%}
     <!-- === MY TRIP === -->
     <div class="screen" id="screen-trip">
       <div class="sec-head"><h2>My Trip</h2><p>Plan &middot; Track &middot; Share</p></div>
-      <div class="trip-tabs">
+      <div class="trip-tabs" style="overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;white-space:nowrap">
         <div class="trip-tab active" onclick="switchTripTab('itinerary',this)">Itinerary</div>
         <div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div>
         <div class="trip-tab" onclick="switchTripTab('sightings',this)">Sightings</div>
         <div class="trip-tab" onclick="switchTripTab('journal',this)">Journal</div>
+        <div class="trip-tab" onclick="switchTripTab('achievements',this)">🏆 Badges</div>
+        <div class="trip-tab" onclick="switchTripTab('bingo',this)">🎯 Bingo</div>
       </div>
 
       <!-- ITINERARY TAB -->
@@ -875,7 +904,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.35</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.35 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.36</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.36 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -916,6 +945,28 @@ svg.animal-art{width:100%;height:100%}
       <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px" id="photoRoads"></div>
       <div class="divlabel">Photography Hides</div>
       <div class="card-list" id="photoHides"></div>
+
+      <div class="divlabel">Golden Hour Calculator</div>
+      <div style="padding:0 16px 12px">
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+            <input type="date" id="goldenHourDate" style="flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:12px" oninput="calcGoldenHour()">
+            <button onclick="calcGoldenHour()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Calculate</button>
+          </div>
+          <div id="goldenHourResult" style="font-size:11px;color:var(--text2);line-height:1.8"></div>
+        </div>
+      </div>
+
+      <div class="divlabel">Species Photography Conditions</div>
+      <div class="card-list" id="speciesPhotoCards"></div>
+
+      <div class="divlabel">Waterhole Activity Predictor</div>
+      <div style="padding:0 16px 16px">
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Current predicted activity level</div>
+          <div id="waterholePredictor" style="font-size:12px;color:var(--text2);line-height:1.7"></div>
+        </div>
+      </div>
       <div class="divlabel">Camera Settings Cheat Sheet</div>
       <div class="card-list">
         <div class="card">
@@ -2162,6 +2213,7 @@ function showScreen(id) {
   setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
   // Init map on first visit
   if(id === 'map') setTimeout(function(){ initMap(); if(_map) _map.invalidateSize(); }, 100);
+  if(id === 'photo') setTimeout(initPhotoIntel, 50);
 }
 
 // ============================================
@@ -3246,7 +3298,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -3799,6 +3851,167 @@ function exportTripSummary() {
 }
 
 // ============================================
+// ACHIEVEMENTS & GAMIFICATION
+// ============================================
+var MILESTONES = [
+  { id:'big5', icon:'🦁', title:'Big 5 Complete', desc:'Spotted all Big 5 species', check:function(s){ var ids=['lion','elephant','leopard','buffalo','white_rhino']; return ids.every(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
+  { id:'predator5', icon:'🐆', title:'Predator Pack', desc:'Lion, Leopard, Cheetah, Wild Dog, Hyena', check:function(s){ var ids=['lion','leopard','cheetah','wild_dog','spotted_hyena']; return ids.every(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
+  { id:'first_sighting', icon:'👁️', title:'First Sighting', desc:'Logged your first animal sighting', check:function(s){ return s.length >= 1; } },
+  { id:'ten_species', icon:'🌿', title:'Wild Explorer', desc:'Spotted 10 different species', check:function(s){ return Object.keys(s.reduce(function(a,x){ a[x.id]=1; return a; },{})).length >= 10; } },
+  { id:'twenty_five', icon:'🏕️', title:'Kruger Veteran', desc:'Logged 25 or more sightings', check:function(s){ return s.length >= 25; } },
+  { id:'fifty_sightings', icon:'🥇', title:'Safari Master', desc:'Logged 50+ sightings — legendary!', check:function(s){ return s.length >= 50; } },
+  { id:'elephant_herd', icon:'🐘', title:'Elephant Whisperer', desc:'Logged elephant 3+ times', check:function(s){ return s.filter(function(x){ return x.id==='elephant'; }).length >= 3; } },
+  { id:'rhino_both', icon:'🦏', title:'Rhino Spotter', desc:'Spotted both White and Black Rhino', check:function(s){ return s.some(function(x){ return x.id==='white_rhino'; }) && s.some(function(x){ return x.id==='black_rhino'; }); } },
+  { id:'nocturnal', icon:'🌙', title:'Night Owl', desc:'Spotted a nocturnal species (Aardvark, Pangolin, Aardwolf, Porcupine, Spring Hare, Serval)', check:function(s){ var ids=['aardvark','pangolin','aardwolf','cape_porcupine','spring_hare','serval']; return ids.some(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
+  { id:'five_star', icon:'⭐', title:'Five Star Moment', desc:'Logged a 5-star sighting', check:function(s){ return s.some(function(x){ return x.stars >= 5; }); } },
+  { id:'wild_dog', icon:'🐕', title:'Pack Tracker', desc:'Spotted the endangered African Wild Dog', check:function(s){ return s.some(function(x){ return x.id==='wild_dog'; }); } },
+  { id:'pangolin', icon:'🌀', title:'Pangolin Found!', desc:'Spotted a Pangolin — extraordinarily rare!', check:function(s){ return s.some(function(x){ return x.id==='pangolin'; }); } },
+  { id:'antelope10', icon:'🦌', title:'Antelope Aficionado', desc:'Spotted 10 different antelope species', check:function(s){ var ante=s.filter(function(x){ return SPECIES.find(function(sp){ return sp.id===x.id && sp.category==='antelope'; }); }); return Object.keys(ante.reduce(function(a,x){ a[x.id]=1; return a; },{})).length >= 10; } },
+  { id:'early_bird', icon:'🌅', title:'Early Bird', desc:'Logged a sighting before 07:00', check:function(s){ return s.some(function(x){ return x.time && new Date(x.time).getHours() < 7; }); } },
+  { id:'hundred', icon:'🏆', title:'Century!', desc:'100 sightings logged — true Kruger legend', check:function(s){ return s.length >= 100; } }
+];
+
+function renderAchievements() {
+  var grid = document.getElementById('achievementsGrid');
+  if(!grid) return;
+  var sightings = loadSightings().filter(function(s){ return !s.protected; });
+  var earned = JSON.parse(localStorage.getItem('kfg_achievements')||'[]');
+  var html = '';
+  var newlyEarned = [];
+  
+  MILESTONES.forEach(function(m) {
+    var unlocked = m.check(sightings);
+    var wasEarned = earned.indexOf(m.id) >= 0;
+    if(unlocked && !wasEarned) { earned.push(m.id); newlyEarned.push(m); }
+    html += '<div style="background:'+(unlocked?'rgba(232,160,32,.08)':'var(--bg3)')+';border:1px solid '+(unlocked?'rgba(232,160,32,.4)':'var(--border)')+';border-radius:12px;padding:12px;text-align:center;opacity:'+(unlocked?'1':'0.45')+'">';
+    html += '<div style="font-size:24px;margin-bottom:4px">'+m.icon+'</div>';
+    html += '<div style="font-size:11px;font-weight:700;color:'+(unlocked?'var(--accent)':'var(--text2)')+';margin-bottom:3px">'+m.title+'</div>';
+    html += '<div style="font-size:9px;color:var(--text3);line-height:1.4">'+m.desc+'</div>';
+    if(unlocked) html += '<div style="font-size:8px;color:var(--accent);margin-top:4px;font-weight:700">UNLOCKED ✓</div>';
+    html += '</div>';
+  });
+  
+  if(newlyEarned.length) localStorage.setItem('kfg_achievements', JSON.stringify(earned));
+  if(!sightings.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 0;color:var(--text3);font-size:12px">Log sightings to unlock badges!</div>';
+    return;
+  }
+  grid.innerHTML = html;
+  
+  // Show celebration for newly earned
+  newlyEarned.forEach(function(m){
+    showToast(m.icon + ' Badge unlocked: ' + m.title + '!');
+  });
+}
+
+function checkNewAchievements() {
+  var sightings = loadSightings().filter(function(s){ return !s.protected; });
+  var earned = JSON.parse(localStorage.getItem('kfg_achievements')||'[]');
+  MILESTONES.forEach(function(m) {
+    if(earned.indexOf(m.id) < 0 && m.check(sightings)) {
+      earned.push(m.id);
+      localStorage.setItem('kfg_achievements', JSON.stringify(earned));
+      setTimeout(function(){ showToast(m.icon + ' Badge unlocked: ' + m.title + '!'); }, 500);
+    }
+  });
+}
+
+// ─── KRUGER BINGO ───────────────────────────────────────────────
+var BINGO_SPECIES = [
+  {id:'lion',label:'Lion'},
+  {id:'elephant',label:'Elephant'},
+  {id:'leopard',label:'Leopard'},
+  {id:'buffalo',label:'Buffalo'},
+  {id:'white_rhino',label:'Rhino'},
+  {id:'cheetah',label:'Cheetah'},
+  {id:'giraffe',label:'Giraffe'},
+  {id:'zebra',label:'Zebra'},
+  {id:'hippo',label:'Hippo'},
+  {id:'crocodile',label:'Croc'},
+  {id:'wild_dog',label:'Wild Dog'},
+  {id:'spotted_hyena',label:'Hyena'},
+  {id:'impala',label:'Impala'},
+  {id:'kudu',label:'Kudu'},
+  {id:'warthog',label:'Warthog'},
+  {id:'vervet_monkey',label:'Monkey'},
+  {id:'baboon',label:'Baboon'},
+  {id:'steenbok',label:'Steenbok'},
+  {id:'mongoose',label:'Mongoose'},
+  {id:'monitor_lizard',label:'Leguaan'},
+  {id:'southern_ground_hornbill',label:'Hornbill'},
+  {id:'fish_eagle',label:'Fish Eagle'},
+  {id:'aardvark',label:'Aardvark'},
+  {id:'leopard_tortoise',label:'Tortoise'},
+  {id:'tsessebe',label:'Tsessebe'}
+];
+
+var _bingoState = null;
+
+function loadBingoState() {
+  try { return JSON.parse(localStorage.getItem('kfg_bingo')||'null'); } catch(e) { return null; }
+}
+function saveBingoState() {
+  localStorage.setItem('kfg_bingo', JSON.stringify(_bingoState));
+}
+function resetBingo() {
+  _bingoState = BINGO_SPECIES.map(function(s,i){ return {id:s.id, label:s.label, tapped:false}; });
+  saveBingoState();
+  renderBingo();
+}
+
+function renderBingo() {
+  var grid = document.getElementById('bingoGrid');
+  var status = document.getElementById('bingoStatus');
+  var statusText = document.getElementById('bingoStatusText');
+  if(!grid) return;
+  
+  if(!_bingoState) _bingoState = loadBingoState() || BINGO_SPECIES.map(function(s){ return {id:s.id, label:s.label, tapped:false}; });
+  
+  // Check wins (rows and cols of 5x5)
+  var wins = 0;
+  for(var r=0; r<5; r++){
+    if([0,1,2,3,4].every(function(c){ return _bingoState[r*5+c].tapped; })) wins++;
+  }
+  for(var c=0; c<5; c++){
+    if([0,1,2,3,4].every(function(r){ return _bingoState[r*5+c].tapped; })) wins++;
+  }
+  // Diagonals
+  if([0,6,12,18,24].every(function(i){ return _bingoState[i].tapped; })) wins++;
+  if([4,8,12,16,20].every(function(i){ return _bingoState[i].tapped; })) wins++;
+  
+  var tapped = _bingoState.filter(function(s){ return s.tapped; }).length;
+  
+  if(wins > 0 || tapped === 25) {
+    status.style.display = 'block';
+    statusText.textContent = tapped === 25 ? '🏆 FULL HOUSE! Incredible trip!' : '🎉 BINGO! ' + wins + ' line' + (wins>1?'s':'' ) + ' complete! ' + tapped + '/25 spotted';
+  } else if(tapped > 0) {
+    status.style.display = 'block';
+    statusText.textContent = tapped + '/25 animals spotted' + (tapped >= 20 ? ' — almost there!' : tapped >= 10 ? ' — great trip!' : '');
+  } else {
+    status.style.display = 'none';
+  }
+  
+  grid.innerHTML = _bingoState.map(function(sq, idx) {
+    return '<div onclick="tapBingo('+idx+')" style="'+
+      'aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;'+
+      'background:'+(sq.tapped?'rgba(232,160,32,.2)':'var(--bg3)')+';'+
+      'border:1px solid '+(sq.tapped?'rgba(232,160,32,.6)':'var(--border)')+';'+
+      'border-radius:8px;cursor:pointer;padding:3px;text-align:center;'+
+      'transition:all .2s;-webkit-tap-highlight-color:transparent">' +
+      '<div style="font-size:'+(sq.tapped?'18':'14')+'px;margin-bottom:2px">'+(sq.tapped?'✅':'')+'</div>'+
+      '<div style="font-size:8px;font-weight:'+(sq.tapped?'700':'500')+';color:'+(sq.tapped?'var(--accent)':'var(--text3)')+';line-height:1.2">'+sq.label+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function tapBingo(idx) {
+  if(!_bingoState) return;
+  _bingoState[idx].tapped = !_bingoState[idx].tapped;
+  saveBingoState();
+  renderBingo();
+}
+
+// ============================================
 // CHECKLIST
 // ============================================
 var checklistState = {};
@@ -3859,6 +4072,123 @@ function renderChecklist() {
 }
 
 // ============================================
+// ============================================
+// HEATMAP
+// ============================================
+function toggleHeatmap() {
+  var btn = document.getElementById('mapFlt-heatmap');
+  if(!window._map) { initMap(); return; }
+  if(window._heatmapActive) {
+    if(window._heatmapLayer) { window._map.removeLayer(window._heatmapLayer); window._heatmapLayer = null; }
+    window._heatmapActive = false;
+    if(btn) btn.classList.remove('active');
+    return;
+  }
+  window._heatmapActive = true;
+  if(btn) btn.classList.add('active');
+  function buildHeat() {
+    var sightings = loadSightings().filter(function(s){ return s.lat && s.lng && !s.protected; });
+    var points = sightings.map(function(s){ return [s.lat, s.lng, s.stars ? s.stars/5 : 0.6]; });
+    if(!points.length) { showToast('No GPS sightings logged yet.'); window._heatmapActive=false; if(btn)btn.classList.remove('active'); return; }
+    if(window.L && L.heatLayer) {
+      window._heatmapLayer = L.heatLayer(points, {radius:35,blur:25,maxZoom:14,gradient:{0.2:'#0033ff',0.5:'#00ff88',0.8:'#ffaa00',1:'#ff2200'}});
+      window._heatmapLayer.addTo(window._map);
+    }
+  }
+  if(!window._leafletHeatLoaded) {
+    var sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js';
+    sc.onload = function(){ window._leafletHeatLoaded=true; buildHeat(); };
+    document.head.appendChild(sc);
+  } else buildHeat();
+}
+
+// ============================================
+// EXTENDED PHOTO INTEL
+// ============================================
+function calcGoldenHour() {
+  var dateInput = document.getElementById('goldenHourDate');
+  var resultEl = document.getElementById('goldenHourResult');
+  if(!resultEl) return;
+  var d = dateInput && dateInput.value ? new Date(dateInput.value + 'T12:00:00') : new Date();
+  var lat_r = -24.0 * Math.PI / 180;
+  var start2 = new Date(d.getFullYear(), 0, 0);
+  var doy = Math.floor((d - start2) / 86400000);
+  var decl_r = 23.45 * Math.sin((360/365*(doy-81))*Math.PI/180) * Math.PI/180;
+  var cosH = -Math.tan(lat_r)*Math.tan(decl_r);
+  cosH = Math.max(-1, Math.min(1, cosH));
+  var H = Math.acos(cosH)*180/Math.PI;
+  var B = 360/365*(doy-81)*Math.PI/180;
+  var offset = (31.5-30)*4 + (9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B));
+  var sunrise = 12 - H/15 + offset/60;
+  var sunset = 12 + H/15 + offset/60;
+  function tt(hh){ var h=Math.floor(hh),m=Math.round((hh-h)*60); if(m===60){h++;m=0;} return (h<10?'0':'')+h+':'+(m<10?'0':'')+m; }
+  var dayLen = sunset - sunrise;
+  var month = d.getMonth();
+  var tip = month>=4&&month<=7?'Dry season — crisp air, excellent visibility.':month>=7&&month<=9?'Peak dry season — best game viewing of year.':month>=10||month<=1?'Green season — lush backgrounds, dramatic storm light.':'Shoulder season — comfortable light quality.';
+  resultEl.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'+
+    '<div style="background:var(--bg4);border-radius:8px;padding:8px;text-align:center"><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Blue Hour</div><div style="font-size:16px;font-weight:700;color:#4488cc">'+tt(sunrise-0.5)+'</div></div>'+
+    '<div style="background:var(--bg4);border-radius:8px;padding:8px;text-align:center"><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Sunrise</div><div style="font-size:16px;font-weight:700;color:var(--accent)">'+tt(sunrise)+'</div></div>'+
+    '<div style="background:var(--bg4);border-radius:8px;padding:8px;text-align:center"><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Golden Ends</div><div style="font-size:16px;font-weight:700;color:#e8b040">'+tt(sunrise+0.75)+'</div></div>'+
+    '<div style="background:var(--bg4);border-radius:8px;padding:8px;text-align:center"><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Golden Starts</div><div style="font-size:16px;font-weight:700;color:#e8b040">'+tt(sunset-0.75)+'</div></div>'+
+    '<div style="background:var(--bg4);border-radius:8px;padding:8px;text-align:center"><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Sunset</div><div style="font-size:16px;font-weight:700;color:#e05545">'+tt(sunset)+'</div></div>'+
+    '<div style="background:var(--bg4);border-radius:8px;padding:8px;text-align:center"><div style="font-size:8px;color:var(--text3);text-transform:uppercase">Civil Dusk</div><div style="font-size:16px;font-weight:700;color:#7040a0">'+tt(sunset+0.35)+'</div></div>'+
+    '</div><div style="font-size:10px;color:var(--accent);font-weight:600">Gate opens approx: '+tt(sunrise-0.083)+'</div>'+
+    '<div style="font-size:10px;color:var(--text2);margin-top:4px">Day length: '+Math.floor(dayLen)+'h '+Math.round((dayLen%1)*60)+'min</div>'+
+    '<div style="font-size:10px;color:var(--text3);margin-top:6px;font-style:italic">'+tip+'</div>';
+}
+
+var SPECIES_PHOTO = [
+  {name:'Lion',icon:'🦁',best:'H4-1, H1-3, S21 road koppies',light:'Dawn 05:30-07:30 and dusk 17:00-18:30. Overcast ideal.',settings:'400-600mm | f/5.6-6.3 | 1/1000s+ | ISO 400-1600',tip:'Lions on rocks at dawn warm themselves — silhouette at sunrise. Ask rangers for pride locations daily.'},
+  {name:'Leopard',icon:'🐆',best:'H4-1, S125, S128 — scan fever trees',light:'Dawn patrol and last light. Look for tail hanging from branch.',settings:'500-600mm | f/4.5-5.6 | 1/1600s | ISO 800-3200',tip:'Scan every tree fork. Spotted leg dangling = leopard. River crossings are exceptional.'},
+  {name:'Elephant',icon:'🐘',best:'S47 Engelhard Dam at dawn, Letaba River',light:'06:00-09:00 at waterholes. Mud baths 10:00-12:00.',settings:'100-400mm | f/7.1 | 1/500s | Include environment',tip:'Engelhard Dam at first light: 50-100 elephants. Finest elephant photography location in Africa.'},
+  {name:'Cheetah',icon:'🐈',best:'Open plains near Satara — S100, H6, S41',light:'Dawn scans. On termite mounds as lookouts.',settings:'500-600mm | f/6.3 | 1/2000s | ISO 400',tip:'H6 east of Satara is a cheetah hotspot. Find them on termite mounds at dawn.'},
+  {name:'Wild Dog',icon:'🐕',best:'H1-7, H1-8 near Shingwedzi. Ask rangers.',light:'Pack hunts at dawn 05:30-08:30.',settings:'400-600mm | f/5.6 | 1/2000s | AI servo tracking',tip:'Radio reports from rangers are the only reliable way to find them.'},
+  {name:'Hippo',icon:'🦛',best:'Sunset Dam Lower Sabie, Olifants gorge',light:'Yawning sequences any time. Golden hour exit from water.',settings:'300-400mm | f/7.1 | 1/1000s | Water-level angle',tip:'Sunset Dam at 17:00 — golden light water-level hippo shots.'},
+  {name:'Giraffe',icon:'🦒',best:'Open woodland roads, central Kruger',light:'Drinking stance at waterholes 07:00-10:00.',settings:'200-300mm | f/8 | Include environment',tip:'Wide-legged drinking posture is their most photogenic moment.'}
+];
+
+function renderSpeciesPhotoCards() {
+  var el = document.getElementById('speciesPhotoCards');
+  if(!el) return;
+  el.innerHTML = SPECIES_PHOTO.map(function(sp) {
+    return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'+
+      '<div class="card-icon">'+sp.icon+'</div>'+
+      '<div class="card-titles"><div class="card-title">'+sp.name+'</div><div class="card-meta">'+sp.settings.split('|')[0].trim()+'</div></div>'+
+      '<div class="badge badge-accent">Intel</div>'+
+    '</div><div class="card-body">'+
+      '<div class="drow"><div class="dlabel">Best Roads</div><div class="dval" style="font-size:11px">'+sp.best+'</div></div>'+
+      '<div class="drow"><div class="dlabel">Best Light</div><div class="dval" style="font-size:11px">'+sp.light+'</div></div>'+
+      '<div class="drow"><div class="dlabel">Settings</div><div class="dval" style="font-size:11px;color:var(--accent)">'+sp.settings+'</div></div>'+
+      '<div class="drow" style="border:none"><div class="dlabel">Tip</div><div class="dval" style="font-size:11px;font-style:italic">'+sp.tip+'</div></div>'+
+    '</div></div>';
+  }).join('');
+}
+
+function renderWaterholePredictor() {
+  var el = document.getElementById('waterholePredictor');
+  if(!el) return;
+  var now = new Date(), hour = now.getHours()+now.getMinutes()/60, month = now.getMonth()+1;
+  var td = hour>=5.5&&hour<7.5?'🔴 PEAK — Dawn golden window. Maximum predator activity.':hour>=7.5&&hour<9.5?'🟠 HIGH — Herds moving to water.':hour>=9.5&&hour<11?'🟡 MODERATE — Heat building.':hour>=11&&hour<14.5?'⚪ LOW — Midday heat. Animals in shade.':hour>=14.5&&hour<16?'🟡 MODERATE — Afternoon activity starting.':hour>=16&&hour<17.5?'🟠 HIGH — Buffalo and elephant to water.':hour>=17.5&&hour<19?'🔴 PEAK — Golden dusk. Predator ambush time.':'🌙 NIGHT — Night drives only.';
+  var st = month>=6&&month<=10?'DRY SEASON: Animals at permanent dams — waterholes unmissable.':month>=11||month<=2?'GREEN SEASON: Water dispersed. Lush backgrounds.':'SHOULDER SEASON: Herds concentrating near permanent dams.';
+  var top = month>=6&&month<=10?['Sunset Dam (Lower Sabie)','Engelhard Dam (Letaba)','Transport Dam (H1-1)','Orpen Dam (H7)','Nwanetsi Dam (H6)']:['Sunset Dam','Gudzane Dam','Welverdiend Waterhole','Biyamiti Weir','Shitlhave Dam'];
+  el.innerHTML='<div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:6px">'+td+'</div>'+
+    '<div style="font-size:10px;color:var(--text3);margin-bottom:10px;font-style:italic">'+st+'</div>'+
+    '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Top waterholes right now:</div>'+
+    top.map(function(w,i){ return '<div style="font-size:11px;color:var(--text2);padding:3px 0">'+(i+1)+'. '+w+'</div>'; }).join('');
+}
+
+function initPhotoIntel() {
+  var dp = document.getElementById('goldenHourDate');
+  if(dp && !dp.value) {
+    var t = new Date();
+    dp.value = t.getFullYear()+'-'+(t.getMonth()<9?'0':'')+(t.getMonth()+1)+'-'+(t.getDate()<10?'0':'')+t.getDate();
+  }
+  calcGoldenHour();
+  renderSpeciesPhotoCards();
+  renderWaterholePredictor();
+}
+
 // PHOTO INTEL
 // ============================================
 var SHOTS_OF_DAY = [
@@ -4021,6 +4351,8 @@ function switchTripTab(tab, el) {
   if(tab==='sightings') renderSightings();
   if(tab==='checklist') { loadChecklistState(); renderChecklist(); }
   if(tab==='journal') renderTripJournal();
+  if(tab==='achievements') renderAchievements();
+  if(tab==='bingo') renderBingo();
 }
 
 function switchParkTab(tab, el) {
@@ -4933,7 +5265,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -6799,7 +7131,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.35';
+var APP_VERSION = '3.36';
 
 // Clear stale caches when version changes
 (function() {
@@ -7072,79 +7404,155 @@ function submitTagLocation() {
 
 function exportTripJournal() {
   var entries = loadJournalEntries();
+  var sightings = loadSightings();
   var dates = {};
   try { dates = JSON.parse(localStorage.getItem('kfg_trip_dates')||'{}'); } catch(e) {}
-  var nick = getUserNickname() || 'Field Guide User';
+  var savedTrips = [];
+  try { savedTrips = JSON.parse(localStorage.getItem('kfg_saved_trips')||'[]'); } catch(e) {}
+  var nick = getUserNickname() || 'Safari Explorer';
+  var checklist = {};
+  try { checklist = JSON.parse(localStorage.getItem('kfg_checklist')||'{}'); } catch(e) {}
 
-  // Separate sightings from other tags in the journal
-  var sightingEntries = entries.filter(function(e){ return e.type === 'sighting'; });
-  var tagEntries = entries.filter(function(e){ return e.type !== 'sighting'; });
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});
 
-  var lines = [
-    'KRUGER FIELD GUIDE — TRIP JOURNAL',
-    nick + "'s Kruger Trip",
-    (dates.from && dates.to) ? dates.from + ' to ' + dates.to : '',
-    (dates.entry || dates.exit) ? 'Entry: ' + (dates.entry||'?') + '  Exit: ' + (dates.exit||'?') : '',
-    ''
-  ];
+  // Build species seen list
+  var speciesSeen = {};
+  sightings.forEach(function(s){ if(!s.protected) speciesSeen[s.id] = s; });
+  var speciesList = Object.values(speciesSeen).sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
 
-  if(sightingEntries.length) {
-    lines.push('── SIGHTINGS (' + sightingEntries.length + ') ──');
-    sightingEntries.forEach(function(s) {
-      var t = new Date(s.time);
-      lines.push((s.title||'Sighting') + (s.road ? ' — ' + s.road : '') + ' — ' +
-        t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'}) + ' ' +
-        t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  // Separate journal entries by type
+  var locationTags = entries.filter(function(e){ return e.type !== 'sighting'; });
+  var journalSightings = entries.filter(function(e){ return e.type === 'sighting'; });
+
+  // Big 5 check
+  var big5ids = ['lion','elephant','leopard','buffalo','white_rhino','black_rhino'];
+  var big5seen = big5ids.filter(function(id){ return speciesSeen[id]; });
+
+  // Build itinerary from saved trips
+  var itinHtml = '';
+  if(savedTrips.length) {
+    savedTrips.forEach(function(trip){
+      itinHtml += '<div class="section"><h3>Trip Plan: '+trip.name+'</h3>';
+      if(trip.nights) itinHtml += '<p>'+trip.nights+' nights &bull; '+trip.entry+' → '+trip.exit+'</p>';
+      if(trip.days && trip.days.length) {
+        itinHtml += '<table><tr><th>Date</th><th>Camp</th><th>Notes</th></tr>';
+        trip.days.forEach(function(day){
+          itinHtml += '<tr><td>'+day.date+'</td><td>'+(day.camp||'-')+'</td><td>'+(day.note||'-')+'</td></tr>';
+        });
+        itinHtml += '</table>';
+      }
+      itinHtml += '</div>';
     });
-    lines.push('');
   }
 
-  if(tagEntries.length) {
-    lines.push('── LOCATIONS TAGGED ──');
-    tagEntries.forEach(function(e) {
-      var t = new Date(e.time);
-      lines.push((e.title||'Location') + (e.road ? ' — near ' + e.road : '') + ' — ' +
-        t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'}) + ' ' +
-        t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  // Build sightings timeline
+  var sightingsByDate = {};
+  journalSightings.forEach(function(s){
+    var d = new Date(s.time).toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short'});
+    if(!sightingsByDate[d]) sightingsByDate[d] = [];
+    sightingsByDate[d].push(s);
+  });
+
+  var timelineHtml = '';
+  Object.keys(sightingsByDate).forEach(function(d){
+    timelineHtml += '<div class="day-block"><div class="day-header">'+d+'</div>';
+    sightingsByDate[d].forEach(function(s){
+      var t = new Date(s.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      var stars = '★'.repeat(s.stars||3);
+      timelineHtml += '<div class="sighting-row"><span class="time">'+t+'</span><span class="species">'+(s.title||'Sighting')+'</span><span class="stars">'+stars+'</span>'+(s.road?'<span class="road">'+s.road+'</span>':'')+'</div>';
     });
-    lines.push('');
+    timelineHtml += '</div>';
+  });
+
+  // Location tags
+  var tagsHtml = '';
+  locationTags.forEach(function(e){
+    var t = new Date(e.time);
+    var d = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+    var ti = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    tagsHtml += '<div class="tag-row"><span class="tag-icon">📍</span><strong>'+(e.title||'Location')+'</strong> &mdash; '+d+' '+ti+(e.road?' &bull; near '+e.road:'')+(e.note?'<div class="tag-note">'+e.note+'</div>':'')+'</div>';
+  });
+
+  // Species checklist summary
+  var checklistHtml = '';
+  if(speciesList.length){
+    checklistHtml = '<div class="species-grid-export">';
+    speciesList.forEach(function(s){
+      checklistHtml += '<div class="sp-item">✓ '+(s.name||s.id)+'</div>';
+    });
+    checklistHtml += '</div>';
   }
 
-  lines.push('── STATS ──');
-  var uniqueSpecies = [];
-  sightingEntries.forEach(function(s){
-    var name = (s.title||'').replace(' sighted','').trim();
-    if(uniqueSpecies.indexOf(name) < 0) uniqueSpecies.push(name);
-  });
-  lines.push('Sightings this trip: ' + sightingEntries.length);
-  lines.push('Unique species: ' + uniqueSpecies.length);
-  lines.push('Locations tagged: ' + tagEntries.length);
+  var html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+nick+' — Kruger Trip Journal</title><style>'+
+    'body{font-family:Georgia,serif;background:#15191c;color:#c8d8e0;margin:0;padding:0}'+
+    '.page{max-width:760px;margin:0 auto;padding:32px 24px}'+
+    '.cover{text-align:center;padding:48px 0 40px;border-bottom:2px solid #e8a020;margin-bottom:40px}'+
+    '.cover h1{font-size:2.2em;color:#e8a020;margin:0 0 8px;font-family:Montserrat,sans-serif;letter-spacing:.04em}'+
+    '.cover .sub{font-size:1.1em;color:#a8b4bc;margin:0 0 6px}'+
+    '.cover .dates{font-size:.95em;color:#5a6b75}'+
+    '.badges-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}'+
+    '.badge-pill{background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.4);color:#e8a020;border-radius:20px;padding:6px 16px;font-size:.8em;font-family:Montserrat,sans-serif;font-weight:700}'+
+    '.badge-pill.green{background:rgba(80,180,80,.15);border-color:rgba(80,180,80,.4);color:#50b450}'+
+    'h2{font-family:Montserrat,sans-serif;font-size:1em;text-transform:uppercase;letter-spacing:.1em;color:#e8a020;border-bottom:1px solid #2a3540;padding-bottom:8px;margin:36px 0 16px}'+
+    'h3{font-family:Montserrat,sans-serif;font-size:.9em;color:#a8b4bc;margin:12px 0 8px}'+
+    '.section{margin-bottom:28px}'+
+    'table{width:100%;border-collapse:collapse;font-size:.88em;margin-top:8px}'+
+    'th{background:rgba(232,160,32,.1);color:#e8a020;padding:7px 10px;text-align:left;font-family:Montserrat,sans-serif;font-size:.75em;text-transform:uppercase;letter-spacing:.06em}'+
+    'td{padding:7px 10px;border-bottom:1px solid #2a3540;color:#c8d8e0}'+
+    '.day-block{margin-bottom:18px}'+
+    '.day-header{font-family:Montserrat,sans-serif;font-weight:700;color:#e8a020;font-size:.85em;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding:4px 0;border-bottom:1px solid #2a3540}'+
+    '.sighting-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(42,53,64,.5);font-size:.9em}'+
+    '.time{color:#5a6b75;font-size:.8em;min-width:45px}'+
+    '.species{flex:1;font-weight:600;color:#c8d8e0}'+
+    '.stars{color:#e8a020;font-size:.85em;min-width:50px}'+
+    '.road{font-size:.75em;color:#5a6b75;background:#1c2429;padding:2px 7px;border-radius:4px}'+
+    '.tag-row{padding:8px 0;border-bottom:1px solid #2a3540;font-size:.9em}'+
+    '.tag-icon{margin-right:6px}'+
+    '.tag-note{font-style:italic;color:#5a6b75;margin-top:4px;font-size:.85em}'+
+    '.species-grid-export{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}'+
+    '.sp-item{font-size:.82em;color:#a8b4bc;padding:3px 0}'+
+    '.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;margin:16px 0}'+
+    '.stat-val{font-size:2em;font-weight:700;color:#e8a020;font-family:Montserrat,sans-serif}'+
+    '.stat-lbl{font-size:.75em;color:#5a6b75;text-transform:uppercase;letter-spacing:.06em}'+
+    '.footer{text-align:center;margin-top:48px;padding-top:20px;border-top:1px solid #2a3540;color:#5a6b75;font-size:.8em}'+
+    '@media print{body{background:#fff;color:#000}.cover h1{color:#c8760a}h2{color:#c8760a}.stat-val{color:#c8760a}}'+ 
+  '</style></head><body><div class="page">'+
+  '<div class="cover">'+
+    '<h1>'+nick.toUpperCase()+'</h1>'+
+    '<div class="sub">Kruger National Park &bull; Trip Journal</div>'+
+    (dates.from||dates.to?'<div class="dates">'+(dates.from||'?')+' &mdash; '+(dates.to||'?')+'</div>':'<div class="dates">'+dateStr+'</div>')+
+    '<div class="badges-row">'+
+      (big5seen.length>=5?'<div class="badge-pill green">🦁 Big 5 Complete!</div>':'<div class="badge-pill">Big 5: '+big5seen.length+'/5</div>')+
+      '<div class="badge-pill">'+speciesList.length+' Species</div>'+
+      '<div class="badge-pill">'+sightings.length+' Sightings</div>'+
+      (locationTags.length?'<div class="badge-pill">'+locationTags.length+' Locations</div>':'')+
+    '</div>'+
+  '</div>'+
+  '<div class="stats-grid">'+
+    '<div><div class="stat-val">'+sightings.length+'</div><div class="stat-lbl">Sightings</div></div>'+
+    '<div><div class="stat-val">'+speciesList.length+'</div><div class="stat-lbl">Species</div></div>'+
+    '<div><div class="stat-val">'+big5seen.length+'/5</div><div class="stat-lbl">Big 5</div></div>'+
+  '</div>'+
+  (itinHtml ? '<h2>Trip Itinerary</h2>'+itinHtml : '')+
+  (timelineHtml ? '<h2>Sightings Timeline</h2>'+timelineHtml : '')+
+  (tagsHtml ? '<h2>Locations Visited</h2><div class="section">'+tagsHtml+'</div>' : '')+
+  (checklistHtml ? '<h2>Species Seen ('+speciesList.length+')</h2>'+checklistHtml : '')+
+  '<div class="footer">Generated by <strong>Kruger Field Guide</strong> &bull; Krantz Outdoors<br>Wild by Nature. Africa by Choice. &bull; krantzoutdoors.com</div>'+
+  '</div></body></html>';
 
-  var big5Names = ['Lion','Elephant','Leopard','Rhino','White Rhino','Black Rhino','Buffalo'];
-  var big5seen = big5Names.filter(function(n){
-    return sightingEntries.some(function(s){ return (s.title||'').indexOf(n) >= 0; });
-  });
-  if(big5seen.length) lines.push('Big 5 seen: ' + big5seen.join(', ') + (big5seen.length >= 5 ? ' ✓ COMPLETE!' : ''));
-
-  lines.push('');
-  lines.push('Generated by Kruger Field Guide — krantzoutdoors.com');
-  lines.push('Wild by Nature. Africa by Choice.');
-
-  var text = lines.filter(function(l){ return l !== undefined; }).join('\n');
-
-  if(navigator.share) {
-    navigator.share({ title: nick + "'s Kruger Trip Journal", text: text }).catch(function(){});
-  } else {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    showToast('Journal copied to clipboard! &#x1F4CB;', 2500);
-  }
+  // Download as HTML file
+  var blob = new Blob([html], {type:'text/html'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = nick.replace(/\s+/g,'-') + '-Kruger-Trip-' + (dates.from||dateStr.replace(/\s/g,'-')) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Trip journal exported! Open the downloaded file in your browser.');
 }
-
 // Auto-add sightings to journal when logged
 function addSightingToJournal(entry) {
   addJournalEntry({
@@ -7225,6 +7633,9 @@ function renderGateButtons() {
 var _map = null;
 var _mapLayers = { camps:[], gates:[], dams:[], waterholes:[], lookouts:[], hides:[], heritage:[], poi:[], picnic:[], sightings:[] };
 var _mapFilters = { camps:true, gates:true, dams:true, waterholes:true, lookouts:true, hides:true, heritage:true, poi:true, picnic:true, sightings:true };
+var _heatmapLayer = null;
+var _heatmapActive = false;
+var _leafletHeatLoaded = false;
 var _userMarker = null;
 
 function initMap() {
