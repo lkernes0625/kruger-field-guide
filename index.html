@@ -51,7 +51,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
 
 /* CONTENT */
-#content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #content::-webkit-scrollbar{width:2px}
 #content::-webkit-scrollbar-thumb{background:var(--border2)}
 
@@ -249,7 +249,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 
 /* MY TRIP */
 .trip-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}#myTripTabs .trip-tab{flex-shrink:0}
-.trip-tab{flex-shrink:0;padding:11px 14px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.trip-tab{flex-shrink:0;padding:10px 9px;text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .trip-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .trip-tab-content{display:none}
 .trip-tab-content.active{display:block}
@@ -574,14 +574,11 @@ svg.animal-art{width:100%;height:100%}
       </div>
       <div class="trip-tab-content active" id="parktab-camps">
         <div style="padding:10px 14px 0">
-          <div style="position:relative;z-index:100">
-            <div id="campSearchBtn" onclick="toggleCampsPanel()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent;user-select:none">
-              <span id="campSearchLabel">&#x1F50D; Browse all camps...</span>
-              <span style="font-size:11px">&#x25BC;</span>
-            </div>
-          </div>
-          <div id="allCampsPanel" style="display:none;max-height:260px;overflow-y:scroll;-webkit-overflow-scrolling:touch;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;margin-top:4px;z-index:9999;position:absolute;left:0;right:0;box-shadow:0 8px 24px rgba(0,0,0,.5)">
-            <div id="allCampsList"></div>
+          <div style="position:relative">
+            <select id="campSearchSelect" onchange="selectCampFromNativeSelect(this)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:13px;box-sizing:border-box;cursor:pointer;-webkit-appearance:none;appearance:none">
+              <option value="">&#x1F50D; Browse all camps...</option>
+            </select>
+            <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3);font-size:11px">&#x25BC;</span>
           </div>
           <div style="display:flex;gap:6px;margin:8px 0 10px;padding:0 0;align-items:stretch">
             <select id="campZoneFilter" onchange="renderCamps()" style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:12px;-webkit-appearance:none;cursor:pointer"><option value="">All Regions</option>
@@ -951,7 +948,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.43</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.43 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.44</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.44 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -1448,9 +1445,9 @@ var BIRD_IMG = {
 };
 
 var BIRDS = [
-  { id:'fish_eagle', name:'African Fish Eagle', latin:'Haliaeetus vocifer', classification:'Aves', mass:'2-3.6 kg', trophic:'Apex predator', gestation:'42-45 days (incubation)', conservation:'Least Concern (LC)', zone:'Rivers and Dams', roads:'Sabie River, Olifants River, major dams', time:'06:00-10:00 and 15:00-18:00', camera:'500mm - f/5.6 - 1/2000s - ISO 400', behaviour:'Iconic call of Africa. Perches in tall trees near water. Spectacular diving attacks on fish. Best near Olifants and Lower Sabie.', category:'raptor', protected:false, color:'#8a5a1a' },
-  { id:'pels_fishing_owl', classification:'Aves', mass:'2-2.5 kg', trophic:'Carnivore', gestation:'32-33 days (incubation)', conservation:'Least Concern (LC)', name:"Pel\'s Fishing Owl", latin:'Scotopelia peli', zone:'Riverine Forest', roads:'Pafuri, Luvuvhu River, Olifants River', time:'19:00-05:00', camera:'500mm - f/2.8 - 1/125s - ISO 3200', behaviour:'Most sought-after Kruger bird. Nocturnal. Large riparian trees near slow rivers. Night drives essential. Orange-buff giant owl.', category:'owl', protected:false, color:'#c8802a' },
-  { id:'southern_ground_hornbill', name:'Southern Ground Hornbill', latin:'Bucorvus leadbeateri', classification:'Aves', mass:'3.5-6.2 kg', trophic:'Carnivore', gestation:'37-43 days (incubation)', conservation:'Vulnerable (VU)', zone:'Open Savanna', roads:'H1-4, H7, central and northern regions', time:'06:00-11:00', camera:'400mm - f/5.6 - 1/1000s - ISO 400', behaviour:'Largest hornbill in Africa. Walks in family groups. Striking red facial skin. Critically threatened. Slow breeding cycle.', category:'ground-bird', protected:false, color:'#1a1a1a' },
+  { id:'fish_eagle', name:'African Fish Eagle', latin:'Haliaeetus vocifer', classification:'Aves', mass:'2-3.6 kg', trophic:'Apex predator', gestation:'42-45 days (incubation)', conservation:'Least Concern (LC)', zone:'Rivers and Dams', roads:'Sabie River, Olifants River, major dams', time:'06:00-10:00 and 15:00-18:00', camera:'500mm - f/5.6 - 1/2000s - ISO 400', behaviour:'Iconic call of Africa. Perches in tall trees near water. Spectacular diving attacks on fish. Best near Olifants and Lower Sabie.', category:'raptor', protected:false, color:'#8a5a1a' , wingSpan:'175-210 cm', keyFeatures:'Unmistakable white head and breast; chestnut body; black wings; bright yellow cere; wingspan 175-210cm. Africa\'s most iconic bird.', description:'The African fish eagle is the voice of Africa — its loud, echoing call is the defining sound of the continent\'s waterways. A pair calling in synchronised duet carries for kilometres. One of the most reliably seen large raptors in Kruger near any permanent water.', distribution:'Throughout Kruger along all major rivers and large dams. Most reliable at Sunset Dam (Lower Sabie), Engelhard Dam (Letaba), Sabie River, Olifants River, and all major camp watercourses.', habitat:'Large rivers, permanent dams and lakes with tall trees for perching and nesting. Pairs hold lifelong territories.', food:'Fish (primary) caught by spectacular feet-first plunge from flight. Also waterbirds, flamingos, small mammals, carrion and stolen prey from other raptors.', breeding:'2-3 eggs on a massive stick nest reused and added to for decades. Incubation 42-45 days. Both parents feed the chick.', voice:'Loud resonant yelp — weee-ah-hyo-hyo. One of Africa\'s most iconic and recognisable calls. Pairs duet with the female\'s call higher-pitched.'},
+  { id:'pels_fishing_owl', classification:'Aves', mass:'2-2.5 kg', trophic:'Carnivore', gestation:'32-33 days (incubation)', conservation:'Least Concern (LC)', name:"Pel\'s Fishing Owl", latin:'Scotopelia peli', zone:'Riverine Forest', roads:'Pafuri, Luvuvhu River, Olifants River', time:'19:00-05:00', camera:'500mm - f/2.8 - 1/125s - ISO 3200', behaviour:'Most sought-after Kruger bird. Nocturnal. Large riparian trees near slow rivers. Night drives essential. Orange-buff giant owl.', category:'owl', protected:false, color:'#c8802a' , wingSpan:'153-163 cm', keyFeatures:'Very large tawny-orange owl; no ear tufts; large dark eyes adapted for low light; bare feet with spiny soles for gripping fish; heavily spotted underparts.', description:'Pel\'s Fishing Owl is Kruger\'s most sought-after bird and one of Africa\'s most iconic rarities. A nocturnal giant that hunts fish by plunging from riverside perches. Its deep booming call resonates through the darkness of the Pafuri forest.', distribution:'Far north Kruger — Pafuri Triangle and Luvuvhu River are the best sites. Occasional records from Olifants River gorge. Requires large riverine trees overhanging slow-moving water.', habitat:'Dense tall riverine forest immediately over slow, deep rivers. Extremely sensitive to any riverside woodland clearance.', food:'Fish caught by plunging feet-first into shallow water from a low perch. Also frogs, crabs and large aquatic insects.', breeding:'Nests in large tree cavities. 1-2 eggs. Incubation ~32 days. Chick dependent on parents for many months after fledging.', voice:'Deep resonant two-note hoot — a long drawn-out boo-HOO — unmistakable in the Pafuri night. Heard from great distances.'},
+  { id:'southern_ground_hornbill', name:'Southern Ground Hornbill', latin:'Bucorvus leadbeateri', classification:'Aves', mass:'3.5-6.2 kg', trophic:'Carnivore', gestation:'37-43 days (incubation)', conservation:'Vulnerable (VU)', zone:'Open Savanna', roads:'H1-4, H7, central and northern regions', time:'06:00-11:00', camera:'400mm - f/5.6 - 1/1000s - ISO 400', behaviour:'Largest hornbill in Africa. Walks in family groups. Striking red facial skin. Critically threatened. Slow breeding cycle.', category:'ground-bird', protected:false, color:'#1a1a1a' , wingSpan:'120-140 cm', keyFeatures:'Turkey-sized black bird; bright red facial skin and throat pouch; white primary feathers visible only in flight; always in family groups of 3-8; walks slowly.', description:'The southern ground hornbill is one of Africa\'s most distinctive birds and a Top 6 Kruger species. The world\'s largest hornbill, it walks in slow, purposeful family groups through the bush hunting large prey. Their deep booming call at dawn is one of the defining sounds of the African bush.', distribution:'Throughout Kruger in open woodland and savanna. Family groups most reliable along H1-4 north of Satara, H1-6 mopane woodland, and the Punda Maria area. Groups of 3-8 birds always together.', habitat:'Open savanna, mopane and mixed woodland with large old trees for nesting. Requires huge territories — a family group may range over 100 km².', food:'Snakes (including large venomous species), lizards, tortoises, frogs, large insects, small mammals. Kills prey by stamping with powerful feet.', voice:'Deep resonant booming call at dawn — oom-oom-oom-oom. One of Africa\'s great iconic wildlife sounds, carrying for several kilometres.'},
   {"id":"african_crowned_eagle","name":"African Crowned Eagle","latin":"Stephanoaetus coronatus","classification":"Aves","category":"raptor","colors":["brown","white","black"],"size":"large","habitat":"woodland","conservation":"Least Concern (LC)","zone":"Dense riverine woodland","roads":"Pafuri, Luvuvhu River, Sabie River","time":"06:00-10:00","camera":"500mm f/5.6 1/2000s ISO 800","behaviour":"Africas most powerful eagle. Hunts monkeys and small antelope. Nest re-used for decades. Loud call alerts the forest.","keyFeatures":"Powerful build; long crest; dark above; heavily spotted/barred below; very long tail; rounded wings for forest manoeuvring.","description":"Africa's most powerful eagle relative to its size. Capable of killing prey several times its own weight — including small antelope and adult monkeys. It is a specialist forest eagle that uses its short broad wings to manoeuvre through dense woodland. Every sighting is exceptional.","distribution":"Rare — dense riverine forest along Sabie, Olifants and Luvuvhu rivers. Most reliable at Pafuri and along the Sabie River near Skukuza.","food":"Medium-sized mammals including monkeys, small antelope and mongooses. Hunts by ambush from perches.","breeding":"Breeds every 2 years. Single egg on a massive nest platform. Incubation ~49 days.","voice":"Loud melodious whistle — kewee-kewee-kewee. Often heard before seen."},
   {"id":"african_cuckoo_hawk","name":"African Cuckoo Hawk","latin":"Aviceda cuculoides","classification":"Aves","category":"raptor","colors":["grey","rufous","white"],"size":"medium","habitat":"woodland","conservation":"Least Concern (LC)","zone":"Dense woodland and forest edge","roads":"Pafuri area, riverine belts","time":"07:00-11:00","camera":"400mm f/5.6 1/1000s ISO 800","behaviour":"Cuckoo-like appearance with crest. Feeds mainly on chameleons and lizards in dense canopy. Quiet and easily missed.","description":"A medium raptor with a distinctive raised crest and cuckoo-like appearance. Feeds mainly on chameleons and lizards in dense woodland canopy. Quiet and easily missed — the raised crest and rufous barring on the underparts are diagnostic.","distribution":"Uncommon — dense riverine woodland. Best in Pafuri area and Sabie River belt.","food":"Chameleons, lizards, large insects.","breeding":"Small nest in tree fork. 1-2 eggs.","voice":"High pitched mewing whistle."},
   {"id":"african_goshawk","name":"African Goshawk","latin":"Accipiter tachiro","classification":"Aves","category":"raptor","colors":["grey","rufous","white"],"size":"medium","habitat":"woodland","conservation":"Least Concern (LC)","zone":"Dense riverine woodland","roads":"Sabie River, Pafuri, Lower Sabie area","time":"06:00-09:00","camera":"400mm f/5.6 1/1600s ISO 1600","behaviour":"Fast ambush predator of woodland birds. Distinctive double-noted call at dawn. Watch for bursts of speed through dense vegetation.","description":"A fast, agile woodland raptor that hunts birds by surprise attack. Calls persistently at dawn — a loud double-noted kik-kik. The rufous-barred underparts and grey back are diagnostic. Frequently heard but rarely seen well.","distribution":"Throughout Kruger in dense woodland. Most reliable along Sabie and Olifants rivers.","food":"Birds, lizards, small mammals. Ambush predator.","breeding":"Small neat nest in tree fork. 2-3 eggs.","voice":"Loud double note kik-kik at dawn."},
@@ -1815,7 +1812,7 @@ var FACILITIES = {
     { name:"N'wamanzi Lookout", lat:-23.9964, lng:31.7369, hours:'06:00-18:30', amenities:['shade'], note:'Elevated lookout near Olifants Camp. Spectacular Olifants River gorge views. One of the finest viewpoints in Africa.', detail:{"location":"Olifants Camp area, overlooking the Olifants River gorge. The name means 'Water Place' in Tsonga.","wildlife":"Daily elephant herds in the gorge below. Crocodile and hippo in permanent pools. Martial eagle and African fish eagle. Klipspringer on the cliff walls.","facilities":"Accessible from Olifants Camp. All camp facilities nearby.","tips":"Best at dawn and at sunset for golden light on the cliff faces. Scan the gorge floor at 06:30 for elephant herds. One of the finest views in Africa."} },
     { name:'Gardenia Hide', lat:-24.6500, lng:31.8800, zone:'South', hours:'06:00-18:00', amenities:['shade'], badges:['hide'], note:'Photography hide named after the wild gardenia trees. Eastern Kruger. Reliable waterbirds and small mammals.', detail:{"location":"Eastern Kruger near the S100 corridor. Named after the wild gardenia trees surrounding the hide.","wildlife":"Exceptional small bird diversity — bee-eaters, sunbirds, bush shrikes. Vervet monkey and water monitor at the waterhole. Elephant occasional.","facilities":"Shaded hide. Day use only. No toilet facilities.","tips":"Best for birds early morning. The gardenia woodland is excellent for smaller raptors and owls. Combine with S100 for larger mammals."} },
     { name:'Matambeni Hide', lat:-24.5500, lng:31.5000, zone:'South', hours:'06:00-18:00', amenities:[], badges:['hide'], note:'Central Kruger hide at a productive waterhole. Regular elephant, buffalo and lion activity.', detail:{"location":"Central Kruger near the S36 road, eastern section. Productive waterhole in mixed woodland.","wildlife":"Elephant, buffalo and lion are regular visitors. Excellent for waterbuck, impala and warthog. Raptors use the surrounding dead trees.","facilities":"Day hide. No toilet facilities on site. No booking required.","tips":"Less visited than other central hides — you often have it to yourself. Best 06:30-09:00 and 15:30-18:00. Buffalo herds in the dry season."} },
-    { name:'Nyawutsi Hide', lat:-24.9500, lng:31.5500, zone:'South', hours:'06:00-18:30', amenities:['shade'], badges:['hide'], note:'Hide near Skukuza in riverine woodland. Good for smaller species, waterbirds and leopard approaching the water at dawn.' }
+    { name:'Nyawutsi Hide', lat:-24.9500, lng:31.5500, zone:'South', hours:'06:00-18:30', amenities:['shade'], badges:['hide'], note:'Hide near Skukuza in riverine woodland. Good for smaller species, waterbirds and leopard approaching the water at dawn.', detail:{"location":"Southern Kruger on the S50 road north of Shingwedzi — approximately 28km from Shingwedzi Camp on the Shingwedzi River. Day use only, no booking required.","wildlife":"Elephant and buffalo drink here regularly. Hippo in the pool below the hide. Excellent for waterbirds including herons, kingfishers and darters. Leopard occasionally seen approaching the waterhole at dusk.","facilities":"Shaded hide with good sightlines over the waterhole. No ablution facilities on site. Day use only — close before sunset.","tips":"Arrive early morning (06:30-09:00) for the best activity. Elephant and buffalo are the most reliable sightings. The S50 road en route delivers excellent northern Kruger game viewing. Combine with Kanniedood Dam nearby."} }
   ],
   picnic: [
     { name:'Tshokwane Picnic Site', lat:-24.7941, lng:31.8695, hours:'06:00-18:00', amenities:['toilets','braai','shade','water','kiosk','restaurant','disabled'], note:'Central Kruger - restaurant, toilets, curio shop, braai', detail:{"location":"S50 gravel road, ~38km south-east of Shingwedzi, near Grootvlei Dam close to the Mozambique border.","wildlife":"Premier birding: Malachite Kingfisher, African Hawk-Eagle, storks and herons. Elephant and leopard occasionally visit the waterhole.","facilities":"Wheelchair-friendly with ramp and ample space. No toilets on site — nearest at Shingwedzi. Day-use only, no overnight.","tips":"Remote location — often have the hide to yourself. Confirm current status at Shingwedzi reception before visiting."} },
@@ -1828,7 +1825,7 @@ var FACILITIES = {
     { name:'Nhlanguleni Picnic Site', lat:-25.2000, lng:31.4000, zone:'South', hours:'06:00-18:00', amenities:['toilets','braai','shade'], badges:[], note:'Southern Kruger picnic site with braai facilities. Good white rhino and general game area.', detail:{"access":"Southern Kruger on the H3 road between Berg-en-Dal and Skukuza. One of the lesser-visited picnic sites.","wildlife":"White rhino territory — H3 is the best road in Kruger for white rhino. Lion, leopard and elephant on the road.","facilities":"Braai facilities, shade trees and ablutions.","tips":"The H3 road is arguably the best overall wildlife road in southern Kruger. Stop here for a braai and continue towards Skukuza for excellent game viewing."} },
     { name:'Masorini Picnic Site', lat:-23.9300, lng:31.2000, zone:'Central', hours:'06:00-18:30', amenities:['toilets','shade'], badges:[], note:'Adjacent to the Masorini archaeological site near Phalaborwa Gate. Combined heritage and picnic experience.', detail:{"access":"Adjacent to the Masorini archaeological site near Phalaborwa Gate on the H9 road.","wildlife":"Elephant and buffalo on the Phalaborwa corridor. Sable and roan in the surrounding mopane. Excellent birding near the Letaba River.","facilities":"Picnic tables and ablutions. Combine with a guided Masorini heritage tour — book at Phalaborwa Gate.","tips":"The Masorini Iron Age village reconstruction is one of the best heritage experiences in Kruger. Tours run at 09:00 and 14:00. Combined heritage + picnic visit is excellent."} },
     { name:'Makhadzi Picnic Site', lat:-22.7000, lng:30.9500, zone:'Far North', hours:'06:00-17:30', amenities:['toilets','shade'], badges:[], note:'Far northwest Kruger near the Makhadzi area. Remote picnic spot in good sable and roan territory.', detail:{"access":"Far northwest Kruger near the Makhadzi area. Remote location on the road between Punda Maria and the far north.","wildlife":"Excellent sable and roan antelope territory. Nyala in the dense vegetation. Elephant and lion on the surrounding plains.","facilities":"Basic shade and ablutions. Very remote — rarely busy.","tips":"One of the most remote picnic sites in Kruger. Stop here for a break on the long drive north to Pafuri. The surrounding area is excellent for rare antelope."} },
-        { name:'Letaba Picnic Site', lat:-23.8561, lng:31.5802, zone:'Central', hours:'06:00-18:30', amenities:['toilets','shade','water'], badges:[], note:'Picnic area near Letaba Camp on the Letaba River. Good elephant viewing and birding along the river banks.' }
+        { name:'Letaba Picnic Site', lat:-23.8561, lng:31.5802, zone:'Central', hours:'06:00-18:30', amenities:['toilets','shade','water'], badges:[], note:'Picnic area near Letaba Camp on the Letaba River. Good elephant viewing and birding along the river banks.', detail:{"access":"Adjacent to Letaba Rest Camp on the Letaba River. Easily accessible from the camp — follow signs from the main camp entrance. Combine with the S47 Engelhard Dam loop for world-class elephant viewing.","wildlife":"The Letaba River below the picnic site is one of the best elephant viewing spots in Kruger — herds of 30-50 regularly drink here. Hippo and crocodile year-round. Exceptional birding including African fish eagle, giant kingfisher and goliath heron.","facilities":"Ablution facilities, shade trees and running water. Braai facilities available. The Cattle Baron Restaurant at Letaba Camp is 2 minutes walk for full meals.","tips":"Combine this stop with the S47 Engelhard Dam loop — arguably the best elephant road in Africa. The elephant herds on the Letaba River at dawn are legendary. Stop at the Elephant Hall museum at Letaba Camp to see the famous Magnificent Seven tusker skulls."} }
   ],
   dams: [
     { name:'Balalala Picnic Site', lat:-22.6500, lng:31.3000, zone:'North', amenities:[], badges:['picnic','waterhole'], type:'waterhole', note:'Far north near Babalala picnic site. Elephant and lion in dry season.', detail:{"access":"Adjacent to Letaba Rest Camp on the Letaba River. Combine with S47 Engelhard Dam loop.","wildlife":"Elephant herds on the Letaba River — often 50+ at dawn. Leopard on the riverbank at night. Hippo in the river.","facilities":"Letaba Camp facilities nearby. Riverside setting with shade.","tips":"The S47 Engelhard Dam loop from Letaba is arguably the best elephant road in Africa. Do it at first light then stop here for breakfast."} },
@@ -2562,20 +2559,40 @@ function selectCampSearchItem(e, name) {
 }
 
 
-function toggleCampsPanel() {
-  var panel = document.getElementById('allCampsPanel');
-  var list = document.getElementById('allCampsList');
-  if(!panel) return;
-  if(panel.style.display !== 'none') { panel.style.display='none'; return; }
-  // Build list
+function toggleCampsPanel() { /* legacy - no-op, replaced by native select */ }
+function showAllCampsPanel() { /* legacy no-op */ }
+function initCampSelect() {
+  var sel = document.getElementById('campSearchSelect');
+  if(!sel || sel.options.length > 1) return;
   var sorted = CAMPS.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
-  list.innerHTML = sorted.map(function(camp) {
-    var sn = camp.name;
-    return '<div ontouchstart="selectCampFromPanel(event,\''+sn+'\')" onmousedown="selectCampFromPanel(event,\''+sn+'\')" style="padding:13px 14px;font-size:13px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border);font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent;user-select:none">'+camp.name+'<span style="font-size:10px;color:var(--text3);margin-left:6px">'+camp.type+'</span></div>';
-  }).join('');
-  panel.style.display = 'block';
+  sorted.forEach(function(camp) {
+    var opt = document.createElement('option');
+    opt.value = camp.name;
+    opt.textContent = camp.name + ' (' + camp.type + ')';
+    sel.appendChild(opt);
+  });
 }
-function showAllCampsPanel() { toggleCampsPanel(); }
+function selectCampFromNativeSelect(sel) {
+  var name = sel.value;
+  if(!name) { window._campSearchFilter=''; renderCamps(); return; }
+  window._campSearchFilter = name;
+  renderCamps();
+  // Auto-open the single matching card
+  setTimeout(function() {
+    var cards = document.querySelectorAll('#campsList .card');
+    if(cards.length === 1) {
+      var body = cards[0].querySelector('.card-body');
+      if(body) body.classList.add('open');
+      cards[0].scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    // Reset after 8 seconds
+    setTimeout(function(){
+      sel.value = '';
+      window._campSearchFilter = '';
+      renderCamps();
+    }, 8000);
+  }, 150);
+}
 function selectCampFromPanel(e, name) {
   if(e) { e.preventDefault(); e.stopPropagation(); }
   selectCampDirect(name);
@@ -4166,7 +4183,15 @@ var BINGO_SPECIES = [
 var _bingoState = null;
 
 function loadBingoState() {
-  try { return JSON.parse(localStorage.getItem('kfg_bingo')||'null'); } catch(e) { return null; }
+  try {
+    var saved = JSON.parse(localStorage.getItem('kfg_bingo')||'null');
+    if(!saved) return null;
+    // Always merge imgId from BINGO_SPECIES definition (fixes stale localStorage)
+    saved.forEach(function(sq, i) {
+      if(BINGO_SPECIES[i] && BINGO_SPECIES[i].imgId) sq.imgId = BINGO_SPECIES[i].imgId;
+    });
+    return saved;
+  } catch(e) { return null; }
 }
 function saveBingoState() {
   localStorage.setItem('kfg_bingo', JSON.stringify(_bingoState));
@@ -4581,7 +4606,7 @@ function switchParkTab(tab, el) {
   if(el) el.classList.add('active');
   var tc = document.getElementById('parktab-'+tab);
   if(tc) tc.classList.add('active');
-  if(tab==='camps') renderCamps();
+  if(tab==='camps') { initCampSelect(); renderCamps(); }
   if(tab==='lookouts') renderLookouts();
   if(tab==='picnic') renderPicnic();
   if(tab==='dams') renderDams();
@@ -6257,7 +6282,7 @@ function switchParkTab(tab, el) {
   if(el) el.classList.add('active');
   var tc = document.getElementById('parktab-'+tab);
   if(tc) tc.classList.add('active');
-  if(tab==='camps') renderCamps();
+  if(tab==='camps') { initCampSelect(); renderCamps(); }
   if(tab==='lookouts') renderLookouts();
   if(tab==='picnic') renderPicnic();
   if(tab==='dams') renderDams();
@@ -7306,6 +7331,7 @@ function openBird(idx) {
   modal.classList.add('open');
 }
 function switchWildlifeTab(tab, btn) {
+  window._wildlifeTab = tab;
   setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
   var mammalBtns = document.getElementById('mammalOnlyFilters');
   if(mammalBtns) mammalBtns.style.display = tab==='species' ? 'flex' : 'none';
@@ -7347,7 +7373,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.43';
+var APP_VERSION = '3.44';
 
 // Clear stale caches when version changes
 (function() {
@@ -8372,13 +8398,9 @@ function setAZFilter(letter) {
     var az=document.getElementById('azIndex');
     if(az) az.style.opacity='0';
   }, 2500);
-  // Determine active tab and correct grid
-  var activeTab = document.querySelector('.wildlife-tab.active');
-  var tabName = activeTab ? activeTab.textContent.trim().toUpperCase() : 'MAMMALS';
-  var gridId = 'speciesGrid';
-  if(tabName === 'BIRDS') gridId = 'birdsGrid';
-  else if(tabName === 'REPTILES') gridId = 'reptilesGrid';
-  else if(tabName === 'FROGS') gridId = 'frogsGrid';
+  // Use tracked tab (reliable - not dependent on class which uses inline styles)
+  var tab = window._wildlifeTab || 'species';
+  var gridId = tab === 'birds' ? 'birdsGrid' : tab === 'reptiles' ? 'reptilesGrid' : tab === 'frogs' ? 'frogsGrid' : 'speciesGrid';
   var grid = document.getElementById(gridId);
   if(!grid) return;
   // Scroll to first item starting with this letter
@@ -8417,11 +8439,10 @@ function initAZScroll() {
     if(screenId !== 'wildlife') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
     var activeTab = document.querySelector('.wildlife-tab.active');
     if(!activeTab) { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
-    var t = activeTab.textContent.trim().toUpperCase();
-    if(t !== 'MAMMALS' && t !== 'BIRDS' && t !== 'REPTILES' && t !== 'FROGS') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
+    var wt = window._wildlifeTab || 'species';
+    if(wt === 'sightings') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
     az.style.display = 'flex';
     requestAnimationFrame(function(){ az.style.opacity='1'; });
-    // Auto-fade after 2s of no scrolling
     clearTimeout(_azFadeTimer);
     _azFadeTimer = setTimeout(function(){
       az.style.opacity='0';
@@ -8436,10 +8457,8 @@ function initAZScroll() {
     if(!az) return;
     var screenId = window._currentScreenId;
     if(screenId !== 'wildlife') { hideAZ(); return; }
-    var activeTab = document.querySelector('.wildlife-tab.active');
-    if(!activeTab) { hideAZ(); return; }
-    var t = activeTab.textContent.trim().toUpperCase();
-    if(t !== 'MAMMALS' && t !== 'BIRDS' && t !== 'REPTILES' && t !== 'FROGS') { hideAZ(); return; }
+    var wt = window._wildlifeTab || 'species';
+    if(wt === 'sightings') { hideAZ(); return; }
     // Show on any scroll
     showAZ();
 
