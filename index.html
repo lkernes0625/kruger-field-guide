@@ -248,8 +248,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 .weather-intel-text{font-size:11px;color:var(--text2);line-height:1.6;font-weight:500}
 
 /* MY TRIP */
-.trip-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border)}.trip-tabs-scroll{overflow-x:scroll;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;white-space:nowrap;display:block;background:var(--bg2);border-bottom:1px solid var(--border);touch-action:pan-x}.trip-tabs-scroll .trip-tab{display:inline-block;flex-shrink:0}
-.trip-tab{flex-shrink:0;padding:10px 11px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.trip-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border)}.trip-tabs-scroll{display:flex;flex-wrap:nowrap;background:var(--bg2);border-bottom:1px solid var(--border)}.trip-tabs-scroll .trip-tab{flex:1;text-align:center}
+.trip-tab{flex-shrink:0;padding:11px 4px;text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .trip-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .trip-tab-content{display:none}
 .trip-tab-content.active{display:block}
@@ -800,7 +800,7 @@ svg.animal-art{width:100%;height:100%}
     <div class="screen" id="screen-trip">
       <div class="sec-head"><h2>My Trip</h2><p>Plan &middot; Track &middot; Share</p></div>
       <div id="myTripTabs" class="trip-tabs-scroll">
-        <div class="trip-tab active" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('sightings',this)">Sightings</div><div class="trip-tab" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('achievements',this)">🏆 Badges</div><div class="trip-tab" onclick="switchTripTab('bingo',this)">🎯 Bingo</div>
+        <div class="trip-tab active" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('sightings',this)">Sightings</div><div class="trip-tab" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('achievements',this)">Badges</div><div class="trip-tab" onclick="switchTripTab('bingo',this)">Bingo</div>
       </div>
 
       <!-- ITINERARY TAB -->
@@ -943,7 +943,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.46</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.46 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.47</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.47 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -2570,22 +2570,18 @@ function initCampSelect() {
 function selectCampFromNativeSelect(sel) {
   var name = sel.value;
   if(!name) { window._campSearchFilter=''; renderCamps(); return; }
+  // Filter to only this exact camp name
   window._campSearchFilter = name;
   renderCamps();
-  // Auto-open the matching card(s)
+  // Open the matching card
   setTimeout(function() {
     var cards = document.querySelectorAll('#campsList .card');
-    cards.forEach(function(card) {
-      var body = card.querySelector('.card-body');
+    if(cards.length > 0) {
+      var body = cards[0].querySelector('.card-body');
       if(body) body.classList.add('open');
-    });
-    if(cards.length > 0) cards[0].scrollIntoView({behavior:'smooth', block:'start'});
-    // Reset after 10 seconds
-    setTimeout(function(){
-      sel.value = '';
-      window._campSearchFilter = '';
-      renderCamps();
-    }, 10000);
+      cards[0].scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    // Do NOT auto-reset - user controls when to search again by choosing a new option
   }, 200);
 }
 function selectCampFromPanel(e, name) {
@@ -2629,7 +2625,12 @@ function renderCamps() {
   var typeFilter = (document.getElementById('campTypeFilter')||{}).value||'';
   search = search.toLowerCase().trim();
   var filtered = CAMPS.filter(function(camp) {
-    if(search && camp.name.toLowerCase().indexOf(search) < 0 && camp.note.toLowerCase().indexOf(search) < 0) return false;
+    if(search) {
+      // Exact name match when coming from dropdown selector
+      if(window._campSearchFilter && camp.name.toLowerCase() !== search) return false;
+      // Partial match for text search (if ever used)
+      else if(!window._campSearchFilter && camp.name.toLowerCase().indexOf(search) < 0 && camp.note.toLowerCase().indexOf(search) < 0) return false;
+    }
     if(zoneFilter && camp.zone !== zoneFilter) return false;
     if(typeFilter && camp.type !== typeFilter) return false;
     return true;
@@ -7368,7 +7369,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.46';
+var APP_VERSION = '3.47';
 
 // Clear stale caches when version changes
 (function() {
@@ -8424,18 +8425,13 @@ function initAZScroll() {
   function showAZ() {
     var az = document.getElementById('azIndex');
     if(!az) return;
-    var screenId = window._currentScreenId;
-    if(screenId !== 'wildlife') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
-    var activeTab = document.querySelector('.wildlife-tab.active');
-    if(!activeTab) { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
+    if(window._currentScreenId !== 'wildlife') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
     var wt = window._wildlifeTab || 'species';
     if(wt === 'sightings') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
     az.style.display = 'flex';
     requestAnimationFrame(function(){ az.style.opacity='1'; });
     clearTimeout(_azFadeTimer);
-    _azFadeTimer = setTimeout(function(){
-      az.style.opacity='0';
-    }, 2000);
+    _azFadeTimer = setTimeout(function(){ az.style.opacity='0'; }, 2000);
   }
   function hideAZ() {
     var az = document.getElementById('azIndex');
@@ -8454,9 +8450,11 @@ function initAZScroll() {
   }
   var content = document.getElementById('content');
   if(content) content.addEventListener('scroll', updateAZ, {passive:true});
-  // Also listen on the speciesGrid itself for inner scroll
-  var grid = document.getElementById('speciesGrid');
-  if(grid) grid.addEventListener('scroll', updateAZ, {passive:true});
+  // Listen on all wildlife grids
+  ['speciesGrid','birdsGrid','reptilesGrid','frogsGrid'].forEach(function(id){
+    var g = document.getElementById(id);
+    if(g) g.addEventListener('scroll', updateAZ, {passive:true});
+  });
   window._updateAZ = updateAZ;
   window._showAZ = showAZ;
 }
