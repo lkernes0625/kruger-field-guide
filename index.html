@@ -249,7 +249,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 
 /* MY TRIP */
 .trip-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border)}
-.trip-tab{flex:1;padding:11px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s}
+.trip-tab{flex-shrink:0;padding:11px 14px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .trip-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .trip-tab-content{display:none}
 .trip-tab-content.active{display:block}
@@ -419,7 +419,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.38</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.39</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -575,9 +575,14 @@ svg.animal-art{width:100%;height:100%}
       <div class="trip-tab-content active" id="parktab-camps">
         <div style="padding:10px 14px 0">
           <div style="position:relative">
-          <input type="text" id="campSearch" placeholder="Search camps..." autocomplete="off"
-            oninput="renderCamps()"
+          <input type="text" id="campSearch" placeholder="&#x1F50D; Search or browse all camps..." autocomplete="off"
+            oninput="renderCamps();if(document.getElementById('allCampsPanel')&&document.getElementById('allCampsPanel').style.display!='none')showAllCampsPanel();"
+            onfocus="showAllCampsPanel()"
+            onblur="setTimeout(function(){var p=document.getElementById('allCampsPanel');if(p)p.style.display='none';},250)"
             style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">
+          </div>
+          <div id="allCampsPanel" style="display:none;max-height:240px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;margin-top:4px;z-index:100;position:relative">
+            <div id="allCampsList"></div>
           </div>
           <div style="display:flex;gap:6px;margin:8px 0 10px;padding:0 0;align-items:stretch">
             <select id="campZoneFilter" onchange="renderCamps()" style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:12px;-webkit-appearance:none;cursor:pointer"><option value="">All Regions</option>
@@ -684,9 +689,9 @@ svg.animal-art{width:100%;height:100%}
 
       <div id="wildlifeFilters" style="display:flex;gap:6px;padding:10px 16px 4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
         <button class="filter-btn active" onclick="setWildlifeFilter('all',this)">All</button>
-        <button class="filter-btn" onclick="setWildlifeFilter('big5',this)">Big 5</button>
+        <span id="mammalOnlyFilters" style="display:flex;gap:6px"><button class="filter-btn" onclick="setWildlifeFilter('big5',this)">Big 5</button>
         <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)">Endangered</button>
-        <button class="filter-btn" onclick="setWildlifeFilter('rare',this)">Rare</button>
+        <button class="filter-btn" onclick="setWildlifeFilter('rare',this)">Rare</button></span>
       </div>
 
       <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
@@ -708,13 +713,13 @@ svg.animal-art{width:100%;height:100%}
             <div style="font-size:9px;color:var(--text3);margin-bottom:4px">Colour</div>
             <div style="display:flex;flex-wrap:wrap;gap:4px" id="birdColorFilters">
               <button onclick="setBirdFilter('color','')" class="bfilter active" data-ftype="color" data-fval="">All</button>
-              <button onclick="setBirdFilter('color','brown')" class="bfilter" data-ftype="color" data-fval="brown" style="background:#6b4226;color:#fff;border-color:#6b4226">🟫 Brown</button>
-              <button onclick="setBirdFilter('color','black')" class="bfilter" data-ftype="color" data-fval="black" style="background:#222;color:#fff;border-color:#444">⬛ Black</button>
-              <button onclick="setBirdFilter('color','white')" class="bfilter" data-ftype="color" data-fval="white" style="background:#e0e0e0;color:#111;border-color:#aaa">⬜ White</button>
-              <button onclick="setBirdFilter('color','grey')" class="bfilter" data-ftype="color" data-fval="grey" style="background:#888;color:#fff;border-color:#888">🩶 Grey</button>
-              <button onclick="setBirdFilter('color','rufous')" class="bfilter" data-ftype="color" data-fval="rufous" style="background:#b85c2a;color:#fff;border-color:#b85c2a">🟧 Rufous</button>
-              <button onclick="setBirdFilter('color','yellow')" class="bfilter" data-ftype="color" data-fval="yellow" style="background:#e0b800;color:#111;border-color:#e0b800">🟡 Yellow</button>
-              <button onclick="setBirdFilter('color','cream')" class="bfilter" data-ftype="color" data-fval="cream" style="background:#c8a870;color:#111;border-color:#c8a870">🍦 Cream</button>
+              <button onclick="setBirdFilter('color','brown')" class="bfilter" data-ftype="color" data-fval="brown">🟫 Brown</button>
+              <button onclick="setBirdFilter('color','black')" class="bfilter" data-ftype="color" data-fval="black">⬛ Black</button>
+              <button onclick="setBirdFilter('color','white')" class="bfilter" data-ftype="color" data-fval="white">⬜ White</button>
+              <button onclick="setBirdFilter('color','grey')" class="bfilter" data-ftype="color" data-fval="grey">🩶 Grey</button>
+              <button onclick="setBirdFilter('color','rufous')" class="bfilter" data-ftype="color" data-fval="rufous">🟧 Rufous</button>
+              <button onclick="setBirdFilter('color','yellow')" class="bfilter" data-ftype="color" data-fval="yellow">🟡 Yellow</button>
+              <button onclick="setBirdFilter('color','cream')" class="bfilter" data-ftype="color" data-fval="cream">🍦 Cream</button>
             </div>
           </div>
           <div style="display:flex;gap:8px">
@@ -731,6 +736,7 @@ svg.animal-art{width:100%;height:100%}
             <div style="flex:1">
               <div style="font-size:9px;color:var(--text3);margin-bottom:4px">Habitat</div>
               <div style="display:flex;flex-wrap:wrap;gap:4px" id="birdHabitatFilters">
+                <button onclick="setBirdFilter('habitat','top6')" class="bfilter" data-ftype="habitat" data-fval="top6" style="border-color:rgba(232,160,32,.4);color:var(--accent)">⭐ Top 6</button>
                 <button onclick="setBirdFilter('habitat','')" class="bfilter active" data-ftype="habitat" data-fval="">All</button>
                 <button onclick="setBirdFilter('habitat','raptor')" class="bfilter" data-ftype="habitat" data-fval="raptor">Raptor</button>
                 <button onclick="setBirdFilter('habitat','waterbird')" class="bfilter" data-ftype="habitat" data-fval="waterbird">Water</button>
@@ -944,7 +950,7 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-text"><div class="about-link-title">Content Last Updated</div><div class="about-link-url" id="lastUpdated">Checking...</div></div>
         </div>
         <div class="tip tip-blue" style="margin:0"><div class="tip-title">📌 List Your Business</div><p>Are you a tour operator, activity provider, or lodge in the Greater Kruger region? Get listed in this guide and reach travellers already in the park. Email basecamp@krantzoutdoors.com to discuss affiliate listing options.</p></div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.38</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.38 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.39</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.39 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Duplicate renderSpecies/openSpecies/_amenityBadges functions removed — root cause of toggle+A-Z failures<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -1436,7 +1442,7 @@ var BIRD_IMG = {
   'white_headed_vulture':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-white-headed-vulture.webp?alt=media',
   'yellow_billed_hornbill':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-yellow-billed-hornbill.webp?alt=media',
   'yellow_billed_kite':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-yellow-billed-kite.webp?alt=media',
-  'fish_eagle':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-african-fish-eagle.webp?alt=media'
+  'fish_eagle':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-fish-eagle.webp?alt=media'
 };
 
 var BIRDS = [
@@ -2551,6 +2557,25 @@ function selectCampSearchItem(e, name) {
   hideCampSearchDropdown();
 }
 
+
+function showAllCampsPanel() {
+  var panel = document.getElementById('allCampsPanel');
+  var list = document.getElementById('allCampsList');
+  if(!panel || !list) return;
+  var q = (document.getElementById('campSearch').value||'').toLowerCase().trim();
+  var sorted = CAMPS.filter(function(c){ return !q || c.name.toLowerCase().indexOf(q)>=0; }).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  list.innerHTML = sorted.map(function(camp) {
+    var safeName = camp.name.replace(/'/g,'&#39;');
+    return '<div ontouchstart="selectCampFromPanel(\'' + safeName + '\')" onmousedown="selectCampFromPanel(\'' + safeName + '\')" style="padding:11px 14px;font-size:13px;color:var(--text1);cursor:pointer;border-bottom:1px solid var(--border);font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent">'+camp.name+' <span style="font-size:10px;color:var(--text3)">'+camp.type+'</span></div>';
+  }).join('');
+  panel.style.display = 'block';
+}
+function selectCampFromPanel(name) {
+  var inp = document.getElementById('campSearch');
+  var panel = document.getElementById('allCampsPanel');
+  if(inp) { inp.value = name; renderCamps(); inp.blur(); }
+  if(panel) panel.style.display = 'none';
+}
 function renderCamps() {
   var el = document.getElementById('campsList');
   if(!el) return;
@@ -3430,7 +3455,7 @@ function renderSightings() {
           (ANIMAL_IMG[s.id]?'<img src="'+ANIMAL_IMG[s.id]+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:var(--bg3)"></div>')+
         '</div>' +
         '<div class="card-titles">' +
-          '<div class="card-title">'+s.name+' '+stars+'</div>' +
+          '<div class="card-title">'+s.name+'</div>' +
           '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
         '</div>' +
         '<div style="display:flex;gap:6px;flex-shrink:0">' +
@@ -3469,7 +3494,7 @@ function updateTripStats() {
               (ANIMAL_IMG[s.id]?'<img src="'+ANIMAL_IMG[s.id]+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:var(--bg3)"></div>')+
             '</div>' +
             '<div class="card-titles">' +
-              '<div class="card-title">'+s.name+' '+stars+'</div>' +
+              '<div class="card-title">'+s.name+'</div>' +
               '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
             '</div>' +
             '<div style="display:flex;gap:6px;flex-shrink:0">' +
@@ -4002,8 +4027,7 @@ function renderAchievements() {
   
   if(newlyEarned.length) localStorage.setItem('kfg_achievements', JSON.stringify(earned));
   if(!sightings.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 0;color:var(--text3);font-size:12px">Log sightings to unlock badges!</div>';
-    return;
+    html = '<div style="grid-column:1/-1;background:rgba(232,160,32,.06);border:1px solid rgba(232,160,32,.2);border-radius:10px;padding:12px;text-align:center;font-size:11px;color:var(--text3);margin-bottom:12px">Log sightings in Wildlife to start unlocking badges!</div>' + html;
   }
   grid.innerHTML = html;
   
@@ -5397,7 +5421,7 @@ function renderSightings() {
           (ANIMAL_IMG[s.id]?'<img src="'+ANIMAL_IMG[s.id]+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:var(--bg3)"></div>')+
         '</div>' +
         '<div class="card-titles">' +
-          '<div class="card-title">'+s.name+' '+stars+'</div>' +
+          '<div class="card-title">'+s.name+'</div>' +
           '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
         '</div>' +
         '<div style="display:flex;gap:6px;flex-shrink:0">' +
@@ -5436,7 +5460,7 @@ function updateTripStats() {
               (ANIMAL_IMG[s.id]?'<img src="'+ANIMAL_IMG[s.id]+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:var(--bg3)"></div>')+
             '</div>' +
             '<div class="card-titles">' +
-              '<div class="card-title">'+s.name+' '+stars+'</div>' +
+              '<div class="card-title">'+s.name+'</div>' +
               '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
             '</div>' +
             '<div style="display:flex;gap:6px;flex-shrink:0">' +
@@ -7176,7 +7200,7 @@ function renderBirds() {
     if(search && sp.name.toLowerCase().indexOf(search)<0 && (sp.latin||'').toLowerCase().indexOf(search)<0) return false;
     if(_birdColorFilter && !(sp.colors||[]).includes(_birdColorFilter)) return false;
     if(_birdSizeFilter && sp.size !== _birdSizeFilter) return false;
-    if(_birdHabitatFilter && sp.habitat !== _birdHabitatFilter && sp.category !== _birdHabitatFilter) return false;
+    if(_birdHabitatFilter === 'top6') { if(['martial_eagle','lappet_faced_vulture','southern_ground_hornbill','pels_fishing_owl','bateleur','kori_bustard','saddle_billed_stork'].indexOf(sp.id)<0) return false; } else if(_birdHabitatFilter && sp.habitat !== _birdHabitatFilter && sp.category !== _birdHabitatFilter) return false;
     return true;
   });
   filtered.sort(function(a,b){ return a.name.localeCompare(b.name); });
@@ -7230,6 +7254,8 @@ function openBird(idx) {
 
 function switchWildlifeTab(tab, btn) {
   setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
+  var mammalBtns = document.getElementById('mammalOnlyFilters');
+  if(mammalBtns) mammalBtns.style.display = tab==='species' ? 'flex' : 'none';
   ['species','birds','reptiles','frogs','sightings'].forEach(function(t) {
     var panel = document.getElementById('wildlifePanel-'+t);
     if(panel) panel.style.display = t === tab ? 'block' : 'none';
@@ -7264,7 +7290,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.38';
+var APP_VERSION = '3.39';
 
 // Clear stale caches when version changes
 (function() {
@@ -7397,7 +7423,7 @@ function renderRecentlyViewed() {
     var onclick = type==='bird'?'openBird('+idx+')':type==='reptile'?'openWildcardSpecies("reptile",'+idx+')':type==='frog'?'openWildcardSpecies("frog",'+idx+')':'openSpecies('+idx+')';
     return '<div onclick="'+onclick+'" style="flex-shrink:0;width:52px;text-align:center;cursor:pointer">' +
       '<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:3px">' +
-        (ANIMAL_IMG[sp.id]?'<img src="'+ANIMAL_IMG[sp.id]+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F43E;</div>')+
+        ((typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])?'<img src="'+(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F43E;</div>')+
       '</div>' +
       '<div style="font-size:9px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sp.name+'</div>' +
     '</div>';
@@ -8351,7 +8377,9 @@ function initAZScroll() {
     var screenId = window._currentScreenId;
     if(screenId !== 'wildlife') { hideAZ(); return; }
     var activeTab = document.querySelector('.wildlife-tab.active');
-    if(!activeTab || activeTab.textContent.trim() !== 'MAMMALS') { hideAZ(); return; }
+    if(!activeTab) { hideAZ(); return; }
+    var t = activeTab.textContent.trim().toUpperCase();
+    if(t !== 'MAMMALS' && t !== 'BIRDS' && t !== 'REPTILES' && t !== 'FROGS') { hideAZ(); return; }
     // Show on any scroll
     showAZ();
 
