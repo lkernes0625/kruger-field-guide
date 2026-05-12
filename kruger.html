@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The Kruger National Park Field Guide by Krantz Outdoors. 80+ mammals, 60+ birds, verified GPS, travel calculator, sighting heatmap. One purchase. Works offline.">
+<title>Krantz Outdoors — Kruger Field Guide</title>
+<link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-favicon-trans.png?alt=media">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#15191c;
+  --bg2:#1c2126;
+  --bg3:#232b31;
+  --bg4:#2a343b;
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.12);
+  --text:#ffffff;
+  --text2:#a8b4bc;
+  --text3:#5a6b75;
+  --accent:#e8a020;
+  --accent2:#f0b840;
+  --radius:14px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(21,25,28,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo img{height:28px;width:auto}
+.nav-cta{background:var(--accent);color:#000;border:none;border-radius:8px;padding:9px 20px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;letter-spacing:.04em;white-space:nowrap;transition:background .2s}
+.nav-cta:hover{background:var(--accent2)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,160,32,.08) 0%,transparent 65%),radial-gradient(ellipse at 80% 80%,rgba(42,52,59,.6) 0%,transparent 60%);pointer-events:none}
+.hero-animals{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;overflow:hidden;opacity:.18}
+.hero-animals img{width:100%;max-width:900px;object-fit:cover;object-position:center top;filter:grayscale(40%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.hero h1{font-size:clamp(32px,6vw,64px);font-weight:900;line-height:1.1;letter-spacing:-.02em;max-width:800px;margin-bottom:20px}
+.hero h1 span{color:var(--accent)}
+.hero-sub{font-size:clamp(14px,2vw,18px);color:var(--text2);line-height:1.7;max-width:560px;margin:0 auto 36px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:48px}
+.btn-primary{background:var(--accent);color:#000;border:none;border-radius:10px;padding:15px 32px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;letter-spacing:.04em;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,160,32,.3)}
+.btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;padding:15px 32px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;letter-spacing:.04em;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.hero-proof{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:center}
+.proof-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);font-weight:600;letter-spacing:.04em}
+.proof-dot{width:4px;height:4px;border-radius:50%;background:var(--text3)}
+
+/* PHONE MOCKUP */
+.mockup-section{padding:60px 24px;display:flex;justify-content:center}
+.phone-wrap{position:relative;display:inline-block}
+.phone-frame{width:260px;background:var(--bg2);border:2px solid var(--border2);border-radius:36px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);position:relative}
+.phone-notch{height:28px;background:var(--bg2);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border)}
+.phone-notch-pill{width:60px;height:6px;background:var(--bg4);border-radius:3px}
+.phone-screen{background:var(--bg);padding:0}
+.phone-header{background:var(--bg2);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.phone-logo{height:18px;width:auto}
+.phone-pill{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:4px 8px;text-align:right}
+.phone-pill-label{font-size:6px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.phone-pill-time{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.02em}
+.phone-hero-img{width:100%;height:160px;object-fit:cover;display:block}
+.phone-content{padding:10px 12px}
+.phone-section-title{font-size:7px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.phone-species-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.phone-sp-card{background:var(--bg3);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.phone-sp-img{width:100%;height:52px;object-fit:cover;display:block}
+.phone-sp-name{font-size:7px;font-weight:700;padding:4px 6px 2px;color:var(--text)}
+.phone-sp-latin{font-size:6px;color:var(--text3);font-style:italic;padding:0 6px 4px}
+.phone-nav{background:var(--bg2);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);padding:6px 0}
+.phone-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:5px;color:var(--text3);font-weight:600;letter-spacing:.04em;padding:2px 0}
+.phone-nav-item.active{color:var(--accent)}
+.phone-nav-icon{font-size:12px}
+.phone-glow{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(232,160,32,.15) 0%,transparent 70%);pointer-events:none}
+
+/* PROBLEM SECTION */
+.problem{padding:80px 24px;max-width:760px;margin:0 auto;text-align:center}
+.problem h2{font-size:clamp(22px,4vw,36px);font-weight:800;line-height:1.3;margin-bottom:16px;letter-spacing:-.01em}
+.problem p{font-size:15px;color:var(--text2);line-height:1.8;max-width:580px;margin:0 auto}
+.problem-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:40px;text-align:left}
+.problem-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.problem-card-icon{font-size:24px;margin-bottom:10px}
+.problem-card h3{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:.02em}
+.problem-card p{font-size:11px;color:var(--text3);line-height:1.6}
+
+/* FEATURES */
+.features{padding:80px 24px;max-width:1000px;margin:0 auto}
+.section-label{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;text-align:center}
+.section-title{font-size:clamp(22px,4vw,36px);font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:-.01em}
+.section-sub{font-size:14px;color:var(--text2);text-align:center;margin-bottom:48px;line-height:1.7}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .2s,transform .2s}
+.feature-card:hover{border-color:rgba(232,160,32,.3);transform:translateY(-2px)}
+.feature-icon{width:44px;height:44px;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.feature-card h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.feature-card p{font-size:12px;color:var(--text3);line-height:1.7}
+.feature-tag{display:inline-block;background:rgba(232,160,32,.1);color:var(--accent);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.06em;margin-top:10px}
+
+/* SPECIES SHOWCASE */
+.showcase{padding:80px 24px;max-width:1000px;margin:0 auto}
+.species-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;-ms-overflow-style:none;margin-top:32px}
+.species-scroll::-webkit-scrollbar{display:none}
+.sp-tile{flex-shrink:0;width:140px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform .2s}
+.sp-tile:hover{transform:scale(1.03)}
+.sp-tile img{width:100%;height:100px;object-fit:cover;display:block}
+.sp-tile-info{padding:8px 10px}
+.sp-tile-name{font-size:11px;font-weight:700;color:var(--text)}
+.sp-tile-latin{font-size:9px;color:var(--text3);font-style:italic;margin-top:2px}
+.sp-tile-badge{display:inline-block;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:5px}
+.badge-big5{background:rgba(232,160,32,.15);color:var(--accent);border:1px solid rgba(232,160,32,.3)}
+.badge-rare{background:rgba(180,60,60,.15);color:#e88080;border:1px solid rgba(180,60,60,.3)}
+.badge-bird{background:rgba(60,120,180,.15);color:#80b8e8;border:1px solid rgba(60,120,180,.3)}
+
+/* PRICING */
+.pricing{padding:80px 24px;max-width:800px;margin:0 auto}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:40px}
+.pricing-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:28px;position:relative;transition:transform .2s}
+.pricing-card.featured{border-color:rgba(232,160,32,.5);background:linear-gradient(135deg,var(--bg2) 0%,rgba(232,160,32,.04) 100%)}
+.pricing-card:hover{transform:translateY(-3px)}
+.pricing-featured-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:9px;font-weight:700;letter-spacing:.08em;padding:4px 14px;border-radius:20px;white-space:nowrap}
+.pricing-icon{font-size:32px;margin-bottom:14px}
+.pricing-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.pricing-tagline{font-size:11px;color:var(--text3);margin-bottom:20px;line-height:1.5}
+.pricing-price{font-size:42px;font-weight:900;color:var(--accent);letter-spacing:-.02em;line-height:1}
+.pricing-price span{font-size:18px;font-weight:600;color:var(--text3)}
+.pricing-period{font-size:10px;color:var(--text3);margin:4px 0 20px;font-weight:600;letter-spacing:.04em}
+.pricing-features{list-style:none;margin-bottom:24px}
+.pricing-features li{font-size:12px;color:var(--text2);padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;line-height:1.4}
+.pricing-features li:last-child{border-bottom:none}
+.pricing-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0}
+.pricing-btn{display:block;width:100%;background:var(--accent);color:#000;border:none;border-radius:10px;padding:14px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;letter-spacing:.04em;transition:all .2s}
+.pricing-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.pricing-btn.secondary{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.pricing-btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
+.pricing-note{text-align:center;font-size:11px;color:var(--text3);margin-top:20px;line-height:1.6}
+
+/* PARKS ROADMAP */
+.roadmap{padding:80px 24px;max-width:900px;margin:0 auto}
+.roadmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:40px}
+.park-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
+.park-card.live{border-color:rgba(232,160,32,.4)}
+.park-card.live::before{content:'LIVE NOW';position:absolute;top:12px;right:12px;background:var(--accent);color:#000;font-size:8px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:4px}
+.park-card.coming::before{content:'COMING SOON';position:absolute;top:12px;right:12px;background:var(--bg4);color:var(--text3);font-size:8px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:4px}
+.park-flag{font-size:24px;margin-bottom:10px}
+.park-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.park-country{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.park-desc{font-size:11px;color:var(--text3);line-height:1.6}
+
+/* SOCIAL PROOF */
+.proof{padding:80px 24px;max-width:900px;margin:0 auto}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:40px}
+.review-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.review-stars{color:var(--accent);font-size:14px;margin-bottom:10px;letter-spacing:2px}
+.review-text{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px;font-style:italic}
+.review-author{font-size:11px;font-weight:700;color:var(--text3)}
+.review-source{font-size:9px;color:var(--text3);margin-top:2px}
+
+/* FAQ */
+.faq{padding:80px 24px;max-width:700px;margin:0 auto}
+.faq-list{margin-top:40px}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{width:100%;background:none;border:none;color:var(--text);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;padding:18px 0;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq-q:hover{color:var(--accent)}
+.faq-chevron{color:var(--text3);font-size:14px;transition:transform .2s;flex-shrink:0}
+.faq-a{font-size:12px;color:var(--text3);line-height:1.8;padding-bottom:18px;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-chevron{transform:rotate(180deg);color:var(--accent)}
+
+/* FINAL CTA */
+.final-cta{padding:100px 24px;text-align:center;position:relative;overflow:hidden}
+.final-cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,160,32,.06) 0%,transparent 70%);pointer-events:none}
+.final-cta h2{font-size:clamp(28px,5vw,52px);font-weight:900;line-height:1.15;max-width:700px;margin:0 auto 16px;letter-spacing:-.02em}
+.final-cta h2 span{color:var(--accent)}
+.final-cta p{font-size:15px;color:var(--text2);max-width:480px;margin:0 auto 36px;line-height:1.7}
+.final-tagline{font-size:12px;color:var(--text3);margin-top:24px;font-weight:600;letter-spacing:.06em}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:32px 24px;text-align:center}
+.footer-logo img{height:24px;margin-bottom:16px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin-bottom:16px}
+.footer-links a{font-size:11px;color:var(--text3);text-decoration:none;font-weight:600;letter-spacing:.04em}
+.footer-links a:hover{color:var(--accent)}
+.footer-copy{font-size:10px;color:var(--text3);line-height:1.7}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);max-width:600px;margin:0 auto}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .hero{padding:90px 20px 50px}
+  .hero-actions{flex-direction:column;align-items:center}
+  .btn-primary,.btn-secondary{width:100%;max-width:300px;justify-content:center}
+  nav{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors">
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <a href="https://app.krantzoutdoors.com" style="font-size:11px;color:var(--text3);text-decoration:none;font-weight:600;white-space:nowrap">Already purchased? →</a>
+    <a href="#pricing" class="nav-cta">Get the Guide →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-badge">🌿 Kruger National Park Field Guide</div>
+    <h1>You planned this trip<br>for <span>two years.</span><br>Don't wing it.</h1>
+    <p class="hero-sub">The field guide Kruger deserves. Every species, every camp, every gate — with the intelligence to find what you came to see.</p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">🦁 Get the Guide — from $12</a>
+      <a href="#features" class="btn-secondary">See what's inside ↓</a>
+    </div>
+    <div style="margin-bottom:16px">
+      <a href="https://app.krantzoutdoors.com" style="font-size:12px;color:var(--text3);text-decoration:none;font-weight:600;border-bottom:1px solid var(--border2);padding-bottom:2px">Already have a licence? Access your guide →</a>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-item">📱 Works offline</div>
+      <div class="proof-dot"></div>
+      <div class="proof-item">🗺️ Verified GPS</div>
+      <div class="proof-dot"></div>
+      <div class="proof-item">💳 One purchase</div>
+      <div class="proof-dot"></div>
+      <div class="proof-item">🔄 Free updates</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHONE MOCKUP -->
+<section class="mockup-section">
+  <div class="phone-wrap">
+    <div class="phone-glow"></div>
+    <div class="phone-frame">
+      <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <img class="phone-logo" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors">
+          <div class="phone-pill">
+            <div class="phone-pill-label">Gate Closes</div>
+            <div class="phone-pill-time">18:30</div>
+          </div>
+        </div>
+        <img class="phone-hero-img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-lion.webp?alt=media" alt="Lion" loading="lazy">
+        <div class="phone-content">
+          <div class="phone-section-title">Wildlife Guide</div>
+          <div class="phone-species-grid">
+            <div class="phone-sp-card">
+              <img class="phone-sp-img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-leopard.webp?alt=media" alt="Leopard" loading="lazy">
+              <div class="phone-sp-name">Leopard</div>
+              <div class="phone-sp-latin">Panthera pardus</div>
+            </div>
+            <div class="phone-sp-card">
+              <img class="phone-sp-img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-elephant.webp?alt=media" alt="Elephant" loading="lazy">
+              <div class="phone-sp-name">Elephant</div>
+              <div class="phone-sp-latin">Loxodonta africana</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-nav">
+          <div class="phone-nav-item"><div class="phone-nav-icon">🏠</div>HOME</div>
+          <div class="phone-nav-item"><div class="phone-nav-icon">🌿</div>PARK</div>
+          <div class="phone-nav-item active"><div class="phone-nav-icon">🐾</div>WILD</div>
+          <div class="phone-nav-item"><div class="phone-nav-icon">🔍</div>FIND</div>
+          <div class="phone-nav-item"><div class="phone-nav-icon">📋</div>TRIP</div>
+          <div class="phone-nav-item"><div class="phone-nav-icon">🗺️</div>MAP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <h2>Most people leave Kruger having missed the best of it.</h2>
+  <p>Not because the animals weren't there. Because they didn't know where to look, what road to drive, or what time to be there. That changes now.</p>
+  <div class="problem-cards">
+    <div class="problem-card">
+      <div class="problem-card-icon">⏰</div>
+      <h3>Wrong place, wrong time</h3>
+      <p>Every species has a zone, a road, and a window. Without that intelligence you're just driving and hoping.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-card-icon">🚗</div>
+      <h3>Locked out at the gate</h3>
+      <p>Guides use 60km/h averages. Kruger is 40km/h. One wrong calculation and you're paying a fine at the gate.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-card-icon">📵</div>
+      <h3>No signal when you need it</h3>
+      <p>Deep in the park, signal is gone. Most apps fail exactly when you need them most. This one doesn't.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Field Intelligence</div>
+  <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+  <p class="section-sub">Built from real game drive experience. Every feature earns its place.</p>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🐾</div>
+      <h3>Full Species Intelligence</h3>
+      <p>80+ mammals, 60+ birds, reptiles and frogs. Every entry includes zone, best roads, best time, camera settings, behaviour, breeding and distribution. Not just what it looks like — where to find it.</p>
+      <div class="feature-tag">FIELD TESTED</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📍</div>
+      <h3>Verified GPS Coordinates</h3>
+      <p>Every camp, gate, hide, lookout, dam, waterhole, heritage site and picnic spot. Cross-referenced against SANParks official data. Not approximate — pinpoint accurate.</p>
+      <div class="feature-tag">GPS VERIFIED</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚗</div>
+      <h3>Realistic Travel Calculator</h3>
+      <p>Uses 40km/h average — the actual Kruger speed, not the optimistic 60km/h that gets people locked out at closing time. Know exactly when to leave.</p>
+      <div class="feature-tag">NEVER MISS A GATE</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔥</div>
+      <h3>Live Sighting Heatmap</h3>
+      <p>See where animals were last spotted. Plan your morning drive around real intelligence, not guesswork. Updated in real time as sightings are logged.</p>
+      <div class="feature-tag">LIVE DATA</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <h3>Trip Planner</h3>
+      <p>Night-by-night itinerary builder. Log which camp you're staying at, plan your drives, track your sightings, write your journal. Everything in one place.</p>
+      <div class="feature-tag">FULL TRIP TOOL</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📷</div>
+      <h3>Photography Intelligence</h3>
+      <p>Camera settings for each species. Golden hour times. Best light angles per road. Built for photographers who want to come home with the shot.</p>
+      <div class="feature-tag">FOR PHOTOGRAPHERS</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏆</div>
+      <h3>Badges & Bingo</h3>
+      <p>Earn badges as you spot species. Complete Bingo cards. Track your Ranger Rank from Day Visitor to Kruger Legend. Makes every drive a mission.</p>
+      <div class="feature-tag">GAMIFIED</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📵</div>
+      <h3>Works Offline</h3>
+      <p>The entire guide — maps, species data, GPS, trip planner — works without signal. Because deep in the park, there is none. Load it before you go. Use it everywhere.</p>
+      <div class="feature-tag">NO SIGNAL NEEDED</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🆘</div>
+      <h3>Emergency & SOS</h3>
+      <p>Direct dial numbers for every camp, all gates, SANParks emergency contacts and the SOS button. When something goes wrong in the bush, you don't want to be searching Google.</p>
+      <div class="feature-tag">SAFETY FIRST</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SPECIES SHOWCASE -->
+<section class="showcase">
+  <div class="section-label">Species Guide</div>
+  <h2 class="section-title">The Big 5. And everything else.</h2>
+  <p class="section-sub" style="text-align:center">Every species that makes Kruger extraordinary.</p>
+  <div class="species-scroll">
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-lion.webp?alt=media" alt="Lion" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Lion</div><div class="sp-tile-latin">Panthera leo</div><span class="sp-tile-badge badge-big5">Big 5</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-leopard.webp?alt=media" alt="Leopard" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Leopard</div><div class="sp-tile-latin">Panthera pardus</div><span class="sp-tile-badge badge-big5">Big 5</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-elephant.webp?alt=media" alt="Elephant" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Elephant</div><div class="sp-tile-latin">Loxodonta africana</div><span class="sp-tile-badge badge-big5">Big 5</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-white-rhino.webp?alt=media" alt="White Rhino" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">White Rhino</div><div class="sp-tile-latin">Ceratotherium simum</div><span class="sp-tile-badge badge-big5">Big 5</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-buffalo.webp?alt=media" alt="Buffalo" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Buffalo</div><div class="sp-tile-latin">Syncerus caffer</div><span class="sp-tile-badge badge-big5">Big 5</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-cheetah.webp?alt=media" alt="Cheetah" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Cheetah</div><div class="sp-tile-latin">Acinonyx jubatus</div><span class="sp-tile-badge badge-rare">Rare</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-wild-dog.webp?alt=media" alt="Wild Dog" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Wild Dog</div><div class="sp-tile-latin">Lycaon pictus</div><span class="sp-tile-badge badge-rare">Endangered</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-fish-eagle.webp?alt=media" alt="Fish Eagle" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Fish Eagle</div><div class="sp-tile-latin">Haliaeetus vocifer</div><span class="sp-tile-badge badge-bird">Top 6 Bird</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-pels-fishing-owl.webp?alt=media" alt="Pels Fishing Owl" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Pel's Fishing Owl</div><div class="sp-tile-latin">Scotopelia peli</div><span class="sp-tile-badge badge-rare">Rare</span></div>
+    </div>
+    <div class="sp-tile">
+      <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-pangolin.webp?alt=media" alt="Pangolin" loading="lazy">
+      <div class="sp-tile-info"><div class="sp-tile-name">Pangolin</div><div class="sp-tile-latin">Smutsia temminckii</div><span class="sp-tile-badge badge-rare">Ultra Rare</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Simple Pricing</div>
+  <h2 class="section-title">One purchase.<br>Lifetime access.</h2>
+  <p class="section-sub">No subscription. No ads. No hidden fees. Less than one coffee stop at Skukuza.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-icon">🦁</div>
+      <div class="pricing-name">Single Licence</div>
+      <div class="pricing-tagline">For the solo explorer or couple</div>
+      <div class="pricing-price">$12<span></span></div>
+      <div class="pricing-period">ONE-TIME · LIFETIME ACCESS</div>
+      <ul class="pricing-features">
+        <li>Full species guide — mammals, birds, reptiles, frogs</li>
+        <li>Verified GPS for all camps, gates & sites</li>
+        <li>Realistic travel calculator</li>
+        <li>Live sighting heatmap</li>
+        <li>Trip planner, journal & sightings log</li>
+        <li>Badges, Bingo & Ranger Rank</li>
+        <li>Works fully offline</li>
+        <li>1 device · Free lifetime updates</li>
+      </ul>
+      <a href="https://krantzoutdoors.lemonsqueezy.com/checkout/buy/single" class="pricing-btn" target="_blank">Buy Single Licence →</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-featured-badge">BEST VALUE</div>
+      <div class="pricing-icon">🦒</div>
+      <div class="pricing-name">Safari Pack</div>
+      <div class="pricing-tagline">For families and safari groups</div>
+      <div class="pricing-price">$25<span></span></div>
+      <div class="pricing-period">5 LICENCES · LIFETIME ACCESS</div>
+      <ul class="pricing-features">
+        <li>Everything in Single Licence</li>
+        <li>5 separate licences — one per device</li>
+        <li>Each member logs their own sightings</li>
+        <li>Individual badge & Bingo progression</li>
+        <li>Compare sightings around the fire</li>
+        <li>Less than $5 per person</li>
+        <li>Perfect for families & photographic groups</li>
+        <li>Free lifetime updates for all 5</li>
+      </ul>
+      <a href="https://krantzoutdoors.lemonsqueezy.com/checkout/buy/safari" class="pricing-btn" target="_blank">Buy Safari Pack →</a>
+    </div>
+  </div>
+  <p class="pricing-note">Also available on <a href="https://www.etsy.com" style="color:var(--accent);text-decoration:none">Etsy</a> · Instant digital download · All major cards accepted · Secure checkout by Lemon Squeezy</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section class="roadmap">
+  <div class="section-label">The Vision</div>
+  <h2 class="section-title">Southern Africa.<br>One guide at a time.</h2>
+  <p class="section-sub" style="text-align:center">Kruger is just the beginning. The same field intelligence is coming to every major park in the region.</p>
+  <div class="roadmap-grid">
+    <div class="park-card live">
+      <div class="park-flag">🇿🇦</div>
+      <div class="park-name">Kruger National Park</div>
+      <div class="park-country">South Africa</div>
+      <div class="park-desc">The full guide. 80+ mammals, 60+ birds, verified GPS, travel calculator, heatmap, trip planner.</div>
+    </div>
+    <div class="park-card coming">
+      <div class="park-flag">🇳🇦</div>
+      <div class="park-name">Etosha National Park</div>
+      <div class="park-country">Namibia</div>
+      <div class="park-desc">Africa's greatest waterhole park. Black rhino, desert-adapted elephant and the famous Etosha Pan.</div>
+    </div>
+    <div class="park-card coming">
+      <div class="park-flag">🇧🇼</div>
+      <div class="park-name">Chobe National Park</div>
+      <div class="park-country">Botswana</div>
+      <div class="park-desc">The highest concentration of elephant on earth. World-class river safaris and the Savuti channel.</div>
+    </div>
+    <div class="park-card coming">
+      <div class="park-flag">🇧🇼</div>
+      <div class="park-name">Kgalagadi Transfrontier</div>
+      <div class="park-country">Botswana & South Africa</div>
+      <div class="park-desc">Black-maned Kalahari lions, sociable weavers and the raw, remote beauty of the red dunes.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-label">Questions</div>
+  <h2 class="section-title" style="text-align:center">Everything you need to know.</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Does it work offline in the park? <span class="faq-chevron">▼</span></button>
+      <div class="faq-a">Yes — completely. The entire guide including maps, species data, GPS coordinates, trip planner and sightings log works without any internet connection. Load it on your phone before you enter the gate and it works everywhere in the park.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How do I access the guide after purchase? <span class="faq-chevron">▼</span></button>
+      <div class="faq-a">After purchase you receive an email with a download link and your unique licence code. Download the guide file, open it in any browser on your phone or tablet, enter your code and you're in. No app store required.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I use it on both my phone and tablet? <span class="faq-chevron">▼</span></button>
+      <div class="faq-a">A single licence is for one device. If you want to use it on multiple devices in your household, the Safari Pack gives you 5 separate licences — one for each device or family member.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What happens when the guide is updated? <span class="faq-chevron">▼</span></button>
+      <div class="faq-a">Updates are free for life. When a new version is released you'll receive an email with a download link for the latest version. Your licence code works across all versions.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Does the Safari Pack work for WhatsApp groups? <span class="faq-chevron">▼</span></button>
+      <div class="faq-a">Yes. Purchase the Safari Pack, receive 5 download links in your email, and share each link with the members of your group via WhatsApp. Each person downloads their own copy before the trip.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Is this an official SANParks product? <span class="faq-chevron">▼</span></button>
+      <div class="faq-a">No. This is an independent field guide created by Krantz Outdoors. It is not affiliated with or endorsed by SANParks. All SANParks rules and regulations override any information in this guide. Always follow official SANParks signage and staff instructions.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-bg"></div>
+  <div style="position:relative;z-index:1">
+    <h2>The park doesn't wait.<br><span>Neither should you.</span></h2>
+    <p>Join every serious Kruger traveller who arrives at the gate with intelligence, not just hope.</p>
+    <a href="#pricing" class="btn-primary" style="font-size:15px;padding:17px 40px">🦁 Get the Guide Now</a>
+    <div class="final-tagline">WILD BY NATURE · AFRICA BY CHOICE</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors">
+  </div>
+  <div class="footer-links">
+    <a href="https://app.krantzoutdoors.com">Access Your Guide</a>
+    <a href="https://www.etsy.com" target="_blank">Buy on Etsy</a>
+    <a href="mailto:basecamp@krantzoutdoors.com">Contact</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="footer-copy">
+    © 2026 Krantz Outdoors. All rights reserved.<br>
+    This guide is for informational purposes only. Always follow SANParks rules and regulations.<br>
+    Krantz Outdoors is not affiliated with or endorsed by SANParks.
+  </div>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+  if(!wasOpen) item.classList.add('open');
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var target = document.querySelector(this.getAttribute('href'));
+    if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>
