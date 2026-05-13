@@ -166,8 +166,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 .weather-temp{font-size:22px;font-weight:700;color:var(--text);line-height:1}
 .weather-desc{font-size:9px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
 .weather-field{font-size:9px;color:var(--amber);margin-top:3px;font-weight:600}
-.gate-btns{display:flex;flex-wrap:wrap;gap:6px}
-.gate-btn{background:var(--bg4);border:1px solid var(--border2);color:var(--text2);border-radius:20px;padding:5px 11px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s}
+.gate-btns{padding:0 16px 10px}
+.gate-btn{background:var(--bg4);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:7px 2px;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:600;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
 .gate-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 
 /* CALC CARD */
@@ -498,7 +498,7 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div class="gate-btns" id="gateBtns">
-          <div id="gateBtnsContainer"></div>
+          <div id="gateBtnsContainer" style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px"></div>
         </div>
       </div>
 
@@ -515,10 +515,10 @@ svg.animal-art{width:100%;height:100%}
           <div class="calc-arrow">&rarr;</div>
           <select class="calc-select" id="toDest" onchange="calcDistance()">
             <option value="">To...</option>
-            <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Phabeni Gate</option>
-            <option>Malelane Gate</option><option>Orpen Gate</option><option>Phalaborwa Gate</option>
-            <option>Punda Maria Gate</option><option>Pafuri Gate</option><option>Giriyondo Border Post</option>
-            <option>Crocodile Bridge</option><option>Skukuza</option><option>Lower Sabie</option>
+            <option>Crocodile Bridge</option><option>Giriyondo Border Post</option>
+            <option>Malelane Gate</option><option>Numbi Gate</option><option>Orpen Gate</option>
+            <option>Pafuri Gate</option><option>Paul Kruger Gate</option><option>Phabeni Gate</option>
+            <option>Phalaborwa Gate</option><option>Punda Maria Gate</option><option>Skukuza</option><option>Lower Sabie</option>
             <option>Satara</option><option>Olifants</option><option>Mopani</option>
           </select>
         </div>
@@ -687,12 +687,13 @@ svg.animal-art{width:100%;height:100%}
         <button class="wildlife-tab" onclick="switchWildlifeTab('sightings',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:10px 0;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">SIGHTINGS</button>
       </div>
 
-      <div id="wildlifeFilters" style="display:flex;gap:6px;padding:10px 16px 4px">
-        <button class="filter-btn active" onclick="setWildlifeFilter('all',this)" style="flex:1">All</button>
-        <span id="mammalOnlyFilters" style="display:contents"><button class="filter-btn" onclick="setWildlifeFilter('big5',this)" style="flex:1">Big 5</button>
-        <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)" style="flex:1">Endangered</button>
-        <button class="filter-btn" onclick="setWildlifeFilter('rare',this)" style="flex:1">Rare</button></span>
-        <span id="birdOnlyFilters" style="display:none;gap:6px;width:100%"><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)" style="flex:1">TOP 6</button><button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)" style="flex:1">ENDANGERED</button></span>
+      <div id="wildlifeFilters" style="display:flex;gap:5px;padding:10px 16px 4px">
+        <button class="filter-btn active" onclick="setWildlifeFilter('all',this)" id="mammalAllBtn" style="flex:1;font-size:10px;padding:7px 2px">All</button>
+        <button class="filter-btn" onclick="setWildlifeFilter('big5',this)" id="mammalBig5Btn" style="flex:1;font-size:10px;padding:7px 2px">Big 5</button>
+        <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)" id="mammalEndBtn" style="flex:1;font-size:10px;padding:7px 2px">Endangered</button>
+        <button class="filter-btn" onclick="setWildlifeFilter('rare',this)" id="mammalRareBtn" style="flex:1;font-size:10px;padding:7px 2px">Rare</button>
+        <span id="mammalOnlyFilters" style="display:none"></span>
+        <span id="birdOnlyFilters" style="display:none;gap:5px;width:100%;position:absolute"><button id="birdAllBtn" class="filter-btn active" onclick="resetBirdFilters()" style="flex:1">ALL</button><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)" style="flex:1">TOP 6</button><button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)" style="flex:1">ENDANGERED</button></span>
       </div>
 
       <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
@@ -710,21 +711,22 @@ svg.animal-art{width:100%;height:100%}
       <div id="wildlifePanel-birds" style="display:none">
         <div style="padding:10px 14px 6px">
           <div style="display:flex;gap:6px;margin-bottom:10px;width:100%">
-            <button class="filter-btn active" onclick="resetBirdFilters(this)" id="birdAllBtn" style="flex:1">ALL</button>
           </div>
           <!-- Bird Categories - above Identify by Visual Cue -->
           <div style="margin-bottom:10px">
             <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Bird Categories</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px" id="birdCatFilters">
-              <button onclick="setBirdCat('ground_bird')" class="bfilter" data-cat="ground_bird" style="padding:7px 2px;font-size:9px;text-align:center">Ground Birds</button>
-              <button onclick="setBirdCat('raptor')" class="bfilter" data-cat="raptor" style="padding:7px 2px;font-size:9px;text-align:center">Raptors</button>
-              <button onclick="setBirdCat('songbird')" class="bfilter" data-cat="songbird" style="padding:7px 2px;font-size:9px;text-align:center">Songbirds</button>
-              <button onclick="setBirdCat('tree_bird')" class="bfilter" data-cat="tree_bird" style="padding:7px 2px;font-size:9px;text-align:center">Tree Birds</button>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:5px">
-              <button onclick="setBirdCat('wader')" class="bfilter" data-cat="wader" style="padding:7px 2px;font-size:9px;text-align:center">Waders</button>
-              <button onclick="setBirdCat('water')" class="bfilter" data-cat="water" style="padding:7px 2px;font-size:9px;text-align:center">Water Birds</button>
-              <button onclick="setBirdCat('')" class="bfilter active" data-cat="" style="padding:7px 2px;font-size:9px;text-align:center">All Birds</button>
+            <div id="birdCatFilters">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:5px">
+                <button onclick="setBirdCat('')" class="bfilter active" data-cat="" style="padding:7px 2px;font-size:9px;text-align:center">All</button>
+                <button onclick="setBirdCat('ground_bird')" class="bfilter" data-cat="ground_bird" style="padding:7px 2px;font-size:9px;text-align:center">Ground Birds</button>
+                <button onclick="setBirdCat('raptor')" class="bfilter" data-cat="raptor" style="padding:7px 2px;font-size:9px;text-align:center">Raptors</button>
+                <button onclick="setBirdCat('songbird')" class="bfilter" data-cat="songbird" style="padding:7px 2px;font-size:9px;text-align:center">Songbirds</button>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
+                <button onclick="setBirdCat('tree_bird')" class="bfilter" data-cat="tree_bird" style="padding:7px 2px;font-size:9px;text-align:center">Tree Birds</button>
+                <button onclick="setBirdCat('wader')" class="bfilter" data-cat="wader" style="padding:7px 2px;font-size:9px;text-align:center">Waders</button>
+                <button onclick="setBirdCat('water')" class="bfilter" data-cat="water" style="padding:7px 2px;font-size:9px;text-align:center">Water Birds</button>
+              </div>
             </div>
           </div>
           <!-- Identify by Visual Cue -->
@@ -961,7 +963,7 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.55</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.50 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.57</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.50 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -7244,10 +7246,9 @@ function setBirdEndangeredFilter(btn) {
   _birdEndangeredActive = !_birdEndangeredActive;
   if(btn) btn.classList.toggle('active', _birdEndangeredActive);
   // Deactivate top6 when endangered active
-  if(_birdEndangeredActive) {
-    var t6 = document.getElementById('top6Btn');
-    if(t6) t6.classList.remove('active');
-  }
+  _birdHabitatFilter = '';
+  var t6 = document.getElementById('top6Btn');
+  if(t6) t6.classList.remove('active');
   renderBirds();
 }
 
@@ -7302,33 +7303,39 @@ function renderBirds() {
     '</div>';
   }).join('')||'<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No results.</div>';
 }
-function resetBirdFilters(btn) {
+function resetBirdFilters() {
   window._birdCatFilter = '';
   window._birdEndangeredActive = false;
-  // Reset all filter button states
+  window._birdHabitatFilter = '';
+  window._birdColorFilter = '';
+  // Reset all category buttons
   document.querySelectorAll('#birdCatFilters .bfilter').forEach(function(b){ b.classList.remove('active'); });
   var allCat = document.querySelector('#birdCatFilters [data-cat=""]');
   if(allCat) allCat.classList.add('active');
+  // Reset top row
   var t6 = document.getElementById('top6Btn');
   if(t6) t6.classList.remove('active');
   var eb = document.getElementById('endangeredBtn');
   if(eb) eb.classList.remove('active');
-  // Reset habitat filter
-  if(typeof _birdHabitatFilter !== 'undefined') window._birdHabitatFilter = '';
-  if(btn) { document.querySelectorAll('#wildlifeFilters .filter-btn, #birdAllBtn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active'); }
+  // Reset colour filters
+  document.querySelectorAll('#birdColorFilters .bfilter').forEach(function(b){ b.classList.remove('active'); });
+  var allCol = document.querySelector('#birdColorFilters [data-fval=""]');
+  if(allCol) allCol.classList.add('active');
   renderBirds();
 }
 
 function setBirdTop6Filter(btn) {
   var isActive = btn && btn.classList.contains('active');
-  document.querySelectorAll('#wildlifeFilters .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  // Clear endangered
+  _birdEndangeredActive = false;
+  var eb = document.getElementById('endangeredBtn');
+  if(eb) eb.classList.remove('active');
   if(!isActive) {
     if(btn) btn.classList.add('active');
     _birdHabitatFilter = 'top6';
   } else {
     _birdHabitatFilter = '';
-    var allBtn = document.querySelector('#wildlifeFilters .filter-btn');
-    if(allBtn) allBtn.classList.add('active');
+    if(btn) btn.classList.remove('active');
   }
   renderBirds();
 }
@@ -7442,7 +7449,30 @@ function switchWildlifeTab(tab, btn) {
     if(tab !== 'sightings' && window._showAZ) window._showAZ();
   }, 50);
   var mammalBtns = document.getElementById('mammalOnlyFilters');
-  if(mammalBtns) mammalBtns.style.display = tab==='species' ? 'flex' : 'none';
+  if(mammalBtns) mammalBtns.style.display = 'none'; // handled individually
+  var mamAllBtn = document.getElementById('mammalAllBtn');
+  var mamBig5Btn = document.getElementById('mammalBig5Btn');
+  var mamEndBtn = document.getElementById('mammalEndBtn');
+  var mamRareBtn = document.getElementById('mammalRareBtn');
+  var birdFilters = document.getElementById('birdOnlyFilters');
+  var birdAllBtn = document.getElementById('birdAllBtn');
+  if(tab === 'species') {
+    // Show mammals buttons
+    [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b){ b.style.display=''; } });
+    if(birdFilters){ birdFilters.style.display='none'; birdFilters.style.position=''; }
+    if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
+  } else if(tab === 'birds') {
+    // Hide mammal-specific buttons, show bird buttons
+    [mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
+    if(mamAllBtn){ mamAllBtn.style.display='none'; }
+    if(birdFilters){ birdFilters.style.display='flex'; birdFilters.style.position=''; birdFilters.style.width='100%'; }
+    if(birdAllBtn) birdAllBtn.parentElement.style.display='flex';
+  } else {
+    // Other tabs: hide all filter buttons
+    [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
+    if(birdFilters){ birdFilters.style.display='none'; }
+    if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
+  }
   var birdBtns = document.getElementById('birdOnlyFilters');
   if(birdBtns) birdBtns.style.display = tab==='birds' ? 'flex' : 'none';
   // Reset top6 when leaving birds tab
@@ -7481,7 +7511,7 @@ function showToast(msg, duration) {
 // ============================================
 // VERSION CHECK
 // ============================================
-var APP_VERSION = '3.55';
+var APP_VERSION = '3.57';
 
 // Clear stale caches when version changes
 (function() {
@@ -7945,27 +7975,27 @@ function loadTripDates() {
 // SEASONAL GATE TIMES
 // ============================================
 var GATE_SEASONAL = {
-  // [Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec]
-  'Paul Kruger Gate':    ['18:30','18:30','18:30','18:00','17:30','17:30','17:30','17:30','18:00','18:00','18:30','18:30'],
-  'Numbi Gate':          ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
-  'Phabeni Gate':        ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
-  'Malelane Gate':       ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
-  'Crocodile Bridge':    ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
-  'Orpen Gate':          ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
-  'Phalaborwa Gate':     ['18:30','18:30','18:30','18:00','17:30','17:30','17:30','17:30','18:00','18:00','18:30','18:30'],
-  'Punda Maria Gate':    ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
-  'Pafuri Gate':         ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
+  // [Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec] — A-Z order
+  'Crocodile Bridge':     ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
   'Giriyondo Border Post':['08:00','08:00','08:00','08:00','08:00','08:00','08:00','08:00','08:00','08:00','08:00','08:00'],
+  'Malelane Gate':        ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Numbi Gate':           ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Orpen Gate':           ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
+  'Pafuri Gate':          ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
+  'Paul Kruger Gate':     ['18:30','18:30','18:30','18:00','17:30','17:30','17:30','17:30','18:00','18:00','18:30','18:30'],
+  'Phabeni Gate':         ['18:00','18:00','18:00','17:30','17:00','17:00','17:00','17:30','18:00','18:00','18:00','18:00'],
+  'Phalaborwa Gate':      ['18:30','18:30','18:30','18:00','17:30','17:30','17:30','17:30','18:00','18:00','18:30','18:30'],
+  'Punda Maria Gate':     ['17:30','17:30','17:30','17:00','16:30','16:30','16:30','17:00','17:30','17:30','17:30','17:30'],
 };
 function renderGateButtons() {
   var container = document.getElementById('gateBtnsContainer');
   if(!container) return;
   var month = new Date().getMonth();
   var labels = {
-    'Paul Kruger Gate':'Paul Kruger','Numbi Gate':'Numbi','Phabeni Gate':'Phabeni',
-    'Malelane Gate':'Malelane','Crocodile Bridge':'Croc Bridge','Orpen Gate':'Orpen',
-    'Phalaborwa Gate':'Phalaborwa','Punda Maria Gate':'Punda Maria',
-    'Pafuri Gate':'Pafuri','Giriyondo Border Post':'Giriyondo'
+    'Crocodile Bridge':'Croc Bridge','Giriyondo Border Post':'Giriyondo',
+    'Malelane Gate':'Malelane','Numbi Gate':'Numbi','Orpen Gate':'Orpen',
+    'Pafuri Gate':'Pafuri','Paul Kruger Gate':'Paul Kruger','Phabeni Gate':'Phabeni',
+    'Phalaborwa Gate':'Phalaborwa','Punda Maria Gate':'Punda Maria'
   };
   container.innerHTML = Object.keys(GATE_SEASONAL).map(function(name) {
     var time = GATE_SEASONAL[name][month];
