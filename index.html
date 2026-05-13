@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en
-          <button class="filter-btn" onclick="setBirdFilter('conservation','endangered')" data-ftype="conservation" data-fval="endangered">ENDANGERED</button>">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-favicon-trans.png?alt=media">
@@ -693,7 +692,8 @@ svg.animal-art{width:100%;height:100%}
         <span id="mammalOnlyFilters" style="display:flex;gap:6px"><button class="filter-btn" onclick="setWildlifeFilter('big5',this)">Big 5</button>
         <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)">Endangered</button>
         <button class="filter-btn" onclick="setWildlifeFilter('rare',this)">Rare</button></span>
-        <span id="birdOnlyFilters" style="display:none;gap:6px"><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)">TOP 6</button></span>
+        <span id="birdOnlyFilters" style="display:none;gap:6px"><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)">TOP 6</button>
+          <button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)">ENDANGERED</button></span>
       </div>
 
       <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
@@ -7302,7 +7302,7 @@ function renderBirds() {
     if(_birdColorFilter && !(sp.colors||[]).includes(_birdColorFilter)) return false;
     if(_birdSizeFilter && sp.size !== _birdSizeFilter) return false;
     if(_birdHabitatFilter === 'top6') { if(['martial_eagle','lappet_faced_vulture','southern_ground_hornbill','pels_fishing_owl','bateleur','kori_bustard','saddle_billed_stork'].indexOf(sp.id)<0) return false; } else if(_birdHabitatFilter && sp.habitat !== _birdHabitatFilter && sp.category !== _birdHabitatFilter) return false;
-    if(typeof _birdConservationFilter!=='undefined' && _birdConservationFilter==='endangered'){ var cons=(sp.conservation||'').toLowerCase(); if(cons.indexOf('endangered')<0&&cons.indexOf('critical')<0&&cons.indexOf('vulnerable')<0) return false; }
+    if(window._birdEndangeredFilter){ var cons=(sp.conservation||'').toLowerCase(); if(cons.indexOf('endangered')<0&&cons.indexOf('critical')<0&&cons.indexOf('vulnerable')<0) return false; }
     return true;
   });
   filtered.sort(function(a,b){ return a.name.localeCompare(b.name); });
@@ -7341,6 +7341,20 @@ function setBirdTop6Filter(btn) {
     _birdHabitatFilter = '';
     var allBtn = document.querySelector('#wildlifeFilters .filter-btn');
     if(allBtn) allBtn.classList.add('active');
+  }
+  renderBirds();
+}
+function setBirdEndangeredFilter(btn) {
+  var isActive = btn.classList.contains('active');
+  // Reset top6
+  var t6 = document.getElementById('top6Btn');
+  if(t6) t6.classList.remove('active');
+  if(isActive) {
+    btn.classList.remove('active');
+    window._birdEndangeredFilter = false;
+  } else {
+    btn.classList.add('active');
+    window._birdEndangeredFilter = true;
   }
   renderBirds();
 }
