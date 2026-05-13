@@ -137,9 +137,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 /* LICENSE GATE */
 .license-gate{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);align-items:center;justify-content:center;padding:24px;flex-direction:column}
 .license-gate.show{display:flex}
-.nav-panel{position:absolute;bottom:70px;left:0;right:0;z-index:1000;padding:0 10px;pointer-events:none}
-.nav-panel-inner{background:var(--bg2);border:1px solid rgba(232,160,32,.4);border-radius:14px;padding:12px 14px;pointer-events:all;box-shadow:0 4px 20px rgba(0,0,0,.6)}
-.nav-end-btn{background:rgba(220,60,60,.15);border:1px solid rgba(220,60,60,.4);color:#e88080;border-radius:8px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:8px;width:100%;display:block}
 .license-box{width:100%;max-width:360px;text-align:center}
 .license-logo{margin:0 auto 20px;max-width:140px;width:140px}
 .license-logo img{width:100%;height:auto;object-fit:contain;display:block}
@@ -692,8 +689,7 @@ svg.animal-art{width:100%;height:100%}
         <span id="mammalOnlyFilters" style="display:flex;gap:6px"><button class="filter-btn" onclick="setWildlifeFilter('big5',this)">Big 5</button>
         <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)">Endangered</button>
         <button class="filter-btn" onclick="setWildlifeFilter('rare',this)">Rare</button></span>
-        <span id="birdOnlyFilters" style="display:none;gap:6px"><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)">TOP 6</button>
-          <button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)">ENDANGERED</button></span>
+        <span id="birdOnlyFilters" style="display:none;gap:6px"><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)">TOP 6</button><button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)">ENDANGERED</button></span>
       </div>
 
       <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
@@ -713,6 +709,20 @@ svg.animal-art{width:100%;height:100%}
           <div style="display:flex;gap:6px;margin-bottom:10px">
           
           </div>
+          <!-- Bird Categories - above Identify by Visual Cue -->
+          <div style="margin-bottom:10px">
+            <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Bird Categories</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px" id="birdCatFilters">
+              <button onclick="setBirdCat('')" class="bfilter active" data-cat="" style="padding:7px 2px;font-size:9px;text-align:center">All</button>
+              <button onclick="setBirdCat('ground_bird')" class="bfilter" data-cat="ground_bird" style="padding:7px 2px;font-size:9px;text-align:center">Ground Birds</button>
+              <button onclick="setBirdCat('raptor')" class="bfilter" data-cat="raptor" style="padding:7px 2px;font-size:9px;text-align:center">Raptors</button>
+              <button onclick="setBirdCat('songbird')" class="bfilter" data-cat="songbird" style="padding:7px 2px;font-size:9px;text-align:center">Songbirds</button>
+              <button onclick="setBirdCat('tree_bird')" class="bfilter" data-cat="tree_bird" style="padding:7px 2px;font-size:9px;text-align:center">Tree Birds</button>
+              <button onclick="setBirdCat('wader')" class="bfilter" data-cat="wader" style="padding:7px 2px;font-size:9px;text-align:center">Waders</button>
+              <button onclick="setBirdCat('water')" class="bfilter" data-cat="water" style="padding:7px 2px;font-size:9px;text-align:center">Water Birds</button>
+            </div>
+          </div>
+          <!-- Identify by Visual Cue -->
           <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px">Identify by Visual Cue</div>
           <div style="margin-bottom:6px">
             <div style="font-size:9px;color:var(--text3);margin-bottom:4px">Colour</div>
@@ -725,19 +735,6 @@ svg.animal-art{width:100%;height:100%}
               <button onclick="setBirdFilter('color','rufous')" class="bfilter" data-ftype="color" data-fval="rufous">🟧 Rufous</button>
               <button onclick="setBirdFilter('color','yellow')" class="bfilter" data-ftype="color" data-fval="yellow">🟡 Yellow</button>
               <button onclick="setBirdFilter('color','cream')" class="bfilter" data-ftype="color" data-fval="cream">🍦 Cream</button>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px">
-            <div style="margin-bottom:8px">
-            <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Bird Categories</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px" id="birdHabitatFilters">
-              <button onclick="setBirdFilter('habitat','')" class="bfilter active" data-ftype="habitat" data-fval="" style="text-align:center;padding:7px 2px;font-size:9px">All</button>
-              <button onclick="setBirdFilter('habitat','ground_bird')" class="bfilter" data-ftype="habitat" data-fval="ground_bird" style="text-align:center;padding:7px 2px;font-size:9px">Ground Birds</button>
-              <button onclick="setBirdFilter('habitat','raptor')" class="bfilter" data-ftype="habitat" data-fval="raptor" style="text-align:center;padding:7px 2px;font-size:9px">Raptors</button>
-              <button onclick="setBirdFilter('habitat','songbird')" class="bfilter" data-ftype="habitat" data-fval="songbird" style="text-align:center;padding:7px 2px;font-size:9px">Songbirds</button>
-              <button onclick="setBirdFilter('habitat','tree_bird')" class="bfilter" data-ftype="habitat" data-fval="tree_bird" style="text-align:center;padding:7px 2px;font-size:9px">Tree Birds</button>
-              <button onclick="setBirdFilter('habitat','wader')" class="bfilter" data-ftype="habitat" data-fval="wader" style="text-align:center;padding:7px 2px;font-size:9px">Waders</button>
-              <button onclick="setBirdFilter('habitat','water')" class="bfilter" data-ftype="habitat" data-fval="water" style="text-align:center;padding:7px 2px;font-size:9px">Water Birds</button>
             </div>
           </div>
         </div>
@@ -813,20 +810,18 @@ svg.animal-art{width:100%;height:100%}
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Entry Gate</div>
             <select class="itin-select" id="itinEntry" onchange="saveTripDates()">
               <option value="">Select entry gate...</option>
-              <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Phabeni Gate</option>
-              <option>Malelane Gate</option><option>Crocodile Bridge</option>
-              <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
-              <option>Pafuri Gate</option><option>Giriyondo Border Post</option>
+              <option>Paul Kruger Gate</option><option>Numbi Gate</option>
+              <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
+              <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option><option>Pafuri Gate</option><option>Giriyondo Border Post</option>
             </select>
           </div>
           <div style="min-width:0">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Exit Gate</div>
             <select class="itin-select" id="itinExit" onchange="saveTripDates()">
               <option value="">Select exit gate...</option>
-              <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Phabeni Gate</option>
-              <option>Malelane Gate</option><option>Crocodile Bridge</option>
-              <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
-              <option>Pafuri Gate</option><option>Giriyondo Border Post</option>
+              <option>Paul Kruger Gate</option><option>Numbi Gate</option>
+              <option>Phabeni Gate</option><option>Malelane Gate</option><option>Crocodile Bridge</option>
+              <option>Orpen Gate</option><option>Phalaborwa Gate</option><option>Punda Maria Gate</option><option>Pafuri Gate</option><option>Giriyondo Border Post</option>
             </select>
           </div>
         </div>
@@ -942,19 +937,14 @@ svg.animal-art{width:100%;height:100%}
             <div id="tosChevron" style="color:var(--text3);font-size:14px;transition:transform .2s">&#x25BC;</div>
           </div>
           <div id="tosPanel" style="display:none;background:var(--bg3);border:1px solid var(--border2);border-top:none;border-radius:0 0 12px 12px;padding:14px 15px">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.06em">KRANTZ OUTDOORS — TERMS OF USE</div>
-            <div style="font-size:10px;color:var(--text2);line-height:1.75">
-              <div style="font-weight:700;color:var(--text);margin:8px 0 3px">1. Data Ownership</div>
-              All content — species data, GPS co-ordinates, camp and facility information, photography intel, route descriptions and sighting data — is the intellectual property of Krantz Outdoors. Sightings data may be used anonymously to improve the guide. User personal data is never sold.
-              <div style="font-weight:700;color:var(--text);margin:8px 0 3px">2. No Reproduction or Scraping</div>
-              This guide may not be copied, scraped, reverse-engineered or republished without written permission. Licensing: basecamp@krantzoutdoors.com.
-              <div style="font-weight:700;color:var(--text);margin:8px 0 3px">3. GPS &amp; Location Data</div>
-              Location is used only for map and finder features. Never stored on any server. Never shared with third parties.
-              <div style="font-weight:700;color:var(--text);margin:8px 0 3px">4. Wildlife Safety</div>
-              This guide is for informational purposes only. Krantz Outdoors accepts no liability for injury or loss. Always follow SANParks regulations. Never leave your vehicle outside designated areas.
-              <div style="font-weight:700;color:var(--text);margin:8px 0 3px">5. SANParks Rules Override</div>
-              SANParks regulations supersede all information in this guide. This is a planning tool — not an official SANParks publication.
-              <div style="margin-top:10px;font-size:9px;color:var(--text3)">&copy; 2026 Krantz Outdoors. All rights reserved. Wild by Nature. Africa by Choice.</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">KRANTZ OUTDOORS — TERMS OF USE</div>
+            <div style="font-size:10px;color:var(--text2);line-height:1.8">
+              <b style="color:var(--text)">1. Data Ownership</b><br>All content is the intellectual property of Krantz Outdoors. Sightings data may be used anonymously to improve the guide. User personal data is never sold.<br><br>
+              <b style="color:var(--text)">2. No Reproduction</b><br>This guide may not be copied, scraped or republished without written permission. Licensing: basecamp@krantzoutdoors.com<br><br>
+              <b style="color:var(--text)">3. GPS &amp; Location</b><br>Location is used only for map and finder. Never stored on any server. Never shared with third parties.<br><br>
+              <b style="color:var(--text)">4. Wildlife Safety</b><br>This guide is for informational purposes only. Krantz Outdoors accepts no liability for injury or loss. Always follow SANParks regulations.<br><br>
+              <b style="color:var(--text)">5. SANParks Rules Override</b><br>SANParks regulations supersede all information in this guide. This is a planning tool — not an official SANParks publication.<br><br>
+              <div style="font-size:9px;color:var(--text3);margin-top:8px">© 2026 Krantz Outdoors. All rights reserved. Wild by Nature. Africa by Choice.</div>
             </div>
           </div>
         </div>
@@ -3955,21 +3945,20 @@ function _shareWithCard(platform, size) {
 
 function shareNative() {
   var s = window._currentSighting;
-  if(!s) { showToast('No sighting selected'); return; }
-  var caption = (typeof buildCaption==='function') ? buildCaption(s) : (s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
-  if(navigator.share) {
-    navigator.share({ title:s.name+' sighted in Kruger', text:caption, url:'https://app.krantzoutdoors.com' })
-      .then(function(){ showToast('Shared!'); })
-      .catch(function(e){ if(e.name!=='AbortError') _copyCaption(caption); });
-  } else { _copyCaption(caption); }
+  if(!s){showToast('No sighting selected');return;}
+  var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
+  if(navigator.share){
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://app.krantzoutdoors.com'})
+      .then(function(){showToast('Shared!');})
+      .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
+  } else { _doCopy(caption); }
 }
-function _copyCaption(text) {
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(function(){ showToast('Caption copied — paste to share!'); }).catch(function(){});
-  else showToast('Share: '+text.substring(0,80));
+function _doCopy(t){
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){showToast('Caption copied — paste to share!');}).catch(function(){});
+  else showToast('Copy: '+t.substring(0,80));
 }
-function _shareNativeFull() {
+function _shareNativeOld() {
   var s = window._currentSighting; if(!s) return;
-  var caption = (typeof buildCaption==='function') ? buildCaption(s) : s.name;
   var caption = buildCaption(s);
   window._currentCaption = caption;
   _renderFullCard(1080, function(canvas) {
@@ -4688,14 +4677,6 @@ function toggleToS(){
   var open=panel.style.display!=='none';
   panel.style.display=open?'none':'block';
   if(chevron) chevron.style.transform=open?'':'rotate(180deg)';
-}
-function toggleToS(){
-  var p=document.getElementById('tosPanel');
-  var c=document.getElementById('tosChevron');
-  if(!p) return;
-  var open=p.style.display!=='none';
-  p.style.display=open?'none':'block';
-  if(c) c.style.transform=open?'':'rotate(180deg)';
 }
 function toggleBuildNotes(){
   var p=document.getElementById('buildNotesPanel');
@@ -6014,21 +5995,20 @@ function _shareWithCard(platform, size) {
 
 function shareNative() {
   var s = window._currentSighting;
-  if(!s) { showToast('No sighting selected'); return; }
-  var caption = (typeof buildCaption==='function') ? buildCaption(s) : (s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
-  if(navigator.share) {
-    navigator.share({ title:s.name+' sighted in Kruger', text:caption, url:'https://app.krantzoutdoors.com' })
-      .then(function(){ showToast('Shared!'); })
-      .catch(function(e){ if(e.name!=='AbortError') _copyCaption(caption); });
-  } else { _copyCaption(caption); }
+  if(!s){showToast('No sighting selected');return;}
+  var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
+  if(navigator.share){
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://app.krantzoutdoors.com'})
+      .then(function(){showToast('Shared!');})
+      .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
+  } else { _doCopy(caption); }
 }
-function _copyCaption(text) {
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(function(){ showToast('Caption copied — paste to share!'); }).catch(function(){});
-  else showToast('Share: '+text.substring(0,80));
+function _doCopy(t){
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){showToast('Caption copied — paste to share!');}).catch(function(){});
+  else showToast('Copy: '+t.substring(0,80));
 }
-function _shareNativeFull() {
+function _shareNativeOld() {
   var s = window._currentSighting; if(!s) return;
-  var caption = (typeof buildCaption==='function') ? buildCaption(s) : s.name;
   var caption = buildCaption(s);
   window._currentCaption = caption;
   _renderFullCard(1080, function(canvas) {
@@ -7039,26 +7019,19 @@ function findNearest(type, btn) {
       var lng = pos.coords.longitude;
       var facilities = FACILITIES[facilityType] ? FACILITIES[facilityType].slice() : [];
       // For public services (toilet/fuel/food/shop/wifi/medical), also include public SANParks camps
-      // For camps: show all camps
-      if(facilityType === 'camps') {
-        CAMPS.forEach(function(c){
-          facilities.push({ name:c.name, lat:c.lat, lng:c.lng, note:c.type+(c.phone?' · '+c.phone:''), hours:c.hours });
-        });
-      }
-      // For services: pull from CAMPS but deduplicate and filter correctly
-      var serviceTypes = ['Main Camp','Satellite Camp','Bushveld Camp','Bush Lodge','Tented Camp'];
-      var restroomTypes = ['Main Camp']; // only main public camps have public restrooms
-      if(['fuel','food','medical','wifi','shops'].indexOf(facilityType)>=0) {
-        var seen = facilities.map(function(f){ return f.name.toLowerCase(); });
-        CAMPS.filter(function(c){ return serviceTypes.indexOf(c.type)>=0; }).forEach(function(c){
+      if(facilityType==='camps'){
+        CAMPS.forEach(function(c){ facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),hours:c.hours}); });
+      } else if(['fuel','food','medical','wifi','shops'].indexOf(facilityType)>=0){
+        var seen=facilities.map(function(f){return f.name.toLowerCase();});
+        var svcTypes=['Main Camp','Satellite Camp','Bushveld Camp','Bush Lodge','Tented Camp'];
+        CAMPS.filter(function(c){return svcTypes.indexOf(c.type)>=0;}).forEach(function(c){
           if(seen.indexOf(c.name.toLowerCase())>=0) return;
           var has=(facilityType==='fuel'&&c.fuel)||(facilityType==='food'&&c.restaurant)||(facilityType==='shops'&&c.shop)||(facilityType==='wifi'&&c.wifi)||(facilityType==='medical'&&c.clinic);
-          if(has){ facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),fromCamp:true}); seen.push(c.name.toLowerCase()); }
+          if(has){facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),fromCamp:true});seen.push(c.name.toLowerCase());}
         });
-      } else if(facilityType==='toilet') {
-        // Public restrooms: only main camps + picnic sites
-        var seen2 = facilities.map(function(f){ return f.name.toLowerCase(); });
-        CAMPS.filter(function(c){ return restroomTypes.indexOf(c.type)>=0; }).forEach(function(c){
+      } else if(facilityType==='toilet'){
+        var seen2=facilities.map(function(f){return f.name.toLowerCase();});
+        CAMPS.filter(function(c){return c.type==='Main Camp';}).forEach(function(c){
           if(seen2.indexOf(c.name.toLowerCase())>=0) return;
           facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),fromCamp:true});
           seen2.push(c.name.toLowerCase());
@@ -7105,7 +7078,6 @@ function findNearest(type, btn) {
         if(f.hours) extra += '<div class="drow"><div class="dlabel">Hours</div><div class="dval">' + f.hours + '</div></div>';
         if(f.phone) extra += '<div class="drow"><div class="dlabel">Phone</div><div class="dval"><a href="tel:' + f.phone.replace(/\s/g,'') + '">' + f.phone + '</a></div></div>';
         if(f.note) extra += '<div class="drow" style="border:none"><div class="dlabel">Note</div><div class="dval" style="color:var(--text2);font-size:11px">' + f.note + '</div></div>';
-        var safeName = f.name.replace(/'/g,"\\'");
         return '<div class="card" style="margin-bottom:9px">' +
           '<div class="card-head" onclick="toggleCard(this)">' +
             '<div class="card-icon">' + (i===0?'&#9733;':'&#8227;') + '</div>' +
@@ -7113,10 +7085,7 @@ function findNearest(type, btn) {
               '<div class="card-title">' + f.name + '</div>' +
               '<div class="card-meta">' + distStr + ' &middot; ' + timeStr + '</div>' +
             '</div>' +
-            '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">' +
-              '<div class="badge badge-' + (i===0?'green':'blue') + '">' + distStr + '</div>' +
-              '<button onclick="event.stopPropagation();navigateTo(\''+safeName+'\','+f.lat+','+f.lng+')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap">\uD83D\uDCCD Nav</button>' +
-            '</div>' +
+            '<div class="badge badge-' + (i===0?'green':'blue') + '">' + distStr + '</div>' +
           '</div>' +
           '<div class="card-body">' + extra + '</div>' +
         '</div>';
@@ -7145,15 +7114,11 @@ function findNearest(type, btn) {
 
 var _wildlifeFilter = 'all';
 
-// GPS cache - ask permission once, reuse for 5 minutes
-var _gpsCache = null;
-var _gpsCacheTime = 0;
-function getCachedGPS(successFn, errorFn) {
-  var now = Date.now();
-  if(_gpsCache && (now - _gpsCacheTime) < 300000) { successFn(_gpsCache); return; }
-  navigator.geolocation.getCurrentPosition(function(pos){
-    _gpsCache = pos; _gpsCacheTime = Date.now(); successFn(pos);
-  }, errorFn || function(){}, { timeout:10000, enableHighAccuracy:true });
+// GPS cache — ask permission once, reuse for 5 minutes
+var _gpsCache=null, _gpsCacheTime=0;
+function getCachedGPS(ok, fail) {
+  if(_gpsCache && Date.now()-_gpsCacheTime<300000){ ok(_gpsCache); return; }
+  navigator.geolocation.getCurrentPosition(function(p){ _gpsCache=p; _gpsCacheTime=Date.now(); ok(p); }, fail||function(){}, {timeout:10000,enableHighAccuracy:true});
 }
 
 function setWildlifeFilter(filter, btn) {
@@ -7271,20 +7236,33 @@ var _birdColorFilter = '';
 var _birdSizeFilter = '';
 var _birdHabitatFilter = '';
 
-var _birdConservationFilter = '';
+var _birdCatFilter = '';
+var _birdEndangeredActive = false;
+
+function setBirdCat(cat) {
+  _birdCatFilter = cat;
+  // Update active state on category buttons
+  document.querySelectorAll('#birdCatFilters .bfilter').forEach(function(b){
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  renderBirds();
+}
+
+function setBirdEndangeredFilter(btn) {
+  _birdEndangeredActive = !_birdEndangeredActive;
+  if(btn) btn.classList.toggle('active', _birdEndangeredActive);
+  // Deactivate top6 when endangered active
+  if(_birdEndangeredActive) {
+    var t6 = document.getElementById('top6Btn');
+    if(t6) t6.classList.remove('active');
+  }
+  renderBirds();
+}
+
 function setBirdFilter(type, val) {
-  if(type === 'color') { _birdColorFilter = val; document.querySelectorAll('[data-ftype="color"]').forEach(function(b){ b.classList.toggle('active',b.dataset.fval===val); }); }
-  if(type === 'size') { _birdSizeFilter = val; }
-  if(type === 'habitat') {
-    _birdHabitatFilter = val; _birdConservationFilter = '';
-    document.querySelectorAll('[data-ftype="habitat"],[data-ftype="conservation"]').forEach(function(b){ b.classList.remove('active'); });
-    document.querySelectorAll('[data-ftype="habitat"][data-fval="'+val+'"]').forEach(function(b){ b.classList.add('active'); });
-  }
-  if(type === 'conservation') {
-    _birdConservationFilter = val; _birdHabitatFilter = '';
-    document.querySelectorAll('[data-ftype="habitat"],[data-ftype="conservation"]').forEach(function(b){ b.classList.remove('active'); });
-    document.querySelectorAll('[data-ftype="conservation"][data-fval="'+val+'"]').forEach(function(b){ b.classList.add('active'); });
-  }
+  if(type === 'color') _birdColorFilter = val;
+  if(type === 'size') _birdSizeFilter = val;
+  if(type === 'habitat') _birdHabitatFilter = val;
   // Update button active states
   document.querySelectorAll('.bfilter[data-ftype="'+type+'"]').forEach(function(b){
     b.classList.toggle('active', b.dataset.fval === val);
@@ -7302,7 +7280,8 @@ function renderBirds() {
     if(_birdColorFilter && !(sp.colors||[]).includes(_birdColorFilter)) return false;
     if(_birdSizeFilter && sp.size !== _birdSizeFilter) return false;
     if(_birdHabitatFilter === 'top6') { if(['martial_eagle','lappet_faced_vulture','southern_ground_hornbill','pels_fishing_owl','bateleur','kori_bustard','saddle_billed_stork'].indexOf(sp.id)<0) return false; } else if(_birdHabitatFilter && sp.habitat !== _birdHabitatFilter && sp.category !== _birdHabitatFilter) return false;
-    if(window._birdEndangeredFilter){ var cons=(sp.conservation||'').toLowerCase(); if(cons.indexOf('endangered')<0&&cons.indexOf('critical')<0&&cons.indexOf('vulnerable')<0) return false; }
+    if(_birdCatFilter && sp.habitat !== _birdCatFilter && sp.category !== _birdCatFilter) return false;
+    if(_birdEndangeredActive){ var ec=(sp.conservation||'').toLowerCase(); if(ec.indexOf('endangered')<0&&ec.indexOf('critical')<0&&ec.indexOf('vulnerable')<0) return false; }
     return true;
   });
   filtered.sort(function(a,b){ return a.name.localeCompare(b.name); });
@@ -7341,20 +7320,6 @@ function setBirdTop6Filter(btn) {
     _birdHabitatFilter = '';
     var allBtn = document.querySelector('#wildlifeFilters .filter-btn');
     if(allBtn) allBtn.classList.add('active');
-  }
-  renderBirds();
-}
-function setBirdEndangeredFilter(btn) {
-  var isActive = btn.classList.contains('active');
-  // Reset top6
-  var t6 = document.getElementById('top6Btn');
-  if(t6) t6.classList.remove('active');
-  if(isActive) {
-    btn.classList.remove('active');
-    window._birdEndangeredFilter = false;
-  } else {
-    btn.classList.add('active');
-    window._birdEndangeredFilter = true;
   }
   renderBirds();
 }
@@ -8015,52 +7980,6 @@ var _heatmapLayer = null;
 var _heatmapActive = false;
 var _leafletHeatLoaded = false;
 var _userMarker = null;
-
-// In-app navigation using OSRM routing
-var _navLayer = null;
-
-function navigateTo(name, lat, lng) {
-  showScreen('map');
-  setTimeout(function() {
-    if(!_map) { showToast('Map loading...'); return; }
-    showToast('\uD83D\uDCCD Calculating route...');
-    getCachedGPS(function(pos) {
-      var fLat = pos.coords.latitude, fLng = pos.coords.longitude;
-      var url = 'https://router.project-osrm.org/route/v1/driving/'+fLng+','+fLat+';'+lng+','+lat+'?overview=full&geometries=geojson&steps=true';
-      fetch(url).then(function(r){ return r.json(); }).then(function(data) {
-        if(!data.routes||!data.routes.length){ showToast('Route not found'); return; }
-        var route = data.routes[0];
-        if(_navLayer){ _map.removeLayer(_navLayer); _navLayer=null; }
-        _navLayer = L.geoJSON(route.geometry,{style:{color:'#e8a020',weight:5,opacity:.9}}).addTo(_map);
-        _map.fitBounds(_navLayer.getBounds(),{padding:[40,40]});
-        var km = (route.distance/1000).toFixed(1);
-        var mins = Math.round((route.distance/1000)/40*60);
-        var tStr = mins<60?mins+' min':Math.floor(mins/60)+'h '+(mins%60)+'min';
-        var panel = document.getElementById('navPanel');
-        if(!panel){ panel=document.createElement('div'); panel.id='navPanel'; panel.className='nav-panel'; var m=document.getElementById('mainMap'); if(m) m.appendChild(panel); }
-        panel.innerHTML = '<div class="nav-panel-inner">'
-          +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">\uD83E\uDDED Navigating to '+name+'</div>'
-          +'<div style="font-size:11px;color:var(--text3)">'+km+'km &middot; '+tStr+' at 40km/h</div>'
-          +'<button class="nav-end-btn" onclick="endNavigation()">\u2715 End Navigation</button>'
-          +'</div>';
-        panel.style.display='block';
-        L.marker([lat,lng]).addTo(_map).bindPopup('<b>'+name+'</b>').openPopup();
-        showToast('Route: '+km+'km to '+name);
-      }).catch(function(){
-        if(_navLayer) _map.removeLayer(_navLayer);
-        _navLayer=L.polyline([[fLat,fLng],[lat,lng]],{color:'#e8a020',weight:4,dashArray:'8,6'}).addTo(_map);
-        _map.fitBounds(_navLayer.getBounds(),{padding:[40,40]});
-        showToast('Offline mode: showing direct line');
-      });
-    }, function(){ showToast('Enable GPS to navigate'); });
-  }, 400);
-}
-
-function endNavigation() {
-  if(_navLayer){ _map.removeLayer(_navLayer); _navLayer=null; }
-  var p=document.getElementById('navPanel'); if(p) p.style.display='none';
-  showToast('Navigation ended');
-}
 
 function initMap() {
   if(_map) return;
