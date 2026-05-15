@@ -4212,7 +4212,7 @@ function shareNative() {
   if(!s){showToast('No sighting selected');return;}
   var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
   if(navigator.share){
-    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://app.krantzoutdoors.com'})
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
       .then(function(){showToast('Shared!');})
       .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
   } else { _doCopy(caption); }
@@ -6264,7 +6264,7 @@ function shareNative() {
   if(!s){showToast('No sighting selected');return;}
   var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
   if(navigator.share){
-    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://app.krantzoutdoors.com'})
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
       .then(function(){showToast('Shared!');})
       .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
   } else { _doCopy(caption); }
@@ -9613,8 +9613,8 @@ window.addEventListener('offline', function(){
     var manifest = {
       name:'Kruger Field Guide',
       short_name:'Kruger Guide',
-      start_url:'https://app.krantzoutdoors.com/',
-      scope:'https://app.krantzoutdoors.com/',
+      start_url:'https://kruger.krantzoutdoors.com/',
+      scope:'https://kruger.krantzoutdoors.com/',
       display:'standalone',
       background_color:'#15191c',
       theme_color:'#e8a020',
