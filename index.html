@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.42</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.65</div>
     <div class="license-edition">Field Intelligence Guide</div>
     <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
     <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
@@ -473,6 +473,7 @@ svg.animal-art{width:100%;height:100%}
         <div class="gate-pill-label">Gate closes</div>
         <div class="gate-pill-time" id="headerCountdown">--:--</div>
       </div>
+      <div id="syncDot" title="Cloud sync" onclick="KFGSync.showStatus()" style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;cursor:pointer;transition:background .4s,box-shadow .4s;margin-right:2px"></div>
       <button class="header-info-btn" onclick="showScreen('emergency')" aria-label="SOS" style="background:rgba(204,51,34,.15);border-color:rgba(204,51,34,.4);color:#e05545;font-size:11px;font-weight:700;letter-spacing:.04em">SOS</button>
       <button class="header-info-btn" onclick="showScreen('about')" aria-label="About">i</button>
     </div>
@@ -940,6 +941,24 @@ svg.animal-art{width:100%;height:100%}
           <div class="about-link-arrow">&rsaquo;</div>
         </div>
 
+        <!-- LICENSE STATUS PANEL -->
+        <div id="licensePanel" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 15px;margin-top:4px">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">License</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-size:11px;color:var(--text2)" id="licenseKeyDisplay">—</div>
+            <div id="licenseExpiryDisplay" style="font-size:11px;color:var(--text3)">—</div>
+          </div>
+          <div id="licenseTypeDisplay" style="font-size:10px;color:var(--text3);margin-bottom:4px"></div>
+          <button onclick="showRenewInfo()" style="background:none;border:none;color:var(--accent);font-family:Montserrat,sans-serif;font-size:10px;cursor:pointer;padding:0;font-weight:600">Renew or transfer &rsaquo;</button>
+        </div>
+
+        <!-- FAMILY PACK GIFTING PANEL — only shown for family primary keys -->
+        <div id="familyPackPanel" style="display:none;background:var(--bg3);border:1px solid rgba(232,160,32,.3);border-radius:12px;padding:14px 15px;margin-top:4px">
+          <div style="font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">&#x1F46A; Family Pack — Gift Keys</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.6">Tap a key to copy it. Share it with family or friends — their 12-month license starts when they activate it.</div>
+          <div id="familyPackKeysList"></div>
+        </div>
+
                 
         <div style="margin-top:12px">
           <div onclick="toggleToS()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent">
@@ -965,7 +984,7 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.63</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.50 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.64</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.65 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -2246,6 +2265,7 @@ var PHOTO_HIDES = [
 
 var LICENSE_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/kruger-keys.json';
 var VERCEL_VALIDATE_URL = 'https://kruger-feed-function.vercel.app/api/validate';
+var VERCEL_CLAIM_URL    = 'https://kruger-feed-function.vercel.app/api/claim';
 var DEMO_KEYS = ['KRANTZ-DEMO-2026']; // Internal test only — all real keys in kfg-licenses repo
 var itinStops = [];
 var FEED_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/feed.json';
@@ -2536,44 +2556,83 @@ async function validateLicense() {
   }
 
   var btn = document.querySelector('.license-btn');
-  if(btn) { btn.textContent = 'Checking\u2026'; btn.disabled = true; }
+  if(btn) { btn.textContent = 'Checking…'; btn.disabled = true; }
 
-  var unlock = function() {
-    localStorage.setItem('kfg_v2_license', key);
-    localStorage.setItem('kfg_license_expiry', Date.now() + (365*24*60*60*1000));
-    var gate = document.getElementById('licenseGate');
-    if(gate) gate.classList.remove('show');
-    applyLogos(); initApp();
-  };
   var resetBtn = function() {
-    if(btn) { btn.textContent = 'Unlock My Guide \u2192'; btn.disabled = false; }
+    if(btn) { btn.textContent = 'Unlock My Guide →'; btn.disabled = false; }
   };
 
-  // 1. Try Vercel endpoint first (server-side, secure)
+  // Get or create permanent device ID (IndexedDB — survives cache clears)
+  var deviceId = await KFGDevice.getId();
+
+  // 1. /api/claim — sets server-side expiry on first activation,
+  //    transfers device binding on new phone, returns days remaining
   try {
-    var resp = await fetch(VERCEL_VALIDATE_URL, {
+    var claimResp = await fetch(VERCEL_CLAIM_URL, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({key: key})
+      body: JSON.stringify({ key: key, device_id: deviceId })
     });
-    if(resp.ok) {
-      var data = await resp.json();
-      if(data.valid) { resetBtn(); unlock(); return; }
+    if(claimResp.ok) {
+      var claimData = await claimResp.json();
+      if(claimData.valid) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        if(claimData.expires_at)     localStorage.setItem('kfg_license_expiry', String(claimData.expires_at));
+        if(claimData.days_remaining) localStorage.setItem('kfg_license_days',   String(claimData.days_remaining));
+        if(claimData.type)           localStorage.setItem('kfg_license_type',    claimData.type);
+        if(claimData.pack_id)        localStorage.setItem('kfg_pack_id',         claimData.pack_id);
+        if(claimData.pack_role)      localStorage.setItem('kfg_pack_role',        claimData.pack_role);
+        if(claimData.transferred) showToast('📱 Guide transferred to this device ✓', 3000);
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+      if(claimData.expired) { resetBtn(); showLicenseError('Your license has expired. Renew at krantzoutdoors.com'); return; }
       resetBtn();
       showLicenseError('Invalid key — check your Etsy order email');
       return;
     }
-  } catch(e) {
-    // Vercel unreachable — fall through to GitHub raw fallback
-  }
+  } catch(e) { /* claim endpoint unreachable — fall through */ }
 
-  // 2. Fallback: read raw keys file from GitHub (works offline from cache)
+  // 2. Fallback: /api/validate (read-only)
   try {
-    var resp2 = await fetch(LICENSE_URL + '?t=' + Date.now());
-    if(resp2.ok) {
-      var data2 = await resp2.json();
-      var validKeys = Array.isArray(data2) ? data2 : (data2.keys || []);
-      if(validKeys.indexOf(key) >= 0) { resetBtn(); unlock(); return; }
+    var valResp = await fetch(VERCEL_VALIDATE_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ key: key, device_id: deviceId })
+    });
+    if(valResp.ok) {
+      var valData = await valResp.json();
+      if(valData.valid || valData.unclaimed || valData.legacy) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        if(valData.expires_at)     localStorage.setItem('kfg_license_expiry', String(valData.expires_at));
+        if(valData.days_remaining) localStorage.setItem('kfg_license_days',   String(valData.days_remaining));
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+      if(valData.expired) { resetBtn(); showLicenseError('Your license has expired. Renew at krantzoutdoors.com'); return; }
+      resetBtn();
+      showLicenseError('Invalid key — check your Etsy order email');
+      return;
+    }
+  } catch(e) {}
+
+  // 3. Last resort: GitHub raw fallback (all endpoints down / offline)
+  try {
+    var resp3 = await fetch(LICENSE_URL + '?t=' + Date.now());
+    if(resp3.ok) {
+      var data3 = await resp3.json();
+      var validKeys = Array.isArray(data3) ? data3 : (data3.keys || []);
+      if(validKeys.indexOf(key) >= 0) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
     }
   } catch(e) {}
 
@@ -3699,7 +3758,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -4327,7 +4386,7 @@ function renderAchievements() {
     html += '</div>';
   });
 
-  if(newlyEarned.length) localStorage.setItem('kfg_achievements', JSON.stringify(earned));
+  if(newlyEarned.length) { localStorage.setItem('kfg_achievements', JSON.stringify(earned)); KFGSync.push(); }
   if(!sightings.length) {
     html = '<div style="grid-column:1/-1;background:rgba(232,160,32,.06);border:1px solid rgba(232,160,32,.2);border-radius:10px;padding:12px;text-align:center;font-size:11px;color:var(--text3);margin-bottom:12px">Log sightings in Wildlife to start unlocking badges!</div>' + html;
   }
@@ -4377,6 +4436,7 @@ function checkNewAchievements() {
     if(earned.indexOf(m.id) < 0 && m.check(sightings)) {
       earned.push(m.id);
       localStorage.setItem('kfg_achievements', JSON.stringify(earned));
+      KFGSync.push();
       setTimeout(function(){ showToast(m.icon + ' Badge unlocked: ' + m.title + '!'); }, 500);
     }
   });
@@ -4426,6 +4486,7 @@ function loadBingoState() {
 }
 function saveBingoState() {
   localStorage.setItem('kfg_bingo', JSON.stringify(_bingoState));
+  KFGSync.push();
 }
 function resetBingo() {
   _bingoState = BINGO_SPECIES.map(function(s,i){ return {id:s.id, label:s.label, tapped:false}; });
@@ -4495,7 +4556,7 @@ var checklistState = {};
 function loadChecklistState() {
   try{ checklistState = JSON.parse(localStorage.getItem('kfg_checklist')||'{}'); }catch(e){ checklistState={}; }
 }
-function saveChecklistState() { localStorage.setItem('kfg_checklist',JSON.stringify(checklistState)); }
+function saveChecklistState() { localStorage.setItem('kfg_checklist',JSON.stringify(checklistState)); KFGSync.push(); }
 function resetChecklist() { checklistState={}; saveChecklistState(); renderChecklist(); }
 
 function handleCheckTap(el) {
@@ -5749,7 +5810,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -6323,7 +6384,7 @@ var checklistState = {};
 function loadChecklistState() {
   try{ checklistState = JSON.parse(localStorage.getItem('kfg_checklist')||'{}'); }catch(e){ checklistState={}; }
 }
-function saveChecklistState() { localStorage.setItem('kfg_checklist',JSON.stringify(checklistState)); }
+function saveChecklistState() { localStorage.setItem('kfg_checklist',JSON.stringify(checklistState)); KFGSync.push(); }
 function resetChecklist() { checklistState={}; saveChecklistState(); renderChecklist(); }
 
 function handleCheckTap(el) {
@@ -7742,7 +7803,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.63';
+var APP_VERSION = '3.65';
 
 // Clear stale caches when version changes
 (function() {
@@ -7907,6 +7968,7 @@ function loadJournalEntries() {
 }
 function saveJournalEntries(entries) {
   try { localStorage.setItem('kfg_trip_journal', JSON.stringify(entries)); } catch(e) {}
+  KFGSync.push();
 }
 function addJournalEntry(entry) {
   var entries = loadJournalEntries();
@@ -7916,12 +7978,6 @@ function addJournalEntry(entry) {
   if(entries.length > 100) entries = entries.slice(0,100);
   saveJournalEntries(entries);
   renderTripJournal();
-  // Save to Firebase under device ID
-  var deviceId = localStorage.getItem('kfg_device_id') || ('dev_' + Math.random().toString(36).substr(2,9));
-  localStorage.setItem('kfg_device_id', deviceId);
-  fetch(FIREBASE_URL + '/journals/' + deviceId + '.json', {
-    method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(loadJournalEntries().slice(0,50))
-  }).catch(function(){});
 }
 
 function renderTripJournal() {
@@ -8186,6 +8242,7 @@ function saveTripDates() {
     entry: entry ? entry.value : '',
     exit: exit ? exit.value : ''
   }));
+  KFGSync.push();
 }
 function loadTripDates() {
   try {
@@ -8620,12 +8677,7 @@ function saveTripPlan() {
     if(trips.length > 5) trips = trips.slice(0,5);
     localStorage.setItem('kfg_saved_trips', JSON.stringify(trips));
   } catch(e) {}
-  // Save to Firebase under device ID
-  var deviceId = localStorage.getItem('kfg_device_id') || ('dev_' + Math.random().toString(36).substr(2,9));
-  localStorage.setItem('kfg_device_id', deviceId);
-  fetch(FIREBASE_URL + '/trips/' + deviceId + '.json', {
-    method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(tripData)
-  }).catch(function(){});
+  KFGSync.push();
   showToast('Trip plan saved \u2705', 2000);
   renderSavedTrips();
 }
@@ -8710,6 +8762,7 @@ function saveTripSchedule(nightIdx, campName) {
   try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
   saved['night_' + nightIdx] = campName;
   localStorage.setItem('kfg_trip_schedule', JSON.stringify(saved));
+  KFGSync.push();
 }
 
 function calculateFromSchedule() {
@@ -8935,10 +8988,16 @@ function initApp() {
   // Update nickname display in About screen
   var nd = document.getElementById('aboutNicknameDisplay');
   if(nd) nd.textContent = getUserNickname() || 'Tap to set your name';
+  // Render license panel in About screen
+  safe(renderLicensePanel);
   // Show onboarding on first launch
   setTimeout(showOnboarding, 500);
   safe(loadChecklistState);
   safe(renderChecklist);
+  // Cloud sync: pull on boot
+  safe(function(){ KFGSync.pull(); });
+  // Check license expiry silently on every boot
+  safe(function(){ checkLicenseOnBoot(); });
   safe(renderPhotoIntel);
   safe(renderGateButtons);
   safe(renderRecentlyViewed);
@@ -8993,9 +9052,552 @@ function initApp() {
 }
 
 
+
 // ============================================
-// BOOT
+// LICENSE PANEL — About screen display + family gifting
 // ============================================
+function renderLicensePanel() {
+  var key      = localStorage.getItem('kfg_v2_license') || '';
+  var days     = parseInt(localStorage.getItem('kfg_license_days') || '0');
+  var type     = localStorage.getItem('kfg_license_type') || 'single';
+  var packRole = localStorage.getItem('kfg_pack_role') || '';
+  var packId   = localStorage.getItem('kfg_pack_id') || '';
+
+  // Key display — show last 8 chars only for privacy
+  var keyEl = document.getElementById('licenseKeyDisplay');
+  if(keyEl && key) {
+    var masked = key.length > 8 ? '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022' + key.slice(-8) : key;
+    if(DEMO_KEYS.indexOf(key) >= 0) masked = 'Demo / Internal';
+    keyEl.textContent = masked;
+  }
+
+  // Expiry
+  updateExpiryDisplay(days || 999);
+
+  // Type label
+  var typeEl = document.getElementById('licenseTypeDisplay');
+  if(typeEl) {
+    var label = type === 'family'
+      ? (packRole === 'primary' ? '\u{1F46A} Family Pack \u2014 Primary' : '\u{1F46A} Family Pack \u2014 Gift Key')
+      : 'Single Device License';
+    typeEl.textContent = label;
+  }
+
+  // Family gifting panel — only for family primary keys
+  var packPanel = document.getElementById('familyPackPanel');
+  if(packPanel) {
+    if(type === 'family' && packRole === 'primary' && packId) {
+      packPanel.style.display = 'block';
+      renderFamilyGiftKeys(packId, key);
+    } else {
+      packPanel.style.display = 'none';
+    }
+  }
+}
+
+async function renderFamilyGiftKeys(packId, myKey) {
+  var list = document.getElementById('familyPackKeysList');
+  if(!list) return;
+  list.innerHTML = '<div style="font-size:11px;color:var(--text3);text-align:center;padding:12px 0">Loading gift keys\u2026</div>';
+
+  // We need to fetch the pack keys from the server
+  // For now build from what we know: the pack contains 5 keys with same pack_id
+  // We query validate for each stored key — but we don't have the other keys locally.
+  // Show a "manage online" prompt until a dedicated /api/pack-info endpoint is built.
+  // For users who received the family pack email, they have all 5 keys in their email.
+
+  list.innerHTML =
+    '<div style="background:var(--bg4);border-radius:9px;padding:12px;font-size:11px;color:var(--text2);line-height:1.6;text-align:center">' +
+      'Your gift keys were included in your order confirmation email.<br><br>' +
+      '<span style="color:var(--accent);font-weight:700">Pack ID: ' + packId + '</span><br><br>' +
+      '<span style="font-size:10px;color:var(--text3)">Share the keys from your email with family or friends.<br>Their 12-month license starts when they activate.</span>' +
+    '</div>';
+}
+
+function showRenewInfo() {
+  var popup = document.createElement('div');
+  popup.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:24px';
+  popup.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:320px">' +
+      '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">License Options</div>' +
+      '<div style="font-size:12px;color:var(--text3);line-height:1.7;margin-bottom:20px">' +
+        '<strong style="color:var(--text)">Renew:</strong> Purchase a new license on Etsy to extend your access.<br><br>' +
+        '<strong style="color:var(--text)">New device:</strong> Simply enter your existing key on your new device. Your remaining time transfers automatically.<br><br>' +
+        '<strong style="color:var(--text)">Questions?</strong> Email basecamp@krantzoutdoors.com' +
+      '</div>' +
+      '<a href="https://www.etsy.com/shop/KrantzOutdoors" target="_blank" style="display:block;background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;margin-bottom:10px">Renew on Etsy &rarr;</a>' +
+      '<button onclick="this.closest(\'div[style*=fixed]\').remove()" style="width:100%;background:none;border:none;color:var(--text3);font-family:Montserrat,sans-serif;font-size:12px;cursor:pointer;padding:8px">Close</button>' +
+    '</div>';
+  document.body.appendChild(popup);
+}
+
+// ============================================
+// KFGDEVICE — Permanent device ID in IndexedDB
+// Survives localStorage/cache clears. Generated once, never changes.
+// ============================================
+var KFGDevice = (function() {
+  var DB_NAME = 'kfg_device';
+  var DB_VER  = 1;
+  var STORE   = 'identity';
+  var KEY     = 'device_id';
+  var _cached = null;
+
+  function openDB() {
+    return new Promise(function(resolve, reject) {
+      try {
+        var req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = function(e) {
+          e.target.result.createObjectStore(STORE, { keyPath: 'k' });
+        };
+        req.onsuccess = function(e) { resolve(e.target.result); };
+        req.onerror   = function(e) { reject(e); };
+      } catch(e) { reject(e); }
+    });
+  }
+
+  function generateId() {
+    // Crypto-random 32-char hex string
+    try {
+      var arr = new Uint8Array(16);
+      crypto.getRandomValues(arr);
+      return Array.from(arr).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    } catch(e) {
+      return 'dev_' + Math.random().toString(36).substr(2,9) + Date.now().toString(36);
+    }
+  }
+
+  // Returns device ID — creates and persists one if it doesn't exist yet
+  function getId() {
+    if(_cached) return Promise.resolve(_cached);
+    return openDB().then(function(db) {
+      return new Promise(function(resolve, reject) {
+        var tx  = db.transaction(STORE, 'readonly');
+        var req = tx.objectStore(STORE).get(KEY);
+        req.onsuccess = function(e) {
+          if(e.target.result) {
+            _cached = e.target.result.v;
+            resolve(_cached);
+          } else {
+            // First time — generate and store
+            var newId = generateId();
+            var tx2   = db.transaction(STORE, 'readwrite');
+            var req2  = tx2.objectStore(STORE).put({ k: KEY, v: newId });
+            req2.onsuccess = function() { _cached = newId; resolve(newId); };
+            req2.onerror   = function() { _cached = newId; resolve(newId); };
+          }
+        };
+        req.onerror = function() {
+          var fallback = 'dev_' + Math.random().toString(36).substr(2,9);
+          _cached = fallback;
+          resolve(fallback);
+        };
+      });
+    }).catch(function() {
+      // IndexedDB unavailable — fall back to localStorage
+      var ls = localStorage.getItem('kfg_device_id_v2');
+      if(ls) { _cached = ls; return ls; }
+      var fb = generateId();
+      try { localStorage.setItem('kfg_device_id_v2', fb); } catch(e){}
+      _cached = fb;
+      return fb;
+    });
+  }
+
+  return { getId: getId };
+})();
+
+// ============================================
+// LICENSE EXPIRY — boot-time revalidation
+// Runs silently on every app open after initial claim.
+// Shows expiry warnings and locks out expired keys.
+// ============================================
+async function checkLicenseOnBoot() {
+  var key    = localStorage.getItem('kfg_v2_license');
+  var expiry = localStorage.getItem('kfg_license_expiry');
+
+  // Demo keys — skip
+  if(!key || DEMO_KEYS.indexOf(key) >= 0) return;
+
+  var now = Date.now();
+
+  // Local expiry check first (fast, no network)
+  if(expiry) {
+    var expiryMs = parseInt(expiry);
+    var daysLeft = Math.ceil((expiryMs - now) / (24*60*60*1000));
+    if(daysLeft <= 0) {
+      // Expired — show gate
+      localStorage.removeItem('kfg_v2_license');
+      localStorage.removeItem('kfg_license_expiry');
+      var gate = document.getElementById('licenseGate');
+      if(gate) {
+        gate.classList.add('show');
+        showLicenseError('Your license expired. Renew at krantzoutdoors.com');
+      }
+      return;
+    }
+    // Show warning when under 30 days
+    if(daysLeft <= 30) {
+      setTimeout(function(){
+        showToast('\u26A0\uFE0F License expires in ' + daysLeft + ' day' + (daysLeft===1?'':'s') + ' — renew at krantzoutdoors.com', 5000);
+      }, 3000);
+    }
+    localStorage.setItem('kfg_license_days', String(daysLeft));
+    updateExpiryDisplay(daysLeft);
+  }
+
+  // Background server revalidation — refresh expiry silently
+  if(!navigator.onLine) return;
+  try {
+    var deviceId = await KFGDevice.getId();
+    var resp = await fetch(VERCEL_VALIDATE_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ key: key, device_id: deviceId })
+    });
+    if(!resp.ok) return;
+    var data = await resp.json();
+
+    if(data.expired) {
+      localStorage.removeItem('kfg_v2_license');
+      localStorage.removeItem('kfg_license_expiry');
+      var gate = document.getElementById('licenseGate');
+      if(gate) {
+        gate.classList.add('show');
+        showLicenseError('Your license expired. Renew at krantzoutdoors.com');
+      }
+      return;
+    }
+
+    if(data.valid && data.expires_at) {
+      // Refresh local cache with server value
+      localStorage.setItem('kfg_license_expiry', String(data.expires_at));
+      localStorage.setItem('kfg_license_days',   String(data.days_remaining || 0));
+      if(data.type)      localStorage.setItem('kfg_license_type', data.type);
+      if(data.pack_id)   localStorage.setItem('kfg_pack_id',      data.pack_id);
+      if(data.pack_role) localStorage.setItem('kfg_pack_role',    data.pack_role);
+      updateExpiryDisplay(data.days_remaining || 0);
+    }
+
+    // Key exists but not yet claimed (legacy key) — call claim to promote it
+    if(data.unclaimed || data.legacy) {
+      try {
+        var claimResp = await fetch(VERCEL_CLAIM_URL, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ key: key, device_id: deviceId })
+        });
+        if(claimResp.ok) {
+          var cd = await claimResp.json();
+          if(cd.valid && cd.expires_at) {
+            localStorage.setItem('kfg_license_expiry', String(cd.expires_at));
+            localStorage.setItem('kfg_license_days',   String(cd.days_remaining || 365));
+            updateExpiryDisplay(cd.days_remaining || 365);
+          }
+        }
+      } catch(e) {}
+    }
+  } catch(e) {}
+}
+
+function updateExpiryDisplay(daysLeft) {
+  var el = document.getElementById('licenseExpiryDisplay');
+  if(!el) return;
+  var color = daysLeft <= 7 ? 'var(--red)' : daysLeft <= 30 ? 'var(--amber)' : 'var(--green)';
+  el.innerHTML = '<span style="color:' + color + ';font-weight:700">' +
+    (daysLeft > 365 ? 'Active' : daysLeft + ' days remaining') +
+    '</span>';
+}
+
+// ============================================
+// KFGSYNC — CLOUD SYNC (Firebase RTDB, license-key scoped)
+// ============================================
+var KFGSync = (function() {
+  var SYNC_KEYS = ['kfg_sightings','kfg_trip_journal','kfg_trip_dates','kfg_trip_schedule',
+                   'kfg_checklist','kfg_achievements','kfg_bingo','kfg_saved_trips'];
+  var _pushTimer = null;
+  var _status = 'idle'; // idle | syncing | ok | error | offline
+
+  function getUserNode() {
+    var key = localStorage.getItem('kfg_v2_license') || '';
+    if(!key) return null;
+    return key.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+  }
+
+  function getUrl(node) {
+    return FIREBASE_URL + '/user_trips/' + node + '/trip_data.json';
+  }
+
+  function setDot(state) {
+    _status = state;
+    var dot = document.getElementById('syncDot');
+    if(!dot) return;
+    var map = {
+      idle:    {bg:'var(--text3)',    shadow:'none',                              title:'Cloud sync'},
+      syncing: {bg:'var(--accent)',   shadow:'0 0 6px rgba(232,160,32,.6)',       title:'Syncing\u2026'},
+      ok:      {bg:'var(--green)',    shadow:'0 0 5px rgba(58,138,74,.5)',        title:'Synced \u2713'},
+      error:   {bg:'var(--red)',      shadow:'0 0 5px rgba(204,51,34,.5)',        title:'Sync failed — tap to retry'},
+      offline: {bg:'var(--text3)',    shadow:'none',                              title:'Offline — changes saved locally'}
+    };
+    var s = map[state] || map.idle;
+    dot.style.background = s.bg;
+    dot.style.boxShadow = s.shadow;
+    dot.title = s.title;
+    // After ok/error, fade back to idle after 4s
+    if(state === 'ok' || state === 'error') {
+      setTimeout(function(){ setDot('idle'); }, 4000);
+    }
+  }
+
+  function collectData() {
+    var bundle = { _syncedAt: Date.now() };
+    SYNC_KEYS.forEach(function(k) {
+      var v = localStorage.getItem(k);
+      if(v !== null) bundle[k] = v;
+    });
+    return bundle;
+  }
+
+  function applyData(bundle) {
+    if(!bundle || typeof bundle !== 'object') return;
+    var changed = false;
+    SYNC_KEYS.forEach(function(k) {
+      if(bundle[k] !== undefined && bundle[k] !== null) {
+        localStorage.setItem(k, bundle[k]);
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
+  // Debounced push — coalesces rapid saves into one write
+  function push() {
+    if(_pushTimer) clearTimeout(_pushTimer);
+    _pushTimer = setTimeout(_doPush, 2000);
+  }
+
+  async function _doPush() {
+    var node = getUserNode();
+    if(!node) return;
+    if(!navigator.onLine) { setDot('offline'); return; }
+    setDot('syncing');
+    try {
+      var resp = await fetch(getUrl(node), {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(collectData())
+      });
+      setDot(resp.ok ? 'ok' : 'error');
+    } catch(e) {
+      setDot(navigator.onLine ? 'error' : 'offline');
+    }
+  }
+
+  // Pull on boot — merge cloud data if cloud is newer
+  async function pull() {
+    var node = getUserNode();
+    if(!node) return;
+    if(!navigator.onLine) { setDot('offline'); return; }
+    setDot('syncing');
+    try {
+      var resp = await fetch(getUrl(node));
+      if(!resp.ok) { setDot('error'); return; }
+      var cloud = await resp.json();
+      if(!cloud || typeof cloud !== 'object') { setDot('ok'); return; }
+
+      var cloudTs = cloud._syncedAt || 0;
+      var localTs = parseInt(localStorage.getItem('kfg_last_sync_ts') || '0');
+
+      if(cloudTs > localTs) {
+        var changed = applyData(cloud);
+        localStorage.setItem('kfg_last_sync_ts', String(cloudTs));
+        if(changed) {
+          // Re-render trip screens with fresh data
+          try { renderSightings(); } catch(e){}
+          try { renderTripJournal(); } catch(e){}
+          try { renderSavedTrips(); } catch(e){}
+          try { loadChecklistState(); renderChecklist(); } catch(e){}
+          try { updateTripStats(); } catch(e){}
+          showToast('\u2601\uFE0F Trip data restored from cloud \u2713', 3000);
+        }
+      }
+      // Timestamp our local snapshot
+      localStorage.setItem('kfg_last_sync_ts', String(Date.now()));
+      setDot('ok');
+      // After pull, push our local version so timestamp is fresh
+      push();
+    } catch(e) {
+      setDot(navigator.onLine ? 'error' : 'offline');
+    }
+  }
+
+  function showStatus() {
+    var msgs = {
+      idle:    '\u2601\uFE0F Cloud sync active \u2014 data saved across devices',
+      syncing: '\u23F3 Syncing your trip data\u2026',
+      ok:      '\u2705 Trip data synced to cloud',
+      error:   '\u26A0\uFE0F Sync failed \u2014 data saved locally. Tap to retry.',
+      offline: '\u{1F4F5} Offline \u2014 trip data saved locally and will sync when back online'
+    };
+    var msg = msgs[_status] || msgs.idle;
+    showToast(msg, 3500);
+    if(_status === 'error') push();
+  }
+
+  return { push: push, pull: pull, showStatus: showStatus, setDot: setDot };
+})();
+
+// ============================================
+// IMGCACHE — IndexedDB image cache
+// ============================================
+var ImgCache = (function() {
+  var DB_NAME = 'kfg_imgcache';
+  var DB_VER  = 1;
+  var STORE   = 'images';
+  var MAX_AGE = 30 * 24 * 60 * 60 * 1000; // 30 days
+  var _db = null;
+  var _pending = {};
+
+  function openDB() {
+    if(_db) return Promise.resolve(_db);
+    return new Promise(function(resolve, reject) {
+      try {
+        var req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = function(e) {
+          e.target.result.createObjectStore(STORE, {keyPath:'url'});
+        };
+        req.onsuccess = function(e) { _db = e.target.result; resolve(_db); };
+        req.onerror   = function(e) { reject(e); };
+      } catch(e) { reject(e); }
+    });
+  }
+
+  function getCached(url) {
+    return openDB().then(function(db) {
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(STORE, 'readonly');
+        var req = tx.objectStore(STORE).get(url);
+        req.onsuccess = function(e) { resolve(e.target.result || null); };
+        req.onerror   = function(e) { reject(e); };
+      });
+    });
+  }
+
+  function putCached(url, blob) {
+    return openDB().then(function(db) {
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(STORE, 'readwrite');
+        var req = tx.objectStore(STORE).put({url:url, blob:blob, ts:Date.now()});
+        req.onsuccess = function() { resolve(); };
+        req.onerror   = function(e) { reject(e); };
+      });
+    });
+  }
+
+  // Returns a blob-URL for the image (cache-first, then network)
+  function get(url) {
+    if(!url) return Promise.resolve(url);
+    // Only cache Firebase Storage images
+    if(url.indexOf('firebasestorage.googleapis.com') < 0) return Promise.resolve(url);
+    // Dedupe in-flight
+    if(_pending[url]) return _pending[url];
+
+    var p = getCached(url).then(function(record) {
+      if(record && (Date.now() - record.ts) < MAX_AGE) {
+        return URL.createObjectURL(record.blob);
+      }
+      // Not cached or stale — fetch
+      return fetch(url).then(function(resp) {
+        if(!resp.ok) throw new Error('fetch failed');
+        return resp.blob();
+      }).then(function(blob) {
+        putCached(url, blob).catch(function(){});
+        return URL.createObjectURL(blob);
+      });
+    }).catch(function() {
+      return url; // fallback: use original URL
+    }).finally(function() {
+      delete _pending[url];
+    });
+
+    _pending[url] = p;
+    return p;
+  }
+
+  // Apply cache to an <img> element
+  function applyToImg(imgEl, url) {
+    if(!imgEl || !url) return;
+    get(url).then(function(src) {
+      if(imgEl && src) imgEl.src = src;
+    });
+  }
+
+  // Prune entries older than MAX_AGE
+  function prune() {
+    openDB().then(function(db) {
+      try {
+        var tx = db.transaction(STORE, 'readwrite');
+        var store = tx.objectStore(STORE);
+        var req = store.openCursor();
+        req.onsuccess = function(e) {
+          var cursor = e.target.result;
+          if(!cursor) return;
+          if(Date.now() - cursor.value.ts > MAX_AGE) cursor.delete();
+          cursor.continue();
+        };
+      } catch(e) {}
+    }).catch(function(){});
+  }
+
+  // Prune stale entries once on load
+  setTimeout(prune, 5000);
+
+  // Hydrate all Firebase images in a container (or whole document)
+  function hydrateAll(root) {
+    var imgs = (root || document).querySelectorAll('img[src*="firebasestorage"]');
+    imgs.forEach(function(img) {
+      var orig = img.getAttribute('src');
+      if(!orig || img.dataset.kfgCached) return;
+      img.dataset.kfgCached = '1';
+      get(orig).then(function(src) { if(img && src !== orig) img.src = src; }).catch(function(){});
+    });
+  }
+
+  // Auto-hydrate all new Firebase images inserted into the DOM
+  function startObserver() {
+    try {
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          m.addedNodes.forEach(function(node) {
+            if(node.nodeType !== 1) return;
+            if(node.tagName === 'IMG' && (node.src||'').indexOf('firebasestorage') >= 0) {
+              var orig = node.getAttribute('src');
+              if(orig && !node.dataset.kfgCached) {
+                node.dataset.kfgCached = '1';
+                get(orig).then(function(src){ if(node && src !== orig) node.src = src; }).catch(function(){});
+              }
+            }
+            // Also scan children
+            var imgs = node.querySelectorAll ? node.querySelectorAll('img[src*="firebasestorage"]') : [];
+            imgs.forEach(function(img) {
+              var orig = img.getAttribute('src');
+              if(!orig || img.dataset.kfgCached) return;
+              img.dataset.kfgCached = '1';
+              get(orig).then(function(src){ if(img && src !== orig) img.src = src; }).catch(function(){});
+            });
+          });
+        });
+      });
+      observer.observe(document.body, {childList:true, subtree:true});
+    } catch(e) {}
+    // Also hydrate anything already in the DOM on first load
+    setTimeout(function(){ hydrateAll(document); }, 1000);
+  }
+
+  document.addEventListener('DOMContentLoaded', startObserver);
+
+  return { get: get, applyToImg: applyToImg, hydrateAll: hydrateAll };
+})();
+
 window.addEventListener('online', function(){ 
   var ob = document.getElementById('offlineBanner'); 
   if(ob) ob.classList.remove('show'); 
@@ -9076,44 +9678,83 @@ async function validateLicense() {
   }
 
   var btn = document.querySelector('.license-btn');
-  if(btn) { btn.textContent = 'Checking\u2026'; btn.disabled = true; }
+  if(btn) { btn.textContent = 'Checking…'; btn.disabled = true; }
 
-  var unlock = function() {
-    localStorage.setItem('kfg_v2_license', key);
-    localStorage.setItem('kfg_license_expiry', Date.now() + (365*24*60*60*1000));
-    var gate = document.getElementById('licenseGate');
-    if(gate) gate.classList.remove('show');
-    applyLogos(); initApp();
-  };
   var resetBtn = function() {
-    if(btn) { btn.textContent = 'Unlock My Guide \u2192'; btn.disabled = false; }
+    if(btn) { btn.textContent = 'Unlock My Guide →'; btn.disabled = false; }
   };
 
-  // 1. Try Vercel endpoint first (server-side, secure)
+  // Get or create permanent device ID (IndexedDB — survives cache clears)
+  var deviceId = await KFGDevice.getId();
+
+  // 1. /api/claim — sets server-side expiry on first activation,
+  //    transfers device binding on new phone, returns days remaining
   try {
-    var resp = await fetch(VERCEL_VALIDATE_URL, {
+    var claimResp = await fetch(VERCEL_CLAIM_URL, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({key: key})
+      body: JSON.stringify({ key: key, device_id: deviceId })
     });
-    if(resp.ok) {
-      var data = await resp.json();
-      if(data.valid) { resetBtn(); unlock(); return; }
+    if(claimResp.ok) {
+      var claimData = await claimResp.json();
+      if(claimData.valid) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        if(claimData.expires_at)     localStorage.setItem('kfg_license_expiry', String(claimData.expires_at));
+        if(claimData.days_remaining) localStorage.setItem('kfg_license_days',   String(claimData.days_remaining));
+        if(claimData.type)           localStorage.setItem('kfg_license_type',    claimData.type);
+        if(claimData.pack_id)        localStorage.setItem('kfg_pack_id',         claimData.pack_id);
+        if(claimData.pack_role)      localStorage.setItem('kfg_pack_role',        claimData.pack_role);
+        if(claimData.transferred) showToast('📱 Guide transferred to this device ✓', 3000);
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+      if(claimData.expired) { resetBtn(); showLicenseError('Your license has expired. Renew at krantzoutdoors.com'); return; }
       resetBtn();
       showLicenseError('Invalid key — check your Etsy order email');
       return;
     }
-  } catch(e) {
-    // Vercel unreachable — fall through to GitHub raw fallback
-  }
+  } catch(e) { /* claim endpoint unreachable — fall through */ }
 
-  // 2. Fallback: read raw keys file from GitHub (works offline from cache)
+  // 2. Fallback: /api/validate (read-only)
   try {
-    var resp2 = await fetch(LICENSE_URL + '?t=' + Date.now());
-    if(resp2.ok) {
-      var data2 = await resp2.json();
-      var validKeys = Array.isArray(data2) ? data2 : (data2.keys || []);
-      if(validKeys.indexOf(key) >= 0) { resetBtn(); unlock(); return; }
+    var valResp = await fetch(VERCEL_VALIDATE_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ key: key, device_id: deviceId })
+    });
+    if(valResp.ok) {
+      var valData = await valResp.json();
+      if(valData.valid || valData.unclaimed || valData.legacy) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        if(valData.expires_at)     localStorage.setItem('kfg_license_expiry', String(valData.expires_at));
+        if(valData.days_remaining) localStorage.setItem('kfg_license_days',   String(valData.days_remaining));
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+      if(valData.expired) { resetBtn(); showLicenseError('Your license has expired. Renew at krantzoutdoors.com'); return; }
+      resetBtn();
+      showLicenseError('Invalid key — check your Etsy order email');
+      return;
+    }
+  } catch(e) {}
+
+  // 3. Last resort: GitHub raw fallback (all endpoints down / offline)
+  try {
+    var resp3 = await fetch(LICENSE_URL + '?t=' + Date.now());
+    if(resp3.ok) {
+      var data3 = await resp3.json();
+      var validKeys = Array.isArray(data3) ? data3 : (data3.keys || []);
+      if(validKeys.indexOf(key) >= 0) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
     }
   } catch(e) {}
 
