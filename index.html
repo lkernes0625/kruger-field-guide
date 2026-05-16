@@ -423,18 +423,46 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.65</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.66</div>
     <div class="license-edition">Field Intelligence Guide</div>
-    <p class="license-desc">Enter the license key from your Etsy order confirmation to unlock your guide.</p>
-    <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
-    <input class="license-input" id="licenseInput" type="text" maxlength="20" placeholder="e.g. KO-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
-    <button class="license-btn" onclick="validateLicense()">Unlock My Guide &rarr;</button>
-    <div class="license-note">
-      Single-device license. Do not share.<br>
-      Purchase: <a href="https://www.etsy.com/shop/KrantzOutdoors" target="_blank" style="color:var(--accent);font-weight:700">etsy.com/shop/KrantzOutdoors</a><br>
+
+    <!-- TWO CHOICE CARDS -->
+    <div style="display:flex;gap:10px;margin:18px 0 6px">
+
+      <!-- LICENSE KEY CARD -->
+      <div id="licenseCard" style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .2s" onclick="showLicenseInput()">
+        <div style="font-size:20px;margin-bottom:8px">🔑</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">I have a key</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.5">Enter your license key from your Etsy order</div>
+      </div>
+
+      <!-- DEMO CARD -->
+      <div id="demoCard" style="flex:1;background:var(--bg3);border:1px solid rgba(232,160,32,.3);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .2s" onclick="startDemo()">
+        <div style="font-size:20px;margin-bottom:8px">⚡</div>
+        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">Try the Demo</div>
+        <div style="font-size:10px;color:var(--text3);line-height:1.5">Full app free for 2 hours — no key needed</div>
+      </div>
+
+    </div>
+
+    <!-- LICENSE INPUT — hidden until "I have a key" is tapped -->
+    <div id="licenseInputSection" style="display:none;margin-top:8px">
+      <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
+      <input class="license-input" id="licenseInput" type="text" maxlength="20" placeholder="e.g. KO-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+      <button class="license-btn" onclick="validateLicense()">Unlock My Guide &rarr;</button>
+    </div>
+
+    <div class="license-note" style="margin-top:10px">
+      Purchase: <a href="https://www.etsy.com/listing/4499315980/kruger-national-park-safari-app-live" target="_blank" style="color:var(--accent);font-weight:700">Get your license on Etsy</a><br>
       Support: <a href="mailto:basecamp@krantzoutdoors.com" style="color:var(--text2)">basecamp@krantzoutdoors.com</a>
     </div>
   </div>
+</div>
+
+<!-- DEMO BANNER — shown when running in demo mode -->
+<div id="demoBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:200;background:var(--accent);color:var(--bg);padding:8px 16px;display:none;align-items:center;justify-content:space-between;gap:12px;font-family:'Montserrat',sans-serif">
+  <div style="font-size:11px;font-weight:600">⚡ Demo mode — <span id="demoTimeLeft">2:00:00</span> remaining</div>
+  <a href="https://www.etsy.com/listing/4499315980/kruger-national-park-safari-app-live" target="_blank" style="font-size:10px;font-weight:700;background:var(--bg);color:var(--accent);padding:5px 12px;border-radius:100px;white-space:nowrap;text-decoration:none">Get full access $12 →</a>
 </div>
 
 <!-- INSTALL NUDGE BANNER -->
@@ -984,7 +1012,7 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.64</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.65 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.64</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -4212,7 +4240,7 @@ function shareNative() {
   if(!s){showToast('No sighting selected');return;}
   var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
   if(navigator.share){
-    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://app.krantzoutdoors.com'})
       .then(function(){showToast('Shared!');})
       .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
   } else { _doCopy(caption); }
@@ -6264,7 +6292,7 @@ function shareNative() {
   if(!s){showToast('No sighting selected');return;}
   var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
   if(navigator.share){
-    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://app.krantzoutdoors.com'})
       .then(function(){showToast('Shared!');})
       .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
   } else { _doCopy(caption); }
@@ -7803,7 +7831,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.65';
+var APP_VERSION = '3.66';
 
 // Clear stale caches when version changes
 (function() {
@@ -8998,6 +9026,8 @@ function initApp() {
   safe(function(){ KFGSync.pull(); });
   // Check license expiry silently on every boot
   safe(function(){ checkLicenseOnBoot(); });
+  // Resume demo if still active
+  safe(function(){ checkDemoOnBoot(); });
   safe(renderPhotoIntel);
   safe(renderGateButtons);
   safe(renderRecentlyViewed);
@@ -9052,6 +9082,141 @@ function initApp() {
 }
 
 
+
+// ============================================
+// LICENSE GATE UI — show/hide input section
+// ============================================
+function showLicenseInput() {
+  var card = document.getElementById('licenseCard');
+  var section = document.getElementById('licenseInputSection');
+  if(card) card.style.borderColor = 'var(--accent)';
+  if(section) { section.style.display = 'block'; }
+  setTimeout(function(){ var inp = document.getElementById('licenseInput'); if(inp) inp.focus(); }, 100);
+}
+
+// ============================================
+// DEMO MODE — 2 hour time-limited full access
+// ============================================
+var DEMO_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours
+var _demoTimer = null;
+
+function startDemo() {
+  // Check if demo already used on this device
+  var demoUsed = localStorage.getItem('kfg_demo_used');
+  if(demoUsed) {
+    var usedAt = parseInt(demoUsed);
+    var elapsed = Date.now() - usedAt;
+    if(elapsed < DEMO_DURATION_MS) {
+      // Demo still active — resume it
+      _activateDemo(usedAt);
+      return;
+    } else {
+      // Demo expired
+      _showDemoExpired();
+      return;
+    }
+  }
+  // First time — start fresh demo
+  var startTime = Date.now();
+  localStorage.setItem('kfg_demo_used', String(startTime));
+  localStorage.setItem('kfg_v2_license', 'KRANTZ-DEMO-2026');
+  _activateDemo(startTime);
+}
+
+function _activateDemo(startTime) {
+  // Close gate
+  var gate = document.getElementById('licenseGate');
+  if(gate) gate.classList.remove('show');
+  // Show demo banner
+  var banner = document.getElementById('demoBanner');
+  if(banner) banner.style.display = 'flex';
+  // Adjust header top padding for banner
+  var header = document.querySelector('.app-header');
+  if(header) header.style.marginTop = '38px';
+  // Start countdown
+  _startDemoCountdown(startTime);
+  // Init app
+  applyLogos();
+  initApp();
+}
+
+function _startDemoCountdown(startTime) {
+  if(_demoTimer) clearInterval(_demoTimer);
+  _demoTimer = setInterval(function() {
+    var elapsed = Date.now() - startTime;
+    var remaining = DEMO_DURATION_MS - elapsed;
+    if(remaining <= 0) {
+      clearInterval(_demoTimer);
+      _demoExpired();
+      return;
+    }
+    var h = Math.floor(remaining / 3600000);
+    var m = Math.floor((remaining % 3600000) / 60000);
+    var s = Math.floor((remaining % 60000) / 1000);
+    var el = document.getElementById('demoTimeLeft');
+    if(el) el.textContent = h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    // Warning when 15 minutes left
+    if(remaining < 15 * 60 * 1000 && remaining > 14 * 60 * 1000) {
+      showToast('\u26A0\uFE0F Demo ends in 15 minutes \u2014 get full access for $12', 5000);
+    }
+    // Final warning at 2 minutes
+    if(remaining < 2 * 60 * 1000 && remaining > 119 * 1000) {
+      showToast('\u23F0 Demo ends in 2 minutes!', 4000);
+    }
+  }, 1000);
+}
+
+function _demoExpired() {
+  clearInterval(_demoTimer);
+  localStorage.removeItem('kfg_v2_license');
+  // Show expired overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(15,20,23,.97);display:flex;align-items:center;justify-content:center;padding:24px;flex-direction:column;text-align:center';
+  overlay.innerHTML =
+    '<img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" style="height:48px;margin-bottom:24px">' +
+    '<div style="font-size:32px;margin-bottom:16px">\u23F0</div>' +
+    '<div style="font-family:\'Montserrat\',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px">Your 2-hour demo has ended.</div>' +
+    '<div style="font-size:13px;color:var(--text3);margin-bottom:28px;max-width:280px;line-height:1.7">Enjoyed the guide? Get full 12-month access for just $12 \u2014 includes cloud sync, all species and the live sightings feed.</div>' +
+    '<a href="https://www.etsy.com/listing/4499315980/kruger-national-park-safari-app-live" target="_blank" style="background:var(--accent);color:var(--bg);font-family:\'Montserrat\',sans-serif;font-size:13px;font-weight:700;padding:16px 32px;border-radius:100px;text-decoration:none;margin-bottom:16px;display:block">Get full access \u2014 $12 \u2192</a>' +
+    '<button onclick="location.reload()" style="background:none;border:none;color:var(--text3);font-family:\'Montserrat\',sans-serif;font-size:12px;cursor:pointer;padding:8px">Back to unlock screen</button>';
+  document.body.appendChild(overlay);
+}
+
+function _showDemoExpired() {
+  // Demo already used and expired — show gate with message
+  var gate = document.getElementById('licenseGate');
+  var demoCard = document.getElementById('demoCard');
+  if(demoCard) {
+    demoCard.style.opacity = '.4';
+    demoCard.style.cursor = 'default';
+    demoCard.querySelector('div:nth-child(2)').textContent = 'Demo used';
+    demoCard.querySelector('div:nth-child(3)').textContent = 'Your 2-hour demo has expired';
+    demoCard.onclick = null;
+  }
+  if(gate) gate.classList.add('show');
+  showLicenseInput();
+  showLicenseError('Demo expired \u2014 enter your license key or purchase below');
+}
+
+// Resume demo on boot if still active
+function checkDemoOnBoot() {
+  var demoUsed = localStorage.getItem('kfg_demo_used');
+  var license  = localStorage.getItem('kfg_v2_license');
+  if(demoUsed && license === 'KRANTZ-DEMO-2026') {
+    var elapsed = Date.now() - parseInt(demoUsed);
+    if(elapsed < DEMO_DURATION_MS) {
+      // Resume active demo
+      var banner = document.getElementById('demoBanner');
+      if(banner) banner.style.display = 'flex';
+      var header = document.querySelector('.app-header');
+      if(header) header.style.marginTop = '38px';
+      _startDemoCountdown(parseInt(demoUsed));
+    } else {
+      // Demo expired while app was closed
+      localStorage.removeItem('kfg_v2_license');
+    }
+  }
+}
 
 // ============================================
 // LICENSE PANEL — About screen display + family gifting
@@ -9613,8 +9778,8 @@ window.addEventListener('offline', function(){
     var manifest = {
       name:'Kruger Field Guide',
       short_name:'Kruger Guide',
-      start_url:'https://kruger.krantzoutdoors.com/',
-      scope:'https://kruger.krantzoutdoors.com/',
+      start_url:'https://app.krantzoutdoors.com/',
+      scope:'https://app.krantzoutdoors.com/',
       display:'standalone',
       background_color:'#15191c',
       theme_color:'#e8a020',
