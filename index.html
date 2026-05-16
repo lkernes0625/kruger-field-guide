@@ -4514,7 +4514,7 @@ var BINGO_SPECIES = [
   {id:'monitor_lizard',label:'Leguaan', keyFeatures:'Large grey-brown lizard; forked tongue constantly flickering; powerful claws; long neck; can grow to 2m; swims and climbs expertly.', description:'The Nile (water) monitor is one of the largest lizards in the world and a common sight near rivers and dams in Kruger. It is an opportunistic predator and scavenger — a major predator of crocodile eggs. Despite its fearsome appearance it avoids confrontation with humans.', distribution:'Throughout Kruger near rivers, dams and permanent water. Common at Sabie River, Olifants, Lower Sabie area.', habitat:'Always near permanent water. Banks, riverine woodland, camping areas. Excellent swimmer and climber.', food:'Fish, frogs, eggs (especially crocodile), small mammals, birds, carrion. Raids crocodile nests regularly.', breeding:'Female lays 20-60 eggs in a termite mound or soil. Incubation 60-80 days.', voice:'Hissing and puffing when threatened.'},
   {id:'southern_ground_hornbill',label:'Hornbill'},
   {id:'fish_eagle',label:'Fish Eagle'},
-  {id:'aardvark',label:'Aardvark'},
+  {id:'nyala',label:'Nyala'},
   {id:'leopard_tortoise',label:'Tortoise', keyFeatures:'Spotted shell with raised dome; large size (up to 70cm); leopard-like spots on shell fade with age; no teeth — horny beak.', description:'The leopard tortoise is the largest tortoise in southern Africa and a common sight on Kruger roads, especially after rain. It is the only tortoise in Africa known to occasionally climb and swim. Despite its slow pace it can cover several kilometres daily.', distribution:'Throughout Kruger. Very common on all roads, especially after rain. Most active in cooler morning hours.', habitat:'Grassland, savanna and open woodland. Prefers areas with dense ground cover for shelter.', food:'Grasses, succulents, fungi, animal bones (for calcium).', breeding:'Female digs nest hole and lays 5-18 hard-shelled eggs. Incubation 130+ days — hatching time coincides with rains.', voice:'Hissing when threatened. Otherwise silent.'},
   {id:'tsessebe',label:'Tsessebe'}
 ];
@@ -4537,7 +4537,7 @@ function saveBingoState() {
   KFGSync.push();
 }
 function resetBingo() {
-  _bingoState = BINGO_SPECIES.map(function(s,i){ return {id:s.id, label:s.label, tapped:false}; });
+  _bingoState = BINGO_SPECIES.map(function(s,i){ return {id:s.id, label:s.label, imgId:s.imgId||null, tapped:false}; });
   saveBingoState();
   renderBingo();
 }
@@ -8518,9 +8518,11 @@ function _showNavPanel(name, km, t) {
     });
   }
 
-  // Show the clear route button
-  var cb = document.getElementById('mapClearRouteBtn');
-  if(cb) cb.style.display = 'block';
+  // Show the clear route button (use timeout to ensure DOM is ready)
+  setTimeout(function(){
+    var cb = document.getElementById('mapClearRouteBtn');
+    if(cb) cb.style.display = 'flex';
+  }, 100);
 }
 
 function _showCancelNavPopup() {
@@ -10120,7 +10122,6 @@ async function validateLicense() {
   showLicenseError('Invalid key — check your Etsy order email');
 }
 </script>
-
 <!-- Clear route pill -->
 <button id="mapClearRouteBtn" onclick="endNavigation()" style="display:none;position:fixed;bottom:80px;right:12px;z-index:2000;background:var(--bg3);color:var(--text3);border:1px solid var(--border2);border-radius:100px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.04em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.3)">&#x2715; route</button>
 
