@@ -4575,7 +4575,7 @@ function renderBingo() {
   }
   
   grid.innerHTML = _bingoState.map(function(sq, idx) {
-    var imgSrc = ANIMAL_IMG[sq.imgId||sq.id] || BIRD_IMG[sq.imgId||sq.id] || '';
+    var specDef = BINGO_SPECIES.find(function(b){return b.id===sq.id;}); var lookupKey = sq.imgId || (specDef && specDef.imgId) || sq.id; var imgSrc = ANIMAL_IMG[lookupKey] || BIRD_IMG[lookupKey] || '';
     return '<div onclick="tapBingo('+idx+')" style="'+
       'aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;'+
       'background:'+(sq.tapped?'rgba(58,180,80,.15)':'var(--bg3)')+';'+
@@ -8518,11 +8518,17 @@ function _showNavPanel(name, km, t) {
     });
   }
 
-  // Show the clear route button (use timeout to ensure DOM is ready)
-  setTimeout(function(){
-    var cb = document.getElementById('mapClearRouteBtn');
-    if(cb) cb.style.display = 'flex';
-  }, 100);
+  // Create/show the clear route button via JS (ensures it exists in DOM)
+  var cb = document.getElementById('mapClearRouteBtn');
+  if(!cb) {
+    cb = document.createElement('button');
+    cb.id = 'mapClearRouteBtn';
+    cb.innerHTML = '&#x2715; route';
+    cb.setAttribute('onclick', 'endNavigation()');
+    cb.style.cssText = 'position:fixed;bottom:80px;right:12px;z-index:2000;background:var(--bg3);color:var(--text3);border:1px solid var(--border2);border-radius:100px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.04em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.3)';
+    document.body.appendChild(cb);
+  }
+  cb.style.display = 'block';
 }
 
 function _showCancelNavPopup() {
@@ -10122,7 +10128,4 @@ async function validateLicense() {
   showLicenseError('Invalid key — check your Etsy order email');
 }
 </script>
-<!-- Clear route pill -->
-<button id="mapClearRouteBtn" onclick="endNavigation()" style="display:none;position:fixed;bottom:80px;right:12px;z-index:2000;background:var(--bg3);color:var(--text3);border:1px solid var(--border2);border-radius:100px;padding:6px 14px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.04em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.3)">&#x2715; route</button>
-
 </html>
