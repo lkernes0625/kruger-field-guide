@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.68</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.69</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -677,7 +677,7 @@ svg.animal-art{width:100%;height:100%}
     <!-- === MAP === -->
     <div class="screen" id="screen-map">
       <div class="sec-head"><h2>Kruger Map</h2><p>Live GPS &middot; Camps &middot; Roads &middot; Sightings</p></div>
-      <button id="mapClearRouteBtn" onclick="endNavigation()" style="display:none;position:fixed;bottom:80px;right:12px;z-index:1001;background:rgba(220,60,60,.92);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.5)">&#x2715; Clear Route</button>
+      <button id="mapClearRouteBtn" onclick="endNavigation()" style="display:none;position:fixed;bottom:80px;right:12px;z-index:1001;background:var(--bg3);color:var(--text3);border:1px solid var(--border2);border-radius:100px;padding:6px 12px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.04em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">&#x2715; route</button>
       <div style="padding:0 16px 8px;display:flex;flex-wrap:wrap;gap:5px">
         <button onclick="mapFilterToggle('camps')" id="mapFlt-camps" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F3D5; Camps</button>
         <button onclick="mapFilterToggle('gates')" id="mapFlt-gates" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F6AA; Gates</button>
@@ -7851,7 +7851,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.68';
+var APP_VERSION = '3.69';
 
 // Clear stale caches when version changes
 (function() {
@@ -8468,14 +8468,6 @@ function _onNavPosition(pos) {
   var kmLeft = _haversineKm(lat, lng, _navDest.lat, _navDest.lng);
   _updateNavDistance(kmLeft);
 
-  // Auto-centre map on user if close to edge
-  var mapBounds = _map.getBounds();
-  var userLatLng = L.latLng(lat, lng);
-  var paddedBounds = mapBounds.pad(-0.2); // 20% inset
-  if(!paddedBounds.contains(userLatLng)) {
-    _map.panTo(userLatLng, { animate: true, duration: 0.5 });
-  }
-
   // Arrived check — within 50m of destination
   if(kmLeft < 0.05) {
     showToast('📍 You have arrived at ' + _navDest.name + '!', 4000);
@@ -8505,19 +8497,50 @@ function _showNavPanel(name, km, t) {
   panel.innerHTML =
     '<div class="nav-route-inner">' +
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">' +
-        '<div>' +
+        '<div style="flex:1;min-width:0">' +
           '<div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Navigating to</div>' +
-          '<div style="font-size:14px;font-weight:700;color:var(--text)">🧭 ' + name + '</div>' +
+          '<div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🧭 ' + name + '</div>' +
           '<div id="navDistRemaining" style="font-size:12px;color:var(--text3);margin-top:3px">' + km + 'km · ' + t + '</div>' +
         '</div>' +
-        '<button class="nav-end-btn" onclick="endNavigation()" style="flex-shrink:0;margin-top:0;width:auto;padding:8px 14px">✕ End</button>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+          '<button onclick="mapCentreOnMe()" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer" title="Re-centre on my position">⊕</button>' +
+          '<button class="nav-end-btn" onclick="endNavigation()" style="margin-top:0;width:auto;padding:8px 14px">✕ End</button>' +
+        '</div>' +
       '</div>' +
-      '<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.5">🔵 Your position updates live as you drive. Distance recalculates automatically.</div>' +
+      '<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.5">Tap the amber route line to cancel · ⊕ to re-centre on your position</div>' +
     '</div>';
   panel.style.display = 'block';
+
+  // Tap on route line to cancel
+  if(_navLayer) {
+    _navLayer.on('click', function() {
+      _showCancelNavPopup();
+    });
+  }
+
   // Show the clear route button
   var cb = document.getElementById('mapClearRouteBtn');
   if(cb) cb.style.display = 'block';
+}
+
+function _showCancelNavPopup() {
+  // Remove any existing popup
+  var existing = document.getElementById('cancelNavPopup');
+  if(existing) existing.remove();
+  var popup = document.createElement('div');
+  popup.id = 'cancelNavPopup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:24px';
+  popup.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;width:100%;max-width:300px;text-align:center">' +
+      '<div style="font-size:24px;margin-bottom:10px">🧭</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Cancel navigation?</div>' +
+      '<div style="font-size:12px;color:var(--text3);margin-bottom:20px">The route and your progress will be cleared.</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+        '<button onclick="document.getElementById(\'cancelNavPopup\').remove()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Keep going</button>' +
+        '<button onclick="document.getElementById(\'cancelNavPopup\').remove();endNavigation()" style="background:rgba(220,60,60,.15);border:1px solid rgba(220,60,60,.4);color:#e88080;border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Cancel route</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(popup);
 }
 
 function endNavigation() {
@@ -8736,8 +8759,15 @@ function mapFilterToggle(type) {
   _plotMapMarkers();
 }
 
+// Manual re-centre on user position (used by nav panel ⊕ button)
+function mapCentreOnMe() {
+  if(!_map || !navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    _map.setView([pos.coords.latitude, pos.coords.longitude], _map.getZoom(), { animate: true, duration: 0.6 });
+  }, function() { showToast('Could not get GPS location', 2000); }, { enableHighAccuracy: true, timeout: 8000 });
+}
+
 function mapCenterOnUser() {
-  if(!_map) return;
   if(!navigator.geolocation) { showToast('GPS not available', 2000); return; }
   navigator.geolocation.getCurrentPosition(function(pos) {
     var lat = pos.coords.latitude;
