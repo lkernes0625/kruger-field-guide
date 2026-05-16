@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.67</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.68</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1020,7 +1020,7 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.64</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.68</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.68 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Live position tracking during nav — watchPosition updates your dot every 2s as you drive<br>• NEW: Heading arrow — directional triangle rotates to show which way you're facing when moving<br>• NEW: Distance remaining — updates live in the nav panel as you approach destination<br>• NEW: Auto-centre — map pans to keep you in view when you drift to the edge<br>• NEW: Arrival detection — toast when within 50m of destination, nav ends automatically<br>• FIXED: Clear route button now always visible and working during active navigation<br>• FIXED: endNavigation() stops GPS watcher, removes heading arrow and destination pin<br>• IMPROVED: Nav panel redesigned — live distance, heading, End button<br>• IMPROVED: Route line thicker and sharper (weight 6, rounded joins)</div><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -7851,7 +7851,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.67';
+var APP_VERSION = '3.68';
 
 // Clear stale caches when version changes
 (function() {
@@ -8357,56 +8357,186 @@ var _heatmapLayer = null;
 var _heatmapActive = false;
 var _leafletHeatLoaded = false;
 var _userMarker = null;
+var _headingMarker = null;
 
-// ── In-app navigation (OSRM routing on Leaflet map) ──
-var _navLayer = null;
+// ── Navigation state ──────────────────────────────────────────────
+var _navLayer      = null;
+var _navWatcher    = null;   // watchPosition ID
+var _navDest       = null;   // { name, lat, lng }
+var _navRoute      = null;   // GeoJSON route geometry
+
 function navigateTo(name, lat, lng) {
   showScreen('map');
   setTimeout(function() {
     if(!_map){ showToast('Map loading, try again'); return; }
     showToast('📍 Calculating route...');
     getCachedGPS(function(pos) {
-      var fLat=pos.coords.latitude, fLng=pos.coords.longitude;
-      fetch('https://router.project-osrm.org/route/v1/driving/'+fLng+','+fLat+';'+lng+','+lat+'?overview=full&geometries=geojson')
-        .then(function(r){return r.json();})
-        .then(function(d){
-          if(!d.routes||!d.routes.length){showToast('Route not found');return;}
-          if(_navLayer){_map.removeLayer(_navLayer);_navLayer=null;}
-          _navLayer=L.geoJSON(d.routes[0].geometry,{style:{color:'#e8a020',weight:5,opacity:.9}}).addTo(_map);
-          _map.fitBounds(_navLayer.getBounds(),{padding:[40,40]});
-          var km=(d.routes[0].distance/1000).toFixed(1);
-          var mins=Math.round(km/40*60);
-          var t=mins<60?mins+' min':Math.floor(mins/60)+'h '+(mins%60)+'min';
-          _showNavPanel(name,km,t);
-          L.marker([lat,lng]).addTo(_map).bindPopup('<b>'+name+'</b>').openPopup();
-          showToast('Route: '+km+'km · '+t);
+      var fLat = pos.coords.latitude, fLng = pos.coords.longitude;
+      _navDest = { name: name, lat: lat, lng: lng };
+
+      fetch('https://router.project-osrm.org/route/v1/driving/' + fLng + ',' + fLat + ';' + lng + ',' + lat + '?overview=full&geometries=geojson')
+        .then(function(r){ return r.json(); })
+        .then(function(d) {
+          if(!d.routes || !d.routes.length){ showToast('Route not found'); return; }
+          if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
+          _navRoute = d.routes[0].geometry;
+          _navLayer = L.geoJSON(_navRoute, { style: { color: '#e8a020', weight: 6, opacity: .95, lineJoin: 'round', lineCap: 'round' } }).addTo(_map);
+          _map.fitBounds(_navLayer.getBounds(), { padding: [40, 40] });
+          var km   = (d.routes[0].distance / 1000).toFixed(1);
+          var mins = Math.round(km / 40 * 60);
+          var t    = mins < 60 ? mins + ' min' : Math.floor(mins / 60) + 'h ' + (mins % 60) + 'min';
+          _showNavPanel(name, km, t);
+          // Destination marker
+          if(_map._destMarker) _map.removeLayer(_map._destMarker);
+          _map._destMarker = L.marker([lat, lng]).addTo(_map).bindPopup('<b>' + name + '</b>').openPopup();
+          showToast('Route: ' + km + 'km · ' + t);
+          _startNavTracking();
         })
-        .catch(function(){
-          if(_navLayer){_map.removeLayer(_navLayer);_navLayer=null;}
-          _navLayer=L.polyline([[fLat,fLng],[lat,lng]],{color:'#e8a020',weight:4,dashArray:'8,6'}).addTo(_map);
-          _map.fitBounds(_navLayer.getBounds(),{padding:[40,40]});
-          showToast('Offline: straight line to '+name);
-          var km=(6371*2*Math.asin(Math.sqrt(Math.pow(Math.sin((lat-fLat)*Math.PI/360),2)+Math.cos(fLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.pow(Math.sin((lng-fLng)*Math.PI/360),2)))).toFixed(1);
-          _showNavPanel(name,km,'~'+Math.round(km/40*60)+' min (approx)');
+        .catch(function() {
+          // Offline fallback — straight dashed line
+          if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
+          _navLayer = L.polyline([[fLat, fLng], [lat, lng]], { color: '#e8a020', weight: 4, dashArray: '8,6' }).addTo(_map);
+          _map.fitBounds(_navLayer.getBounds(), { padding: [40, 40] });
+          var km = _haversineKm(fLat, fLng, lat, lng).toFixed(1);
+          _showNavPanel(name, km, '~' + Math.round(km / 40 * 60) + ' min (approx)');
+          _startNavTracking();
+          showToast('Offline: straight line to ' + name);
         });
-    },function(){showToast('Enable GPS to navigate');});
-  },400);
+    }, function(){ showToast('Enable GPS to navigate'); });
+  }, 400);
 }
-function _showNavPanel(name,km,t){
-  var mapEl=document.getElementById('mainMap'); if(!mapEl) return;
-  var panel=document.getElementById('navRoutePanel');
-  if(!panel){panel=document.createElement('div');panel.id='navRoutePanel';panel.className='nav-route-panel';mapEl.appendChild(panel);}
-  panel.innerHTML='<div class="nav-route-inner">'
-    +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">🧭 '+name+'</div>'
-    +'<div style="font-size:11px;color:var(--text3)">'+km+'km · '+t+' at 40km/h</div>'
-    +'<button class="nav-end-btn" onclick="endNavigation()">✕ End Navigation</button>'
-    +'</div>';
-  panel.style.display='block';
-  var cb=document.getElementById('mapClearRouteBtn');if(cb)cb.style.display='block';
+
+// ── Haversine distance helper ─────────────────────────────────────
+function _haversineKm(lat1, lng1, lat2, lng2) {
+  var R = 6371;
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLng = (lng2 - lng1) * Math.PI / 180;
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2) +
+          Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+          Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
-function endNavigation(){
-  if(_navLayer){_map.removeLayer(_navLayer);_navLayer=null;}
-  var p=document.getElementById('navRoutePanel');if(p)p.style.display='none';
+
+// ── Live position tracking during nav ────────────────────────────
+function _startNavTracking() {
+  // Stop any previous watcher
+  if(_navWatcher !== null) { navigator.geolocation.clearWatch(_navWatcher); _navWatcher = null; }
+  if(!navigator.geolocation) return;
+
+  _navWatcher = navigator.geolocation.watchPosition(
+    function(pos) { _onNavPosition(pos); },
+    function()    { /* silent fail — GPS may briefly drop */ },
+    { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
+  );
+}
+
+function _onNavPosition(pos) {
+  if(!_map || !_navDest) return;
+  var lat = pos.coords.latitude;
+  var lng = pos.coords.longitude;
+  var heading = pos.coords.heading; // degrees from north, null if stationary
+
+  // Update or create user position marker
+  if(_userMarker) _map.removeLayer(_userMarker);
+  if(_headingMarker) _map.removeLayer(_headingMarker);
+
+  // Main position dot
+  _userMarker = L.circleMarker([lat, lng], {
+    radius: 10, fillColor: '#e8a020', color: '#fff',
+    weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
+  }).addTo(_map);
+
+  // Heading arrow — only show if heading is valid and speed > 1km/h
+  var speed = pos.coords.speed || 0; // m/s
+  if(heading !== null && !isNaN(heading) && speed > 0.3) {
+    var arrowHtml = '<div style="' +
+      'width:0;height:0;' +
+      'border-left:7px solid transparent;' +
+      'border-right:7px solid transparent;' +
+      'border-bottom:20px solid #e8a020;' +
+      'transform:rotate(' + heading + 'deg);' +
+      'transform-origin:center bottom;' +
+      'filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))' +
+    '"></div>';
+    _headingMarker = L.marker([lat, lng], {
+      icon: L.divIcon({ html: arrowHtml, className: '', iconSize: [14, 20], iconAnchor: [7, 10] }),
+      zIndexOffset: 600
+    }).addTo(_map);
+  }
+
+  // Update distance remaining in nav panel
+  var kmLeft = _haversineKm(lat, lng, _navDest.lat, _navDest.lng);
+  _updateNavDistance(kmLeft);
+
+  // Auto-centre map on user if close to edge
+  var mapBounds = _map.getBounds();
+  var userLatLng = L.latLng(lat, lng);
+  var paddedBounds = mapBounds.pad(-0.2); // 20% inset
+  if(!paddedBounds.contains(userLatLng)) {
+    _map.panTo(userLatLng, { animate: true, duration: 0.5 });
+  }
+
+  // Arrived check — within 50m of destination
+  if(kmLeft < 0.05) {
+    showToast('📍 You have arrived at ' + _navDest.name + '!', 4000);
+    endNavigation();
+  }
+}
+
+function _updateNavDistance(kmLeft) {
+  var el = document.getElementById('navDistRemaining');
+  if(!el) return;
+  var km   = kmLeft.toFixed(1);
+  var mins = Math.round(kmLeft / 40 * 60);
+  var t    = mins < 60 ? mins + ' min' : Math.floor(mins / 60) + 'h ' + (mins % 60) + 'min';
+  el.textContent = km + 'km · ' + t + ' remaining';
+}
+
+function _showNavPanel(name, km, t) {
+  var mapEl = document.getElementById('mainMap');
+  if(!mapEl) return;
+  var panel = document.getElementById('navRoutePanel');
+  if(!panel) {
+    panel = document.createElement('div');
+    panel.id = 'navRoutePanel';
+    panel.className = 'nav-route-panel';
+    mapEl.appendChild(panel);
+  }
+  panel.innerHTML =
+    '<div class="nav-route-inner">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">' +
+        '<div>' +
+          '<div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Navigating to</div>' +
+          '<div style="font-size:14px;font-weight:700;color:var(--text)">🧭 ' + name + '</div>' +
+          '<div id="navDistRemaining" style="font-size:12px;color:var(--text3);margin-top:3px">' + km + 'km · ' + t + '</div>' +
+        '</div>' +
+        '<button class="nav-end-btn" onclick="endNavigation()" style="flex-shrink:0;margin-top:0;width:auto;padding:8px 14px">✕ End</button>' +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.5">🔵 Your position updates live as you drive. Distance recalculates automatically.</div>' +
+    '</div>';
+  panel.style.display = 'block';
+  // Show the clear route button
+  var cb = document.getElementById('mapClearRouteBtn');
+  if(cb) cb.style.display = 'block';
+}
+
+function endNavigation() {
+  // Stop GPS watcher
+  if(_navWatcher !== null) { navigator.geolocation.clearWatch(_navWatcher); _navWatcher = null; }
+  // Remove route layer
+  if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
+  // Remove destination marker
+  if(_map && _map._destMarker){ _map.removeLayer(_map._destMarker); _map._destMarker = null; }
+  // Remove heading arrow
+  if(_headingMarker){ _map.removeLayer(_headingMarker); _headingMarker = null; }
+  // Hide panels
+  var p = document.getElementById('navRoutePanel');
+  if(p) p.style.display = 'none';
+  var cb = document.getElementById('mapClearRouteBtn');
+  if(cb) cb.style.display = 'none';
+  // Reset state
+  _navDest = null;
+  _navRoute = null;
   showToast('Navigation ended');
 }
 function initMap() {
@@ -8610,18 +8740,19 @@ function mapCenterOnUser() {
   if(!_map) return;
   if(!navigator.geolocation) { showToast('GPS not available', 2000); return; }
   navigator.geolocation.getCurrentPosition(function(pos) {
-    var latlng = [pos.coords.latitude, pos.coords.longitude];
-    // Only pan to user location on first fix, not on every GPS update
-    if(!_userMarker) _map.setView(latlng, 13);
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    var latlng = [lat, lng];
+    _map.setView(latlng, 13);
     if(_userMarker) _map.removeLayer(_userMarker);
     _userMarker = L.circleMarker(latlng, {
-      radius:10, fillColor:'#e8a020', color:'#fff',
-      weight:2, opacity:1, fillOpacity:0.9
+      radius: 10, fillColor: '#e8a020', color: '#fff',
+      weight: 3, opacity: 1, fillOpacity: 1
     }).addTo(_map).bindPopup('You are here').openPopup();
     showToast('GPS location found', 1500);
   }, function() {
     showToast('Could not get GPS location', 2000);
-  });
+  }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
 // ============================================
