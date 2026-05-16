@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.75</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.76</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -538,6 +538,30 @@ svg.animal-art{width:100%;height:100%}
         <div class="gate-btns" id="gateBtns">
           <div id="gateBtnsContainer" style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px"></div>
         </div>
+        <!-- GATE DEPARTURE CALCULATOR -->
+        <div style="border-top:1px solid var(--border2);padding:10px 14px 12px;margin-top:4px">
+          <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">⏱ When must I leave?</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="deptGateSelect" style="flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:12px;-webkit-appearance:none">
+              <option value="">Select exit gate...</option>
+              <option>Paul Kruger Gate</option>
+              <option>Numbi Gate</option>
+              <option>Phabeni Gate</option>
+              <option>Malelane Gate</option>
+              <option>Crocodile Bridge Gate</option>
+              <option>Orpen Gate</option>
+              <option>Phalaborwa Gate</option>
+              <option>Punda Maria Gate</option>
+              <option>Pafuri Gate</option>
+              <option>Giriyondo Border Post</option>
+            </select>
+            <button onclick="calcDepartureTime()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:9px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">Calculate</button>
+          </div>
+          <div id="deptResult" style="display:none;margin-top:10px;background:rgba(232,160,32,.08);border:1px solid rgba(232,160,32,.25);border-radius:8px;padding:10px 12px">
+            <div style="font-size:11px;font-weight:700;color:var(--accent)" id="deptResultTitle"></div>
+            <div style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.6" id="deptResultBody"></div>
+          </div>
+        </div>
       </div>
 
       <div class="calc-card">
@@ -606,7 +630,14 @@ svg.animal-art{width:100%;height:100%}
   <button onclick="openRoadReport()" style="width:100%;background:rgba(204,160,50,.15);border:1px dashed var(--accent);color:var(--accent);border-radius:8px;padding:8px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x26A0; Report Road / Camp Closure</button>
 </div>
 <div class="card-list" id="parkFeed"></div>
-    </div>
+
+      <!-- TODAY'S SPECIES TOTALS -->
+      <div id="speciesTotalsBar" style="margin:8px 16px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
+        <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">📊 Today in Kruger</div>
+        <div id="speciesTotalsList" style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="font-size:10px;color:var(--text3)">Loading today's sightings...</span>
+        </div>
+      </div>
 
     <!-- === PARK (formerly Camps) === -->
     <div class="screen" id="screen-camps">
@@ -819,6 +850,33 @@ svg.animal-art{width:100%;height:100%}
         </div>
         <div class="weather-intelligence"><div class="weather-intel-label">🎯 Safari Intelligence</div><div class="weather-intel-text" id="weatherIntel">Loading field conditions...</div></div>
       </div>
+
+      <!-- GAME DRIVE TIPS — expands below weather card -->
+      <div id="gameDriveTips" style="margin:0 16px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        <button onclick="toggleGameDriveTips()" style="width:100%;background:none;border:none;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:Montserrat,sans-serif">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:14px">🦁</span>
+            <span style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em">Game Drive Tips</span>
+          </div>
+          <span id="gdtArrow" style="font-size:10px;color:var(--text3);transition:transform .3s">▼</span>
+        </button>
+        <div id="gdtContent" style="display:none;padding:0 14px 14px;border-top:1px solid var(--border2)">
+          <div id="gdtBody" style="font-size:12px;color:var(--text2);line-height:1.7;padding-top:10px">Loading tips...</div>
+        </div>
+      </div>
+
+      <!-- DAILY CHALLENGE -->
+      <div id="dailyChallengeCard" style="margin:0 16px 12px;background:var(--bg3);border:1px solid rgba(232,160,32,.3);border-radius:var(--radius);padding:12px 14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:14px">🎯</span>
+            <span style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em">Daily Challenge</span>
+          </div>
+          <div id="dailyChallengeTimer" style="font-size:9px;color:var(--text3)">Resets midnight</div>
+        </div>
+        <div id="dailyChallengeList" style="display:flex;flex-direction:column;gap:5px"></div>
+        <div id="dailyChallengeComplete" style="display:none;text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--accent)">🏆 Challenge complete! Incredible drive.</div>
+      </div>
       <div class="divlabel">What do you need?</div>
       <div class="finder-icon-grid">
         <div class="finder-icon-btn" onclick="findNearest('fuel',this)"><img id="fi-fuel" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-fuel.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Fuel</div></div>
@@ -1017,7 +1075,7 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.75</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.68 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Live position tracking during nav — watchPosition updates your dot every 2s as you drive<br>• NEW: Heading arrow — directional triangle rotates to show which way you're facing when moving<br>• NEW: Distance remaining — updates live in the nav panel as you approach destination<br>• NEW: Auto-centre — map pans to keep you in view when you drift to the edge<br>• NEW: Arrival detection — toast when within 50m of destination, nav ends automatically<br>• FIXED: Clear route button now always visible and working during active navigation<br>• FIXED: endNavigation() stops GPS watcher, removes heading arrow and destination pin<br>• IMPROVED: Nav panel redesigned — live distance, heading, End button<br>• IMPROVED: Route line thicker and sharper (weight 6, rounded joins)</div><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.76</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.68 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Live position tracking during nav — watchPosition updates your dot every 2s as you drive<br>• NEW: Heading arrow — directional triangle rotates to show which way you're facing when moving<br>• NEW: Distance remaining — updates live in the nav panel as you approach destination<br>• NEW: Auto-centre — map pans to keep you in view when you drift to the edge<br>• NEW: Arrival detection — toast when within 50m of destination, nav ends automatically<br>• FIXED: Clear route button now always visible and working during active navigation<br>• FIXED: endNavigation() stops GPS watcher, removes heading arrow and destination pin<br>• IMPROVED: Nav panel redesigned — live distance, heading, End button<br>• IMPROVED: Route line thicker and sharper (weight 6, rounded joins)</div><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -3803,7 +3861,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); KFGSync.push(); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); setTimeout(function(){ try{renderDailyChallenge();}catch(e){} }, 200); setTimeout(function(){ try{renderSpeciesTotals();}catch(e){} }, 300); KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -4685,7 +4743,291 @@ function toggleHeatmap() {
   } else buildHeat();
 }
 
-// ── MY TRAIL — Personal sightings map layer ───────────────────────
+// ============================================================
+// 1. GATE DEPARTURE CALCULATOR
+// ============================================================
+var GATE_COORDS = {
+  'Paul Kruger Gate':      {lat:-25.0061, lng:31.5219},
+  'Numbi Gate':            {lat:-25.1153, lng:31.2364},
+  'Phabeni Gate':          {lat:-24.9811, lng:31.3500},
+  'Malelane Gate':         {lat:-25.4775, lng:31.5294},
+  'Crocodile Bridge Gate': {lat:-25.3605, lng:31.8947},
+  'Orpen Gate':            {lat:-24.4848, lng:31.3876},
+  'Phalaborwa Gate':       {lat:-23.9469, lng:31.1553},
+  'Punda Maria Gate':      {lat:-22.6917, lng:31.0139},
+  'Pafuri Gate':           {lat:-22.4491, lng:31.3197},
+  'Giriyondo Border Post': {lat:-23.7519, lng:31.9828}
+};
+
+var GATE_CLOSE = {
+  'Paul Kruger Gate':      {jan:'18:30',feb:'18:30',mar:'18:30',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:30',nov:'18:30',dec:'18:30'},
+  'Numbi Gate':            {jan:'18:30',feb:'18:30',mar:'18:30',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:30',nov:'18:30',dec:'18:30'},
+  'Phabeni Gate':          {jan:'18:30',feb:'18:30',mar:'18:30',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:30',nov:'18:30',dec:'18:30'},
+  'Malelane Gate':         {jan:'18:30',feb:'18:30',mar:'18:30',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:30',nov:'18:30',dec:'18:30'},
+  'Crocodile Bridge Gate': {jan:'18:00',feb:'18:00',mar:'18:00',apr:'17:30',may:'17:30',jun:'17:30',jul:'17:30',aug:'17:30',sep:'18:00',oct:'18:00',nov:'18:00',dec:'18:00'},
+  'Orpen Gate':            {jan:'17:30',feb:'17:30',mar:'17:30',apr:'17:30',may:'17:30',jun:'17:30',jul:'17:30',aug:'17:30',sep:'17:30',oct:'17:30',nov:'17:30',dec:'17:30'},
+  'Phalaborwa Gate':       {jan:'18:30',feb:'18:30',mar:'18:30',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:30',nov:'18:30',dec:'18:30'},
+  'Punda Maria Gate':      {jan:'18:00',feb:'18:00',mar:'18:00',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:00',nov:'18:00',dec:'18:00'},
+  'Pafuri Gate':           {jan:'18:00',feb:'18:00',mar:'18:00',apr:'18:00',may:'17:30',jun:'17:30',jul:'17:30',aug:'18:00',sep:'18:00',oct:'18:00',nov:'18:00',dec:'18:00'},
+  'Giriyondo Border Post': {jan:'15:30',feb:'15:30',mar:'15:30',apr:'15:30',may:'15:00',jun:'15:00',jul:'15:00',aug:'15:00',sep:'15:30',oct:'15:30',nov:'15:30',dec:'15:30'}
+};
+
+function calcDepartureTime() {
+  var sel   = document.getElementById('deptGateSelect');
+  var gate  = sel ? sel.value : '';
+  var resEl = document.getElementById('deptResult');
+  var titleEl = document.getElementById('deptResultTitle');
+  var bodyEl  = document.getElementById('deptResultBody');
+  if(!gate) { showToast('Please select an exit gate', 2000); return; }
+  if(!navigator.geolocation) { showToast('GPS not available', 2000); return; }
+
+  resEl.style.display = 'block';
+  titleEl.textContent = 'Getting your GPS position...';
+  bodyEl.textContent  = '';
+
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var uLat = pos.coords.latitude;
+    var uLng = pos.coords.longitude;
+    var gc   = GATE_COORDS[gate];
+    if(!gc) { titleEl.textContent = 'Gate coordinates not found'; return; }
+
+    // Haversine distance
+    var R    = 6371;
+    var dLat = (gc.lat - uLat) * Math.PI / 180;
+    var dLng = (gc.lng - uLng) * Math.PI / 180;
+    var a    = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(uLat*Math.PI/180)*Math.cos(gc.lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+    var dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    var avgSpeed = 40; // km/h park limit
+    var travelMins = Math.ceil(dist / avgSpeed * 60);
+    var bufferMins = 15; // safety buffer
+    var totalMins  = travelMins + bufferMins;
+
+    // Get gate close time for current month
+    var months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+    var mon    = months[new Date().getMonth()];
+    var closeStr = (GATE_CLOSE[gate] && GATE_CLOSE[gate][mon]) || '17:30';
+    var cParts = closeStr.split(':').map(Number);
+    var closeMins = cParts[0]*60 + cParts[1];
+    var latestMins = closeMins - totalMins;
+    var latestH = Math.floor(latestMins/60);
+    var latestM = latestMins % 60;
+    var latestStr = latestH + ':' + String(latestM).padStart(2,'0');
+
+    // Check if already too late
+    var now = new Date();
+    var nowMins = now.getHours()*60 + now.getMinutes();
+    var minsLeft = latestMins - nowMins;
+
+    titleEl.textContent = 'Leave by ' + latestStr + ' \u2192 ' + gate;
+    if(minsLeft < 0) {
+      bodyEl.innerHTML = '<span style="color:#e05545;font-weight:700">\u26A0\uFE0F You are already past the safe departure time!</span><br>' +
+        dist.toFixed(1) + 'km to gate \u00B7 Gate closes ' + closeStr + ' \u00B7 Drive immediately.';
+    } else if(minsLeft < 20) {
+      bodyEl.innerHTML = '<span style="color:#e8a020;font-weight:700">\u23F0 Only ' + minsLeft + ' minutes left \u2014 leave now!</span><br>' +
+        dist.toFixed(1) + 'km \u00B7 ~' + travelMins + ' min drive at 40km/h \u00B7 Gate closes ' + closeStr;
+    } else {
+      bodyEl.innerHTML = dist.toFixed(1) + 'km to gate \u00B7 ~' + travelMins + ' min drive at 40km/h<br>' +
+        'Gate closes ' + closeStr + ' \u00B7 ' + minsLeft + ' min until you must leave \u00B7 +15 min buffer included';
+    }
+  }, function() {
+    titleEl.textContent = 'Could not get GPS position';
+    bodyEl.textContent  = 'Enable location access and try again.';
+  }, {enableHighAccuracy:true, timeout:10000});
+}
+
+// ============================================================
+// 2. WEATHER-LINKED GAME DRIVE TIPS
+// ============================================================
+var _gdtOpen = false;
+
+function toggleGameDriveTips() {
+  _gdtOpen = !_gdtOpen;
+  var content = document.getElementById('gdtContent');
+  var arrow   = document.getElementById('gdtArrow');
+  if(!content) return;
+  content.style.display = _gdtOpen ? 'block' : 'none';
+  if(arrow) arrow.style.transform = _gdtOpen ? 'rotate(180deg)' : '';
+  if(_gdtOpen) _renderGameDriveTips();
+}
+
+function _renderGameDriveTips() {
+  var el = document.getElementById('gdtBody');
+  if(!el) return;
+
+  var temp   = parseFloat(document.getElementById('wTemp')  ? document.getElementById('wTemp').textContent  : '25') || 25;
+  var wind   = parseFloat(document.getElementById('wWind')  ? document.getElementById('wWind').textContent  : '10') || 10;
+  var rain   = parseFloat(document.getElementById('wRain')  ? document.getElementById('wRain').textContent  : '10') || 10;
+  var uv     = parseFloat(document.getElementById('wUV')    ? document.getElementById('wUV').textContent    : '5')  || 5;
+  var month  = new Date().getMonth(); // 0-11
+  var hour   = new Date().getHours();
+
+  var tips = [];
+
+  // Temperature tips
+  if(temp >= 35) {
+    tips.push({ icon:'🌡', label:'Heat advisory', text:'Very hot — animals at permanent waterholes by 09:00. Avoid open plains after 10:30. Engelhard Dam and Sunset Dam are your best bets.' });
+  } else if(temp >= 28) {
+    tips.push({ icon:'☀', label:'Warm day', text:'Animals will seek shade by mid-morning. Drive early. Waterholes productive 07:00–09:30 and again 16:00–18:00.' });
+  } else if(temp <= 15) {
+    tips.push({ icon:'🧥', label:'Cool conditions', text:'Excellent game viewing — cold mornings keep predators active longer. Lions may stay in the open well past 09:00. Bring a layer.' });
+  }
+
+  // Rain tips
+  if(rain >= 70) {
+    tips.push({ icon:'🌧', label:'High rain chance', text:'Post-rain conditions bring animals onto open grass. Green flush attracts grazers. Predators follow prey to open areas. Roads may be slippery — drive carefully.' });
+  } else if(rain >= 30) {
+    tips.push({ icon:'⛅', label:'Possible showers', text:'Overcast light is ideal for photography — no harsh shadows. Game often more active on cloudy days. Check road conditions.' });
+  }
+
+  // Wind tips
+  if(wind >= 30) {
+    tips.push({ icon:'💨', label:'High winds', text:'Animals\' hearing is impaired in strong wind — they compensate with heightened visual alertness. Approach slowly and quietly. Predators often hunt in wind.' });
+  }
+
+  // Seasonal tips
+  var dryMonths  = [4,5,6,7,8,9]; // May–Oct
+  var wetMonths  = [10,11,0,1,2,3]; // Nov–Apr
+  if(dryMonths.indexOf(month) >= 0) {
+    tips.push({ icon:'🦁', label:'Dry season', text:'Best game viewing of the year — vegetation sparse, animals concentrated at permanent water. H4-1, S100 and waterholes like Sunset Dam and Engelhard Dam are unmissable.' });
+  } else {
+    tips.push({ icon:'🌿', label:'Wet season', text:'Lush vegetation means animals harder to spot but newborns everywhere. Predators active early morning before heat. Birding outstanding — migrants present.' });
+  }
+
+  // Time of day
+  if(hour >= 5 && hour < 8) {
+    tips.push({ icon:'🌅', label:'Golden hour', text:'Peak predator activity right now. Lions, leopard and cheetah most likely. Low angled light perfect for photography. Drive slowly and scan open ground.' });
+  } else if(hour >= 10 && hour < 15) {
+    tips.push({ icon:'🌞', label:'Midday lull', text:'Most animals in shade. Good time for waterholes — crocodile, hippo and waterbirds always active. Scan tree canopies for leopard resting with kills.' });
+  } else if(hour >= 16) {
+    tips.push({ icon:'🌇', label:'Afternoon drive', text:'Activity picking up again. Predators becoming active. Check when your gate closes — plan your route back allowing extra time.' });
+  }
+
+  // Best roads today
+  var bestRoads = month >= 4 && month <= 9
+    ? 'H4-1 (lion country), S100 (cheetah), H1-6 (elephant)'
+    : 'H1-4 (mixed game), Sabie River roads, open plains near Satara';
+  tips.push({ icon:'🛣', label:'Best roads today', text:bestRoads });
+
+  el.innerHTML = tips.map(function(t) {
+    return '<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border2)">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px">' + t.icon + ' ' + t.label + '</div>' +
+      '<div style="font-size:11px;color:var(--text2);line-height:1.6">' + t.text + '</div>' +
+    '</div>';
+  }).join('').replace(/<\/div>$/, '</div>'.replace('border-bottom:1px solid var(--border2)', ''));
+}
+
+// ============================================================
+// 3. TODAY'S SPECIES TOTALS
+// ============================================================
+function renderSpeciesTotals() {
+  var el = document.getElementById('speciesTotalsList');
+  if(!el) return;
+
+  var allItems = window._feedAllItems || [];
+  var today    = new Date();
+  var todayStr = today.toDateString();
+
+  // Count sightings from today in the feed
+  var counts = {};
+  allItems.forEach(function(item) {
+    if(item.type !== 'sighting' && item.tag !== 'sighting') return;
+    var d = new Date(item.ts || item.time || item.pub_date || 0);
+    if(d.toDateString() !== todayStr) return;
+    var name = item.name || item.species || item.title || '';
+    if(!name) return;
+    counts[name] = (counts[name] || 0) + 1;
+  });
+
+  // Also count from user's own sightings today
+  var mySightings = loadSightings ? loadSightings() : [];
+  mySightings.forEach(function(s) {
+    var d = new Date(s.ts || s.time || 0);
+    if(d.toDateString() !== todayStr) return;
+    var name = s.name || s.species || '';
+    if(!name) return;
+    counts[name] = (counts[name] || 0) + 1;
+  });
+
+  var entries = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+
+  if(!entries.length) {
+    el.innerHTML = '<span style="font-size:10px;color:var(--text3)">No sightings logged today yet — be the first!</span>';
+    return;
+  }
+
+  // Show top 8 species
+  el.innerHTML = entries.slice(0,8).map(function(name) {
+    return '<div style="background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;display:flex;align-items:center;gap:5px">' +
+      '<span style="font-size:10px;font-weight:600;color:var(--text)">' + name + '</span>' +
+      '<span style="font-size:9px;font-weight:700;color:var(--accent)">×' + counts[name] + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+// ============================================================
+// 4. DAILY CHALLENGE
+// ============================================================
+var CHALLENGE_SPECIES_POOL = [
+  'Lion','Leopard','Cheetah','Wild Dog','Spotted Hyena',
+  'Elephant','Buffalo','White Rhino','Giraffe','Zebra',
+  'Hippo','Crocodile','Impala','Kudu','Warthog',
+  'Vervet Monkey','Baboon','Steenbok','Mongoose','Monitor Lizard',
+  'African Fish Eagle','Southern Ground Hornbill','Martial Eagle',
+  'Saddle-billed Stork','Bateleur'
+];
+
+function getDailyChallenge() {
+  // Seed based on date — same 5 species for all users each day
+  var d = new Date();
+  var seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
+  var pool = CHALLENGE_SPECIES_POOL.slice();
+  // Seeded shuffle (deterministic for the day)
+  for(var i = pool.length - 1; i > 0; i--) {
+    seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+    var j = Math.abs(seed) % (i + 1);
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  return pool.slice(0, 5);
+}
+
+function renderDailyChallenge() {
+  var listEl     = document.getElementById('dailyChallengeList');
+  var completeEl = document.getElementById('dailyChallengeComplete');
+  if(!listEl) return;
+
+  var challenge  = getDailyChallenge();
+  var myToday    = loadSightings ? loadSightings().filter(function(s) {
+    return new Date(s.ts||s.time||0).toDateString() === new Date().toDateString();
+  }) : [];
+  var seenNames = myToday.map(function(s){ return (s.name||s.species||'').toLowerCase(); });
+
+  var allDone = true;
+  listEl.innerHTML = challenge.map(function(sp) {
+    var done = seenNames.some(function(n){ return n.indexOf(sp.toLowerCase()) >= 0 || sp.toLowerCase().indexOf(n) >= 0; });
+    if(!done) allDone = false;
+    return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0">' +
+      '<div style="width:16px;height:16px;border-radius:50%;border:2px solid ' + (done?'var(--green)':'var(--border2)') + ';background:' + (done?'var(--green)':'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+        (done ? '<span style="color:#fff;font-size:9px;font-weight:700">&#x2713;</span>' : '') +
+      '</div>' +
+      '<span style="font-size:12px;font-weight:' + (done?'700':'500') + ';color:' + (done?'var(--text)':'var(--text2)') + ';text-decoration:' + (done?'none':'none') + '">' + sp + '</span>' +
+    '</div>';
+  }).join('');
+
+  if(completeEl) completeEl.style.display = allDone ? 'block' : 'none';
+  listEl.style.display = allDone ? 'none' : 'flex';
+
+  // Update timer
+  var timerEl = document.getElementById('dailyChallengeTimer');
+  if(timerEl) {
+    var now      = new Date();
+    var midnight = new Date(now); midnight.setHours(24,0,0,0);
+    var diff     = midnight - now;
+    var h = Math.floor(diff/3600000);
+    var m = Math.floor((diff%3600000)/60000);
+    timerEl.textContent = 'Resets in ' + h + 'h ' + m + 'm';
+  }
+}
 var _myTrailActive = false;
 var _myTrailLayer  = null;
 
@@ -6175,7 +6517,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); KFGSync.push(); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements, 100); setTimeout(function(){ try{renderDailyChallenge();}catch(e){} }, 200); setTimeout(function(){ try{renderSpeciesTotals();}catch(e){} }, 300); KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -7683,6 +8025,8 @@ function renderFeed(feedData) {
     window._feedAllItems = feedData;
   }
   var all = window._feedAllItems || feedData || [];
+  // Refresh species totals whenever feed updates
+  setTimeout(function(){ try{ renderSpeciesTotals(); }catch(e){} }, 100);
 
   // Filter by active tab
   var tab = window._feedTab || 'all';
@@ -8282,7 +8626,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.75';
+var APP_VERSION = '3.76';
 
 // Clear stale caches when version changes
 (function() {
@@ -9641,6 +9985,9 @@ function initAZScroll() {
   window._showAZ = showAZ;
 }
 
+// Global safe wrapper
+function safe(fn) { try { fn(); } catch(e) { console.warn('[KFG]', e); } }
+
 function initApp() {
   // Force reload if cached version doesn't match — uses timestamp to guarantee fresh fetch
   var storedBuild = localStorage.getItem('kfg_build');
@@ -9657,6 +10004,7 @@ function initApp() {
   safe(renderCamps);
   safe(renderEmergency);
   safe(renderSpecies); safe(initAZScroll);
+  safe(renderDailyChallenge);
   safe(renderBirds);
   safe(renderReptiles);
   safe(renderFrogs);
@@ -9694,6 +10042,7 @@ function initApp() {
   safe(renderRecentlyViewed);
   safe(loadWeather);
   safe(loadFeed);
+  safe(renderSpeciesTotals);
   // Poll Firebase every 15s — picks up sightings from other users automatically
   setInterval(function() {
     fetch(FIREBASE_URL + '/feed.json').then(function(r){ return r.ok ? r.json() : null; }).then(function(data) {
