@@ -847,27 +847,7 @@ svg.animal-art{width:100%;height:100%}
         </div>
         <div class="weather-intelligence"><div class="weather-intel-label">🎯 Safari Intelligence</div><div class="weather-intel-text" id="weatherIntel">Loading field conditions...</div></div>
       </div>
-
-
-      <div class="divlabel">What do you need?</div>
-      <div class="finder-icon-grid">
-        <div class="finder-icon-btn" onclick="findNearest('fuel',this)"><img id="fi-fuel" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-fuel.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Fuel</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('toilet',this)"><img id="fi-toilet" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-toilet.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Restrooms</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('restaurant',this)"><img id="fi-food" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-food.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Restaurants</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('shop',this)"><img id="fi-shops" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-shops.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Shops</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('wifi',this)"><img id="fi-wifi" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-wifi.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Wi-Fi</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('medical',this)"><img id="fi-medical" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-medical.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Medical</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('lookout',this)"><img id="fi-lookout" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-lookout-point.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Lookouts</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('picnic',this)"><img id="fi-picnic" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-picnic-spots.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Picnic Spots</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('dam',this)"><img id="fi-dams" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-dams.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Dams</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('landmark',this)"><img id="fi-landmarks" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-landmarks.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Landmarks</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('camp',this)"><img id="fi-camp" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-rest-camp.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Camps</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('gate',this)"><img id="fi-gate" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-entrance-gate.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Gates</div></div>
-      </div>
-        
-      <div class="divlabel" id="finderResultsLabel" style="display:none">Nearest results</div>
-      <div class="finder-results" id="finderResults"></div>
-    </div>
+    </div><!-- /screen-finder -->
 
     <!-- === MY TRIP === -->
     <div class="screen" id="screen-trip">
@@ -949,7 +929,7 @@ svg.animal-art{width:100%;height:100%}
       <div class="trip-tab-content" id="tab-achievements">
         <div style="padding:16px 16px 8px">
           <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Earn badges by logging sightings on your trip.</div>
-          <div id="tripAchievementsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"></div>
+          <div id="tripAchievementsGrid"style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"></div>
         </div>
       </div>
 
@@ -997,8 +977,7 @@ svg.animal-art{width:100%;height:100%}
       <div class="game-tab-content" id="gamePanel-badges" style="display:none">
         <div style="padding:16px 16px 8px">
           <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Earn badges by logging sightings on your trip.</div>
-          <div id="tripAchievementsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
-          <div id="achievementsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"></div></div>
+          <div id="achievementsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"></div>
         </div>
       </div>
 
@@ -1216,6 +1195,7 @@ svg.animal-art{width:100%;height:100%}
       </div>
     </div>
 
+  </div>
   </div><!-- /content -->
 
   <!-- NAV -->
@@ -4760,19 +4740,12 @@ function toggleHeatmap() {
   window._heatmapActive = true;
   if(btn) btn.classList.add('active');
   function buildHeat() {
-    var sightings = loadSightings().filter(function(s){ return s.lat && s.lng; });
-    // Also include feed sightings with GPS
-    (window._feedAllItems||[]).forEach(function(item){
-      if((item.type==='sighting'||item.tag==='sighting') && item.lat && item.lng) {
-        sightings.push({lat:item.lat, lng:item.lng});
-      }
-    });
-    var points = sightings.map(function(s){ return [s.lat, s.lng, 0.8]; });
-    if(!points.length) { showToast('No GPS sightings yet — log sightings with location to build your heatmap', 3000); window._heatmapActive=false; if(btn)btn.classList.remove('active'); return; }
+    var sightings = loadSightings().filter(function(s){ return s.lat && s.lng && !s.protected; });
+    var points = sightings.map(function(s){ return [s.lat, s.lng, 0.6]; });
+    if(!points.length) { showToast('No GPS sightings logged yet.'); window._heatmapActive=false; if(btn)btn.classList.remove('active'); return; }
     if(window.L && L.heatLayer) {
-      window._heatmapLayer = L.heatLayer(points, {radius:30,blur:20,maxZoom:16,gradient:{0.2:'#e8a020',0.5:'#ff6600',0.8:'#ff2200',1:'#ff0000'}});
+      window._heatmapLayer = L.heatLayer(points, {radius:35,blur:25,maxZoom:14,gradient:{0.2:'#0033ff',0.5:'#00ff88',0.8:'#ffaa00',1:'#ff2200'}});
       window._heatmapLayer.addTo(window._map);
-      showToast('🔥 Heatmap: ' + points.length + ' sighting' + (points.length===1?'':'s') + ' plotted', 2000);
     }
   }
   if(!window._leafletHeatLoaded) {
@@ -8927,7 +8900,7 @@ var _navRoute      = null;   // GeoJSON route geometry
 function navigateTo(name, lat, lng) {
   showScreen('map');
   setTimeout(function() {
-    if(!_map){ initMap(); setTimeout(function(){ navigateTo(name,lat,lng); },600); return; }
+    if(!_map){ showToast('Map loading, try again'); return; }
     showToast('📍 Calculating route...');
     getCachedGPS(function(pos) {
       var fLat = pos.coords.latitude, fLng = pos.coords.longitude;
@@ -10775,63 +10748,81 @@ function _renderGameDriveTips() {
 }
 
 // ── TODAY'S SPECIES TOTALS ────────────────────────────────────────
-function toggleSpeciesTotals(val) {
-  var el = document.getElementById('speciesTotalsList');
-  if(el) { el.setAttribute('data-expanded', String(val)); renderSpeciesTotals(); }
-}
-
 function renderSpeciesTotals() {
-  var el = document.getElementById('speciesTotalsList'); if(!el) return;
+  var el = document.getElementById('speciesTotalsList');
+  if(!el) return;
   var todayStr = new Date().toDateString(), counts = {};
-
-  // Count from feed
   (window._feedAllItems||[]).forEach(function(item) {
     if(item.type!=='sighting'&&item.tag!=='sighting') return;
     if(new Date(item.ts||item.time||item.pub_date||0).toDateString()!==todayStr) return;
-    var n=item.name||item.species||(item.title||'').replace(' sighted','').replace(/ —.*/,'').trim();
+    var n=(item.name||item.species||(item.title||'').replace(/ —.*/,'').trim());
     if(!n||n.length<2) return;
     counts[n]=(counts[n]||0)+1;
   });
-  // Count from personal sightings
-  (loadSightings?loadSightings():[]).forEach(function(s) {
+  (loadSightings?loadSightings():[]).forEach(function(s){
     if(new Date(s.ts||s.time||0).toDateString()!==todayStr) return;
     var n=s.name||s.species||''; if(!n) return;
     counts[n]=(counts[n]||0)+1;
   });
-
   var entries=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];});
-
   if(!entries.length){
-    el.innerHTML='<span style="font-size:10px;color:var(--text3)">No sightings logged today — be the first!</span>';
+    el.innerHTML='<span style="font-size:10px;color:var(--text3)">No sightings today — be the first!</span>';
     return;
   }
-
-  var top3 = entries.slice(0,3);
-  var allExpanded = el.getAttribute('data-expanded') === '1';
-
-  if(allExpanded) {
-    // Show all species
-    el.innerHTML = entries.map(function(n){
-      return '<div style="display:flex;align-items:center;gap:6px;padding:3px 0">'
-        +'<span style="font-size:11px;font-weight:600;color:var(--text);flex:1">'+n+'</span>'
-        +'<div style="min-width:20px;height:20px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center">'
-        +'<span style="font-size:9px;font-weight:700;color:var(--bg)">'+counts[n]+'</span></div>'
+  var top3=entries.slice(0,3), more=entries.length-3;
+  var html='<div style="display:flex;gap:6px;width:100%">'
+    +top3.map(function(n){
+      return '<div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:5px 7px;min-width:0">'
+        +'<span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+n+'</span>'
+        +'<div style="flex-shrink:0;width:18px;height:18px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center">'
+        +'<span style="font-size:9px;font-weight:700;color:var(--bg)">'+counts[n]+'</span>'
+        +'</div>'
       +'</div>';
     }).join('')
-    + '<button onclick="toggleSpeciesTotals(0)" style="margin-top:8px;background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;font-family:Montserrat,sans-serif">▲ Show less</button>';
-  } else {
-    // Show top 3 only
-    el.innerHTML = top3.map(function(n){
-      return '<div style="display:flex;align-items:center;gap:8px">'
-        +'<span style="font-size:12px;font-weight:600;color:var(--text);flex:1">'+n+'</span>'
-        +'<div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center">'
-        +'<span style="font-size:10px;font-weight:700;color:var(--bg)">'+counts[n]+'</span></div>'
-      +'</div>';
-    }).join('')
-    + (entries.length>3
-      ? '<button onclick="toggleSpeciesTotals(1)" style="margin-top:6px;background:none;border:none;color:var(--accent);font-size:10px;cursor:pointer;font-family:Montserrat,sans-serif;font-weight:600">+' + (entries.length-3) + ' more ▼</button>'
-      : '');
+  +'</div>';
+  if(more>0){
+    html+='<button onclick="_showSightingsBoard()" style="margin-top:5px;background:none;border:none;color:var(--accent);font-size:10px;font-weight:600;cursor:pointer;font-family:Montserrat,sans-serif;padding:0">View all '+entries.length+' species ▼</button>';
   }
+  el.innerHTML=html;
+}
+
+function _closeSightingsBoard(){var el=document.getElementById('sightingsBoard');if(el)el.remove();}
+
+function _showSightingsBoard() {
+  var todayStr=new Date().toDateString(), counts={};
+  (window._feedAllItems||[]).forEach(function(item){
+    if(item.type!=='sighting'&&item.tag!=='sighting') return;
+    if(new Date(item.ts||item.time||item.pub_date||0).toDateString()!==todayStr) return;
+    var n=(item.name||item.species||(item.title||'').replace(/ —.*/,'').trim());
+    if(!n||n.length<2) return; counts[n]=(counts[n]||0)+1;
+  });
+  (loadSightings?loadSightings():[]).forEach(function(s){
+    if(new Date(s.ts||s.time||0).toDateString()!==todayStr) return;
+    var n=s.name||s.species||''; if(!n) return; counts[n]=(counts[n]||0)+1;
+  });
+  var entries=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];});
+  var ex=document.getElementById('sightingsBoard');
+  if(ex){ex.remove();return;}
+  var panel=document.createElement('div');
+  panel.id='sightingsBoard';
+  panel.style.cssText='position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.75);display:flex;align-items:flex-end;justify-content:center';
+  panel.innerHTML='<div style="background:var(--bg2);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px 20px 32px;max-height:70vh;overflow-y:auto">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+    +'<div style="font-size:13px;font-weight:700;color:var(--text)">📊 Today in Kruger</div>'
+    +'<button onclick="_closeSightingsBoard()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0">✕</button>'
+    +'</div>'
+    +entries.map(function(n,i){
+      return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2)">'
+        +'<span style="font-size:11px;color:var(--text3);width:18px;text-align:right;flex-shrink:0">'+(i+1)+'</span>'
+        +'<span style="flex:1;font-size:13px;font-weight:600;color:var(--text)">'+n+'</span>'
+        +'<div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+        +'<span style="font-size:10px;font-weight:700;color:var(--bg)">'+counts[n]+'</span>'
+        +'</div>'
+      +'</div>';
+    }).join('')
+  +'</div>';
+  panel.addEventListener('click',function(e){if(e.target===panel)panel.remove();});
+  (document.getElementById('app')||document.body).appendChild(panel);
 }
 
 // ── DAILY CHALLENGE ───────────────────────────────────────────────
