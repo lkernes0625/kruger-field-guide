@@ -957,7 +957,7 @@ svg.animal-art{width:100%;height:100%}
             <button onclick="resetBingo()" style="background:none;border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:5px 10px;font-family:Montserrat,sans-serif;font-size:10px;cursor:pointer">Reset</button>
           </div>
           <div id="tripBingoStatus"style="background:rgba(232,160,32,.08);border:1px solid rgba(232,160,32,.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:none">
-            <div style="font-size:12px;font-weight:700;color:var(--accent)" id="tripBingoStatusText"</div>
+            <div style="font-size:12px;font-weight:700;color:var(--accent)" id="tripBingoStatusText"></div>
           </div>
           <div id="tripBingoGrid"style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px"></div>
         </div>
@@ -1208,7 +1208,6 @@ svg.animal-art{width:100%;height:100%}
       </div>
     </div>
 
-  </div>
   </div><!-- /content -->
 
   <!-- NAV -->
@@ -10821,16 +10820,25 @@ function renderSpeciesTotals() {
     return;
   }
   var top3=entries.slice(0,3);
-  var html='<div style="display:flex;flex-direction:column;gap:3px;width:100%">'
-    +top3.map(function(n,i){
-      return '<div style="display:flex;align-items:center;gap:6px;min-width:0">'
-        +'<span style="font-size:9px;font-weight:700;color:var(--text3);width:10px;flex-shrink:0;text-align:center">'+(i+1)+'</span>'
-        +'<span style="flex:1;font-size:11px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">'+n+'</span>'
-        +'<span style="flex-shrink:0;background:var(--accent);color:var(--bg);border-radius:8px;padding:1px 6px;font-size:9px;font-weight:700">'+counts[n]+'</span>'
+  // Three animal images side by side, name + count badge below each
+  var html='<div style="display:flex;gap:6px;width:100%">'
+    +top3.map(function(n){
+      var spId=n.toLowerCase().replace(/ /g,'_').replace(/-/g,'_').replace(/'/g,'');
+      var imgSrc=(window.ANIMAL_IMG&&ANIMAL_IMG[spId])||(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[spId])||'';
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0">'
+        +(imgSrc
+          ?'<div style="width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg4)">'
+            +'<img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover;display:block">'
+            +'</div>'
+          :'<div style="width:100%;aspect-ratio:1;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:22px">🐾</div>')
+        +'<div style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:3px;min-width:0">'
+          +'<span style="font-size:9px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+n+'</span>'
+          +'<span style="flex-shrink:0;background:var(--accent);color:var(--bg);border-radius:6px;padding:1px 5px;font-size:8px;font-weight:700">'+counts[n]+'</span>'
+        +'</div>'
       +'</div>';
     }).join('')
   +'</div>';
-  html+='<button onclick="_showSightingsBoard()" style="margin-top:5px;background:none;border:none;color:var(--accent);font-size:10px;font-weight:600;cursor:pointer;font-family:Montserrat,sans-serif;padding:0;text-align:left">'+entries.length+' species today ▼</button>';
+  html+='<button onclick="_showSightingsBoard()" style="margin-top:6px;background:none;border:none;color:var(--accent);font-size:10px;font-weight:600;cursor:pointer;font-family:Montserrat,sans-serif;padding:0;text-align:left">'+entries.length+' species today ▼</button>';
   el.innerHTML=html;
 }
 
