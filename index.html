@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.78</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.79</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -720,7 +720,7 @@ svg.animal-art{width:100%;height:100%}
         <button onclick="mapFilterToggle('picnic')" id="mapFlt-picnic" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F9FA; Picnic</button>
         <button onclick="mapFilterToggle('heritage')" id="mapFlt-heritage" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F5FF; Heritage</button>
         <button onclick="mapFilterToggle('poi')" id="mapFlt-poi" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F4CC; POI</button>
-        <button onclick="mapFilterToggle('sightings')" id="mapFlt-sightings" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F98F; Sightings</button>
+        <button onclick="mapFilterToggle('sightings')" id="mapFlt-sightings" class="filter-btn active" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F98F; Sightings</button>
         <button onclick="toggleHeatmap()" id="mapFlt-heatmap" class="filter-btn active" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F525; Heatmap</button>
         <button onclick="toggleMyTrail()" id="mapFlt-mytrail" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F43E; My Trail</button>
         <button onclick="mapCenterOnUser()" id="mapFlt-myloc" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F4CD; Location</button>
@@ -847,6 +847,19 @@ svg.animal-art{width:100%;height:100%}
         </div>
         <div class="weather-intelligence"><div class="weather-intel-label">🎯 Safari Intelligence</div><div class="weather-intel-text" id="weatherIntel">Loading field conditions...</div></div>
       </div>
+      <div class="finder-icon-grid">
+        <div class="finder-icon-btn" onclick="findNearest('fuel',this)"><img id="fi-fuel" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-fuel.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Fuel</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('restaurant',this)"><img id="fi-food" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-restaurant.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Food</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('medical',this)"><img id="fi-medical" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-medical.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Medical</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('picnic',this)"><img id="fi-picnic" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-picnic-spots.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Picnic Spots</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('dam',this)"><img id="fi-dams" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-dams.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Dams</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('landmark',this)"><img id="fi-landmarks" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-landmarks.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Landmarks</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('camp',this)"><img id="fi-camp" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-rest-camp.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Camps</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('gate',this)"><img id="fi-gate" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-entrance-gate.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Gates</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('lookout',this)"><img id="fi-lookout" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-lookout.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Lookouts</div></div>
+      </div>
+      <div class="divlabel" id="finderResultsLabel" style="display:none">Nearest results</div>
+      <div class="finder-results" id="finderResults"></div>
     </div><!-- /screen-finder -->
 
     <!-- === MY TRIP === -->
@@ -1075,7 +1088,7 @@ svg.animal-art{width:100%;height:100%}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.78</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.68 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Live position tracking during nav — watchPosition updates your dot every 2s as you drive<br>• NEW: Heading arrow — directional triangle rotates to show which way you're facing when moving<br>• NEW: Distance remaining — updates live in the nav panel as you approach destination<br>• NEW: Auto-centre — map pans to keep you in view when you drift to the edge<br>• NEW: Arrival detection — toast when within 50m of destination, nav ends automatically<br>• FIXED: Clear route button now always visible and working during active navigation<br>• FIXED: endNavigation() stops GPS watcher, removes heading arrow and destination pin<br>• IMPROVED: Nav panel redesigned — live distance, heading, End button<br>• IMPROVED: Route line thicker and sharper (weight 6, rounded joins)</div><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
+        <div style="text-align:center;padding:16px 0 8px"><div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.79</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div><div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.79 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: Finder screen — restored icon grid (Fuel, Food, Medical, Picnic, Dams, Landmarks, Camps, Gates, Lookouts) which was stripped in v3.78<br>• FIXED: Finder — Daily Challenge card fully removed; never shows in Finder<br>• FIXED: Feed title format — sightings now show "Animal — Road" (e.g. Aardvark — H3) instead of "Animal sighted"<br>• FIXED: Feed sort — Firebase poll no longer bypasses rebuildFeed; sort is always by timestamp newest-first<br>• FIXED: Games Badges tab — renderBadges was undefined; now correctly aliases renderAchievements<br>• FIXED: Games Bingo tab — renderGameBingo now renders into the Games screen bingoGrid (not tripBingoGrid)<br>• FIXED: Map Nav panel — was appending to #mainMap (doesn't exist); now correctly appends to #krugerMap<br>• FIXED: Map Sightings — filter starts enabled (active) by default; uses road waypoint fallback when no GPS<br>• FIXED: Map Heatmap — now uses road waypoint fallback (lower intensity) when exact GPS unavailable; more useful from day one<br>• IMPROVED: Sightings on map show approximate position near road when GPS was not captured at log time</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Live position tracking during nav — watchPosition updates your dot every 2s as you drive<br>• NEW: Heading arrow — directional triangle rotates to show which way you're facing when moving<br>• NEW: Distance remaining — updates live in the nav panel as you approach destination<br>• NEW: Auto-centre — map pans to keep you in view when you drift to the edge<br>• NEW: Arrival detection — toast when within 50m of destination, nav ends automatically<br>• FIXED: Clear route button now always visible and working during active navigation<br>• FIXED: endNavigation() stops GPS watcher, removes heading arrow and destination pin<br>• IMPROVED: Nav panel redesigned — live distance, heading, End button<br>• IMPROVED: Route line thicker and sharper (weight 6, rounded joins)</div><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px">v3.66 — BUILD NOTES</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Demo mode — 2-hour full access trial, one use per device, stored in localStorage<br>• NEW: License gate now shows two cards — "I have a key" and "Try the Demo"<br>• NEW: Demo countdown banner — amber bar at top with live timer and buy button<br>• NEW: 15-minute and 2-minute warning toasts during demo<br>• NEW: Demo expired overlay — shows after 2 hours with direct Etsy buy link<br>• NEW: Demo resumes on app reopen if still within 2-hour window<br>• NEW: License input section hidden by default — revealed on "I have a key" tap<br>• CHANGED: Etsy link updated to direct single license listing URL</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: KFGDevice — permanent device ID stored in IndexedDB, survives cache clears<br>• NEW: /api/claim — server-side expiry set on first activation, device transfer on new phone preserves original expiry<br>• NEW: /api/validate upgraded — returns days_remaining, expired, device_match, type, pack info<br>• NEW: /api/add-family-pack — writes 5 keys with shared pack_id to keys.json<br>• NEW: License expiry display in About screen — green/amber/red based on days remaining<br>• NEW: Family Pack gifting panel in About — primary key holders see their 4 gift keys with copy-to-clipboard<br>• NEW: Boot-time revalidation — silently refreshes expiry from server, locks out expired keys, promotes legacy keys to new schema<br>• NEW: Expiry warning toast at 30 days and 7 days remaining<br>• CHANGED: validateLicense now calls /api/claim on first use (sets server-side expiry), /api/validate on subsequent opens<br>• CHANGED: keys.json schema upgraded from flat array to object with keys[] + meta{} — fully backward compatible</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• NEW: Cloud Sync — Itinerary, sightings, journal, checklist, badges and bingo saved to Firebase RTDB under your license key. Data survives cache clears and device switches.<br>• NEW: Sync indicator dot in header — green=synced, amber=syncing, grey=offline, red=failed (tap to retry)<br>• NEW: Pull-on-boot — restores cloud data if newer than local; shows toast when data restored<br>• NEW: Image Cache — Firebase Storage images cached in IndexedDB (30 days). Reduces bandwidth on repeat visits. Auto-hydrates all images via MutationObserver — no code changes to render functions needed.<br>• REMOVED: Legacy device-id-based Firebase journal/trip push (replaced by KFGSync)<br>• All save functions (saveSightings, saveJournalEntries, saveChecklistState, saveTripDates, saveTripSchedule, saveTripPlan, saveBingoState, checkNewAchievements) now trigger KFGSync.push() with 2s debounce</div><div style="font-size:11px;color:var(--text2);line-height:1.7">• FIXED: A-Z now works in Birds, Reptiles and Frogs (was only scrolling Mammals grid)<br>• FIXED: Saddle-billed Stork image no longer broken (was missing from BIRD_IMG)<br>• FIXED: Badges open full-screen modal on tap showing icon, full description, progress bar and status<br>• FIXED: Trip tabs scroll properly — Badges and Bingo fully accessible on all devices<br>• FIXED: Park search dropdown is now a true floating overlay that scrolls independently<br>• FIXED: Bingo broken images for Hyena, Baboon, Mongoose (ID mismatch corrected)<br>• FIXED: All 57 old Birds + 4 Reptiles + 5 Frogs now have full detail modal (description, distribution, habitat, food, breeding, voice, key features)<br>• FIXED: All 14+ GPS coordinates verified against SANParks official data — Shingwedzi (32km!), Sirheni (28km!), Tsendze (16km!), Balule (14km!), Boulders (12km!), Bateleur (27km!), Outpost, Pafuri Camp, Orpen, Roodewal, Biyamiti, Maroela, Shimuwini, Tamboti, Tsendze + 4 gates (Orpen, Phabeni, Crocodile Bridge, Punda Maria) all corrected<br>• FIXED: setWildlifeFilter was not defined — All/Big5/Endangered/Rare buttons now work<br>• FIXED: Toggle View (Grid/List) now works in Birds, Reptiles and Frogs<br>• FIXED: A-Z works in Birds, Reptiles and Frogs<br>• FIXED: Trip tabs (Badges/Bingo) no longer cut off — scrollable with flex layout<br>• FIXED: Park Search opens camp directly + resets after 8s<br>• IMPROVED: Bingo shows animal photos with green tick overlay<br>• IMPROVED: Badges expand on tap showing full description + progress bars for multi-item badges<br>• CHANGED: Pangolin Found badge → Top 6 Birds badge<br>• CHANGED: Map opens with Heatmap only (all other pins off by default)<br>• ADDED: Yellow-billed Kite to Birds<br>• ADDED: Saddle-billed Stork to Birds + Top 6<br>• FIXED: Grid/List toggle works on all filter paths including Endangered<br>• FIXED: A-Z shows whenever Mammals tab is active, letters filter correctly<br>• FIXED: badges[] architecture — amenities=physical only, badges=classification/routing<br>• Zone badges on all Lookouts, Hides, Picnic, Dams, Landmarks, Heritage, POI<br>• Camp Restrooms shown in all facility rows<br>• Map layers updated to use badges[] — cross-listed entries appear on correct layers<br>• Rich detail content on 10 key hides, lookouts, picnic and dam entries<br>• Sable Dam overnight hours • Kumana=Waterhole • Nhlanhlayati hide badge confirmed<br>• • Wildlife grid/list toggle fixed — works on all filter paths including Endangered<br>• A-Z index hidden on load, reveals on scroll — letter filtering fixed<br>• Field Intelligence section correctly placed after Mass in species modal<br>• Languages populated for all 81 species (was 36)<br>• Camps: Private Luxury Lodges (11 new), Private Bush Lodges (new category, 7 entries)<br>• Camps: Tamboti→Satellite, Tsendze→Satellite, Roodewal→Bush Lodge<br>• Camps: Jakkalsbessie removed, Sable Hide added, Hamiltons/Jock/Shishangeni reclassified<br>• Lookouts: 11 new + 3 new hides, 6 renames, badge fixes<br>• Picnic: 6 new sites, 5 removed, cross-listed from Lookouts+Dams with picnic badge<br>• Dams: Engelhard+Mlondozi+Mingerhout Lookout badge, hide badges added, 2 removed<br>• Landmarks: 3 new, 3 removed, Mathekenyane + Lanner Gorge + Nkumbe Hill lookout badges<br>• Firebase CORS configured — images load correctly</div></div></div>
       </div>
     </div>
 
@@ -4740,9 +4753,19 @@ function toggleHeatmap() {
   window._heatmapActive = true;
   if(btn) btn.classList.add('active');
   function buildHeat() {
-    var sightings = loadSightings().filter(function(s){ return s.lat && s.lng && !s.protected; });
-    var points = sightings.map(function(s){ return [s.lat, s.lng, 0.6]; });
-    if(!points.length) { showToast('No GPS sightings logged yet.'); window._heatmapActive=false; if(btn)btn.classList.remove('active'); return; }
+    var allSightings = loadSightings().filter(function(s){ return !s.protected; });
+    var points = [];
+    allSightings.forEach(function(s) {
+      var lat = s.lat, lng = s.lng;
+      // Use exact GPS if available (higher intensity), else road waypoint (lower intensity)
+      if(lat && lng) {
+        points.push([lat, lng, 1.0]);
+      } else if(s.road) {
+        var rw = ROAD_WAYPOINTS.find(function(r){ return r.road === s.road; });
+        if(rw) points.push([rw.lat, rw.lng, 0.3]);
+      }
+    });
+    if(!points.length) { showToast('No sightings logged yet — log species in Wildlife to build your heatmap.'); window._heatmapActive=false; if(btn)btn.classList.remove('active'); return; }
     if(window.L && L.heatLayer) {
       window._heatmapLayer = L.heatLayer(points, {radius:35,blur:25,maxZoom:14,gradient:{0.2:'#0033ff',0.5:'#00ff88',0.8:'#ffaa00',1:'#ff2200'}});
       window._heatmapLayer.addTo(window._map);
@@ -8353,7 +8376,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.78';
+var APP_VERSION = '3.79';
 
 // Clear stale caches when version changes
 (function() {
@@ -8884,7 +8907,7 @@ var _map = null;
 var _mapLayers = { camps:[], gates:[], dams:[], waterholes:[], lookouts:[], hides:[], heritage:[], poi:[], picnic:[,
     { name:'Skukuza Picnic Site', lat:-24.9919, lng:31.5987, zone:'South', hours:'06:00-18:30', amenities:['toilets','shade','water'], badges:['picnic'], note:'Picnic site at Skukuza on the Sabie River. Full ablutions. Sabie River views.', detail:{"access":"Within Skukuza Camp grounds on the Sabie River. Accessible to all park visitors during operating hours. Combine with H4-1 Sabie River drive.","wildlife":"Hippo in the Sabie River visible from the picnic area. Crocodile on the banks. African fish eagle and giant kingfisher regular. Vervet monkey and grey squirrel around tables.","facilities":"Toilets, shade trees and running water. Braai facilities available. Full restaurant and shop at Skukuza Camp 200m away.","tips":"The best-serviced picnic stop in Kruger. Ideal lunch stop when driving the H4-1 Sabie River road — one of Kruger's premier game drives. Watch for crocodile on the opposite bank."} }
   ], sightings:[] };
-var _mapFilters = { camps:false, gates:false, dams:false, waterholes:false, lookouts:false, hides:false, heritage:false, poi:false, picnic:false, sightings:false };
+var _mapFilters = { camps:false, gates:false, dams:false, waterholes:false, lookouts:false, hides:false, heritage:false, poi:false, picnic:false, sightings:true };
 var _heatmapLayer = null;
 var _heatmapActive = false;
 var _leafletHeatLoaded = false;
@@ -9017,7 +9040,7 @@ function _updateNavDistance(kmLeft) {
 }
 
 function _showNavPanel(name, km, t) {
-  var mapEl = document.getElementById('mainMap');
+  var mapEl = document.getElementById('krugerMap');
   if(!mapEl) return;
   var panel = document.getElementById('navRoutePanel');
   if(!panel) {
@@ -9283,14 +9306,28 @@ function _plotMapMarkers() {
 
   // Logged sightings
   if(_mapFilters.sightings) {
-    var sightings = loadSightings();
+    var allSightings = loadSightings();
     var animalIcon = _makeIcon('&#x1F98F;','#8a2a2a');
-    sightings.forEach(function(s) {
-      if(!s.lat||!s.lng) return;
-      var m = L.marker([s.lat, s.lng], {icon: animalIcon})
-        .bindPopup('<b>'+s.name+'</b><br>'+s.road+'<br><span style="font-size:11px">'+s.date+'</span>');
+    var roadIcon = _makeIcon('&#x1F98F;','#5a4a8a');
+    var plotted = 0;
+    allSightings.forEach(function(s) {
+      if(s.protected) return;
+      var lat = s.lat, lng = s.lng;
+      // GPS fallback: use road waypoint centre if no GPS
+      if((!lat || !lng) && s.road) {
+        var rw = ROAD_WAYPOINTS.find(function(r){ return r.road === s.road; });
+        if(rw) { lat = rw.lat; lng = rw.lng; }
+      }
+      if(!lat || !lng) return;
+      var t = new Date(s.time);
+      var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+      var icon = s.lat ? animalIcon : roadIcon;
+      var m = L.marker([lat, lng], {icon: icon})
+        .bindPopup('<b>'+s.name+'</b><br>'+(s.road ? s.road + ' &bull; ' : '')+'<span style="font-size:11px">'+dateStr+'</span>'+(s.lat?'':' (approx)'));
       m.addTo(_map); _mapLayers.sightings.push(m);
+      plotted++;
     });
+    if(!plotted) showToast('No sightings logged yet — log species in Wildlife', 2000);
   }
 }
 
@@ -9768,8 +9805,11 @@ function initApp() {
       if(newSig !== curSig) {
         window._firebaseSightings = data;
         localStorage.setItem('kfg_firebase_sightings', JSON.stringify(data));
-        var nonFirebase = (window._feedAllItems || []).filter(function(f){ return f.source !== 'Kruger Field Guide'; });
-        window._feedAllItems = data.concat(nonFirebase);
+        // Rebuild with proper sort — preserves all RSS items while re-sorting by timestamp
+        var curRss = (window._feedAllItems || []).filter(function(f){
+          return f.source && f.source !== 'Kruger Field Guide' && f.source !== 'Sighted by ' + getUserNickname();
+        });
+        window._feedAllItems = rebuildFeed ? rebuildFeed(curRss) : data.concat(curRss);
         renderFeed(window._feedAllItems);
         // Show banner for newest sighting/road item — suppress if own sighting
         if(data[0] && (data[0].type === 'sighting' || data[0].type === 'road')) {
@@ -10859,8 +10899,52 @@ function switchGameTab(tab, btn) {
   var panel = document.getElementById('gamePanel-'+tab);
   if(panel) panel.style.display='block';
   if(tab==='badges') safe(renderBadges);
-  if(tab==='bingo')  safe(renderBingo);
+  if(tab==='bingo')  safe(renderGameBingo);
   if(tab==='challenge') safe(renderGameChallenge);
+}
+
+// renderBadges — alias for renderAchievements, targeting the Games screen grid
+function renderBadges() {
+  var grid = document.getElementById('achievementsGrid');
+  if(!grid) return;
+  renderAchievements();
+}
+
+// renderGameBingo — renders bingo in the Games screen (uses bingoGrid, not tripBingoGrid)
+function renderGameBingo() {
+  var grid = document.getElementById('bingoGrid');
+  var status = document.getElementById('bingoStatus');
+  var statusText = document.getElementById('bingoStatusText');
+  if(!grid) return;
+  if(!_bingoState) _bingoState = loadBingoState() || BINGO_SPECIES.map(function(s){ return {id:s.id, label:s.label, tapped:false}; });
+  var tapped = _bingoState.filter(function(s){ return s.tapped; }).length;
+  var wins = 0;
+  var lines = [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],[0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],[0,6,12,18,24],[4,8,12,16,20]];
+  lines.forEach(function(line){ if(line.every(function(i){ return _bingoState[i] && _bingoState[i].tapped; })) wins++; });
+  if(status && statusText) {
+    if(wins > 0 || tapped === 25) {
+      status.style.display = 'block';
+      statusText.textContent = tapped === 25 ? '🏆 FULL HOUSE! Incredible trip!' : '🎉 BINGO! ' + wins + ' line' + (wins>1?'s':'') + ' complete! ' + tapped + '/25 spotted';
+    } else if(tapped > 0) {
+      status.style.display = 'block';
+      statusText.textContent = tapped + '/25 animals spotted' + (tapped >= 20 ? ' — almost there!' : tapped >= 10 ? ' — great trip!' : '');
+    } else {
+      status.style.display = 'none';
+    }
+  }
+  grid.innerHTML = _bingoState.map(function(sq, idx) {
+    var specDef = BINGO_SPECIES.find(function(b){return b.id===sq.id;}); var lookupKey = sq.imgId || (specDef && specDef.imgId) || sq.id; var imgSrc = ANIMAL_IMG[lookupKey] || (typeof BIRD_IMG!=='undefined'&&BIRD_IMG[lookupKey]) || '';
+    return '<div onclick="tapBingo('+idx+')" style="'+
+      'aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;'+
+      'background:'+(sq.tapped?'rgba(58,180,80,.15)':'var(--bg3)')+';'+
+      'border:1px solid '+(sq.tapped?'rgba(58,180,80,.6)':'var(--border)')+';'+
+      'border-radius:8px;cursor:pointer;padding:0;text-align:center;overflow:hidden;position:relative;'+
+      'transition:all .2s;-webkit-tap-highlight-color:transparent">' +
+      (imgSrc ? '<img src="'+imgSrc+'" alt="'+sq.label+'" style="width:100%;height:100%;object-fit:cover;display:block;opacity:'+(sq.tapped?'0.5':'0.85')+'">' : '<div style="width:100%;height:100%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:20px">🐾</div>') +
+      (sq.tapped ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;text-shadow:0 0 6px rgba(0,0,0,.8)">✅</div>' : '') +
+      '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);padding:2px 1px;font-size:7px;font-weight:'+(sq.tapped?'700':'500')+';color:'+(sq.tapped?'#6dc97d':'#c8d8e0')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center">'+sq.label+'</div>' +
+    '</div>';
+  }).join('');
 }
 
 function renderGameChallenge() {
