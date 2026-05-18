@@ -8965,6 +8965,12 @@ function navigateTo(name, lat, lng) {
           if(_map._destMarker) _map.removeLayer(_map._destMarker);
           _map._destMarker = L.marker([lat, lng]).addTo(_map).bindPopup('<b>' + name + '</b>').openPopup();
           showToast('✅ Route: ' + km + 'km · ' + t);
+          // Draw initial position dot immediately so it's visible before watchPosition fires
+          if(_userMarker) { _map.removeLayer(_userMarker); _userMarker = null; }
+          _userMarker = L.circleMarker([fLat, fLng], {
+            radius: 10, fillColor: '#e8a020', color: '#fff',
+            weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
+          }).addTo(_map).bindPopup('Your position').openPopup();
           _startNavTracking();
         })
         .catch(function() { drawFallbackRoute(fLat, fLng, lat, lng, name); });
@@ -8987,6 +8993,12 @@ function drawFallbackRoute(fLat, fLng, lat, lng, name) {
   _showNavPanel(name, km, t);
   if(_map._destMarker) _map.removeLayer(_map._destMarker);
   _map._destMarker = L.marker([lat, lng]).addTo(_map).bindPopup('<b>' + name + '</b>').openPopup();
+  // Draw initial position dot immediately
+  if(_userMarker) { _map.removeLayer(_userMarker); _userMarker = null; }
+  _userMarker = L.circleMarker([fLat, fLng], {
+    radius: 10, fillColor: '#e8a020', color: '#fff',
+    weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
+  }).addTo(_map).bindPopup('Your position').openPopup();
   _startNavTracking();
   showToast('Offline mode: straight line to ' + name);
 }
@@ -9036,15 +9048,15 @@ function _onNavPosition(pos) {
   if(heading !== null && !isNaN(heading) && speed > 0.3) {
     var arrowHtml = '<div style="' +
       'width:0;height:0;' +
-      'border-left:7px solid transparent;' +
-      'border-right:7px solid transparent;' +
-      'border-bottom:20px solid #e8a020;' +
+      'border-left:8px solid transparent;' +
+      'border-right:8px solid transparent;' +
+      'border-bottom:22px solid #e8a020;' +
+      'transform-origin:50% 70%;' +
       'transform:rotate(' + heading + 'deg);' +
-      'transform-origin:center bottom;' +
-      'filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))' +
+      'filter:drop-shadow(0 1px 4px rgba(0,0,0,.7))' +
     '"></div>';
     _headingMarker = L.marker([lat, lng], {
-      icon: L.divIcon({ html: arrowHtml, className: '', iconSize: [14, 20], iconAnchor: [7, 10] }),
+      icon: L.divIcon({ html: arrowHtml, className: '', iconSize: [16, 22], iconAnchor: [8, 15] }),
       zIndexOffset: 600
     }).addTo(_map);
   }
@@ -9146,6 +9158,8 @@ function endNavigation() {
   if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
   // Remove destination marker
   if(_map && _map._destMarker){ _map.removeLayer(_map._destMarker); _map._destMarker = null; }
+  // Remove position dot
+  if(_userMarker){ _map.removeLayer(_userMarker); _userMarker = null; }
   // Remove heading arrow
   if(_headingMarker){ _map.removeLayer(_headingMarker); _headingMarker = null; }
   // Hide panels
