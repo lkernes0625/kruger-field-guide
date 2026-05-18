@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.83</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.84</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1083,20 +1083,14 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.83</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.84</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.80 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.84 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
-              • FIXED: spotted_hyena image alias added to ANIMAL_IMG — image now always resolves<br>
-              • FIXED: Top 3 count badge centred vertically when name wraps to 2 lines<br>
-              • FIXED: Gate buttons compact — tighter padding and grid spacing<br>
-              • FIXED: Build notes broken HTML repaired — nav bar no longer disappears<br>
-              • FIXED: Roads &amp; Camps tab no longer shows sightings<br>
-              • FIXED: Phantom Elephant Herd removed from DEFAULT_FEED<br>
-              • FIXED: Gate timer pill removed from header<br>
-              • FIXED: Map Nav — retry loop up to 2s for map init before drawing route<br>
-              • FIXED: Daily Challenger badge awarded on completing Daily Challenge<br>
-              • FIXED: About Kruger modal stays on Home screen on dismiss
+              • FIXED: Map Nav — position dot now draws immediately when route is calculated (no longer waits for watchPosition callback)<br>
+              • FIXED: Map Nav — position dot (amber circle) now correctly removed when navigation is ended<br>
+              • FIXED: Map Nav — heading arrow CSS consolidated for reliable rendering on all mobile browsers<br>
+              • FIXED: Map Nav — fallback straight-line route also draws initial position dot immediately
             </div>
           </div>
         </div>
