@@ -502,10 +502,6 @@ svg.animal-art{width:100%;height:100%}
   <div id="header">
     <img id="headerLogo" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors">
     <div class="header-right">
-      <div class="gate-pill" onclick="showScreen('finder')">
-        <div class="gate-pill-label">Gate closes</div>
-        <div class="gate-pill-time" id="headerCountdown">--:--</div>
-      </div>
       <div id="syncDot" title="Cloud sync" onclick="window._newVersionAvailable ? forceUpdate() : KFGSync.showStatus()" style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;cursor:pointer;transition:background .4s,box-shadow .4s;margin-right:2px"></div>
       <button class="header-info-btn" onclick="showScreen('emergency')" aria-label="SOS" style="background:rgba(204,51,34,.15);border-color:rgba(204,51,34,.4);color:#e05545;font-size:11px;font-weight:700;letter-spacing:.04em">SOS</button>
       <button class="header-info-btn" onclick="showScreen('about')" aria-label="About">i</button>
@@ -586,8 +582,6 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
       </div>
-
-      <div class="divlabel"
 
       <div class="divlabel">Quick Access</div>
       <div class="quick-cards-grid">
@@ -2609,7 +2603,6 @@ function showFamilyGroupModal(groupId, isNew) {
 var WEBHOOK_URL = 'https://hook.eu1.make.com/72i6x44nqnonn39hfdardx15w6u87qy3';
 var DEFAULT_FEED = [
   { type:'road', tag:'road', icon:'&#x1F6A7;', title:'Road Advisory', desc:'S65 gravel section may be restricted after heavy rain. Call Orpen Camp 013 735 6355 before travelling.', source:'KFG Advisory', time:new Date().toISOString(), timestamp:Date.now()-7200000 },
-  { type:'sighting', tag:'sighting', icon:'&#x1F418;', title:'Elephant Herd \u2013 H3', desc:'Large elephant breeding herd active on H3 between Skukuza and Lower Sabie. Approach cautiously.', source:'KFG Intelligence', time:new Date().toISOString(), timestamp:Date.now()-14400000 },
   { type:'news', tag:'news', icon:'&#x1F3DE;', title:'Park Notice', desc:'Day visitor bookings now mandatory for all SANParks rest camps. Book via sanparks.org before arrival.', source:'SANParks', time:new Date().toISOString(), timestamp:Date.now()-21600000 },
 ];
 
@@ -4466,7 +4459,7 @@ function exportTripSummary() {
 // ACHIEVEMENTS & GAMIFICATION
 // ============================================
 var MILESTONES = [
-  { id:'big5', icon:'🦁', title:'Big 5 Complete', desc:'Spotted all Big 5 species', check:function(s){ var ids=['lion','elephant','leopard','buffalo','white_rhino']; return ids.every(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
+  { id:'daily_challenge', icon:'🎯', title:'Daily Challenger', desc:'Completed the Daily Challenge — spotted all 5 challenge species in a single day', check:function(s){ var today=new Date().toDateString(); var done=getDailyChallenge?getDailyChallenge():null; if(!done||!done.length) return false; return done.every(function(ch){ return s.some(function(x){ return x.id===ch.id && new Date(x.time||x.ts||0).toDateString()===today; }); }); } },
   { id:'predator5', icon:'🐆', title:'Predator Pack', desc:'Lion, Leopard, Cheetah, Wild Dog, Hyena', check:function(s){ var ids=['lion','leopard','cheetah','wild_dog','spotted_hyena']; return ids.every(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
   { id:'first_sighting', icon:'👁️', title:'First Sighting', desc:'Logged your first animal sighting', check:function(s){ return s.length >= 1; } },
   { id:'ten_species', icon:'🌿', title:'Wild Explorer', desc:'Spotted 10 different species', check:function(s){ return Object.keys(s.reduce(function(a,x){ a[x.id]=1; return a; },{})).length >= 10; } },
@@ -10820,25 +10813,16 @@ function renderSpeciesTotals() {
     return;
   }
   var top3=entries.slice(0,3);
-  // Three animal images side by side, name + count badge below each
+  // 3 equal horizontal boxes — name + amber count badge, no images
   var html='<div style="display:flex;gap:6px;width:100%">'
     +top3.map(function(n){
-      var spId=n.toLowerCase().replace(/ /g,'_').replace(/-/g,'_').replace(/'/g,'');
-      var imgSrc=(window.ANIMAL_IMG&&ANIMAL_IMG[spId])||(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[spId])||'';
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0">'
-        +(imgSrc
-          ?'<div style="width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg4)">'
-            +'<img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover;display:block">'
-            +'</div>'
-          :'<div style="width:100%;aspect-ratio:1;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:22px">🐾</div>')
-        +'<div style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:3px;min-width:0">'
-          +'<span style="font-size:9px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+n+'</span>'
-          +'<span style="flex-shrink:0;background:var(--accent);color:var(--bg);border-radius:6px;padding:1px 5px;font-size:8px;font-weight:700">'+counts[n]+'</span>'
-        +'</div>'
+      return '<div style="flex:1;min-width:0;background:var(--bg4);border:1px solid var(--border2);border-radius:9px;padding:7px 8px;display:flex;flex-direction:column;gap:4px">'
+        +'<span style="font-size:9px;line-height:1.25;font-weight:700;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+n+'</span>'
+        +'<span style="align-self:flex-start;background:var(--accent);color:var(--bg);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700">'+counts[n]+'</span>'
       +'</div>';
     }).join('')
   +'</div>';
-  html+='<button onclick="_showSightingsBoard()" style="margin-top:6px;background:none;border:none;color:var(--accent);font-size:10px;font-weight:600;cursor:pointer;font-family:Montserrat,sans-serif;padding:0;text-align:left">'+entries.length+' species today ▼</button>';
+  html+='<button onclick="_showSightingsBoard()" style="margin-top:5px;background:none;border:none;color:var(--accent);font-size:10px;font-weight:600;cursor:pointer;font-family:Montserrat,sans-serif;padding:0;text-align:left">'+entries.length+' species today ▼</button>';
   el.innerHTML=html;
 }
 
@@ -10920,6 +10904,7 @@ function renderDailyChallenge() {
   }).join('');
   if(completeEl) completeEl.style.display=allDone?'block':'none';
   listEl.style.display=allDone?'none':'flex';
+  if(allDone) setTimeout(checkNewAchievements, 200);
   var timerEl=document.getElementById('dailyChallengeTimer');
   if(timerEl){var now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);var diff=midnight-now,h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000);timerEl.textContent='Resets in '+h+'h '+m+'m';}
 }
