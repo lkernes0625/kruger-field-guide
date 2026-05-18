@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.80</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.83</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -719,7 +719,7 @@ svg.animal-art{width:100%;height:100%}
         <button onclick="toggleMyTrail()" id="mapFlt-mytrail" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F43E; My Trail</button>
         <button onclick="mapCenterOnUser()" id="mapFlt-myloc" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F4CD; Location</button>
       </div>
-      <div id="krugerMap" style="width:100%;height:calc(100vh - 200px);min-height:400px;background:var(--bg3)"></div>
+      <div id="krugerMap" style="width:100%;height:calc(100vh - 200px);min-height:400px;background:var(--bg3);position:relative"></div>
     </div>
 
     <!-- === EMERGENCY === -->
@@ -1083,7 +1083,7 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.80</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.83</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
             <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.80 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
@@ -8393,7 +8393,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.80';
+var APP_VERSION = '3.83';
 
 // Clear stale caches when version changes
 (function() {
@@ -8921,9 +8921,7 @@ function renderGateButtons() {
 // KRUGER MAP
 // ============================================
 var _map = null;
-var _mapLayers = { camps:[], gates:[], dams:[], waterholes:[], lookouts:[], hides:[], heritage:[], poi:[], picnic:[,
-    { name:'Skukuza Picnic Site', lat:-24.9919, lng:31.5987, zone:'South', hours:'06:00-18:30', amenities:['toilets','shade','water'], badges:['picnic'], note:'Picnic site at Skukuza on the Sabie River. Full ablutions. Sabie River views.', detail:{"access":"Within Skukuza Camp grounds on the Sabie River. Accessible to all park visitors during operating hours. Combine with H4-1 Sabie River drive.","wildlife":"Hippo in the Sabie River visible from the picnic area. Crocodile on the banks. African fish eagle and giant kingfisher regular. Vervet monkey and grey squirrel around tables.","facilities":"Toilets, shade trees and running water. Braai facilities available. Full restaurant and shop at Skukuza Camp 200m away.","tips":"The best-serviced picnic stop in Kruger. Ideal lunch stop when driving the H4-1 Sabie River road — one of Kruger's premier game drives. Watch for crocodile on the opposite bank."} }
-  ], sightings:[] };
+var _mapLayers = { camps:[], gates:[], dams:[], waterholes:[], lookouts:[], hides:[], heritage:[], poi:[], picnic:[], sightings:[] };
 var _mapFilters = { camps:false, gates:false, dams:false, waterholes:false, lookouts:false, hides:false, heritage:false, poi:false, picnic:false, sightings:false };
 var _heatmapLayer = null;
 var _heatmapActive = false;
@@ -8951,11 +8949,11 @@ function navigateTo(name, lat, lng) {
     getCachedGPS(function(pos) {
       var fLat = pos.coords.latitude, fLng = pos.coords.longitude;
       _navDest = { name: name, lat: lat, lng: lng };
-
       fetch('https://router.project-osrm.org/route/v1/driving/' + fLng + ',' + fLat + ';' + lng + ',' + lat + '?overview=full&geometries=geojson')
-        .then(function(r){ return r.json(); })
-        .then(function(d) {
-          if(!d.routes || !d.routes.length){ showToast('Route not found — drawing straight line'); drawFallbackRoute(fLat, fLng, lat, lng, name); return; }
+        .then(function(r){ return r.text(); })
+        .then(function(text) {
+          var d; try { d = JSON.parse(text); } catch(e) { drawFallbackRoute(fLat, fLng, lat, lng, name); return; }
+          if(!d || !d.routes || !d.routes.length){ drawFallbackRoute(fLat, fLng, lat, lng, name); return; }
           if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
           _navRoute = d.routes[0].geometry;
           _navLayer = L.geoJSON(_navRoute, { style: { color: '#e8a020', weight: 6, opacity: .95, lineJoin: 'round', lineCap: 'round' } }).addTo(_map);
@@ -8970,7 +8968,12 @@ function navigateTo(name, lat, lng) {
           _startNavTracking();
         })
         .catch(function() { drawFallbackRoute(fLat, fLng, lat, lng, name); });
-    }, function(){ showToast('Enable GPS to navigate'); });
+    }, function(){
+      // GPS unavailable — use Kruger centre so route still draws
+      showToast('⚠️ GPS unavailable — route from park centre');
+      _navDest = { name: name, lat: lat, lng: lng };
+      drawFallbackRoute(-24.0, 31.5, lat, lng, name);
+    });
   }
   setTimeout(tryNav, 500);
 }
@@ -9113,6 +9116,7 @@ function _showNavPanel(name, km, t) {
     appEl.appendChild(cb);
   }
   cb.style.display = 'block';
+  cb.style.visibility = 'visible';
 }
 
 function _showCancelNavPopup() {
