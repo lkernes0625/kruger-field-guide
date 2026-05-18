@@ -7784,6 +7784,8 @@ function renderFeed(feedData) {
     toShow = all.filter(function(f){ return f.type==='sighting' || f.tag==='sighting'; });
   } else if(tab === 'roads') {
     toShow = all.filter(function(f){
+      // Never show sightings in the Roads & Camps tab
+      if(f.type==='sighting' || f.tag==='sighting') return false;
       if(f.type==='road' || f.tag==='road') return true;
       var t = (f.title||'').toLowerCase();
       return t.indexOf('road')>=0 || t.indexOf('closed')>=0 || t.indexOf('camp')>=0 || t.indexOf('gate')>=0;
@@ -8919,9 +8921,15 @@ var _navRoute      = null;   // GeoJSON route geometry
 
 function navigateTo(name, lat, lng) {
   showScreen('map');
-  setTimeout(function() {
-    if(!_map){ showToast('Map loading, try again'); return; }
-    showToast('📍 Calculating route...');
+  // Wait for map to be fully initialised — retry up to 10 times × 200ms = 2s
+  var attempts = 0;
+  function tryNav() {
+    attempts++;
+    if(!_map) {
+      if(attempts < 10) { setTimeout(tryNav, 200); return; }
+      showToast('Map could not load — check your connection'); return;
+    }
+    showToast('📍 Calculating route to ' + name + '...');
     getCachedGPS(function(pos) {
       var fLat = pos.coords.latitude, fLng = pos.coords.longitude;
       _navDest = { name: name, lat: lat, lng: lng };
@@ -8929,7 +8937,7 @@ function navigateTo(name, lat, lng) {
       fetch('https://router.project-osrm.org/route/v1/driving/' + fLng + ',' + fLat + ';' + lng + ',' + lat + '?overview=full&geometries=geojson')
         .then(function(r){ return r.json(); })
         .then(function(d) {
-          if(!d.routes || !d.routes.length){ showToast('Route not found'); return; }
+          if(!d.routes || !d.routes.length){ showToast('Route not found — drawing straight line'); drawFallbackRoute(fLat, fLng, lat, lng, name); return; }
           if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
           _navRoute = d.routes[0].geometry;
           _navLayer = L.geoJSON(_navRoute, { style: { color: '#e8a020', weight: 6, opacity: .95, lineJoin: 'round', lineCap: 'round' } }).addTo(_map);
@@ -8938,24 +8946,28 @@ function navigateTo(name, lat, lng) {
           var mins = Math.round(km / 40 * 60);
           var t    = mins < 60 ? mins + ' min' : Math.floor(mins / 60) + 'h ' + (mins % 60) + 'min';
           _showNavPanel(name, km, t);
-          // Destination marker
           if(_map._destMarker) _map.removeLayer(_map._destMarker);
           _map._destMarker = L.marker([lat, lng]).addTo(_map).bindPopup('<b>' + name + '</b>').openPopup();
-          showToast('Route: ' + km + 'km · ' + t);
+          showToast('✅ Route: ' + km + 'km · ' + t);
           _startNavTracking();
         })
-        .catch(function() {
-          // Offline fallback — straight dashed line
-          if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
-          _navLayer = L.polyline([[fLat, fLng], [lat, lng]], { color: '#e8a020', weight: 4, dashArray: '8,6' }).addTo(_map);
-          _map.fitBounds(_navLayer.getBounds(), { padding: [40, 40] });
-          var km = _haversineKm(fLat, fLng, lat, lng).toFixed(1);
-          _showNavPanel(name, km, '~' + Math.round(km / 40 * 60) + ' min (approx)');
-          _startNavTracking();
-          showToast('Offline: straight line to ' + name);
-        });
+        .catch(function() { drawFallbackRoute(fLat, fLng, lat, lng, name); });
     }, function(){ showToast('Enable GPS to navigate'); });
-  }, 400);
+  }
+  setTimeout(tryNav, 500);
+}
+
+function drawFallbackRoute(fLat, fLng, lat, lng, name) {
+  if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
+  _navLayer = L.polyline([[fLat, fLng], [lat, lng]], { color: '#e8a020', weight: 5, dashArray: '10,7', opacity: .9 }).addTo(_map);
+  _map.fitBounds(_navLayer.getBounds(), { padding: [40, 40] });
+  var km = _haversineKm(fLat, fLng, lat, lng).toFixed(1);
+  var t = '~' + Math.round(km / 40 * 60) + ' min (straight line)';
+  _showNavPanel(name, km, t);
+  if(_map._destMarker) _map.removeLayer(_map._destMarker);
+  _map._destMarker = L.marker([lat, lng]).addTo(_map).bindPopup('<b>' + name + '</b>').openPopup();
+  _startNavTracking();
+  showToast('Offline mode: straight line to ' + name);
 }
 
 // ── Haversine distance helper ─────────────────────────────────────
@@ -10813,12 +10825,12 @@ function renderSpeciesTotals() {
     return;
   }
   var top3=entries.slice(0,3);
-  // 3 equal horizontal boxes — name + amber count badge, no images
+  // 3 equal horizontal boxes — name left, amber count badge right, inline
   var html='<div style="display:flex;gap:6px;width:100%">'
     +top3.map(function(n){
-      return '<div style="flex:1;min-width:0;background:var(--bg4);border:1px solid var(--border2);border-radius:9px;padding:7px 8px;display:flex;flex-direction:column;gap:4px">'
-        +'<span style="font-size:9px;line-height:1.25;font-weight:700;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+n+'</span>'
-        +'<span style="align-self:flex-start;background:var(--accent);color:var(--bg);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700">'+counts[n]+'</span>'
+      return '<div style="flex:1;min-width:0;background:var(--bg4);border:1px solid var(--border2);border-radius:9px;padding:7px 8px;display:flex;align-items:center;gap:4px">'
+        +'<span style="flex:1;min-width:0;font-size:9px;line-height:1.25;font-weight:700;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+n+'</span>'
+        +'<span style="flex-shrink:0;background:var(--accent);color:var(--bg);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700;align-self:flex-start;margin-top:1px">'+counts[n]+'</span>'
       +'</div>';
     }).join('')
   +'</div>';
