@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.86</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.87</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1083,9 +1083,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.86</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.87</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.86 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.87 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -8391,7 +8391,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.86';
+var APP_VERSION = '3.87';
 
 // Clear stale caches when version changes
 (function() {
@@ -11045,18 +11045,20 @@ function renderGameChallenge() {
     if(!done) allDone = false;
     var spId = sp.toLowerCase().replace(/ /g,'_').replace(/-/g,'_');
     var imgSrc = (window.ANIMAL_IMG && ANIMAL_IMG[spId]) || (window.BIRD_IMG && BIRD_IMG[spId]) || '';
-    // Find index in SPECIES or BIRDS for modal open
     var spIdx = -1, spType = 'species';
     if(window.SPECIES) { spIdx = SPECIES.findIndex(function(s){ return s.id===spId || s.name.toLowerCase()===sp.toLowerCase(); }); }
     if(spIdx < 0 && window.BIRDS) { spIdx = BIRDS.findIndex(function(s){ return s.id===spId || s.name.toLowerCase()===sp.toLowerCase(); }); if(spIdx>=0) spType='bird'; }
-    var tapAttr = (spIdx >= 0) ? ' onclick="'+(spType==='bird'?'openBird('+spIdx+')':'openSpecies('+spIdx+')')+'" style="cursor:pointer"' : '';
-    return '<div'+tapAttr+' style="display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid '+(done?'rgba(58,138,74,.4)':'var(--border2)')+';border-radius:12px;padding:10px 12px;position:relative;overflow:hidden">' +
-      (imgSrc ? '<img src="'+imgSrc+'" style="width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0">' : '<div style="width:52px;height:52px;border-radius:8px;background:var(--bg4);flex-shrink:0"></div>') +
-      '<div style="flex:1">' +
-        '<div style="font-size:13px;font-weight:700;color:'+(done?'var(--text)':'var(--text2)')+'">'+sp+'</div>' +
+    var tapFn = (spIdx >= 0) ? (spType==='bird' ? 'openBird('+spIdx+')' : 'openSpecies('+spIdx+')') : '';
+    var cardStyle = 'display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid '+(done?'rgba(58,138,74,.4)':'var(--border2)')+';border-radius:10px;padding:8px 10px;' + (tapFn ? 'cursor:pointer;' : '');
+    return '<div onclick="'+tapFn+'" style="'+cardStyle+'">' +
+      (imgSrc ? '<img src="'+imgSrc+'" style="width:38px;height:38px;border-radius:6px;object-fit:cover;flex-shrink:0">' : '<div style="width:38px;height:38px;border-radius:6px;background:var(--bg4);flex-shrink:0"></div>') +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:12px;font-weight:700;color:'+(done?'var(--text)':'var(--text2)')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sp+'</div>' +
         '<div style="font-size:10px;color:'+(done?'var(--green)':'var(--accent)')+'">'+( done?'✓ Spotted today':'Tap to log sighting')+'</div>' +
       '</div>' +
-      (done ? '<div style="width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:14px;font-weight:700">✓</span></div>' : '<div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--accent);font-size:16px;line-height:1">+</span></div>') +
+      (done
+        ? '<div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:12px;font-weight:700">✓</span></div>'
+        : '<div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--accent);font-size:15px;line-height:1">+</span></div>') +
     '</div>';
   }).join('');
 
