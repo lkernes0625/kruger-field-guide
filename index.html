@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.84</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.85</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1083,14 +1083,15 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.84</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.85</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.84 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.85 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
-              • FIXED: Map Nav — position dot now draws immediately when route is calculated (no longer waits for watchPosition callback)<br>
-              • FIXED: Map Nav — position dot (amber circle) now correctly removed when navigation is ended<br>
-              • FIXED: Map Nav — heading arrow CSS consolidated for reliable rendering on all mobile browsers<br>
-              • FIXED: Map Nav — fallback straight-line route also draws initial position dot immediately
+              • FIXED: Leaflet JS now preloads on app start — map and Nav no longer hang waiting for script download<br>
+              • FIXED: OSRM route fetch has 8s timeout — poor signal now falls back to straight-line route immediately<br>
+              • FIXED: GPS timeout reduced 10s→6s — faster fallback to park-centre route when GPS unavailable<br>
+              • FIXED: Position dot drawn immediately on route draw, not waiting for watchPosition<br>
+              • FIXED: Position dot correctly removed when navigation ends
             </div>
           </div>
         </div>
@@ -7979,7 +7980,7 @@ var _wildlifeFilter = 'all';
 var _gpsCache=null, _gpsCacheTime=0;
 function getCachedGPS(ok, fail) {
   if(_gpsCache && Date.now()-_gpsCacheTime<300000){ ok(_gpsCache); return; }
-  navigator.geolocation.getCurrentPosition(function(p){ _gpsCache=p; _gpsCacheTime=Date.now(); ok(p); }, fail||function(){}, {timeout:10000,enableHighAccuracy:true});
+  navigator.geolocation.getCurrentPosition(function(p){ _gpsCache=p; _gpsCacheTime=Date.now(); ok(p); }, fail||function(){}, {timeout:6000,enableHighAccuracy:true});
 }
 
 function setWildlifeFilter(filter, btn) {
@@ -8387,7 +8388,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.84';
+var APP_VERSION = '3.85';
 
 // Clear stale caches when version changes
 (function() {
@@ -8943,9 +8944,13 @@ function navigateTo(name, lat, lng) {
     getCachedGPS(function(pos) {
       var fLat = pos.coords.latitude, fLng = pos.coords.longitude;
       _navDest = { name: name, lat: lat, lng: lng };
-      fetch('https://router.project-osrm.org/route/v1/driving/' + fLng + ',' + fLat + ';' + lng + ',' + lat + '?overview=full&geometries=geojson')
+      var osrmUrl = 'https://router.project-osrm.org/route/v1/driving/' + fLng + ',' + fLat + ';' + lng + ',' + lat + '?overview=full&geometries=geojson';
+      var controller = window.AbortController ? new AbortController() : null;
+      var osrmTimer = setTimeout(function() { if(controller) controller.abort(); drawFallbackRoute(fLat, fLng, lat, lng, name); }, 8000);
+      fetch(osrmUrl, controller ? { signal: controller.signal } : {})
         .then(function(r){ return r.text(); })
         .then(function(text) {
+          clearTimeout(osrmTimer);
           var d; try { d = JSON.parse(text); } catch(e) { drawFallbackRoute(fLat, fLng, lat, lng, name); return; }
           if(!d || !d.routes || !d.routes.length){ drawFallbackRoute(fLat, fLng, lat, lng, name); return; }
           if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
@@ -8959,7 +8964,6 @@ function navigateTo(name, lat, lng) {
           if(_map._destMarker) _map.removeLayer(_map._destMarker);
           _map._destMarker = L.marker([lat, lng]).addTo(_map).bindPopup('<b>' + name + '</b>').openPopup();
           showToast('✅ Route: ' + km + 'km · ' + t);
-          // Draw initial position dot immediately so it's visible before watchPosition fires
           if(_userMarker) { _map.removeLayer(_userMarker); _userMarker = null; }
           _userMarker = L.circleMarker([fLat, fLng], {
             radius: 10, fillColor: '#e8a020', color: '#fff',
@@ -8967,7 +8971,7 @@ function navigateTo(name, lat, lng) {
           }).addTo(_map).bindPopup('Your position').openPopup();
           _startNavTracking();
         })
-        .catch(function() { drawFallbackRoute(fLat, fLng, lat, lng, name); });
+        .catch(function() { clearTimeout(osrmTimer); drawFallbackRoute(fLat, fLng, lat, lng, name); });
     }, function(){
       // GPS unavailable — use Kruger centre so route still draws
       showToast('⚠️ GPS unavailable — route from park centre');
@@ -9166,15 +9170,26 @@ function endNavigation() {
   _navRoute = null;
   showToast('Navigation ended');
 }
+// Preload Leaflet JS immediately so it's ready when Nav or Map tab is used
+(function() {
+  if(window._leafletScriptLoaded) return;
+  window._leafletScriptLoaded = true;
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js';
+  script.onload = function() { window._leafletReady = true; };
+  document.head.appendChild(script);
+})();
+
 function initMap() {
   if(_map) return;
   if(!document.getElementById('krugerMap')) return;
-
-  // Load Leaflet
-  var script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js';
-  script.onload = function() { _buildMap(); };
-  document.head.appendChild(script);
+  if(window._leafletReady) {
+    _buildMap();
+  } else {
+    var wait = setInterval(function() {
+      if(window._leafletReady) { clearInterval(wait); _buildMap(); }
+    }, 100);
+  }
 }
 
 function _buildMap() {
