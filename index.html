@@ -9,7 +9,7 @@
 <meta http-equiv="expires" content="0">
 <title>Kruger Field Guide - Krantz Outdoors</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kruger Guide">
@@ -1087,11 +1087,6 @@ svg.animal-art{width:100%;height:100%}
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
             <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.88 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
-              • FIXED: App logo updated to correct krantz-outdoors-main-app-trans.png on all screens<br>
-              • FIXED: Update notification now shows as a prominent amber banner under the header instead of a fleeting toast<br>
-              • FIXED: Travel Calculator — Giriyondo Border Post and Pafuri Gate distances added<br>
-              • FIXED: Pinch zoom re-enabled (was blocked by user-scalable=no in viewport meta tag)
-            </div
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
               • FIXED: My Trail popups — star ratings removed<br>
@@ -2955,7 +2950,9 @@ function calcDistance() {
     'Numbi Gate':[-25.1552,31.1981],'Phabeni Gate':[-25.0249,31.2410],
     'Malelane Gate':[-25.4608,31.5332],'Crocodile Bridge':[-25.3582,31.8934],
     'Orpen Gate':[-24.4812,31.3898],'Phalaborwa Gate':[-23.9417,31.1654],
-    'Punda Maria Gate':[-22.7364,31.0104]
+    'Punda Maria Gate':[-22.7364,31.0104],
+    'Giriyondo Border Post':[-23.7519,31.9828],
+    'Pafuri Gate':[-22.4491,31.3197]
   };
   var c1 = COORDS[from], c2 = COORDS[to];
   if(c1 && c2) {
@@ -8427,19 +8424,7 @@ async function checkForUpdate() {
     if(data && data.version && data.version !== APP_VERSION) {
       window._newVersionAvailable = data.version;
       KFGSync.setDot('syncing');
-      // Show prominent banner under header instead of a fleeting toast
-      var existing = document.getElementById('updateBanner');
-      if(!existing) {
-        var banner = document.createElement('div');
-        banner.id = 'updateBanner';
-        banner.onclick = function() { forceUpdate(); };
-        banner.style.cssText = 'position:fixed;top:56px;left:0;right:0;z-index:9990;background:#e8a020;color:#000;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;text-align:center;padding:10px 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 12px rgba(0,0,0,.4)';
-        banner.innerHTML = '<span style="font-size:16px">🔄</span> v' + data.version + ' available — tap here to update <span style="opacity:.7;font-size:10px;font-weight:500">(tap to dismiss)</span>';
-        // Second tap dismisses
-        var taps = 0;
-        banner.onclick = function() { taps++; if(taps === 1) forceUpdate(); else banner.remove(); };
-        document.body.appendChild(banner);
-      }
+      showToast('\u{1F504} v' + data.version + ' available \u2014 tap the sync dot next to SOS to update', 6000);
     }
   } catch(e) {}
 }
