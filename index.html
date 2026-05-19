@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.90</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.91</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1083,9 +1083,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.90</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.91</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.90 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.91 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4976,7 +4976,7 @@ function exportTripMemory() {
   // Cover
   html += '<div class="cover">' +
     '<div class="brand"><img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" style="height:48px;object-fit:contain" alt="Krantz Outdoors"></div>' +
-    '<h1>' + nick + '\'s<br><span>Kruger Safari</span></h1>' +
+    '<h1><span>Kruger Safari</span></h1>' +
     '<div class="cover-sub">' +
       (fromDate && toDate ? fromDate + ' \u2014 ' + toDate : 'My Kruger Trip') +
       (entry ? ' \u00B7 ' + entry + (exit ? ' \u2192 ' + exit : '') : '') +
@@ -5017,9 +5017,8 @@ function exportTripMemory() {
           '<div class="sp-name">' + name + '</div>' +
           (sp.roads.length ? '<div class="sp-road">' + sp.roads.slice(0,2).join(', ') + '</div>' : '') +
         '</div>' +
-        '<div style="text-align:right">' +
-          '<div class="sp-count">\u00D7' + sp.count + '</div>' +
-          '<div class="stars">' + '\u2605'.repeat(Math.min(sp.stars,5)) + '</div>' +
+        '<div style="width:28px;height:28px;border-radius:50%;background:#e8a020;display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+          '<span style="color:#0f1417;font-size:11px;font-weight:700">' + sp.count + '</span>' +
         '</div>' +
       '</div>';
     }).join('') +
@@ -5064,7 +5063,7 @@ function exportTripMemory() {
               '<div class="sighting-meta">' +
                 (s.road ? '\uD83D\uDEE3 ' + s.road + ' \u00B7 ' : '') +
                 t.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}) +
-                (s.stars ? ' \u00B7 ' + '\u2605'.repeat(s.stars) : '') +
+                '' +
               '</div>' +
               (s.note ? '<div class="sighting-meta" style="font-style:italic;margin-top:3px">' + s.note + '</div>' : '') +
             '</div>' +
@@ -8395,7 +8394,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.90';
+var APP_VERSION = '3.91';
 
 // Clear stale caches when version changes
 (function() {
@@ -8587,7 +8586,7 @@ function renderTripJournal() {
   }).filter(function(s){ return jTitles.indexOf(s.title) < 0; });
 
   var all = jItems.concat(sItems);
-  all.sort(function(a,b){ return (b.time||0)-(a.time||0); }); // newest first
+  all.sort(function(a,b){ return new Date(b.time||0) - new Date(a.time||0); }); // newest first
 
   if(!all.length) {
     el.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">Your trip journal is empty.<br>Log sightings in Wildlife and tag locations to build your story.</div>';
@@ -8610,7 +8609,7 @@ function renderTripJournal() {
       var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
       var icon    = e.type==='sighting'?'&#x1F98F;':e.type==='landmark'?'&#x1F4CD;':e.type==='camp'?'&#x1F3D5;':'&#x1F4DD;';
       var color   = e.type==='sighting'?'rgba(232,160,32,.2)':e.type==='landmark'?'rgba(42,96,180,.25)':e.type==='camp'?'rgba(58,138,74,.25)':'rgba(60,60,80,.25)';
-      var stars   = e.stars ? '<span style="color:var(--accent);font-size:9px">' + '&#9733;'.repeat(Math.min(e.stars,5)) + '</span>' : '';
+      var stars   = '';
       var delBtn  = e._src==='journal'
         ? '<button onclick="deleteJournalEntry('+e._idx+')" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:0;flex-shrink:0">&#x2715;</button>'
         : '<button onclick="deleteSighting('+e._idx+')" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:0;flex-shrink:0">&#x2715;</button>';
