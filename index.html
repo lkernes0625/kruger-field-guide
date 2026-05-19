@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.89</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.90</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1083,9 +1083,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.89</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.90</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.89 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.90 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3595,7 +3595,7 @@ function confirmLogSighting() {
   sightings.push(entry);
   saveSightings(sightings);
   // Add to trip journal automatically
-  addSightingToJournal(entry);
+  // sightings shown via loadSightings() in renderTripJournal — no separate journal entry needed
   renderSpecies();
   if(typeof renderBirds === 'function') renderBirds();
   renderSightings();
@@ -4828,7 +4828,7 @@ function toggleMyTrail() {
   _myTrailLayer = L.layerGroup();
 
   sightings.forEach(function(s) {
-    var d   = new Date(s.ts || Date.now());
+    var d   = new Date(s.ts||s.time||Date.now());
     var dateStr = d.toLocaleDateString('en-ZA', {day:'numeric', month:'short', year:'numeric'});
     var timeStr = d.toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'});
     var stars   = '\u2605'.repeat(s.stars || 3);
@@ -4904,13 +4904,13 @@ function exportTripMemory() {
   // ── Build daily log (group by date) ───────────────────────────
   var dayMap = {};
   sightings.forEach(function(s) {
-    var d = new Date(s.ts||Date.now());
+    var d = new Date(s.ts||s.time||Date.now());
     var key = d.toLocaleDateString('en-ZA',{year:'numeric',month:'long',day:'numeric'});
     if(!dayMap[key]) dayMap[key] = { sightings:[], journal:[] };
     dayMap[key].sightings.push(s);
   });
   journal.forEach(function(e) {
-    var d = new Date(e.ts||Date.now());
+    var d = new Date(e.ts||e.time||Date.now());
     var key = d.toLocaleDateString('en-ZA',{year:'numeric',month:'long',day:'numeric'});
     if(!dayMap[key]) dayMap[key] = { sightings:[], journal:[] };
     dayMap[key].journal.push(e);
@@ -4975,7 +4975,7 @@ function exportTripMemory() {
 
   // Cover
   html += '<div class="cover">' +
-    '<div class="brand">Krantz Outdoors \u00B7 Kruger Field Guide</div>' +
+    '<div class="brand"><img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" style="height:48px;object-fit:contain" alt="Krantz Outdoors"></div>' +
     '<h1>' + nick + '\'s<br><span>Kruger Safari</span></h1>' +
     '<div class="cover-sub">' +
       (fromDate && toDate ? fromDate + ' \u2014 ' + toDate : 'My Kruger Trip') +
@@ -5045,7 +5045,7 @@ function exportTripMemory() {
 
       // Journal entries for this day
       data.journal.forEach(function(e) {
-        var t = new Date(e.ts||Date.now());
+        var t = new Date(e.ts||e.time||Date.now());
         html += '<div class="journal-entry">' +
           (e.title ? '<div class="je-title">' + e.title + '</div>' : '') +
           '<div class="je-body">' + (e.body||e.text||e.note||'') + '</div>' +
@@ -5056,7 +5056,7 @@ function exportTripMemory() {
       // Sightings for this day
       if(data.sightings.length) {
         data.sightings.forEach(function(s) {
-          var t = new Date(s.ts||Date.now());
+          var t = new Date(s.ts||s.time||Date.now());
           html += '<div class="sighting-row">' +
             '<div class="sighting-dot"></div>' +
             '<div>' +
@@ -5079,7 +5079,7 @@ function exportTripMemory() {
 
   // Footer
   html += '<div class="footer">' +
-    '<div class="footer-logo">Krantz <span>Outdoors</span></div>' +
+    '<div class="footer-logo"><img src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" style="height:40px;object-fit:contain" alt="Krantz Outdoors"></div>' +
     '<div class="footer-tag">Wild by Nature. Africa by Choice.</div>' +
     '<div style="font-size:11px;color:#3a4850;margin-top:8px">Generated by Kruger Field Guide \u00B7 kruger.krantzoutdoors.com</div>' +
   '</div>';
@@ -5972,7 +5972,7 @@ function confirmLogSighting() {
   sightings.push(entry);
   saveSightings(sightings);
   // Add to trip journal automatically
-  addSightingToJournal(entry);
+  // sightings shown via loadSightings() in renderTripJournal — no separate journal entry needed
   renderSpecies();
   if(typeof renderBirds === 'function') renderBirds();
   renderSightings();
@@ -8395,7 +8395,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.89';
+var APP_VERSION = '3.90';
 
 // Clear stale caches when version changes
 (function() {
