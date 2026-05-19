@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-header-trans.png?alt=media" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.85</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.86</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1083,15 +1083,15 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.85</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.86</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.85 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.86 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
-              • FIXED: Leaflet JS now preloads on app start — map and Nav no longer hang waiting for script download<br>
-              • FIXED: OSRM route fetch has 8s timeout — poor signal now falls back to straight-line route immediately<br>
-              • FIXED: GPS timeout reduced 10s→6s — faster fallback to park-centre route when GPS unavailable<br>
-              • FIXED: Position dot drawn immediately on route draw, not waiting for watchPosition<br>
-              • FIXED: Position dot correctly removed when navigation ends
+              • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
+              • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
+              • FIXED: My Trail popups — star ratings removed<br>
+              • FIXED: Leaflet JS preloads on app start — Nav no longer hangs on slow signal<br>
+              • FIXED: OSRM route fetch 8s timeout — falls back to straight-line on poor signal
             </div>
           </div>
         </div>
@@ -3605,6 +3605,8 @@ function confirmLogSighting() {
   }
   closeModal('speciesModal');
   showToast('Sighting logged!' + (road ? ' \u2013 ' + road : ''), 2500);
+  // Refresh Daily Challenge if currently visible
+  if(window._currentScreenId === 'games') { setTimeout(function(){ if(typeof renderGameChallenge==='function') renderGameChallenge(); }, 200); }
   // Prompt for nickname if first time, then push to feed
   promptNickname(function(nickname) {
     pushSightingToFeed(entry, nickname);
@@ -4837,7 +4839,6 @@ function toggleMyTrail() {
         '<div style="font-size:13px;font-weight:700;color:#e8a020;margin-bottom:3px">' + (s.name || s.species || 'Sighting') + '</div>' +
         (road ? '<div style="font-size:11px;color:#7a9aaa;margin-bottom:3px">\uD83D\uDEE3 ' + road + '</div>' : '') +
         '<div style="font-size:11px;color:#a8b4bc">' + dateStr + ' \u00B7 ' + timeStr + '</div>' +
-        '<div style="font-size:12px;color:#e8a020;margin-top:3px">' + stars + '</div>' +
         (s.note ? '<div style="font-size:11px;color:#a8b4bc;margin-top:4px;font-style:italic">' + s.note + '</div>' : '') +
       '</div>'
     ).addTo(_myTrailLayer);
@@ -5981,6 +5982,8 @@ function confirmLogSighting() {
   }
   closeModal('speciesModal');
   showToast('Sighting logged!' + (road ? ' \u2013 ' + road : ''), 2500);
+  // Refresh Daily Challenge if currently visible
+  if(window._currentScreenId === 'games') { setTimeout(function(){ if(typeof renderGameChallenge==='function') renderGameChallenge(); }, 200); }
   // Prompt for nickname if first time, then push to feed
   promptNickname(function(nickname) {
     pushSightingToFeed(entry, nickname);
@@ -8388,7 +8391,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.85';
+var APP_VERSION = '3.86';
 
 // Clear stale caches when version changes
 (function() {
@@ -11040,16 +11043,20 @@ function renderGameChallenge() {
   listEl.innerHTML = challenge.map(function(sp) {
     var done = seenNames.some(function(n){ return n.indexOf(sp.toLowerCase())>=0 || sp.toLowerCase().indexOf(n)>=0; });
     if(!done) allDone = false;
-    // Get species image
     var spId = sp.toLowerCase().replace(/ /g,'_').replace(/-/g,'_');
     var imgSrc = (window.ANIMAL_IMG && ANIMAL_IMG[spId]) || (window.BIRD_IMG && BIRD_IMG[spId]) || '';
-    return '<div style="display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid '+(done?'rgba(58,138,74,.4)':'var(--border2)')+';border-radius:12px;padding:10px 12px;position:relative;overflow:hidden">' +
+    // Find index in SPECIES or BIRDS for modal open
+    var spIdx = -1, spType = 'species';
+    if(window.SPECIES) { spIdx = SPECIES.findIndex(function(s){ return s.id===spId || s.name.toLowerCase()===sp.toLowerCase(); }); }
+    if(spIdx < 0 && window.BIRDS) { spIdx = BIRDS.findIndex(function(s){ return s.id===spId || s.name.toLowerCase()===sp.toLowerCase(); }); if(spIdx>=0) spType='bird'; }
+    var tapAttr = (spIdx >= 0) ? ' onclick="'+(spType==='bird'?'openBird('+spIdx+')':'openSpecies('+spIdx+')')+'" style="cursor:pointer"' : '';
+    return '<div'+tapAttr+' style="display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid '+(done?'rgba(58,138,74,.4)':'var(--border2)')+';border-radius:12px;padding:10px 12px;position:relative;overflow:hidden">' +
       (imgSrc ? '<img src="'+imgSrc+'" style="width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0">' : '<div style="width:52px;height:52px;border-radius:8px;background:var(--bg4);flex-shrink:0"></div>') +
       '<div style="flex:1">' +
         '<div style="font-size:13px;font-weight:700;color:'+(done?'var(--text)':'var(--text2)')+'">'+sp+'</div>' +
-        '<div style="font-size:10px;color:'+(done?'var(--green)':'var(--text3)')+'">'+( done?'✓ Spotted today':'Not yet spotted')+'</div>' +
+        '<div style="font-size:10px;color:'+(done?'var(--green)':'var(--accent)')+'">'+( done?'✓ Spotted today':'Tap to log sighting')+'</div>' +
       '</div>' +
-      (done ? '<div style="width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:14px;font-weight:700">✓</span></div>' : '<div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0"></div>') +
+      (done ? '<div style="width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:14px;font-weight:700">✓</span></div>' : '<div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--accent);font-size:16px;line-height:1">+</span></div>') +
     '</div>';
   }).join('');
 
