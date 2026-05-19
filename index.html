@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.91</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.93</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -795,20 +795,10 @@ svg.animal-art{width:100%;height:100%}
               </div>
             </div>
           </div>
-          <!-- Identify by Visual Cue -->
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px">Identify by Visual Cue</div>
-          <div style="margin-bottom:6px">
-            <div style="font-size:9px;color:var(--text3);margin-bottom:4px">Colour</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px" id="birdColorFilters">
-              <button onclick="setBirdFilter('color','')" class="bfilter active" data-ftype="color" data-fval="" style="text-align:center;padding:6px 2px;font-size:9px">All</button>
-              <button onclick="setBirdFilter('color','brown')" class="bfilter" data-ftype="color" data-fval="brown" style="text-align:center;padding:6px 2px;font-size:9px">🟫 Brown</button>
-              <button onclick="setBirdFilter('color','black')" class="bfilter" data-ftype="color" data-fval="black" style="text-align:center;padding:6px 2px;font-size:9px">⬛ Black</button>
-              <button onclick="setBirdFilter('color','white')" class="bfilter" data-ftype="color" data-fval="white" style="text-align:center;padding:6px 2px;font-size:9px">⬜ White</button>
-              <button onclick="setBirdFilter('color','grey')" class="bfilter" data-ftype="color" data-fval="grey" style="text-align:center;padding:6px 2px;font-size:9px">🩶 Grey</button>
-              <button onclick="setBirdFilter('color','rufous')" class="bfilter" data-ftype="color" data-fval="rufous" style="text-align:center;padding:6px 2px;font-size:9px">🟧 Rufous</button>
-              <button onclick="setBirdFilter('color','yellow')" class="bfilter" data-ftype="color" data-fval="yellow" style="text-align:center;padding:6px 2px;font-size:9px">🟡 Yellow</button>
-              <button onclick="setBirdFilter('color','cream')" class="bfilter" data-ftype="color" data-fval="cream" style="text-align:center;padding:6px 2px;font-size:9px">🍦 Cream</button>
-            </div>
+          <!-- Identify by Visual Cue REMOVED - replaced by Subcategories -->
+          <div id="birdSubcatSection" style="display:none;margin-top:10px">
+            <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Subcategories</div>
+            <div id="birdSubcatFilters" style="display:flex;flex-wrap:wrap;gap:4px"></div>
           </div>
         </div>
         <div class="species-grid" id="birdsGrid"></div>
@@ -1083,9 +1073,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.91</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.93</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.91 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.93 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4918,8 +4908,17 @@ function exportTripMemory() {
 
   var dayKeys = Object.keys(dayMap).sort(function(a,b){ return new Date(a)-new Date(b); });
 
-  // ── Build camp schedule ────────────────────────────────────────
-  var campNights = Object.values(tripSched).filter(Boolean);
+  // ── Build camp schedule with dates ────────────────────────────
+  var campSchedule = []; // [{camp, date, nightNum}]
+  var startDate = fromDate ? new Date(fromDate + 'T12:00:00') : null;
+  Object.keys(tripSched).sort().forEach(function(key, i) {
+    var camp = tripSched[key];
+    if(!camp) return;
+    var nightNum = parseInt(key.replace('night_','')) || i;
+    var date = startDate ? new Date(startDate.getTime() + nightNum * 86400000) : null;
+    campSchedule.push({ camp: camp, date: date, nightNum: nightNum });
+  });
+  var campNights = campSchedule.map(function(c){ return c.camp; });
   var uniqueCamps = campNights.filter(function(c,i,a){ return a.indexOf(c)===i; });
 
   // ── Generate HTML ──────────────────────────────────────────────
@@ -4966,6 +4965,13 @@ function exportTripMemory() {
       '.je-body{font-size:13px;color:#a8b4bc;line-height:1.65}' +
       '.je-time{font-size:10px;color:#5a6b75;margin-top:6px}' +
       '.route-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#a8b4bc}' +
+      '.camp-card{background:#15191c;border:1px solid #232b31;border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}' +
+      '.camp-night{width:32px;height:32px;border-radius:50%;background:#e8a020;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:#0f1417}' +
+      '.camp-info{flex:1}' +
+      '.camp-name{font-size:13px;font-weight:700;color:#fff}' +
+      '.camp-date{font-size:11px;color:#7a9aaa;margin-top:2px}' +
+      '.road-group{margin-bottom:14px}' +
+      '.road-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4a8aaa;border-left:2px solid #4a8aaa;padding-left:8px;margin-bottom:8px}' +
       '.footer{text-align:center;padding:40px 24px;background:#0f1417}' +
       '.footer-logo{font-family:\'Playfair Display\',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}' +
       '.footer-logo span{color:#e8a020}' +
@@ -5025,10 +5031,20 @@ function exportTripMemory() {
     '</div></div>';
 
   // Camp route
-  if(uniqueCamps.length) {
-    html += '<div class="section"><div class="section-title">Camp Route</div>' +
-      uniqueCamps.map(function(c,i){ return '<div class="route-row">' + (i>0?'\u2192 ':'') + '\uD83C\uDFD5 ' + c + '</div>'; }).join('') +
-    '</div>';
+  // Camp route with dates
+  if(campSchedule.length) {
+    html += '<div class="section"><div class="section-title">Camp Route</div>';
+    campSchedule.forEach(function(c) {
+      var dateStr = c.date ? c.date.toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
+      html += '<div class="camp-card">' +
+        '<div class="camp-night">' + (c.nightNum + 1) + '</div>' +
+        '<div class="camp-info">' +
+          '<div class="camp-name">\uD83C\uDFD5 ' + c.camp + '</div>' +
+          (dateStr ? '<div class="camp-date">' + dateStr + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
   }
 
   // Daily log
@@ -5052,20 +5068,33 @@ function exportTripMemory() {
         '</div>';
       });
 
-      // Sightings for this day
+      // Sightings for this day — sorted by time, road shown inline
       if(data.sightings.length) {
-        data.sightings.forEach(function(s) {
+        var sorted = data.sightings.slice().sort(function(a,b){ return new Date(a.ts||a.time||0) - new Date(b.ts||b.time||0); });
+        sorted.forEach(function(s) {
           var t = new Date(s.ts||s.time||Date.now());
+          var timeStr = t.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+          var roadStr = s.road ? 'Spotted on ' + s.road : '';
+          // Find nearest camp to GPS coords for context
+          var nearStr = '';
+          if(s.lat && s.lng && typeof CAMPS !== 'undefined') {
+            var nearest = null, nearDist = 999;
+            CAMPS.forEach(function(c) {
+              if(!c.lat||!c.lng) return;
+              var d = Math.sqrt(Math.pow(c.lat-s.lat,2)+Math.pow(c.lng-s.lng,2));
+              if(d < nearDist) { nearDist = d; nearest = c.name; }
+            });
+            if(nearest && nearDist < 0.5) nearStr = ' \u00B7 Near ' + nearest;
+          }
           html += '<div class="sighting-row">' +
             '<div class="sighting-dot"></div>' +
-            '<div>' +
-              '<div class="sighting-name">' + (s.name||s.species||'Sighting') + '</div>' +
-              '<div class="sighting-meta">' +
-                (s.road ? '\uD83D\uDEE3 ' + s.road + ' \u00B7 ' : '') +
-                t.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}) +
-                '' +
+            '<div style="flex:1;display:flex;align-items:baseline;justify-content:space-between;gap:8px">' +
+              '<div>' +
+                '<div class="sighting-name">' + (s.name||s.species||'Sighting') + '</div>' +
+                '<div class="sighting-meta">' + (roadStr + nearStr) + '</div>' +
+                (s.note ? '<div class="sighting-meta" style="font-style:italic;margin-top:3px">' + s.note + '</div>' : '') +
               '</div>' +
-              (s.note ? '<div class="sighting-meta" style="font-style:italic;margin-top:3px">' + s.note + '</div>' : '') +
+              '<div style="font-size:11px;color:#7a9aaa;white-space:nowrap;flex-shrink:0">' + timeStr + '</div>' +
             '</div>' +
           '</div>';
         });
@@ -8107,11 +8136,45 @@ var _birdHabitatFilter = '';
 var _birdCatFilter = '';
 var _birdEndangeredActive = false;
 
+var _birdSubcatFilter = '';
+
+var BIRD_SUBCATS = {
+  'ground_bird': ['Game Birds','Bustards','Korhaans','Large Flightless','Coursers','Larks','Pipits'],
+  'raptor':      ['Eagles','Hawks','Falcons','Owls','Vultures','Kites','Buzzards','Kestrels','Goshawks','Sparrowhawks'],
+  'songbird':    ['Starlings','Oxpeckers','Weavers','Bishops','Finches','Warblers','Apalis','Cisticolas','Flycatchers','Robins','Thrushes','Shrikes','Drongos','Sunbirds','Swallows','Swifts','Others'],
+  'tree_bird':   ['Hornbills','Rollers','Kingfishers','Bee-eaters','Pigeons & Doves','Cuckoos','Coucals','Barbets','Turacos','Others'],
+  'wader':       ['Herons','Egrets','Bitterns','Storks','Ibises','Spoonbills','Shoreline Waders','Others'],
+  'water':       ['Ducks','Geese','Cormorants','Darters','Grebes','Rails','Crakes','Coots','Terns','Gulls','Finfoots']
+};
+
 function setBirdCat(cat) {
   _birdCatFilter = cat;
+  _birdSubcatFilter = '';
   // Update active state on category buttons
   document.querySelectorAll('#birdCatFilters .bfilter').forEach(function(b){
     b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  // Show/hide subcategory section
+  var section = document.getElementById('birdSubcatSection');
+  var filterEl = document.getElementById('birdSubcatFilters');
+  if(cat && BIRD_SUBCATS[cat]) {
+    var subcats = BIRD_SUBCATS[cat];
+    filterEl.innerHTML = ['All'].concat(subcats).map(function(s) {
+      var val = s === 'All' ? '' : s;
+      return '<button onclick="setBirdSubcat(\''+val+'\')" class="bfilter'+(val===''?' active':'')+'" data-subcat="'+val+'" style="padding:5px 8px;font-size:9px;white-space:nowrap">'+s+'</button>';
+    }).join('');
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+    filterEl.innerHTML = '';
+  }
+  renderBirds();
+}
+
+function setBirdSubcat(val) {
+  _birdSubcatFilter = val;
+  document.querySelectorAll('#birdSubcatFilters .bfilter').forEach(function(b){
+    b.classList.toggle('active', b.dataset.subcat === val);
   });
   renderBirds();
 }
@@ -8149,6 +8212,7 @@ function renderBirds() {
     if(_birdSizeFilter && sp.size !== _birdSizeFilter) return false;
     if(_birdHabitatFilter === 'top6') { if(['martial_eagle','lappet_faced_vulture','southern_ground_hornbill','pels_fishing_owl','bateleur','saddle_billed_stork'].indexOf(sp.id)<0) return false; } else if(_birdHabitatFilter && sp.habitat !== _birdHabitatFilter && sp.category !== _birdHabitatFilter) return false;
     if(_birdCatFilter && sp.habitat !== _birdCatFilter && sp.category !== _birdCatFilter) return false;
+    if(_birdSubcatFilter && (sp.subcategory||'') !== _birdSubcatFilter) return false;
     if(_birdEndangeredActive){ var ec=(sp.conservation||'').toLowerCase(); if(ec.indexOf('endangered')<0&&ec.indexOf('critical')<0&&ec.indexOf('vulnerable')<0) return false; }
     return true;
   });
@@ -8180,6 +8244,9 @@ function renderBirds() {
 }
 function resetBirdFilters() {
   window._birdCatFilter = '';
+  window._birdSubcatFilter = '';
+  var section = document.getElementById('birdSubcatSection');
+  if(section) section.style.display = 'none';
   var allBtn = document.getElementById('birdAllBtn');
   if(allBtn) allBtn.classList.add('active');
   window._birdEndangeredActive = false;
@@ -8194,10 +8261,7 @@ function resetBirdFilters() {
   if(t6) t6.classList.remove('active');
   var eb = document.getElementById('endangeredBtn');
   if(eb) eb.classList.remove('active');
-  // Reset colour filters
-  document.querySelectorAll('#birdColorFilters .bfilter').forEach(function(b){ b.classList.remove('active'); });
-  var allCol = document.querySelector('#birdColorFilters [data-fval=""]');
-  if(allCol) allCol.classList.add('active');
+  // Reset colour filters removed — colour filter no longer exists
   renderBirds();
 }
 
@@ -8394,7 +8458,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.91';
+var APP_VERSION = '3.93';
 
 // Clear stale caches when version changes
 (function() {
