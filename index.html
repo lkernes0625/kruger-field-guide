@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v3.96</div>
+    <div class="license-tagline">Kruger National Park &bull; v3.97</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1073,9 +1073,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.96</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v3.97</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.96 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v3.97 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4196,40 +4196,6 @@ function generateCard(s, canvasId, size, userImg) {
     ctx.font = '500 ' + Math.round(size * 0.038) + 'px Montserrat,Arial,sans-serif';
     ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.886));
 
-    // Camp route — 2-column layout, max 5 per column, after daily log
-  if(campSchedule.length) {
-    var col1 = campSchedule.slice(0, 5);
-    var col2 = campSchedule.slice(5, 10);
-    html += '<div class="section"><div class="section-title">Camp Route</div>';
-    html += '<div style="display:grid;grid-template-columns:' + (col2.length ? '1fr 1fr' : '1fr') + ';gap:8px">';
-    html += '<div style="display:flex;flex-direction:column;gap:8px">';
-    col1.forEach(function(c) {
-      var dateStr = c.date ? c.date.toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
-      html += '<div class="camp-card">' +
-        '<div class="camp-night">' + (c.nightNum + 1) + '</div>' +
-        '<div class="camp-info">' +
-          '<div class="camp-name">\uD83C\uDFD5 ' + c.camp + '</div>' +
-          (dateStr ? '<div class="camp-date">' + dateStr + '</div>' : '') +
-        '</div>' +
-      '</div>';
-    });
-    html += '</div>';
-    if(col2.length) {
-      html += '<div style="display:flex;flex-direction:column;gap:8px">';
-      col2.forEach(function(c) {
-        var dateStr = c.date ? c.date.toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
-        html += '<div class="camp-card">' +
-          '<div class="camp-night">' + (c.nightNum + 1) + '</div>' +
-          '<div class="camp-info">' +
-            '<div class="camp-name">\uD83C\uDFD5 ' + c.camp + '</div>' +
-            (dateStr ? '<div class="camp-date">' + dateStr + '</div>' : '') +
-          '</div>' +
-        '</div>';
-      });
-      html += '</div>';
-    }
-    html += '</div></div>';
-  }
 
   // Footer bar
     ctx.fillStyle = 'rgba(12,15,18,0.97)';
@@ -5053,6 +5019,41 @@ function exportTripMemory() {
     }).join('') +
     '</div>' +
   '</div>';
+
+  // Camp route — 2-column layout, max 5 per column
+  if(campSchedule.length) {
+    var col1 = campSchedule.slice(0, 5);
+    var col2 = campSchedule.slice(5, 10);
+    html += '<div class="section"><div class="section-title">Camp Route</div>';
+    html += '<div style="display:grid;grid-template-columns:' + (col2.length ? '1fr 1fr' : '1fr') + ';gap:8px">';
+    html += '<div style="display:flex;flex-direction:column;gap:8px">';
+    col1.forEach(function(c) {
+      var dateStr = c.date ? c.date.toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
+      html += '<div class="camp-card">' +
+        '<div class="camp-night">' + (c.nightNum + 1) + '</div>' +
+        '<div class="camp-info">' +
+          '<div class="camp-name">\uD83C\uDFD5 ' + c.camp + '</div>' +
+          (dateStr ? '<div class="camp-date">' + dateStr + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+    if(col2.length) {
+      html += '<div style="display:flex;flex-direction:column;gap:8px">';
+      col2.forEach(function(c) {
+        var dateStr = c.date ? c.date.toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
+        html += '<div class="camp-card">' +
+          '<div class="camp-night">' + (c.nightNum + 1) + '</div>' +
+          '<div class="camp-info">' +
+            '<div class="camp-name">\uD83C\uDFD5 ' + c.camp + '</div>' +
+            (dateStr ? '<div class="camp-date">' + dateStr + '</div>' : '') +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+    }
+    html += '</div></div>';
+  }
 
   // Species list
   html += '<div class="section"><div class="section-title">Species Spotted (' + totalSpecies + ')</div>' +
@@ -8497,7 +8498,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '3.96';
+var APP_VERSION = '3.97';
 
 // Clear stale caches when version changes
 (function() {
