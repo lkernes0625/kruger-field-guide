@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v4.4</div>
+    <div class="license-tagline">Kruger National Park &bull; v4.5</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1082,9 +1082,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.4</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.5</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.4 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.5 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -1337,6 +1337,7 @@ var ANIMAL_IMG = {
   "bushpig": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-bushpig.webp?alt=media",
   "cape_porcupine": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-cape-porcupine.webp?alt=media",
   "chacma_baboon": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-chacma-baboon.webp?alt=media",
+  "baboon": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-chacma-baboon.webp?alt=media",
   "civet": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-civet.webp?alt=media",
   "common_duiker": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-common-duiker.webp?alt=media",
   "dwarf_mongoose": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fmammals%2Fspecies-dwarf-mongoose.webp?alt=media",
@@ -5065,7 +5066,7 @@ function exportTripMemory() {
       '.camp-date{font-size:10px;color:#7a9aaa;margin-top:2px}' +
       '.road-group{margin-bottom:14px}' +
       '.road-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4a8aaa;border-left:2px solid #4a8aaa;padding-left:8px;margin-bottom:8px}' +
-      '.badge-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.4);border-radius:100px;padding:5px 12px;font-size:11px;font-weight:600;color:#e8a020;margin:3px}' +
+      '.badge-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.4);border-radius:100px;padding:3px 8px;font-size:10px;font-weight:600;color:#e8a020;margin:2px}' +
       '.route-map-wrap{background:#1a2a1a;border-radius:10px;border:1px solid #2a3a2a;overflow:hidden;margin-top:10px;position:relative}' +
       '.route-map-wrap svg{display:block;width:100%}' +
       '.footer-logo{font-family:\'Playfair Display\',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}' +
@@ -5218,10 +5219,14 @@ function exportTripMemory() {
 
       html += '</div>'; // day-block
 
-      // Route map for this day — only if sightings have GPS coords
-      var gpsPoints = data.sightings.filter(function(s){ return s.lat && s.lng; }).sort(function(a,b){ return new Date(a.ts||a.time||0)-new Date(b.ts||b.time||0); });
+      // Route map for this day — only if sightings have REAL GPS coords (not approximated)
+      var gpsPoints = data.sightings.filter(function(s){
+        return s.lat && s.lng &&
+          // Exclude approximate/fallback coords — real GPS differs from park-centre fallback
+          !(Math.abs(s.lat - (-24.99)) < 0.01 && Math.abs(s.lng - 31.55) < 0.01);
+      }).sort(function(a,b){ return new Date(a.ts||a.time||0)-new Date(b.ts||b.time||0); });
+
       if(gpsPoints.length >= 2) {
-        // Project GPS to SVG coords — Kruger bounds approx -25.5 to -22.3 lat, 30.8 to 32.0 lng
         var minLat=-25.5,maxLat=-22.3,minLng=30.8,maxLng=32.0;
         var W=560,H=200,PAD=30;
         function toX(lng){ return PAD + (lng-minLng)/(maxLng-minLng)*(W-PAD*2); }
@@ -5238,7 +5243,7 @@ function exportTripMemory() {
             '<polyline points="'+polyline+'" fill="none" stroke="#e8a020" stroke-width="2" stroke-dasharray="6,3" opacity="0.6"/>' +
             dotsHtml +
           '</svg>' +
-          '<div style="padding:6px 10px;font-size:9px;color:#5a6b75;display:flex;justify-content:space-between">' +
+          '<div style="padding:6px 10px 8px;font-size:9px;color:#5a6b75;display:flex;justify-content:space-between">' +
             '<span>\u25CF Sighting locations</span><span>Route in time order</span>' +
           '</div>' +
         '</div>';
@@ -8630,7 +8635,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '4.4';
+var APP_VERSION = '4.5';
 
 // Clear stale caches when version changes
 (function() {
@@ -11298,7 +11303,7 @@ function renderGameChallenge() {
       '</div>' +
       (done
         ? '<div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:12px;font-weight:700">✓</span></div>'
-        : '<div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);position:relative;flex-shrink:0"><span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--accent);font-size:16px;font-weight:400;line-height:1">+</span></div>') +
+        : '<div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);flex-shrink:0;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="6" x2="11" y2="6" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg></div>') +
     '</div>';
   }).join('');
 
