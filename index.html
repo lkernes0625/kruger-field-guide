@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v4.6</div>
+    <div class="license-tagline">Kruger National Park &bull; v4.8</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1082,9 +1082,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.6</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.8</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.6 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.8 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4857,7 +4857,10 @@ function toggleHeatmap() {
   window._heatmapActive = true;
   if(btn) btn.classList.add('active');
   function buildHeat() {
-    var allSightings = loadSightings().filter(function(s){ return !s.protected; });
+    var todayStr = new Date().toDateString();
+    var allSightings = loadSightings().filter(function(s){
+      return !s.protected && new Date(s.ts||s.time||0).toDateString() === todayStr;
+    });
     var points = [];
     allSightings.forEach(function(s) {
       var lat = s.lat, lng = s.lng;
@@ -5031,7 +5034,8 @@ function exportTripMemory() {
       '.cover-meta-item{font-size:12px;color:#7a9aaa;text-align:center}' +
       '.cover-meta-val{font-size:17px;font-weight:700;color:#e8a020;display:block}' +
       '.section{padding:6px 20px;border-bottom:none}' +
-      '.section-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e8a020;margin-bottom:6px}' +
+      '.section-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e8a020;margin-bottom:6px;margin-top:4px}' +
+      '.section:first-of-type{padding-top:12px}' +
       '.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}' +
       '.stat{background:#15191c;border:1px solid #232b31;border-radius:10px;padding:10px;text-align:center}' +
       '.stat-num{font-family:\'Playfair Display\',serif;font-size:26px;font-weight:700;color:#e8a020;line-height:1}' +
@@ -5066,7 +5070,7 @@ function exportTripMemory() {
       '.road-group{margin-bottom:14px}' +
       '.road-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4a8aaa;border-left:2px solid #4a8aaa;padding-left:8px;margin-bottom:8px}' +
       '.badge-pill{display:inline-flex;align-items:center;gap:2px;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);border-radius:100px;padding:2px 5px;font-size:8px;font-weight:700;color:#e8a020;margin:1px}' +
-      '.route-map-wrap{background:#1a2a1a;border-radius:10px;border:1px solid #2a3a2a;overflow:hidden;margin-top:10px;position:relative}' +
+      '.route-map-wrap{background:#1a2a1a;border-radius:10px;border:1px solid #2a3a2a;overflow:hidden;margin-top:10px;margin-bottom:20px;position:relative}' +
       '.route-map-wrap svg{display:block;width:100%}' +
       '.footer{text-align:center;padding:20px 24px;background:#0f1417}' +
       '.footer-logo{display:block;text-align:center;margin-bottom:6px}' +
@@ -5093,7 +5097,7 @@ function exportTripMemory() {
   '</div>';
 
   // Stats only — no Big 5 Status section
-  html += '<div class="section">' +
+  html += '<div class="section" style="padding-top:14px">' +
     '<div class="section-title">Trip Highlights</div>' +
     '<div class="stat-row">' +
       '<div class="stat"><div class="stat-num">' + totalSightings + '</div><div class="stat-lbl">Total Sightings</div></div>' +
@@ -5227,7 +5231,15 @@ function exportTripMemory() {
       }).sort(function(a,b){ return new Date(a.ts||a.time||0)-new Date(b.ts||b.time||0); });
 
       if(gpsPoints.length >= 2) {
-        var minLat=-25.5,maxLat=-22.3,minLng=30.8,maxLng=32.0;
+        // Auto-fit bounds to actual sighting coordinates
+        var lats = gpsPoints.map(function(s){ return s.lat; });
+        var lngs = gpsPoints.map(function(s){ return s.lng; });
+        var minLat = Math.min.apply(null,lats), maxLat = Math.max.apply(null,lats);
+        var minLng = Math.min.apply(null,lngs), maxLng = Math.max.apply(null,lngs);
+        // Add 10% padding around bounds
+        var latPad = Math.max((maxLat-minLat)*0.15, 0.005);
+        var lngPad = Math.max((maxLng-minLng)*0.15, 0.005);
+        minLat -= latPad; maxLat += latPad; minLng -= lngPad; maxLng += lngPad;
         var W=560,H=200,PAD=30;
         function toX(lng){ return PAD + (lng-minLng)/(maxLng-minLng)*(W-PAD*2); }
         function toY(lat){ return PAD + (maxLat-lat)/(maxLat-minLat)*(H-PAD*2); }
@@ -8635,7 +8647,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '4.6';
+var APP_VERSION = '4.8';
 
 // Clear stale caches when version changes
 (function() {
