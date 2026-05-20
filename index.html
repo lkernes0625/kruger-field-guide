@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v4.2</div>
+    <div class="license-tagline">Kruger National Park &bull; v4.3</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -850,11 +850,11 @@ svg.animal-art{width:100%;height:100%}
     <div class="screen" id="screen-trip">
       <div class="sec-head"><h2>My Trip</h2><p>Plan &middot; Track &middot; Share</p></div>
       <div id="myTripTabs" class="trip-tabs-scroll">
-        <div class="trip-tab active" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('journal',this)">Journal</div>
+        <div class="trip-tab active" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('licenses',this)">Licenses</div>
       </div>
 
       <!-- ITINERARY TAB -->
-      <div class="trip-tab-content active" id="tab-itinerary">
+      <div class="trip-tab-content" id="tab-itinerary">
         <div style="padding:16px 16px 12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
           <div style="min-width:0">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
@@ -904,7 +904,7 @@ svg.animal-art{width:100%;height:100%}
       <div class="trip-tab-content" id="tab-sightings" style="display:none"><div id="tripSightingsList"></div></div>
 
       <!-- JOURNAL TAB - combined timeline -->
-      <div class="trip-tab-content" id="tab-journal">
+      <div class="trip-tab-content active" id="tab-journal">
         <div class="trip-summary-banner">
           <div class="trip-summary-title">Trip Journal</div>
           <div class="trip-summary-stats">
@@ -919,6 +919,15 @@ svg.animal-art{width:100%;height:100%}
         </div>
         <div id="tripJournalList" style="padding:0 16px 16px">
           <div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">Your trip journal is empty.<br>Log sightings in Wildlife and tag locations to build your story.</div>
+        </div>
+      </div>
+
+      <!-- LICENSES TAB -->
+      <div class="trip-tab-content" id="tab-licenses">
+        <div style="padding:16px 16px 8px">
+          <div id="licensesTabContent">
+            <div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">Loading license info...</div>
+          </div>
         </div>
       </div>
 
@@ -1073,9 +1082,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.2</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.3</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.2 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.3 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -2794,6 +2803,83 @@ function showScreen(id) {
     } catch(e) {}
   }
   if(id === 'photo') { try { safe(renderPhotoIntel); safe(initPhotoIntel); } catch(e) {} }
+  if(id === 'trip') { setTimeout(function(){ renderTripJournal(); updateTripStats(); }, 50); }
+}
+
+async function renderLicensesTab() {
+  var el = document.getElementById('licensesTabContent');
+  if(!el) return;
+  var key      = localStorage.getItem('kfg_license_key') || '';
+  var days     = parseInt(localStorage.getItem('kfg_license_days') || '0');
+  var type     = localStorage.getItem('kfg_license_type') || 'single';
+  var packRole = localStorage.getItem('kfg_pack_role') || '';
+  var packId   = localStorage.getItem('kfg_pack_id') || '';
+  var masked   = key.length > 8 ? '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022' + key.slice(-8) : key;
+  var typeLabel = type === 'family' ? (packRole === 'primary' ? '\uD83D\uDC6A Family Pack \u2014 Primary' : '\uD83D\uDC6A Family Pack \u2014 Gift Key') : 'Single Device License';
+  var expiryTxt = days > 0 ? days + ' days remaining' : 'Expired';
+
+  var html = '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 15px;margin-bottom:12px">' +
+    '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">Your License</div>' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
+      '<div style="font-size:12px;font-weight:700;color:var(--text)">' + masked + '</div>' +
+      '<div style="font-size:11px;color:' + (days > 30 ? 'var(--green)' : 'var(--red)') + ';font-weight:700">' + expiryTxt + '</div>' +
+    '</div>' +
+    '<div style="font-size:10px;color:var(--text3)">' + typeLabel + '</div>' +
+  '</div>';
+
+  if(type === 'family' && packRole === 'primary' && packId) {
+    html += '<div style="font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:10px">\uD83C\uDF81 Family Pack — Gift Keys</div>';
+    html += '<div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">Tap any available key to share it. Their 12-month license starts when they activate.</div>';
+    html += '<div id="licenseGiftKeysList"><div style="text-align:center;padding:12px;color:var(--text3);font-size:11px">Loading keys\u2026</div></div>';
+    el.innerHTML = html;
+    // Fetch pack keys from Firebase
+    try {
+      var resp = await fetch(FIREBASE_URL + '/license_packs/' + packId + '.json?t=' + Date.now());
+      var packData = resp.ok ? await resp.json() : null;
+      var listEl = document.getElementById('licenseGiftKeysList');
+      if(!listEl) return;
+      if(!packData || !packData.keys) {
+        listEl.innerHTML = '<div style="background:var(--bg4);border-radius:9px;padding:12px;font-size:11px;color:var(--text2);line-height:1.6;text-align:center">Your gift keys were included in your order email.<br><span style="color:var(--accent);font-weight:700">Pack ID: ' + packId + '</span></div>';
+        return;
+      }
+      var keysHtml = '';
+      Object.entries(packData.keys).forEach(function(entry) {
+        var giftKey = entry[0], info = entry[1];
+        var used = info.activated_by || '';
+        var isMyKey = giftKey === key;
+        if(isMyKey) return;
+        keysHtml += '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+          '<div style="flex:1">' +
+            '<div style="font-size:11px;font-weight:700;color:var(--text);font-family:Montserrat,sans-serif;letter-spacing:.06em">' + (giftKey.length > 8 ? '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022' + giftKey.slice(-8) : giftKey) + '</div>' +
+            '<div style="font-size:10px;color:' + (used ? 'var(--green)' : 'var(--text3)') + ';margin-top:2px">' + (used ? '\u2713 Active \u2014 ' + used : 'Available') + '</div>' +
+          '</div>' +
+          (!used ? '<button onclick="shareGiftKey(\'' + giftKey + '\')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:7px 12px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">\uD83C\uDF81 Share</button>' : '') +
+        '</div>';
+      });
+      listEl.innerHTML = keysHtml || '<div style="color:var(--text3);font-size:11px;text-align:center;padding:12px">All keys have been activated.</div>';
+    } catch(e) {
+      var listEl2 = document.getElementById('licenseGiftKeysList');
+      if(listEl2) listEl2.innerHTML = '<div style="color:var(--text3);font-size:11px;text-align:center;padding:12px">Could not load keys. Check your connection.</div>';
+    }
+  } else {
+    html += '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 15px;text-align:center">' +
+      '<div style="font-size:13px;margin-bottom:6px">\uD83D\uDC6A</div>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">Family Pack</div>' +
+      '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:12px">Share Kruger Field Guide with up to 4 family members. Purchase a Family Pack on Etsy and gift the keys directly from here.</div>' +
+      '<a href="https://www.etsy.com/listing/4499315980/kruger-national-park-safari-app-live" target="_blank" style="display:block;background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center">Get Family Pack on Etsy \u2192</a>' +
+    '</div>';
+    el.innerHTML = html;
+  }
+}
+
+function shareGiftKey(giftKey) {
+  var msg = 'Here is your Kruger Field Guide license key: ' + giftKey + '\n\nActivate it at: https://kruger.krantzoutdoors.com';
+  if(navigator.share) {
+    navigator.share({ title: 'Kruger Field Guide — Your License Key', text: msg }).catch(function(){});
+  } else {
+    navigator.clipboard && navigator.clipboard.writeText(giftKey);
+    showToast('Key copied to clipboard \u2713', 2000);
+  }
 }
 
 // ============================================
@@ -4979,7 +5065,9 @@ function exportTripMemory() {
       '.camp-date{font-size:10px;color:#7a9aaa;margin-top:2px}' +
       '.road-group{margin-bottom:14px}' +
       '.road-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4a8aaa;border-left:2px solid #4a8aaa;padding-left:8px;margin-bottom:8px}' +
-      '.footer{text-align:center;padding:24px 24px;background:#0f1417;border-top:none}' +
+      '.badge-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.4);border-radius:100px;padding:5px 12px;font-size:11px;font-weight:600;color:#e8a020;margin:3px}' +
+      '.route-map-wrap{background:#1a2a1a;border-radius:10px;border:1px solid #2a3a2a;overflow:hidden;margin-top:10px;position:relative}' +
+      '.route-map-wrap svg{display:block;width:100%}' +
       '.footer-logo{font-family:\'Playfair Display\',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}' +
       '.footer-logo span{color:#e8a020}' +
       '.footer-tag{font-size:12px;color:#5a6b75;font-style:italic}' +
@@ -5019,6 +5107,16 @@ function exportTripMemory() {
     }).join('') +
     '</div>' +
   '</div>';
+
+  // Earned badges
+  var earned = JSON.parse(localStorage.getItem('kfg_achievements')||'[]');
+  var earnedBadges = (typeof MILESTONES !== 'undefined' ? MILESTONES : []).filter(function(m){ return earned.indexOf(m.id) >= 0; });
+  if(earnedBadges.length) {
+    html += '<div class="section"><div class="section-title">Badges Earned</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:2px;padding:4px 0">' +
+      earnedBadges.map(function(m){ return '<span class="badge-pill">' + m.icon + ' ' + m.title + '</span>'; }).join('') +
+      '</div></div>';
+  }
 
   // Camp route — 2-column layout, max 5 per column
   if(campSchedule.length) {
@@ -5126,6 +5224,32 @@ function exportTripMemory() {
       }
 
       html += '</div>'; // day-block
+
+      // Route map for this day — only if sightings have GPS coords
+      var gpsPoints = data.sightings.filter(function(s){ return s.lat && s.lng; }).sort(function(a,b){ return new Date(a.ts||a.time||0)-new Date(b.ts||b.time||0); });
+      if(gpsPoints.length >= 2) {
+        // Project GPS to SVG coords — Kruger bounds approx -25.5 to -22.3 lat, 30.8 to 32.0 lng
+        var minLat=-25.5,maxLat=-22.3,minLng=30.8,maxLng=32.0;
+        var W=560,H=200,PAD=30;
+        function toX(lng){ return PAD + (lng-minLng)/(maxLng-minLng)*(W-PAD*2); }
+        function toY(lat){ return PAD + (maxLat-lat)/(maxLat-minLat)*(H-PAD*2); }
+        var pts = gpsPoints.map(function(s){ return {x:toX(s.lng),y:toY(s.lat),name:s.name||s.species||'',time:new Date(s.ts||s.time||Date.now()).toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'})}; });
+        var polyline = pts.map(function(p){ return p.x+','+p.y; }).join(' ');
+        var dotsHtml = pts.map(function(p,i){
+          return '<circle cx="'+p.x+'" cy="'+p.y+'" r="7" fill="#e8a020" stroke="#0f1417" stroke-width="2"/>' +
+            '<text x="'+p.x+'" y="'+(p.y+4)+'" text-anchor="middle" fill="#0f1417" font-size="8" font-weight="700" font-family="Outfit,sans-serif">'+(i+1)+'</text>';
+        }).join('');
+        html += '<div class="route-map-wrap">' +
+          '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">' +
+            '<rect width="'+W+'" height="'+H+'" fill="#1a2a1a"/>' +
+            '<polyline points="'+polyline+'" fill="none" stroke="#e8a020" stroke-width="2" stroke-dasharray="6,3" opacity="0.6"/>' +
+            dotsHtml +
+          '</svg>' +
+          '<div style="padding:6px 10px;font-size:9px;color:#5a6b75;display:flex;justify-content:space-between">' +
+            '<span>\u25CF Sighting locations</span><span>Route in time order</span>' +
+          '</div>' +
+        '</div>';
+      }
     });
     html += '</div>';
   }
@@ -5428,6 +5552,7 @@ function switchTripTab(tab, el) {
   if(tab==='journal') renderTripJournal();
   if(tab==='achievements') renderAchievements();
   if(tab==='bingo') renderBingo();
+  if(tab==='licenses') renderLicensesTab();
 }
 
 function switchParkTab(tab, el) {
@@ -7804,6 +7929,14 @@ async function submitRoadReport() {
   if(!type) { showToast('Please select a report type'); return; }
   if(!road) { showToast('Please enter a road or camp name'); document.getElementById('rrRoad').focus(); return; }
 
+  // Blocked keywords — wildlife trafficking / poaching prevention
+  var BLOCKED = ['rhino','white rhino','black rhino','horn','ivory','pangolin','poach','trafficking','tusk','elephant tusk','rhino horn','snare','trap'];
+  var combined = (road + ' ' + note).toLowerCase();
+  if(BLOCKED.some(function(w){ return combined.indexOf(w) >= 0; })) {
+    showToast('\u26D4 This report contains restricted content and cannot be submitted.', 4000);
+    return;
+  }
+
   var typeLabels = {
     road_open:'Road Open',road_closed:'Road Closed',road_poor:'Poor Condition',
     camp_update:'Camp Update',gate_update:'Gate Update',flood:'Flooding'
@@ -8071,13 +8204,33 @@ function searchSpecies(val) {
   var v = (val||'').toLowerCase().trim();
   var clearBtn = document.getElementById('wildlifeSearchClear');
   if(clearBtn) clearBtn.style.display = v.length ? 'block' : 'none';
+
+  // Find active tab
+  var activeTab = 'species';
+  var activeBtn = document.querySelector('.wildlife-tab[style*="accent"], .wildlife-tab.active');
+  if(activeBtn) {
+    var t = activeBtn.getAttribute('data-tab') || activeBtn.getAttribute('onclick') || '';
+    if(t.indexOf('birds') >= 0 || t.indexOf("'birds'") >= 0) activeTab = 'birds';
+    else if(t.indexOf('reptiles') >= 0) activeTab = 'reptiles';
+    else if(t.indexOf('frogs') >= 0) activeTab = 'frogs';
+    else if(t.indexOf('sightings') >= 0) activeTab = 'sightings';
+  }
+
   if(v.length > 0) {
+    // Only show the active tab panel — not all panels
     ['species','birds','reptiles','frogs'].forEach(function(t){
       var panel = document.getElementById('wildlifePanel-'+t);
-      if(panel) panel.style.display = 'block';
+      if(panel) panel.style.display = (t === activeTab) ? 'block' : 'none';
     });
-    document.getElementById('wildlifePanel-sightings') && (document.getElementById('wildlifePanel-sightings').style.display='none');
-    document.querySelectorAll('.wildlife-tab').forEach(function(b){ b.style.color='var(--text3)'; b.style.borderBottomColor='transparent'; });
+    var sp = document.getElementById('wildlifePanel-sightings');
+    if(sp) sp.style.display = 'none';
+    // Keep active tab highlighted
+    document.querySelectorAll('.wildlife-tab').forEach(function(b){
+      var bt = b.getAttribute('data-tab') || b.getAttribute('onclick') || '';
+      var isActive = bt.indexOf(activeTab) >= 0;
+      b.style.color = isActive ? 'var(--accent)' : 'var(--text3)';
+      b.style.borderBottomColor = isActive ? 'var(--accent)' : 'transparent';
+    });
   } else {
     ['birds','reptiles','frogs','sightings'].forEach(function(t){
       var panel = document.getElementById('wildlifePanel-'+t);
@@ -8088,7 +8241,11 @@ function searchSpecies(val) {
     var firstTab = document.querySelector('.wildlife-tab');
     if(firstTab){ firstTab.style.color='var(--accent)'; firstTab.style.borderBottomColor='var(--accent)'; }
   }
-  renderSpecies(); renderBirds(); renderReptiles(); renderFrogs();
+  // Only render the active tab
+  if(activeTab === 'birds') renderBirds();
+  else if(activeTab === 'reptiles') renderReptiles();
+  else if(activeTab === 'frogs') renderFrogs();
+  else renderSpecies();
 }
 
 function clearWildlifeSearch() {
@@ -8498,7 +8655,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '4.2';
+var APP_VERSION = '4.3';
 
 // Clear stale caches when version changes
 (function() {
@@ -11166,7 +11323,7 @@ function renderGameChallenge() {
       '</div>' +
       (done
         ? '<div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:12px;font-weight:700">✓</span></div>'
-        : '<div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--accent);font-size:16px;line-height:24px;display:block;text-align:center;width:100%">+</span></div>') +
+        : '<div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--accent);font-size:18px;font-weight:300;line-height:1;margin-top:-1px">+</span></div>') +
     '</div>';
   }).join('');
 
