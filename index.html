@@ -423,7 +423,7 @@ svg.animal-art{width:100%;height:100%}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v4.5</div>
+    <div class="license-tagline">Kruger National Park &bull; v4.6</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -1082,9 +1082,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.5</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v4.6</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.5 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v4.6 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4571,7 +4571,6 @@ var MILESTONES = [
   { id:'elephant_herd', icon:'🐘', title:'Elephant Whisperer', desc:'Logged elephant 3+ times', check:function(s){ return s.filter(function(x){ return x.id==='elephant'; }).length >= 3; } },
   { id:'rhino_both', icon:'🦏', title:'Rhino Spotter', desc:'Spotted both White and Black Rhino', check:function(s){ return s.some(function(x){ return x.id==='white_rhino'; }) && s.some(function(x){ return x.id==='black_rhino'; }); } },
   { id:'nocturnal', icon:'🌙', title:'Night Owl', desc:'Spotted a nocturnal species (Aardvark, Pangolin, Aardwolf, Porcupine, Spring Hare, Serval)', check:function(s){ var ids=['aardvark','pangolin','aardwolf','cape_porcupine','spring_hare','serval']; return ids.some(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
-  { id:'five_star', icon:'⭐', title:'Five Star Moment', desc:'Logged a 5-star sighting', check:function(s){ return s.some(function(x){ return x.stars >= 5; }); } },
   { id:'wild_dog', icon:'🐕', title:'Pack Tracker', desc:'Spotted the endangered African Wild Dog', check:function(s){ return s.some(function(x){ return x.id==='wild_dog'; }); } },
   { id:'top6birds', icon:'🦅', title:'Top 6 Birds', desc:'Spotted all 6 iconic Kruger birds: Martial Eagle, Lappet-faced Vulture, Southern Ground Hornbill, Pel\'s Fishing Owl, Bateleur & Saddle-billed Stork', check:function(s){ var ids=['martial_eagle','lappet_faced_vulture','southern_ground_hornbill','pels_fishing_owl','bateleur','saddle_billed_stork']; return ids.every(function(id){ return s.some(function(x){ return x.id===id; }); }); } },
   { id:'antelope10', icon:'🦌', title:'Antelope Aficionado', desc:'Spotted 10 different antelope species', check:function(s){ var ante=s.filter(function(x){ return SPECIES.find(function(sp){ return sp.id===x.id && sp.category==='antelope'; }); }); return Object.keys(ante.reduce(function(a,x){ a[x.id]=1; return a; },{})).length >= 10; } },
@@ -5031,14 +5030,14 @@ function exportTripMemory() {
       '.cover-meta{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}' +
       '.cover-meta-item{font-size:12px;color:#7a9aaa;text-align:center}' +
       '.cover-meta-val{font-size:17px;font-weight:700;color:#e8a020;display:block}' +
-      '.section{padding:14px 20px;border-bottom:none}' +
-      '.section-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e8a020;margin-bottom:12px}' +
-      '.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}' +
-      '.stat{background:#15191c;border:1px solid #232b31;border-radius:10px;padding:14px;text-align:center}' +
-      '.stat-num{font-family:\'Playfair Display\',serif;font-size:28px;font-weight:700;color:#e8a020;line-height:1}' +
-      '.stat-lbl{font-size:9px;color:#7a9aaa;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}' +
-      '.big5{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}' +
-      '.b5-item{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:600;background:#232b31;border:1px solid #3a4850;color:#7a9aaa}' +
+      '.section{padding:6px 20px;border-bottom:none}' +
+      '.section-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e8a020;margin-bottom:6px}' +
+      '.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}' +
+      '.stat{background:#15191c;border:1px solid #232b31;border-radius:10px;padding:10px;text-align:center}' +
+      '.stat-num{font-family:\'Playfair Display\',serif;font-size:26px;font-weight:700;color:#e8a020;line-height:1}' +
+      '.stat-lbl{font-size:9px;color:#7a9aaa;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}' +
+      '.big5{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}' +
+      '.b5-item{padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;background:#232b31;border:1px solid #3a4850;color:#7a9aaa}' +
       '.b5-item.seen{background:rgba(232,160,32,.12);border-color:rgba(232,160,32,.4);color:#e8a020}' +
       '.species-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}' +
       '.sp-item{background:#15191c;border:1px solid #232b31;border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}' +
@@ -5059,19 +5058,20 @@ function exportTripMemory() {
       '.je-body{font-size:13px;color:#a8b4bc;line-height:1.65}' +
       '.je-time{font-size:10px;color:#5a6b75;margin-top:6px}' +
       '.route-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#a8b4bc}' +
-      '.camp-card{background:#15191c;border:1px solid #232b31;border-radius:8px;padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}' +
-      '.camp-night{width:26px;height:26px;border-radius:50%;background:#e8a020;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;color:#0f1417}' +
+      '.camp-card{background:#15191c;border:1px solid #232b31;border-radius:8px;padding:7px 10px;margin-bottom:5px;display:flex;align-items:center;gap:10px}' +
+      '.camp-night{width:24px;height:24px;border-radius:50%;background:#e8a020;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:#0f1417}' +
       '.camp-info{flex:1}' +
-      '.camp-name{font-size:12px;font-weight:700;color:#fff}' +
-      '.camp-date{font-size:10px;color:#7a9aaa;margin-top:2px}' +
+      '.camp-name{font-size:11px;font-weight:700;color:#fff}' +
+      '.camp-date{font-size:9px;color:#7a9aaa;margin-top:1px}' +
       '.road-group{margin-bottom:14px}' +
       '.road-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4a8aaa;border-left:2px solid #4a8aaa;padding-left:8px;margin-bottom:8px}' +
-      '.badge-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.4);border-radius:100px;padding:3px 8px;font-size:10px;font-weight:600;color:#e8a020;margin:2px}' +
+      '.badge-pill{display:inline-flex;align-items:center;gap:2px;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);border-radius:100px;padding:2px 5px;font-size:8px;font-weight:700;color:#e8a020;margin:1px}' +
       '.route-map-wrap{background:#1a2a1a;border-radius:10px;border:1px solid #2a3a2a;overflow:hidden;margin-top:10px;position:relative}' +
       '.route-map-wrap svg{display:block;width:100%}' +
-      '.footer-logo{font-family:\'Playfair Display\',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}' +
-      '.footer-logo span{color:#e8a020}' +
-      '.footer-tag{font-size:12px;color:#5a6b75;font-style:italic}' +
+      '.footer{text-align:center;padding:20px 24px;background:#0f1417}' +
+      '.footer-logo{display:block;text-align:center;margin-bottom:6px}' +
+      '.footer-logo img{display:inline-block}' +
+      '.footer-tag{font-size:12px;color:#5a6b75;font-style:italic;text-align:center}' +
       '@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{background:#0f1417!important;color:#fff!important;margin:0;padding:0}.cover{background:linear-gradient(135deg,#15191c,#1c2328)!important;-webkit-print-color-adjust:exact}.footer{background:#0f1417!important}a{text-decoration:none}@page{margin:10mm}}' +
     '</style></head><body>';
 
@@ -8635,7 +8635,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '4.5';
+var APP_VERSION = '4.6';
 
 // Clear stale caches when version changes
 (function() {
