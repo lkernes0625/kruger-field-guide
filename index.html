@@ -417,13 +417,16 @@ svg.animal-art{width:100%;height:100%}
 .onboard-dot.active{background:var(--accent);width:18px;border-radius:3px}
 .onboard-btn{background:var(--accent);border:none;color:var(--bg);border-radius:12px;padding:13px 40px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%;max-width:280px}
 .onboard-skip{background:none;border:none;color:var(--text3);font-family:Montserrat,sans-serif;font-size:11px;cursor:pointer;margin-top:12px;text-decoration:underline}
+/* Prevent iOS Safari auto-zoom on input focus — requires font-size >= 16px */
+input,select,textarea{font-size:16px!important}
+input::placeholder,textarea::placeholder{font-size:13px!important}
 </style>
 
 <!-- LICENSE GATE -->
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v5.14</div>
+    <div class="license-tagline">Kruger National Park &bull; v5.16</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -566,13 +569,16 @@ svg.animal-art{width:100%;height:100%}
           <div style="font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">⏱ Leaving from inside the park?</div>
           <div style="font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.5">Select your exit gate — we’ll calculate the latest safe departure time from your current GPS position at 40km/h.</div>
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-            <select id="deptGateSelect" onchange="document.getElementById('deptClearBtn').style.display=this.value?'block':'none'" style="flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:13px">
-              <option value="">Select exit gate...</option>
-              <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Phabeni Gate</option>
-              <option>Malelane Gate</option><option>Crocodile Bridge Gate</option><option>Orpen Gate</option>
-              <option>Phalaborwa Gate</option><option>Punda Maria Gate</option><option>Pafuri Gate</option>
-              <option>Giriyondo Border Post</option>
-            </select>
+            <div style="flex:1;position:relative">
+              <select id="deptGateSelect" onchange="document.getElementById('deptClearBtn').style.display=this.value?'block':'none'" style="width:100%;appearance:none;-webkit-appearance:none;background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 36px 9px 10px;font-family:Montserrat,sans-serif;font-size:13px">
+                <option value="">Select exit gate...</option>
+                <option>Paul Kruger Gate</option><option>Numbi Gate</option><option>Phabeni Gate</option>
+                <option>Malelane Gate</option><option>Crocodile Bridge Gate</option><option>Orpen Gate</option>
+                <option>Phalaborwa Gate</option><option>Punda Maria Gate</option><option>Pafuri Gate</option>
+                <option>Giriyondo Border Post</option>
+              </select>
+              <div style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#ffffff;font-size:12px">&#9660;</div>
+            </div>
             <button id="deptClearBtn" onclick="document.getElementById('deptGateSelect').value='';document.getElementById('deptResult').style.display='none';this.style.display='none'" style="display:none;background:var(--bg4);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;flex-shrink:0">✕</button>
             <button onclick="calcDepartureTime()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:9px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">Calculate</button>
           </div>
@@ -1082,9 +1088,9 @@ svg.animal-art{width:100%;height:100%}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.14</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.16</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.14 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.16 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -8970,7 +8976,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.14';
+var APP_VERSION = '5.16';
 
 // Clear stale caches when version changes
 (function() {
