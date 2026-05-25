@@ -7845,8 +7845,7 @@ function renderLookouts() {
     var isLookoutDam=!!p._lookoutFromDam;
     var icon=isHide?'&#x1F50D;':'&#x1F441;';
     var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
-    var routeBtn='<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>';
-    var typeBdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+routeBtn+'</div>';
+    var typeBdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+ p.name.replace(/\'/g,'') +'\','+ p.lat +','+ p.lng +')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>'+'</div>';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div>'
@@ -7889,7 +7888,7 @@ function renderPicnic() {
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">' +
       '<div class="card-icon">&#x1F9FA;</div>' +
       '<div class="card-titles"><div class="card-title">'+p.name+'</div><div class="card-meta">'+(p.hours||'')+src+'</div></div>' +
-      '<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>'+'</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+ p.name.replace(/\'/g,'') +'\','+ p.lat +','+ p.lng +')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>'+'</div></div>' +
       '<div class="card-body">'+
       (p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')+
       '<div class="drow"><div class="dlabel">Hours</div><div class="dval">'+(p.hours||'N/A')+'</div></div>' +
@@ -7926,8 +7925,7 @@ function renderDams() {
     var isDam=!isWH||nl.indexOf('dam')>=0;
     var icon=isHide?'&#x1F50D;':(isWH&&!isDam?'&#x1F4A7;':'&#x1F30A;');
     var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
-    var routeBtn='<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>';
-    var bdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+routeBtn+'</div>';
+    var bdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+ p.name.replace(/\'/g,'') +'\','+ p.lat +','+ p.lng +')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>'+'</div>';
     var meta=isHide&&isDam?'Dam · Hide':isWH&&!isDam?'Waterhole / Pan':'Dam';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
@@ -7977,7 +7975,7 @@ function renderLandmarks() {
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div><div class="card-meta">'+meta+'</div></div>'
-      +'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>+'</div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+ p.name.replace(/\'/g,'') +'\','+ p.lat +','+ p.lng +')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>'+'</div></div>'
       +'<div class="card-body">'
       +(p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')
       +(am.length?'<div class="drow"><div class="dlabel">Amenities</div><div class="dval" style="text-align:left">'+_amenityBadges(am)+'</div></div>':'')
