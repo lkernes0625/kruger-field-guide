@@ -658,7 +658,8 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
             <select id="campZoneFilter" onchange="renderCamps()" style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:12px;-webkit-appearance:none;cursor:pointer"><option value="">All Regions</option>
               <option value="South">South</option>
               <option value="Central">Central</option>
-              <option value="North">North</option></select>
+              <option value="North">North</option>
+              <option value="Far North">Far North</option></select>
             <select id="campTypeFilter" onchange="renderCamps()" style="flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:12px;-webkit-appearance:none;cursor:pointer"><option value="">All Types</option>
               <option value="Main Camp">Main Camp</option>
               <option value="Satellite Camp">Satellite Camp</option>
@@ -10134,7 +10135,7 @@ function _plotMapMarkers() {
     (FACILITIES.lookout||[]).filter(function(d){ return (d.badges||[]).indexOf('waterhole')>=0; }).forEach(function(d){ allWHMarkers.push(d); });
     allWHMarkers.forEach(function(d) {
       var m = L.marker([d.lat, d.lng], {icon: whIcon})
-        .bindPopup('<b>'+d.name+'</b><br>Waterhole / Pan<br>'+(d.note||''));
+        .bindPopup('<b>'+d.name+'</b><br>'+(d.note||''));
       m.addTo(_map); _mapLayers.waterholes.push(m);
     });
   }
@@ -10161,7 +10162,7 @@ function _plotMapMarkers() {
     (FACILITIES.landmarks||[]).filter(function(d){ return (d.badges||[]).indexOf('hide')>=0; }).forEach(function(d){ allHideMarkers.push(d); });
     allHideMarkers.forEach(function(p) {
       var m = L.marker([p.lat, p.lng], {icon: hideIcon})
-        .bindPopup('<b>'+p.name+'</b><br>Hide<br>'+(p.note||''));
+        .bindPopup('<b>'+p.name+'</b><br>'+(p.note||''));
       m.addTo(_map); _mapLayers.hides.push(m);
     });
   }
@@ -10174,7 +10175,7 @@ function _plotMapMarkers() {
     (FACILITIES.dams||[]).filter(function(d){ return (d.badges||[]).indexOf('heritage')>=0; }).forEach(function(d){ allHeritMarkers.push(d); });
     allHeritMarkers.forEach(function(l) {
       var m = L.marker([l.lat, l.lng], {icon: heritIcon})
-        .bindPopup('<b>'+l.name+'</b><br>Heritage<br>'+(l.note||''));
+        .bindPopup('<b>'+l.name+'</b><br>'+(l.note||''));
       m.addTo(_map); _mapLayers.heritage.push(m);
     });
   }
@@ -10186,7 +10187,7 @@ function _plotMapMarkers() {
     (FACILITIES.lookout||[]).filter(function(d){ return (d.badges||[]).indexOf('poi')>=0; }).forEach(function(d){ allPOIMarkers.push(d); });
     allPOIMarkers.forEach(function(l) {
       var m = L.marker([l.lat, l.lng], {icon: poiIcon})
-        .bindPopup('<b>'+l.name+'</b><br>Point of Interest<br>'+(l.note||''));
+        .bindPopup('<b>'+l.name+'</b><br>'+(l.note||''));
       m.addTo(_map); _mapLayers.poi.push(m);
     });
   }
