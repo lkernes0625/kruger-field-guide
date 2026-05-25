@@ -1088,9 +1088,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.21</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.23</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.21 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.23 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3668,18 +3668,19 @@ function renderCamps() {
           '<div class="card-icon">&#x26FA;</div>' +
           '<div class="card-titles">' +
             '<div class="card-title">'+camp.name+'</div>' +
-            '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:5px">' +
-              (camp.fuel?'<span class="atag yes">Fuel</span>':'') +
-              (camp.shop?'<span class="atag yes">Shop</span>':'') +
-              (camp.restaurant?'<span class="atag yes">Restaurant</span>':'') +
-              (camp.atm?'<span class="atag yes">ATM</span>':'') +
-              (camp.clinic?'<span class="atag yes">Clinic</span>':'') +
-              (camp.wifi?'<span class="atag yes">WiFi</span>':'') +
-              '<span class="atag yes">Restrooms</span>' +
+            '<div style="display:flex;gap:2px;flex-wrap:nowrap;margin-top:4px;overflow:hidden">' +
+              (camp.fuel?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Fuel</span>':'') +
+              (camp.shop?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Shop</span>':'') +
+              (camp.restaurant?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Restaurant</span>':'') +
+              (camp.atm?'<span class="atag yes" style="font-size:8px;padding:1px 5px">ATM</span>':'') +
+              (camp.clinic?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Clinic</span>':'') +
+              (camp.wifi?'<span class="atag yes" style="font-size:8px;padding:1px 5px">WiFi</span>':'') +
+              '<span class="atag yes" style="font-size:8px;padding:1px 5px">Restrooms</span>' +
             '</div>' +
           '</div>' +
-          '<div style="display:flex;flex-direction:row;gap:4px;align-items:center;flex-shrink:0">' +
+          '<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;flex-shrink:0">' +
             '<div class="badge badge-blue" style="white-space:nowrap">'+camp.zone+'</div>' +
+            '<button onclick="event.stopPropagation();navigateTo(\'' + camp.name.replace(/\'/g,'') + '\',' + camp.lat + ',' + camp.lng + ')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif">&#x1F4CD; Route</button>' +
           '</div>' +
         '</div>' +
         '<div class="card-body">' +
@@ -7844,7 +7845,8 @@ function renderLookouts() {
     var isLookoutDam=!!p._lookoutFromDam;
     var icon=isHide?'&#x1F50D;':'&#x1F441;';
     var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
-    var typeBdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'</div>';
+    var routeBtn='<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>';
+    var typeBdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+routeBtn+'</div>';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div>'
@@ -7887,7 +7889,7 @@ function renderPicnic() {
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">' +
       '<div class="card-icon">&#x1F9FA;</div>' +
       '<div class="card-titles"><div class="card-title">'+p.name+'</div><div class="card-meta">'+(p.hours||'')+src+'</div></div>' +
-      '<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>'+'</div></div>' +
       '<div class="card-body">'+
       (p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')+
       '<div class="drow"><div class="dlabel">Hours</div><div class="dval">'+(p.hours||'N/A')+'</div></div>' +
@@ -7924,7 +7926,8 @@ function renderDams() {
     var isDam=!isWH||nl.indexOf('dam')>=0;
     var icon=isHide?'&#x1F50D;':(isWH&&!isDam?'&#x1F4A7;':'&#x1F30A;');
     var zoneBdg=p.zone?'<div class="badge badge-blue" style="margin-top:3px">'+p.zone+'</div>':'';
-    var bdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'</div>';
+    var routeBtn='<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>';
+    var bdg='<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+routeBtn+'</div>';
     var meta=isHide&&isDam?'Dam · Hide':isWH&&!isDam?'Waterhole / Pan':'Dam';
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
@@ -7974,7 +7977,7 @@ function renderLandmarks() {
     return '<div class="card"><div class="card-head" onclick="toggleCard(this)">'
       +'<div class="card-icon">'+icon+'</div>'
       +'<div class="card-titles"><div class="card-title">'+p.name+'</div><div class="card-meta">'+meta+'</div></div>'
-      +'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'</div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0;align-items:flex-end">'+zoneBdg+'<button onclick="event.stopPropagation();navigateTo(\''+p.name.replace(/\'/g,\'\')+'\','+p.lat+','+p.lng+')"' style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif;margin-top:2px">&#x1F4CD; Route</button>+'</div></div>'
       +'<div class="card-body">'
       +(p.zone?'<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+p.zone+'</div></div>':'')
       +(am.length?'<div class="drow"><div class="dlabel">Amenities</div><div class="dval" style="text-align:left">'+_amenityBadges(am)+'</div></div>':'')
@@ -8656,7 +8659,7 @@ function findNearest(type, btn) {
             '</div>' +
             '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">' +
               '<div class="badge badge-' + (i===0?'green':'blue') + '">' + distStr + '</div>' +
-              '<button onclick="event.stopPropagation();navigateTo(\'' + f.name.replace(/'/g,'') + '\',' + f.lat + ',' + f.lng + ')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif">📍 Nav</button>' +
+              '<button onclick="event.stopPropagation();navigateTo(\'' + f.name.replace(/'/g,'') + '\',' + f.lat + ',' + f.lng + ')" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif">📍 Route</button>' +
             '</div>' +
           '</div>' +
           '<div class="card-body">' + extra + '</div>' +
@@ -9234,7 +9237,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.21';
+var APP_VERSION = '5.23';
 
 // Clear stale caches when version changes
 (function() {
