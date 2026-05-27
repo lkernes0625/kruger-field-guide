@@ -1086,6 +1086,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         <button class="game-tab active" id="gameTab-challenge" onclick="switchGameTab('challenge',this)" style="flex:1;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">CHALLENGE</button>
         <button class="game-tab" id="gameTab-badges" onclick="switchGameTab('badges',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">BADGES</button>
         <button class="game-tab" id="gameTab-bingo" onclick="switchGameTab('bingo',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">BINGO</button>
+        <button class="game-tab" id="gameTab-puzzle" onclick="switchGameTab('puzzle',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">PUZZLE</button>
       </div>
 
       <!-- DAILY CHALLENGE TAB -->
@@ -1226,6 +1227,56 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div id="bingoGrid"></div>
         </div>
       </div>
+
+      <!-- PUZZLE TAB -->
+      <div class="game-tab-content" id="gamePanel-puzzle" style="display:none">
+        <div id="puzzleSelector" style="padding:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">Slide Puzzle</div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:16px">Reassemble today's animal — same puzzle for everyone worldwide. Resets at midnight.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+            <div onclick="openPuzzle(3)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+              <div style="font-size:26px;margin-bottom:8px">🟩</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text)">Easy</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:3px">3×3 · 8 tiles</div>
+              <div id="puzzleProgress3" style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700;min-height:12px"></div>
+            </div>
+            <div onclick="openPuzzle(4)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+              <div style="font-size:26px;margin-bottom:8px">🟧</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text)">Medium</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:3px">4×4 · 15 tiles</div>
+              <div id="puzzleProgress4" style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700;min-height:12px"></div>
+            </div>
+            <div onclick="openPuzzle(5)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+              <div style="font-size:26px;margin-bottom:8px">🟥</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text)">Hard</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:3px">5×5 · 24 tiles</div>
+              <div id="puzzleProgress5" style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700;min-height:12px"></div>
+            </div>
+          </div>
+          <div id="puzzlePreviewWrap" style="margin-top:16px;text-align:center">
+            <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Today's Animal</div>
+            <div id="puzzlePreviewImg" style="width:120px;height:120px;border-radius:12px;overflow:hidden;margin:0 auto;background:var(--bg3)"></div>
+            <div id="puzzlePreviewName" style="font-size:12px;font-weight:700;color:var(--text);margin-top:8px"></div>
+            <div id="puzzlePreviewLatin" style="font-size:10px;color:var(--text3);font-style:italic;margin-top:2px"></div>
+          </div>
+        </div>
+        <div id="puzzleBoard" style="display:none;padding:12px 16px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <button onclick="closePuzzle()" style="background:none;border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:5px 10px;font-family:Montserrat,sans-serif;font-size:10px;cursor:pointer">&#8592; Back</button>
+            <div style="text-align:center">
+              <div style="font-size:11px;font-weight:700;color:var(--text)" id="puzzleBoardTitle"></div>
+              <div style="font-size:12px;color:var(--accent);font-weight:700;font-family:monospace" id="puzzleTimer">00:00</div>
+            </div>
+            <button onclick="shufflePuzzle()" style="background:none;border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:5px 10px;font-family:Montserrat,sans-serif;font-size:10px;cursor:pointer">Shuffle</button>
+          </div>
+          <div id="puzzleWinBanner" style="display:none;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;text-align:center">
+            <div style="font-size:13px;font-weight:700;color:var(--accent)" id="puzzleWinText"></div>
+          </div>
+          <div id="puzzleGrid" style="margin:0 auto;user-select:none;-webkit-user-select:none"></div>
+          <div style="text-align:center;margin-top:8px;font-size:9px;color:var(--text3)" id="puzzleMoveCount"></div>
+        </div>
+      </div>
+
     </div><!-- /screen-games -->
 
     <div class="screen" id="screen-about">
@@ -12394,8 +12445,306 @@ function switchGameTab(tab, btn) {
   if(tab==='badges') safe(renderBadges);
   if(tab==='bingo')  safe(renderGameBingo);
   if(tab==='challenge') safe(renderGameChallenge);
+  if(tab==='puzzle') safe(renderPuzzleSelector);
 }
 
+// ============================================
+// SLIDE PUZZLE — daily animal, 3 difficulties
+// 3x3 (easy), 4x4 (medium), 5x5 (hard)
+// Tap any tile adjacent to the blank to slide it
+// Win = all tiles in correct order
+// ============================================
+
+var _puzzleSize = 0;
+var _puzzleTiles = [];       // current positions: array of tile numbers (n*n-1 = blank)
+var _puzzleMoves = 0;
+var _puzzleWon = false;
+var _puzzleTimerInterval = null;
+var _puzzleSeconds = 0;
+var _puzzleAnimal = null;    // {id, name, latin, img}
+
+// Get today's puzzle animal (seeded daily, same for everyone)
+function _puzzleDailyAnimal() {
+  var today = new Date().toDateString();
+  var h = 0;
+  for (var i = 0; i < today.length; i++) h = Math.imul(31, h) + today.charCodeAt(i) | 0;
+  var idx = Math.abs(h) % SPECIES.length;
+  var sp = SPECIES[idx];
+  return {
+    id: sp.id,
+    name: sp.name,
+    latin: sp.latin || '',
+    img: ANIMAL_IMG[sp.id] || ''
+  };
+}
+
+// Solvability check for n×n puzzle
+// A puzzle is solvable if:
+//   - n is odd: number of inversions is even
+//   - n is even: (inversions + row of blank from bottom) is odd
+function _puzzleIsSolvable(tiles, n) {
+  var inv = 0;
+  var blank = n * n - 1; // blank tile value
+  for (var i = 0; i < tiles.length - 1; i++) {
+    if (tiles[i] === blank) continue;
+    for (var j = i + 1; j < tiles.length; j++) {
+      if (tiles[j] === blank) continue;
+      if (tiles[i] > tiles[j]) inv++;
+    }
+  }
+  if (n % 2 === 1) return inv % 2 === 0;
+  var blankRow = Math.floor(tiles.indexOf(blank) / n);
+  var blankFromBottom = n - 1 - blankRow;
+  return (inv + blankFromBottom) % 2 === 1;
+}
+
+// Seeded shuffle that guarantees solvable puzzle
+function _puzzleShuffle(n, seed) {
+  var total = n * n;
+  var tiles = [];
+  for (var i = 0; i < total; i++) tiles.push(i);
+  // Seeded PRNG
+  var s = seed | 0;
+  function rnd() {
+    s = s + 0x6D2B79F5 | 0;
+    var t = Math.imul(s ^ s >>> 15, 1 | s);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  // Fisher-Yates
+  for (var i = total - 1; i > 0; i--) {
+    var j = Math.floor(rnd() * (i + 1));
+    var tmp = tiles[i]; tiles[i] = tiles[j]; tiles[j] = tmp;
+  }
+  // If not solvable, swap first two non-blank tiles to fix it
+  if (!_puzzleIsSolvable(tiles, n)) {
+    var a = tiles[0] === n*n-1 ? 1 : 0;
+    var b = tiles[1] === n*n-1 ? 2 : 1;
+    var tmp2 = tiles[a]; tiles[a] = tiles[b]; tiles[b] = tmp2;
+  }
+  return tiles;
+}
+
+// Daily seed per size
+function _puzzleSeedForSize(n) {
+  var today = new Date().toDateString() + n;
+  var h = 0;
+  for (var i = 0; i < today.length; i++) h = Math.imul(31, h) + today.charCodeAt(i) | 0;
+  return h;
+}
+
+// localStorage key per size
+function _puzzleKey(n) { return 'kfg_puzzle_' + n; }
+
+// Load/save puzzle state
+function _puzzleLoadState(n) {
+  try {
+    var s = JSON.parse(localStorage.getItem(_puzzleKey(n)) || 'null');
+    if (!s || s.date !== new Date().toDateString()) return null;
+    return s;
+  } catch(e) { return null; }
+}
+function _puzzleSaveState(n, tiles, moves, seconds, won) {
+  try {
+    localStorage.setItem(_puzzleKey(n), JSON.stringify({
+      date: new Date().toDateString(),
+      tiles: tiles, moves: moves, seconds: seconds, won: won
+    }));
+  } catch(e) {}
+}
+
+// Timer helpers
+function _puzzleStartTimer() {
+  _puzzleStopTimer();
+  _puzzleTimerInterval = setInterval(function() {
+    if (_puzzleWon) { _puzzleStopTimer(); return; }
+    _puzzleSeconds++;
+    _puzzleSaveState(_puzzleSize, _puzzleTiles, _puzzleMoves, _puzzleSeconds, false);
+    var el = document.getElementById('puzzleTimer');
+    if (el) el.textContent = _puzzleFmtTime(_puzzleSeconds);
+  }, 1000);
+}
+function _puzzleStopTimer() {
+  if (_puzzleTimerInterval) { clearInterval(_puzzleTimerInterval); _puzzleTimerInterval = null; }
+}
+function _puzzleFmtTime(s) {
+  var m = Math.floor(s / 60);
+  var sec = s % 60;
+  return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+// Render selector with progress
+function renderPuzzleSelector() {
+  var animal = _puzzleDailyAnimal();
+  _puzzleAnimal = animal;
+
+  // Preview image
+  var prevImg = document.getElementById('puzzlePreviewImg');
+  var prevName = document.getElementById('puzzlePreviewName');
+  var prevLatin = document.getElementById('puzzlePreviewLatin');
+  if (prevImg) prevImg.innerHTML = animal.img
+    ? '<img src="' + animal.img + '" style="width:100%;height:100%;object-fit:cover">'
+    : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px">🐾</div>';
+  if (prevName) prevName.textContent = animal.name;
+  if (prevLatin) prevLatin.textContent = animal.latin;
+
+  // Progress badges
+  [3, 4, 5].forEach(function(n) {
+    var el = document.getElementById('puzzleProgress' + n);
+    if (!el) return;
+    var s = _puzzleLoadState(n);
+    if (!s) { el.textContent = ''; return; }
+    if (s.won) {
+      el.textContent = '✅ ' + _puzzleFmtTime(s.seconds) + ' · ' + s.moves + ' moves';
+    } else {
+      el.textContent = s.moves + ' moves so far';
+    }
+  });
+}
+
+// Open a puzzle
+function openPuzzle(n) {
+  _puzzleStopTimer();
+  _puzzleSize = n;
+  _puzzleAnimal = _puzzleDailyAnimal();
+
+  var saved = _puzzleLoadState(n);
+  if (saved) {
+    _puzzleTiles = saved.tiles;
+    _puzzleMoves = saved.moves;
+    _puzzleSeconds = saved.seconds;
+    _puzzleWon = saved.won;
+  } else {
+    _puzzleTiles = _puzzleShuffle(n, _puzzleSeedForSize(n));
+    _puzzleMoves = 0;
+    _puzzleSeconds = 0;
+    _puzzleWon = false;
+  }
+
+  var titles = {3:'Easy — 3×3', 4:'Medium — 4×4', 5:'Hard — 5×5'};
+  var el = document.getElementById('puzzleBoardTitle');
+  if (el) el.textContent = (_puzzleAnimal.name || 'Animal') + ' · ' + titles[n];
+  var timerEl = document.getElementById('puzzleTimer');
+  if (timerEl) timerEl.textContent = _puzzleFmtTime(_puzzleSeconds);
+
+  document.getElementById('puzzleSelector').style.display = 'none';
+  document.getElementById('puzzleBoard').style.display = 'block';
+
+  _renderPuzzleGrid();
+  if (!_puzzleWon) _puzzleStartTimer();
+}
+
+// Close puzzle
+function closePuzzle() {
+  _puzzleStopTimer();
+  document.getElementById('puzzleBoard').style.display = 'none';
+  document.getElementById('puzzleSelector').style.display = 'block';
+  renderPuzzleSelector();
+}
+
+// Shuffle (new random for current size — NOT daily seed)
+function shufflePuzzle() {
+  if (!_puzzleSize) return;
+  _puzzleStopTimer();
+  var seed = (Date.now() ^ (_puzzleSize * 12345)) | 0;
+  _puzzleTiles = _puzzleShuffle(_puzzleSize, seed);
+  _puzzleMoves = 0;
+  _puzzleSeconds = 0;
+  _puzzleWon = false;
+  var timerEl = document.getElementById('puzzleTimer');
+  if (timerEl) timerEl.textContent = '00:00';
+  var winEl = document.getElementById('puzzleWinBanner');
+  if (winEl) winEl.style.display = 'none';
+  _renderPuzzleGrid();
+  _puzzleStartTimer();
+}
+
+// Render the grid
+function _renderPuzzleGrid() {
+  var n = _puzzleSize;
+  var grid = document.getElementById('puzzleGrid');
+  if (!grid || !_puzzleAnimal) return;
+
+  // Tile size — fit within ~320px max
+  var maxW = Math.min(320, window.innerWidth - 32);
+  var tileSize = Math.floor(maxW / n);
+  var totalSize = tileSize * n;
+  var blank = n * n - 1;
+
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(' + n + ',1fr);gap:2px;width:' + totalSize + 'px;height:' + totalSize + 'px';
+
+  grid.innerHTML = _puzzleTiles.map(function(tile, pos) {
+    if (tile === blank) {
+      return '<div style="width:' + tileSize + 'px;height:' + tileSize + 'px;background:var(--bg2);border-radius:4px"></div>';
+    }
+    var tileRow = Math.floor(tile / n);
+    var tileCol = tile % n;
+    var bgX = -(tileCol * tileSize);
+    var bgY = -(tileRow * tileSize);
+    var solved = tile === pos;
+    return '<div onclick="tapPuzzleTile(' + pos + ')" style="' +
+      'width:' + tileSize + 'px;height:' + tileSize + 'px;' +
+      'background-image:url(\'' + (_puzzleAnimal.img || '') + '\');' +
+      'background-size:' + totalSize + 'px ' + totalSize + 'px;' +
+      'background-position:' + bgX + 'px ' + bgY + 'px;' +
+      'border-radius:4px;cursor:pointer;' +
+      'box-shadow:' + (solved ? 'inset 0 0 0 2px rgba(58,180,80,.5)' : 'inset 0 0 0 1px rgba(255,255,255,.08)') + ';' +
+      'transition:box-shadow .15s;-webkit-tap-highlight-color:transparent;' +
+      'position:relative">' +
+      '<div style="position:absolute;bottom:2px;right:3px;font-size:7px;color:rgba(255,255,255,.5);font-weight:700">' + (tile+1) + '</div>' +
+    '</div>';
+  }).join('');
+
+  // Move count
+  var moveEl = document.getElementById('puzzleMoveCount');
+  if (moveEl) moveEl.textContent = _puzzleMoves + ' move' + (_puzzleMoves !== 1 ? 's' : '');
+
+  // Win banner
+  var winEl = document.getElementById('puzzleWinBanner');
+  var winText = document.getElementById('puzzleWinText');
+  if (winEl && winText) {
+    if (_puzzleWon) {
+      winEl.style.display = 'block';
+      winText.textContent = '🏆 Solved! ' + _puzzleAnimal.name + ' · ' + _puzzleFmtTime(_puzzleSeconds) + ' · ' + _puzzleMoves + ' moves';
+    } else {
+      winEl.style.display = 'none';
+    }
+  }
+}
+
+// Tap a tile — slide it if adjacent to blank
+function tapPuzzleTile(pos) {
+  if (_puzzleWon) return;
+  var n = _puzzleSize;
+  var blank = n * n - 1;
+  var blankPos = _puzzleTiles.indexOf(blank);
+
+  // Check adjacency (up/down/left/right)
+  var row = Math.floor(pos / n), col = pos % n;
+  var bRow = Math.floor(blankPos / n), bCol = blankPos % n;
+  var adjacent = (row === bRow && Math.abs(col - bCol) === 1) ||
+                 (col === bCol && Math.abs(row - bRow) === 1);
+  if (!adjacent) return;
+
+  // Swap
+  var tmp = _puzzleTiles[pos];
+  _puzzleTiles[pos] = _puzzleTiles[blankPos];
+  _puzzleTiles[blankPos] = tmp;
+  _puzzleMoves++;
+
+  // Check win
+  var won = _puzzleTiles.every(function(t, i) { return t === i; });
+  if (won) {
+    _puzzleWon = true;
+    _puzzleStopTimer();
+    _puzzleSaveState(n, _puzzleTiles, _puzzleMoves, _puzzleSeconds, true);
+  } else {
+    _puzzleSaveState(n, _puzzleTiles, _puzzleMoves, _puzzleSeconds, false);
+  }
+  _renderPuzzleGrid();
+}
+
+// ============================================
 // renderBadges — alias for renderAchievements, targeting the Games screen grid
 function renderBadges() {
   var grid = document.getElementById('achievementsGrid');
