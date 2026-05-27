@@ -11144,13 +11144,22 @@ function _getCurrentLetter() {
   var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : 'speciesGrid';
   var grid = document.getElementById(gridId);
   if (!grid) return '';
-  var gridTop = grid.getBoundingClientRect().top;
+  var contentEl = document.getElementById('content');
+  if (!contentEl) return '';
+
+  // scrollTop = how far content has scrolled from the top
+  // offsetTop of grid = where grid starts inside content
+  var scrollTop = contentEl.scrollTop;
+  var gridOffsetTop = grid.offsetTop;
+  // Offset within the grid that's at the top of the visible area
+  var targetOffset = scrollTop - gridOffsetTop;
+
   var children = grid.children;
   var bestLetter = '';
   for (var i = 0; i < children.length; i++) {
-    var rect = children[i].getBoundingClientRect();
-    // Find the first card whose top is at or just below the grid top
-    if (rect.top >= gridTop - 4) {
+    var childTop = children[i].offsetTop;
+    // First child whose bottom edge is past the target scroll offset
+    if (childTop + children[i].offsetHeight > targetOffset) {
       var nameEl = children[i].querySelector('.sp-name');
       var name = nameEl ? nameEl.textContent.trim() : (children[i].getAttribute('data-spname') || '');
       if (name) bestLetter = name.charAt(0).toUpperCase();
