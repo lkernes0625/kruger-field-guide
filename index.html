@@ -4066,6 +4066,9 @@ function renderCamps() {
               (camp.atm?'<span class="atag yes" style="font-size:8px;padding:1px 5px">ATM</span>':'') +
               (camp.clinic?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Clinic</span>':'') +
               (camp.wifi?'<span class="atag yes" style="font-size:8px;padding:1px 5px">WiFi</span>':'') +
+              (camp.pool?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Pool</span>':'') +
+              (camp.laundry?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Laundry</span>':'') +
+              (camp.boma?'<span class="atag yes" style="font-size:8px;padding:1px 5px">Boma</span>':'') +
               '<span class="atag yes" style="font-size:8px;padding:1px 5px">Restrooms</span>' +
             '</div>' +
           '</div>' +
@@ -11117,98 +11120,145 @@ function buildAZIndex() {
   if(!az) return;
   var existing = az.querySelectorAll('[data-az]');
   existing.forEach(function(el){ el.remove(); });
-  // All 26 letters always clickable - setAZFilter handles missing letters gracefully
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(function(l) {
     var btn = document.createElement('div');
     btn.textContent = l;
     btn.dataset.az = l;
-    btn.style.cssText = 'font-size:9px;font-weight:700;text-align:center;padding:2px 3px;cursor:pointer;border-radius:3px;line-height:1.4;min-width:16px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;color:rgba(255,255,255,.75);';
+    btn.style.cssText = 'font-size:9px;font-weight:700;text-align:center;padding:2px 3px;cursor:pointer;border-radius:3px;line-height:1.4;min-width:16px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;color:rgba(255,255,255,.75);transition:color .15s,background .15s';
     btn.onclick = function() { setAZFilter(l); };
     az.appendChild(btn);
   });
 }
-function setAZFilter(letter) {
+
+function _highlightAZLetter(letter) {
   document.querySelectorAll('#azIndex [data-az]').forEach(function(b) {
-    b.style.color = b.dataset.az === letter ? 'var(--accent)' : 'rgba(255,255,255,.8)';
-    b.style.background = b.dataset.az === letter ? 'rgba(232,160,32,.25)' : '';
+    var active = b.dataset.az === letter;
+    b.style.color = active ? 'var(--accent)' : 'rgba(255,255,255,.75)';
+    b.style.background = active ? 'rgba(232,160,32,.25)' : '';
+    b.style.fontWeight = active ? '900' : '700';
   });
-  clearTimeout(_azFadeTimer);
-  _azFadeTimer = setTimeout(function(){
-    document.querySelectorAll('#azIndex [data-az]').forEach(function(b){
-      b.style.color='rgba(255,255,255,.8)'; b.style.background='';
-    });
-    var az=document.getElementById('azIndex');
-    if(az) az.style.opacity='0';
-  }, 2500);
-  // Use tracked tab (reliable - not dependent on class which uses inline styles)
-  var tab = window._wildlifeTab || 'species';
-  var gridId = tab === 'birds' ? 'birdsGrid' : tab === 'reptiles' ? 'reptilesGrid' : tab === 'frogs' ? 'frogsGrid' : 'speciesGrid';
+}
+
+function _getCurrentLetter() {
+  var wt = window._wildlifeTab || 'species';
+  var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : 'speciesGrid';
   var grid = document.getElementById(gridId);
-  if(!grid) return;
-  // Scroll to first item starting with this letter
+  if (!grid) return '';
+  var gridTop = grid.getBoundingClientRect().top;
   var children = grid.children;
-  for(var j=0; j<children.length; j++){
+  var bestLetter = '';
+  for (var i = 0; i < children.length; i++) {
+    var rect = children[i].getBoundingClientRect();
+    // Find the first card whose top is at or just below the grid top
+    if (rect.top >= gridTop - 4) {
+      var nameEl = children[i].querySelector('.sp-name');
+      var name = nameEl ? nameEl.textContent.trim() : (children[i].getAttribute('data-spname') || '');
+      if (name) bestLetter = name.charAt(0).toUpperCase();
+      break;
+    }
+  }
+  return bestLetter;
+}
+
+function setAZFilter(letter) {
+  _highlightAZLetter(letter);
+  clearTimeout(_azFadeTimer);
+  _azFadeTimer = setTimeout(function() {
+    _highlightAZLetter('');
+    var az = document.getElementById('azIndex');
+    if (az) az.style.opacity = '0';
+  }, 2500);
+  var wt = window._wildlifeTab || 'species';
+  var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : 'speciesGrid';
+  var grid = document.getElementById(gridId);
+  if (!grid) return;
+  var children = grid.children;
+  for (var j = 0; j < children.length; j++) {
     var nameEl = children[j].querySelector('.sp-name');
-    if(nameEl && nameEl.textContent.trim().charAt(0).toUpperCase() === letter){
+    if (nameEl && nameEl.textContent.trim().charAt(0).toUpperCase() === letter) {
       children[j].scrollIntoView({behavior:'smooth', block:'start'});
       return;
     }
-    // Also check data-spname
-    var dn = children[j].getAttribute('data-spname')||'';
-    if(dn.charAt(0).toUpperCase() === letter){
+    var dn = children[j].getAttribute('data-spname') || '';
+    if (dn.charAt(0).toUpperCase() === letter) {
       children[j].scrollIntoView({behavior:'smooth', block:'start'});
       return;
     }
   }
 }
+
 function clearAZFilter() {
-  _azFilter = '';
-  document.querySelectorAll('#azIndex [data-az]').forEach(function(b) {
-    b.style.color = 'rgba(255,255,255,.8)'; b.style.background = '';
-  });
-  // Scroll back to top of grid
+  _highlightAZLetter('');
   var grid = document.getElementById('speciesGrid');
-  if(grid) grid.scrollTo({top:0, behavior:'smooth'});
+  if (grid) grid.scrollTo({top:0, behavior:'smooth'});
 }
-// A-Z: fade in on scroll, fade out when stopped, auto-reset filter on scroll
+
 var _azFadeTimer = null;
+var _azScrollTimer = null;
+
 function initAZScroll() {
   buildAZIndex();
+
   function showAZ() {
     var az = document.getElementById('azIndex');
-    if(!az) return;
-    if(window._currentScreenId !== 'wildlife') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
+    if (!az) return;
+    if (window._currentScreenId !== 'wildlife') { az.style.opacity='0'; return; }
     var wt = window._wildlifeTab || 'species';
-    if(wt === 'sightings') { az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); return; }
+    if (wt === 'sightings') { az.style.opacity='0'; return; }
     az.style.display = 'flex';
     az.style.opacity = '1';
-    clearTimeout(_azFadeTimer);
-    _azFadeTimer = setTimeout(function(){ az.style.opacity='0'; setTimeout(function(){ if(az.style.opacity==='0') az.style.display='none'; },400); }, 3000);
   }
+
   function hideAZ() {
     var az = document.getElementById('azIndex');
-    if(az){ az.style.opacity='0'; setTimeout(function(){az.style.display='none';},400); }
+    if (az) { az.style.opacity='0'; setTimeout(function(){ if(az.style.opacity==='0') az.style.display='none'; }, 400); }
+    _highlightAZLetter('');
   }
-  function updateAZ() {
-    var az = document.getElementById('azIndex');
-    if(!az) return;
-    var screenId = window._currentScreenId;
-    if(screenId !== 'wildlife') { hideAZ(); return; }
+
+  function onScroll() {
+    if (window._currentScreenId !== 'wildlife') return;
     var wt = window._wildlifeTab || 'species';
-    if(wt === 'sightings') { hideAZ(); return; }
-    // Show on any scroll
+    if (wt === 'sightings') return;
+
+    // Show the bar
     showAZ();
 
+    // Highlight the current letter live as user scrolls
+    var letter = _getCurrentLetter();
+    if (letter) _highlightAZLetter(letter);
+
+    // Reset fade timer — bar stays visible while scrolling
+    clearTimeout(_azFadeTimer);
+    clearTimeout(_azScrollTimer);
+    _azScrollTimer = setTimeout(function() {
+      // Scrolling stopped — fade after 2s
+      _azFadeTimer = setTimeout(function() {
+        _highlightAZLetter('');
+        hideAZ();
+      }, 2000);
+    }, 150);
   }
-  var content = document.getElementById('content');
-  if(content) content.addEventListener('scroll', updateAZ, {passive:true});
-  // Listen on all wildlife grids
-  ['speciesGrid','birdsGrid','reptilesGrid','frogsGrid'].forEach(function(id){
+
+  function updateAZ() {
+    var az = document.getElementById('azIndex');
+    if (!az) return;
+    if (window._currentScreenId !== 'wildlife') { hideAZ(); return; }
+    var wt = window._wildlifeTab || 'species';
+    if (wt === 'sightings') { hideAZ(); return; }
+    showAZ();
+    clearTimeout(_azFadeTimer);
+    _azFadeTimer = setTimeout(function() { hideAZ(); }, 3000);
+  }
+
+  var contentEl = document.getElementById('content');
+  if (contentEl) contentEl.addEventListener('scroll', onScroll, {passive:true});
+  ['speciesGrid','birdsGrid','reptilesGrid','frogsGrid'].forEach(function(id) {
     var g = document.getElementById(id);
-    if(g) g.addEventListener('scroll', updateAZ, {passive:true});
+    if (g) g.addEventListener('scroll', onScroll, {passive:true});
   });
   window._updateAZ = updateAZ;
   window._showAZ = showAZ;
+  window._hideAZ = hideAZ;
 }
 
 function initApp() {
