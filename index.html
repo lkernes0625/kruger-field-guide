@@ -1097,7 +1097,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         </div>
         <div style="padding:0 16px 6px;font-size:11px;color:var(--text3)">Spot all 5 species before midnight. Same challenge for all users worldwide.</div>
         <div id="gameChallengeList" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px"></div>
-        <div id="gameChallengeComplete" style="display:none;text-align:center;padding:16px;font-size:13px;font-weight:700;color:var(--accent)">🏆 Full house! Incredible game drive.</div>
+        <div id="gameChallengeComplete" style="display:none;text-align:center;padding:16px;font-size:13px;font-weight:700;color:var(--accent)">🏆 Full house! All 6 spotted — incredible game drive.</div>
       </div>
 
       <!-- BADGES TAB -->
@@ -1232,32 +1232,22 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       <div class="game-tab-content" id="gamePanel-puzzle" style="display:none">
         <div id="puzzleSelector" style="padding:16px">
           <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">Slide Puzzle</div>
-          <div style="font-size:10px;color:var(--text3);margin-bottom:16px">Reassemble today's animal — same puzzle for everyone worldwide. Resets at midnight.</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-            <div onclick="openPuzzle(3)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
-              <div style="font-size:26px;margin-bottom:8px">🟩</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text)">Easy</div>
-              <div style="font-size:9px;color:var(--text3);margin-top:3px">3×3 · 8 tiles</div>
-              <div id="puzzleProgress3" style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700;min-height:12px"></div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:14px">Choose an animal, then pick your difficulty. Same 6 animals as today's challenge.</div>
+          <div id="puzzleAnimalGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"></div>
+          <!-- Difficulty picker (shown below selected animal) -->
+          <div id="puzzleDiffPicker" style="display:none;margin-top:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:10px;text-align:center">Choose difficulty for <span id="puzzlePickerName" style="color:var(--text);font-weight:700"></span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <button onclick="openPuzzleWithAnimal(3)" style="background:rgba(58,180,80,.1);border:1px solid rgba(58,180,80,.3);color:#3ab450;border-radius:10px;padding:10px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">
+                🟩 Easy<br><span style="font-size:8px;font-weight:500;opacity:.8">3×3 · 8 tiles</span>
+              </button>
+              <button onclick="openPuzzleWithAnimal(4)" style="background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);color:var(--accent);border-radius:10px;padding:10px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">
+                🟧 Medium<br><span style="font-size:8px;font-weight:500;opacity:.8">4×4 · 15 tiles</span>
+              </button>
+              <button onclick="openPuzzleWithAnimal(5)" style="background:rgba(220,60,60,.1);border:1px solid rgba(220,60,60,.3);color:#e05050;border-radius:10px;padding:10px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">
+                🟥 Hard<br><span style="font-size:8px;font-weight:500;opacity:.8">5×5 · 24 tiles</span>
+              </button>
             </div>
-            <div onclick="openPuzzle(4)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
-              <div style="font-size:26px;margin-bottom:8px">🟧</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text)">Medium</div>
-              <div style="font-size:9px;color:var(--text3);margin-top:3px">4×4 · 15 tiles</div>
-              <div id="puzzleProgress4" style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700;min-height:12px"></div>
-            </div>
-            <div onclick="openPuzzle(5)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
-              <div style="font-size:26px;margin-bottom:8px">🟥</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text)">Hard</div>
-              <div style="font-size:9px;color:var(--text3);margin-top:3px">5×5 · 24 tiles</div>
-              <div id="puzzleProgress5" style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700;min-height:12px"></div>
-            </div>
-          </div>
-          <div id="puzzlePreviewWrap" style="margin-top:16px;text-align:center">
-            <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Today's Animal</div>
-            <div id="puzzlePreviewImg" style="width:120px;height:120px;border-radius:12px;overflow:hidden;margin:0 auto;background:var(--bg3)"></div>
-            <div id="puzzlePreviewName" style="font-size:12px;font-weight:700;color:var(--text);margin-top:8px"></div>
-            <div id="puzzlePreviewLatin" style="font-size:10px;color:var(--text3);font-style:italic;margin-top:2px"></div>
           </div>
         </div>
         <div id="puzzleBoard" style="display:none;padding:12px 16px 16px">
@@ -1272,7 +1262,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div id="puzzleWinBanner" style="display:none;background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;text-align:center">
             <div style="font-size:13px;font-weight:700;color:var(--accent)" id="puzzleWinText"></div>
           </div>
-          <div id="puzzleGrid" style="margin:0 auto;user-select:none;-webkit-user-select:none"></div>
+          <div style="display:flex;justify-content:center;width:100%"><div id="puzzleGrid" style="user-select:none;-webkit-user-select:none"></div></div>
           <div style="text-align:center;margin-top:8px;font-size:9px;color:var(--text3)" id="puzzleMoveCount"></div>
         </div>
       </div>
@@ -12413,7 +12403,7 @@ var CHALLENGE_POOL=['Lion','Leopard','Cheetah','Wild Dog','Spotted Hyena','Eleph
 function getDailyChallenge() {
   var d=new Date(), seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(), pool=CHALLENGE_POOL.slice();
   for(var i=pool.length-1;i>0;i--){seed=(seed*1664525+1013904223)&0xffffffff;var j=Math.abs(seed)%(i+1),tmp=pool[i];pool[i]=pool[j];pool[j]=tmp;}
-  return pool.slice(0,5);
+  return pool.slice(0,6);
 }
 function renderDailyChallenge() {
   var listEl=document.getElementById('dailyChallengeList'), completeEl=document.getElementById('dailyChallengeComplete');
@@ -12463,19 +12453,31 @@ var _puzzleTimerInterval = null;
 var _puzzleSeconds = 0;
 var _puzzleAnimal = null;    // {id, name, latin, img}
 
-// Get today's puzzle animal (seeded daily, same for everyone)
-function _puzzleDailyAnimal() {
-  var today = new Date().toDateString();
-  var h = 0;
-  for (var i = 0; i < today.length; i++) h = Math.imul(31, h) + today.charCodeAt(i) | 0;
-  var idx = Math.abs(h) % SPECIES.length;
-  var sp = SPECIES[idx];
-  return {
-    id: sp.id,
-    name: sp.name,
-    latin: sp.latin || '',
-    img: ANIMAL_IMG[sp.id] || ''
-  };
+// Get today's puzzle animals — same pool as daily challenge (6 animals)
+// Each difficulty uses a different animal: 3x3=idx0, 4x4=idx1, 5x5=idx2
+// Selector shows all 6
+function _puzzleDailyAnimals() {
+  var challengeNames = getDailyChallenge ? getDailyChallenge() : [];
+  return challengeNames.map(function(name) {
+    var id = name.toLowerCase().replace(/ /g,'_').replace(/-/g,'_');
+    // Try SPECIES first, then BIRDS
+    var sp = null;
+    if (window.SPECIES) sp = SPECIES.find(function(s){ return s.id===id || s.name.toLowerCase()===name.toLowerCase(); });
+    if (!sp && window.BIRDS) sp = BIRDS.find(function(s){ return s.id===id || s.name.toLowerCase()===name.toLowerCase(); });
+    var imgSrc = (window.ANIMAL_IMG && ANIMAL_IMG[id]) || (window.BIRD_IMG && BIRD_IMG[id]) || '';
+    return {
+      id: id,
+      name: name,
+      latin: sp ? (sp.latin || '') : '',
+      img: imgSrc
+    };
+  });
+}
+function _puzzleDailyAnimal(n) {
+  var animals = _puzzleDailyAnimals();
+  // 3x3→[0], 4x4→[1], 5x5→[2], fallback to index 0
+  var idx = n === 3 ? 0 : n === 4 ? 1 : 2;
+  return animals[idx] || animals[0] || {id:'lion',name:'Lion',latin:'Panthera leo',img:ANIMAL_IMG['lion']||''};
 }
 
 // Solvability check for n×n puzzle
@@ -12559,7 +12561,7 @@ function _puzzleStartTimer() {
   _puzzleTimerInterval = setInterval(function() {
     if (_puzzleWon) { _puzzleStopTimer(); return; }
     _puzzleSeconds++;
-    _puzzleSaveState(_puzzleSize, _puzzleTiles, _puzzleMoves, _puzzleSeconds, false);
+    if(_puzzleAnimal) _puzzleSaveStateForAnimal(_puzzleAnimal.id, _puzzleSize, _puzzleTiles, _puzzleMoves, _puzzleSeconds, false);
     var el = document.getElementById('puzzleTimer');
     if (el) el.textContent = _puzzleFmtTime(_puzzleSeconds);
   }, 1000);
@@ -12575,66 +12577,90 @@ function _puzzleFmtTime(s) {
 
 // Render selector with progress
 function renderPuzzleSelector() {
-  var animal = _puzzleDailyAnimal();
-  _puzzleAnimal = animal;
+  var animals = _puzzleDailyAnimals();
+  var grid = document.getElementById('puzzleAnimalGrid');
+  if (!grid) return;
+  var picker = document.getElementById('puzzleDiffPicker');
+  if (picker) picker.style.display = 'none';
+  _puzzleSelectedAnimal = null;
 
-  // Preview image
-  var prevImg = document.getElementById('puzzlePreviewImg');
-  var prevName = document.getElementById('puzzlePreviewName');
-  var prevLatin = document.getElementById('puzzlePreviewLatin');
-  if (prevImg) prevImg.innerHTML = animal.img
-    ? '<img src="' + animal.img + '" style="width:100%;height:100%;object-fit:cover">'
-    : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px">🐾</div>';
-  if (prevName) prevName.textContent = animal.name;
-  if (prevLatin) prevLatin.textContent = animal.latin;
-
-  // Progress badges
-  [3, 4, 5].forEach(function(n) {
-    var el = document.getElementById('puzzleProgress' + n);
-    if (!el) return;
-    var s = _puzzleLoadState(n);
-    if (!s) { el.textContent = ''; return; }
-    if (s.won) {
-      el.textContent = '✅ ' + _puzzleFmtTime(s.seconds) + ' · ' + s.moves + ' moves';
-    } else {
-      el.textContent = s.moves + ' moves so far';
-    }
-  });
+  grid.innerHTML = animals.map(function(a, i) {
+    var bestTime = null, bestMoves = null;
+    [3,4,5].forEach(function(n) {
+      var s = _puzzleLoadStateForAnimal(a.id, n);
+      if (s && s.won && (bestTime === null || s.seconds < bestTime)) { bestTime = s.seconds; bestMoves = s.moves; }
+    });
+    var prog = bestTime !== null
+      ? '<div style="font-size:8px;color:#3ab450;margin-top:3px;font-weight:700">✅ ' + _puzzleFmtTime(bestTime) + '</div>'
+      : '<div style="min-height:12px;margin-top:3px"></div>';
+    return '<div onclick="selectPuzzleAnimal(' + i + ')" id="puzzleAnimalCard' + i + '" style="background:var(--bg3);border:1.5px solid var(--border2);border-radius:12px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent">' +
+      '<div style="width:100%;aspect-ratio:1;background:var(--bg4);overflow:hidden">' +
+      (a.img ? '<img src="' + a.img + '" style="width:100%;height:100%;object-fit:cover;display:block">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px">🐾</div>') +
+      '</div>' +
+      '<div style="padding:5px 4px 7px;text-align:center">' +
+      '<div style="font-size:9px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + a.name + '</div>' +
+      prog + '</div></div>';
+  }).join('');
 }
 
-// Open a puzzle
-function openPuzzle(n) {
+var _puzzleSelectedAnimal = null;
+
+function _puzzleKeyForAnimal(id, n) { return 'kfg_pzl_' + id + '_' + n; }
+function _puzzleLoadStateForAnimal(id, n) {
+  try { return JSON.parse(localStorage.getItem(_puzzleKeyForAnimal(id, n)) || 'null'); } catch(e) { return null; }
+}
+function _puzzleSaveStateForAnimal(id, n, tiles, moves, seconds, won) {
+  try {
+    var ex = _puzzleLoadStateForAnimal(id, n);
+    if (won && ex && ex.won && ex.seconds <= seconds) return;
+    localStorage.setItem(_puzzleKeyForAnimal(id, n), JSON.stringify({tiles:tiles,moves:moves,seconds:seconds,won:won}));
+  } catch(e) {}
+}
+
+function selectPuzzleAnimal(idx) {
+  var animals = _puzzleDailyAnimals();
+  _puzzleSelectedAnimal = animals[idx] || null;
+  if (!_puzzleSelectedAnimal) return;
+  for (var i = 0; i < 6; i++) {
+    var card = document.getElementById('puzzleAnimalCard' + i);
+    if (card) card.style.borderColor = i === idx ? 'var(--accent)' : 'var(--border2)';
+  }
+  var picker = document.getElementById('puzzleDiffPicker');
+  var nameEl = document.getElementById('puzzlePickerName');
+  if (nameEl) nameEl.textContent = _puzzleSelectedAnimal.name;
+  if (picker) { picker.style.display = 'block'; picker.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+function openPuzzleWithAnimal(n) {
+  if (!_puzzleSelectedAnimal) return;
+  openPuzzle(n, _puzzleSelectedAnimal);
+}
+
+function openPuzzle(n, animal) {
   _puzzleStopTimer();
   _puzzleSize = n;
-  _puzzleAnimal = _puzzleDailyAnimal();
-
-  var saved = _puzzleLoadState(n);
-  if (saved) {
-    _puzzleTiles = saved.tiles;
-    _puzzleMoves = saved.moves;
-    _puzzleSeconds = saved.seconds;
-    _puzzleWon = saved.won;
+  _puzzleAnimal = animal || _puzzleDailyAnimal(n);
+  var saved = _puzzleLoadStateForAnimal(_puzzleAnimal.id, n);
+  if (saved && saved.tiles && saved.tiles.length === n * n) {
+    _puzzleTiles = saved.tiles; _puzzleMoves = saved.moves; _puzzleSeconds = saved.seconds; _puzzleWon = saved.won;
   } else {
-    _puzzleTiles = _puzzleShuffle(n, _puzzleSeedForSize(n));
-    _puzzleMoves = 0;
-    _puzzleSeconds = 0;
-    _puzzleWon = false;
+    var seedStr = new Date().toDateString() + (_puzzleAnimal.id||'') + n;
+    var h = 0; for (var i = 0; i < seedStr.length; i++) h = Math.imul(31, h) + seedStr.charCodeAt(i) | 0;
+    _puzzleTiles = _puzzleShuffle(n, h);
+    _puzzleMoves = 0; _puzzleSeconds = 0; _puzzleWon = false;
   }
-
-  var titles = {3:'Easy — 3×3', 4:'Medium — 4×4', 5:'Hard — 5×5'};
-  var el = document.getElementById('puzzleBoardTitle');
-  if (el) el.textContent = (_puzzleAnimal.name || 'Animal') + ' · ' + titles[n];
+  var titles = {3:'Easy — 3×3',4:'Medium — 4×4',5:'Hard — 5×5'};
+  var titleEl = document.getElementById('puzzleBoardTitle');
+  if (titleEl) titleEl.textContent = (_puzzleAnimal.name||'Animal') + ' · ' + titles[n];
   var timerEl = document.getElementById('puzzleTimer');
   if (timerEl) timerEl.textContent = _puzzleFmtTime(_puzzleSeconds);
-
   document.getElementById('puzzleSelector').style.display = 'none';
   document.getElementById('puzzleBoard').style.display = 'block';
-
   _renderPuzzleGrid();
   if (!_puzzleWon) _puzzleStartTimer();
 }
 
-// Close puzzle
+
 function closePuzzle() {
   _puzzleStopTimer();
   document.getElementById('puzzleBoard').style.display = 'none';
@@ -12737,9 +12763,9 @@ function tapPuzzleTile(pos) {
   if (won) {
     _puzzleWon = true;
     _puzzleStopTimer();
-    _puzzleSaveState(n, _puzzleTiles, _puzzleMoves, _puzzleSeconds, true);
+    _puzzleSaveStateForAnimal(_puzzleAnimal.id, n, _puzzleTiles, _puzzleMoves, _puzzleSeconds, true);
   } else {
-    _puzzleSaveState(n, _puzzleTiles, _puzzleMoves, _puzzleSeconds, false);
+    _puzzleSaveStateForAnimal(_puzzleAnimal.id, n, _puzzleTiles, _puzzleMoves, _puzzleSeconds, false);
   }
   _renderPuzzleGrid();
 }
