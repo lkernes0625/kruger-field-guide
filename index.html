@@ -963,11 +963,33 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
     <div class="screen" id="screen-trip">
       <div class="sec-head"><h2>My Trip</h2><p>Plan &middot; Track &middot; Share</p></div>
       <div id="myTripTabs" class="trip-tabs-scroll">
-        <div class="trip-tab active" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('badges',this)">Badges</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('licenses',this)">Licenses</div>
+        <div class="trip-tab active" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('licenses',this)">Licenses</div>
       </div>
 
-      <!-- ITINERARY TAB -->
-      <div class="trip-tab-content" id="tab-itinerary">
+      <!-- ITINERARY SUB-SCREEN (not a tab — shown/hidden by JS) -->
+      <div id="trip-sub-itinerary" style="display:none">
+        <div style="padding:10px 16px 4px;display:flex;align-items:center;gap:8px">
+          <button onclick="showTripSub('journal')" style="background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;padding:0;font-family:Montserrat,sans-serif;font-weight:700">&#x2190; Back</button>
+          <div style="font-size:11px;font-weight:700;color:var(--text)">Itinerary</div>
+        </div>
+      </div>
+      <div id="trip-sub-itinerary-body" style="display:none">
+        <!-- Itinerary content injected here -->
+      </div>
+
+      <!-- BADGES SUB-SCREEN -->
+      <div id="trip-sub-badges" style="display:none">
+        <div style="padding:10px 16px 4px;display:flex;align-items:center;gap:8px">
+          <button onclick="showTripSub('journal')" style="background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;padding:0;font-family:Montserrat,sans-serif;font-weight:700">&#x2190; Back</button>
+          <div style="font-size:11px;font-weight:700;color:var(--text)">Badges</div>
+        </div>
+        <div style="padding:0 16px 16px">
+          <div id="tripBadgesContent" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <!-- ITINERARY TAB (legacy — keep for saveTripDates etc, hidden) -->
+      <div class="trip-tab-content" id="tab-itinerary" style="display:none!important">
         <div style="padding:16px 16px 12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
           <div style="min-width:0">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
@@ -1006,12 +1028,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         </div>
         <div id="savedTripsWrap" style="display:none;padding:0 16px 16px"></div>
       </div><!-- /tab-itinerary -->
-      <div class="trip-tab-content" id="tab-badges">
-        <div style="padding:16px 16px 0">
-          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Earn badges by logging sightings on your trip.</div>
-          <div id="tripBadgesContent" style="margin-top:12px"></div>
-        </div>
-      </div>
+
 
       <div class="trip-tab-content" id="tab-checklist">
         <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center">
@@ -1027,22 +1044,72 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
       <!-- JOURNAL TAB - combined timeline -->
       <div class="trip-tab-content active" id="tab-journal">
-        <div class="trip-summary-banner">
-          <div class="trip-summary-title">Trip Journal</div>
-          <div class="trip-summary-stats">
-            <div class="trip-stat"><div class="trip-stat-val" id="statSpecies">0</div><div class="trip-stat-label">Species</div></div>
-            <div class="trip-stat"><div class="trip-stat-val" id="statSightings">0</div><div class="trip-stat-label">Sightings</div></div>
-            <div class="trip-stat"><div class="trip-stat-val" id="statBig5">0/5</div><div class="trip-stat-label">Big 5</div></div>
+
+        <!-- ═══ 2×2 BLOCK GRID ═══ -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 0">
+
+          <!-- Block 1: Active Trip -->
+          <div onclick="showTripSub('itinerary')" id="block-trip"
+               style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">&#x1F5D3; Active Trip</div>
+            <div id="block-trip-body">
+              <div style="font-size:10px;color:var(--text3);line-height:1.5">Tap to plan your trip</div>
+              <div style="margin-top:8px;font-size:18px;color:var(--border2)">+</div>
+            </div>
           </div>
-        </div>
-        <div style="padding:8px 16px 10px;display:flex;gap:8px">
-          <button onclick="openTagLocation()" style="flex:1;background:var(--bg3);border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:10px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#x1F4CD; Tag Location</button>
-          <button onclick="exportTripMemory()" style="flex:1;background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:10px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#x1F4D6; Export</button>
-        </div>
-        <div id="tripJournalList" style="padding:0 16px 16px">
+
+          <!-- Block 2: Badges -->
+          <div onclick="showTripSub('badges')" id="block-badges"
+               style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">&#x1F3C6; Badges</div>
+            <div id="block-badges-body">
+              <div style="font-size:22px;font-weight:700;color:var(--accent)" id="blockBadgeEarned">0</div>
+              <div style="font-size:9px;color:var(--text3);margin-top:1px">of 14 earned</div>
+              <div id="blockBadgeIcons" style="margin-top:6px;display:flex;gap:3px;flex-wrap:wrap"></div>
+            </div>
+          </div>
+
+          <!-- Block 3: Sightings -->
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F441; Sightings</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:8px">
+              <div style="text-align:center">
+                <div style="font-size:18px;font-weight:700;color:var(--accent)" id="statSpecies">0</div>
+                <div style="font-size:8px;color:var(--text3)">Species</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:18px;font-weight:700;color:var(--accent)" id="statSightings">0</div>
+                <div style="font-size:8px;color:var(--text3)">Sightings</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:18px;font-weight:700;color:var(--accent)" id="statBig5">0/5</div>
+                <div style="font-size:8px;color:var(--text3)">Big 5</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+              <button onclick="openTagLocation()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 4px;font-family:Montserrat,sans-serif;font-size:8px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4CD; Tag Location</button>
+              <button onclick="scrollToJournalFeed()" style="background:none;border:1px solid var(--border2);color:var(--text2);border-radius:7px;padding:6px 4px;font-family:Montserrat,sans-serif;font-size:8px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F98F; Sightings</button>
+            </div>
+          </div>
+
+          <!-- Block 4: Journal & Export -->
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F4D6; Journal</div>
+            <div id="blockJournalSummary" style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:8px">Log sightings to build your story.</div>
+            <button onclick="exportTripJournalGuarded()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:7px;padding:8px;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4E4; Export Journal</button>
+          </div>
+
+        </div><!-- /grid -->
+
+        <!-- Sightings feed label -->
+        <div id="journalFeedAnchor" style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;padding:14px 16px 6px;border-bottom:1px solid var(--border)">Sightings Feed</div>
+
+        <!-- Sightings feed -->
+        <div id="tripJournalList" style="padding:10px 16px 16px">
           <div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">Your trip journal is empty.<br>Log sightings in Wildlife and tag locations to build your story.</div>
         </div>
-      </div>
+
+      </div><!-- /tab-journal -->
 
       <!-- LICENSES TAB -->
       <div class="trip-tab-content" id="tab-licenses">
@@ -1347,9 +1414,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.26</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.27</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.26 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.27 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3697,7 +3764,7 @@ function showScreen(id) {
     } catch(e) {}
   }
   if(id === 'photo') { try { safe(renderPhotoIntel); safe(initPhotoIntel); } catch(e) {} }
-  if(id === 'trip') { setTimeout(function(){ renderTripJournal(); updateTripStats(); }, 50); }
+  if(id === 'trip') { setTimeout(function(){ renderTripJournal(); updateTripStats(); updateTripBlocks(); }, 50); }
 }
 
 async function renderLicensesTab() {
@@ -6626,18 +6693,116 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
   });
 })();
 function switchTripTab(tab, el) {
+  // Hide all sub-screens first, show journal tab content
+  showTripSub('journal');
   document.querySelectorAll('#screen-trip .trip-tab').forEach(function(t){ t.classList.remove('active'); });
-  document.querySelectorAll('#screen-trip .trip-tab-content').forEach(function(t){ t.classList.remove('active'); });
-  if(tab==='badges') safe(renderTripBadges);
+  document.querySelectorAll('#screen-trip .trip-tab-content').forEach(function(t){ t.classList.remove('active'); t.style.display=''; });
   if(el) el.classList.add('active');
   var tc = document.getElementById('tab-'+tab);
   if(tc) tc.classList.add('active');
-  if(tab==='sightings') renderSightings();
   if(tab==='checklist') { loadChecklistState(); renderChecklist(); }
-  if(tab==='journal') renderTripJournal();
-  if(tab==='achievements') renderAchievements();
-  if(tab==='bingo') renderBingo();
+  if(tab==='journal') { renderTripJournal(); updateTripStats(); updateTripBlocks(); }
   if(tab==='licenses') renderLicensesTab();
+}
+
+function showTripSub(sub) {
+  // Hide all sub-screens and the main tab-content area
+  var subs = ['itinerary','badges'];
+  subs.forEach(function(s){
+    var el = document.getElementById('trip-sub-'+s);
+    var body = document.getElementById('trip-sub-'+s+'-body');
+    if(el) el.style.display='none';
+    if(body) body.style.display='none';
+  });
+  // Also hide legacy tab-itinerary
+  var legacyItin = document.getElementById('tab-itinerary');
+  if(legacyItin) legacyItin.style.display='none';
+
+  if(sub==='journal') {
+    // Show journal tab content
+    var jt = document.getElementById('tab-journal');
+    if(jt) { jt.classList.add('active'); jt.style.display=''; }
+    renderTripJournal(); updateTripStats(); updateTripBlocks();
+  } else if(sub==='itinerary') {
+    // Hide journal, show itinerary sub-screen
+    var jt = document.getElementById('tab-journal');
+    if(jt) { jt.classList.remove('active'); jt.style.display='none'; }
+    var hdr = document.getElementById('trip-sub-itinerary');
+    if(hdr) hdr.style.display='block';
+    // Show the actual itinerary form
+    if(legacyItin) { legacyItin.style.display='block'; legacyItin.classList.add('active'); }
+  } else if(sub==='badges') {
+    // Hide journal, show badges sub-screen
+    var jt = document.getElementById('tab-journal');
+    if(jt) { jt.classList.remove('active'); jt.style.display='none'; }
+    var hdr = document.getElementById('trip-sub-badges');
+    if(hdr) hdr.style.display='block';
+    safe(renderTripBadges);
+  }
+}
+
+function scrollToJournalFeed() {
+  var anchor = document.getElementById('journalFeedAnchor');
+  if(anchor) anchor.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function exportTripJournalGuarded() {
+  var dates = {};
+  try { dates = JSON.parse(localStorage.getItem('kfg_trip_dates')||'{}'); } catch(e){}
+  if(!dates.from) {
+    showToast('Set up your itinerary first before exporting', 3000);
+    return;
+  }
+  exportTripMemory();
+}
+
+function updateTripBlocks() {
+  // Block 1: Active Trip
+  var dates = {};
+  try { dates = JSON.parse(localStorage.getItem('kfg_trip_dates')||'{}'); } catch(e){}
+  var block1 = document.getElementById('block-trip-body');
+  if(block1) {
+    if(dates.from && dates.to) {
+      var sched = {};
+      try { sched = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e){}
+      var nights = Object.keys(sched).filter(function(k){ return sched[k]; }).length;
+      var fromStr = new Date(dates.from+'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+      var toStr   = new Date(dates.to  +'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+      block1.innerHTML =
+        '<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px">'+fromStr+' &rarr; '+toStr+'</div>'+
+        (dates.entry?'<div style="font-size:9px;color:var(--text3)">In: '+dates.entry+'</div>':'')+
+        (dates.exit ?'<div style="font-size:9px;color:var(--text3)">Out: '+dates.exit+'</div>':'')+
+        (nights?'<div style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700">'+nights+' camps planned</div>':'<div style="font-size:9px;color:var(--text3);margin-top:4px">Tap to plan camps</div>');
+    } else {
+      block1.innerHTML =
+        '<div style="font-size:10px;color:var(--text3);line-height:1.5">Tap to plan your trip</div>'+
+        '<div style="margin-top:8px;font-size:20px;color:var(--accent);font-weight:700">+</div>';
+    }
+  }
+  // Block 2: Badges earned count
+  var earned = [];
+  try { earned = JSON.parse(localStorage.getItem('kfg_achievements')||'[]'); } catch(e){}
+  var countEl = document.getElementById('blockBadgeEarned');
+  if(countEl) countEl.textContent = earned.length;
+  var iconsEl = document.getElementById('blockBadgeIcons');
+  if(iconsEl && typeof MILESTONES !== 'undefined') {
+    var sightings = loadSightings().filter(function(s){ return !s.protected; });
+    var shown = MILESTONES.filter(function(m){ try{return m.check(sightings);}catch(e){return false;} }).slice(0,4);
+    iconsEl.innerHTML = shown.map(function(m){
+      return '<span style="font-size:16px" title="'+m.title+'">'+m.icon+'</span>';
+    }).join('');
+  }
+  // Block 4: Journal summary
+  var sightings2 = loadSightings();
+  var summEl = document.getElementById('blockJournalSummary');
+  if(summEl) {
+    if(sightings2.length) {
+      var sp = Object.keys(sightings2.reduce(function(a,s){a[s.id]=1;return a;},{})).length;
+      summEl.innerHTML = '<span style="color:var(--text);font-weight:700">'+sp+'</span> species &middot; <span style="color:var(--text);font-weight:700">'+sightings2.length+'</span> sightings'+(dates.from?'<br><span style="color:var(--text3)">Ready to export</span>':'');
+    } else {
+      summEl.textContent = 'Log sightings to build your story.';
+    }
+  }
 }
 
 function switchParkTab(tab, el) {
@@ -9848,7 +10013,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.26';
+var APP_VERSION = '5.27';
 
 // Clear stale caches when version changes
 (function() {
@@ -10307,6 +10472,8 @@ function addSightingToJournal(entry) {
   });
 }
 function saveTripDates() {
+  // Refresh block 1 after saving
+  setTimeout(function(){ try{ updateTripBlocks(); }catch(e){} }, 100);
   var from = document.getElementById('tripDateFrom');
   var to = document.getElementById('tripDateTo');
   var entry = document.getElementById('itinEntry');
@@ -10930,10 +11097,10 @@ function generateTripSchedule() {
     var key = 'night_' + i;
 
     html += '<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">' +
-      '<div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;min-width:0;width:auto">' +
-        '<div style="font-size:10px;font-weight:700;color:var(--accent);white-space:nowrap">Night '+(i+1)+'</div>' +
-        '<div style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap">'+dateStr+'</div>' +
-        '<div style="font-size:9px;color:var(--text3);white-space:nowrap">'+dayName+'</div>' +
+      '<div style="flex-shrink:0;width:86px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px">' +
+        '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
+        '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
       '</div>' +
       '<div style="position:relative;flex:1;min-width:0">' +
         '<select onchange="saveTripSchedule('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 30px 10px 12px;font-family:Montserrat,sans-serif;font-size:11px;-webkit-appearance:none;appearance:none">' +
