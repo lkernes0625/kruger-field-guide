@@ -1087,7 +1087,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-              <button onclick="toggleTripSightingsFeed()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 0;width:100%;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F98F; Sightings</button>
+              <button onclick="scrollToTripSightings()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 0;width:100%;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F98F; Sightings</button>
               <button onclick="openTagLocation()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 0;width:100%;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4CD; Pin</button>
             </div>
           </div>
@@ -1105,7 +1105,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         </div><!-- /grid -->
 
         <!-- Trip Sightings Feed (toggled by Block 3 button) -->
-        <div id="tripSightingsFeedWrap" style="display:none;padding:0 16px;margin-top:6px">
+        <div id="tripSightingsFeedWrap" style="display:block;padding:0 16px;margin-top:6px">
           <div id="tripSightingsFeedList"></div>
         </div>
 
@@ -1416,9 +1416,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.32</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.33</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.32 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.33 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3766,7 +3766,7 @@ function showScreen(id) {
     } catch(e) {}
   }
   if(id === 'photo') { try { safe(renderPhotoIntel); safe(initPhotoIntel); } catch(e) {} }
-  if(id === 'trip') { setTimeout(function(){ renderTripJournal(); updateTripStats(); updateTripBlocks(); }, 50); }
+  if(id === 'trip') { setTimeout(function(){ renderTripJournal(); updateTripStats(); updateTripBlocks(); renderTripSightings(); }, 50); }
 }
 
 async function renderLicensesTab() {
@@ -6732,9 +6732,7 @@ function showTripSub(sub) {
   if(legacyItin) legacyItin.style.display='none';
 
   if(sub==='journal') {
-    // Show journal tab content — always close sightings feed
-    var sfw = document.getElementById('tripSightingsFeedWrap');
-    if(sfw) sfw.style.display='none';
+    // Show journal tab content
     var jt = document.getElementById('tab-journal');
     if(jt) { jt.classList.add('active'); jt.style.display=''; }
     renderTripJournal(); updateTripStats(); updateTripBlocks();
@@ -6781,28 +6779,50 @@ function renderTripSightings() {
     list.innerHTML = '<div style="padding:24px 16px;text-align:center;color:var(--text3);font-size:13px">No sightings logged yet.<br>Tap any species to log a sighting.</div>';
     return;
   }
-  list.innerHTML = nonProt.slice().reverse().map(function(s,i){
-    var idx = nonProt.length-1-i;
+  // Group by date — newest date first
+  var groups = {};
+  var dateOrder = [];
+  nonProt.slice().reverse().forEach(function(s, i) {
+    var idx = nonProt.length - 1 - i;
     var t = s.time ? new Date(s.time) : new Date();
-    var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
-    var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    var road = s.road ? ' on '+s.road : '';
-    return '<div class="card" style="margin-bottom:9px">' +
-      '<div class="card-head">' +
-        '<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;margin-right:10px">' +
-          ((ANIMAL_IMG[s.id]||BIRD_IMG[s.id]) ? '<img src="'+(ANIMAL_IMG[s.id]||BIRD_IMG[s.id])+'" style="width:100%;height:100%;object-fit:cover">' : '<div style="width:100%;height:100%;background:var(--bg3)"></div>') +
+    var dayKey = t.toLocaleDateString('en-ZA', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    if(!groups[dayKey]) { groups[dayKey] = []; dateOrder.push(dayKey); }
+    groups[dayKey].push({s:s, idx:idx, i:i, t:t});
+  });
+  var html = '';
+  dateOrder.forEach(function(day) {
+    html += '<div style="font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;padding:12px 0 6px">' + day + '</div>';
+    groups[day].forEach(function(item) {
+      var s = item.s; var idx = item.idx; var i = item.i; var t = item.t;
+      var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      var road = s.road || '';
+      html += '<div class="card" style="margin-bottom:9px">' +
+        '<div class="card-head">' +
+          '<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;margin-right:10px">' +
+            ((ANIMAL_IMG[s.id]||BIRD_IMG[s.id]) ? '<img src="'+(ANIMAL_IMG[s.id]||BIRD_IMG[s.id])+'" style="width:100%;height:100%;object-fit:cover">' : '<div style="width:100%;height:100%;background:var(--bg3)"></div>') +
+          '</div>' +
+          '<div class="card-titles" style="min-width:0">' +
+            '<div class="card-title">'+s.name+'</div>' +
+            '<div class="card-meta" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+timeStr+(road?' · '+road:'')+'</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;flex-shrink:0">' +
+            '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
+            '<button onclick="deleteSightingFromWildlife('+i+');renderTripSightings();" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
+          '</div>' +
         '</div>' +
-        '<div class="card-titles">' +
-          '<div class="card-title">'+s.name+'</div>' +
-          '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
-        '</div>' +
-        '<div style="display:flex;gap:6px;flex-shrink:0">' +
-          '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
-          '<button onclick="deleteSightingFromWildlife('+i+');renderTripSightings();" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+      '</div>';
+    });
+  });
+  list.innerHTML = html;
+}
+
+function scrollToTripSightings() {
+  var el = document.getElementById('tripSightingsFeedWrap');
+  var container = document.getElementById('content');
+  if(!el || !container) return;
+  var top = 0, node = el;
+  while(node && node !== container) { top += node.offsetTop; node = node.offsetParent; }
+  container.scrollTo({top: top - 8, behavior: 'smooth'});
 }
 
 
@@ -7818,7 +7838,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements,100); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} KFGSync.push(); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} try{renderSightings();}catch(e){} try{renderTripSightings();}catch(e){} try{updateTripStats();}catch(e){} try{updateTripBlocks();}catch(e){} setTimeout(checkNewAchievements,100); KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -10109,7 +10129,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.32';
+var APP_VERSION = '5.33';
 
 // Clear stale caches when version changes
 (function() {
