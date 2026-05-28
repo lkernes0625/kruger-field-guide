@@ -77,9 +77,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 .card-head{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-user-select:none;user-select:none}
 .card-head:active{background:var(--bg4)}
 .card-icon{width:36px;height:36px;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.card-titles{flex:1;margin-left:10px}
+.card-titles{flex:1;min-width:0;margin-left:10px}
 .card-title{font-size:13px;font-weight:600;color:var(--text)}
-.card-meta{font-size:10px;color:var(--text3);margin-top:2px;font-weight:500}
+.card-meta{font-size:10px;color:var(--text3);margin-top:2px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .badge{font-size:9px;padding:3px 8px;border-radius:20px;font-weight:600;letter-spacing:.04em;white-space:nowrap}
 .badge-green{background:rgba(58,138,74,.2);color:#6dc97d;border:1px solid rgba(58,138,74,.3)}
 .badge-amber{background:rgba(212,116,26,.2);color:#e8963a;border:1px solid rgba(212,116,26,.3)}
@@ -968,9 +968,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
       <!-- ITINERARY SUB-SCREEN (not a tab — shown/hidden by JS) -->
       <div id="trip-sub-itinerary" style="display:none">
-        <div style="padding:10px 16px 4px;display:flex;align-items:center;gap:8px">
-          <button onclick="showTripSub('journal')" style="background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;padding:0;font-family:Montserrat,sans-serif;font-weight:700">&#x2190; Back</button>
-          <div style="font-size:11px;font-weight:700;color:var(--text)">Itinerary</div>
+        <div style="padding:10px 16px 4px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Itinerary</div>
+          <button onclick="showTripSub('journal')" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;font-family:Montserrat,sans-serif;font-weight:700">Back &#x2192;</button>
         </div>
       </div>
       <div id="trip-sub-itinerary-body" style="display:none">
@@ -979,9 +979,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
       <!-- BADGES SUB-SCREEN -->
       <div id="trip-sub-badges" style="display:none">
-        <div style="padding:10px 16px 4px;display:flex;align-items:center;gap:8px">
-          <button onclick="showTripSub('journal')" style="background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;padding:0;font-family:Montserrat,sans-serif;font-weight:700">&#x2190; Back</button>
-          <div style="font-size:11px;font-weight:700;color:var(--text)">Badges</div>
+        <div style="padding:10px 16px 4px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Badges</div>
+          <button onclick="showTripSub('journal')" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;font-family:Montserrat,sans-serif;font-weight:700">Back &#x2192;</button>
         </div>
         <div style="padding:0 16px 16px">
           <div id="tripBadgesContent" style="margin-top:12px"></div>
@@ -1416,9 +1416,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.31</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.32</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.31 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.32 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4975,7 +4975,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements,100); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} try{renderSightings();}catch(e){} try{renderTripSightings();}catch(e){} try{updateTripStats();}catch(e){} KFGSync.push(); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} try{renderSightings();}catch(e){} try{renderTripSightings();}catch(e){} try{updateTripStats();}catch(e){} try{updateTripBlocks();}catch(e){} setTimeout(checkNewAchievements,100); KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -6732,7 +6732,9 @@ function showTripSub(sub) {
   if(legacyItin) legacyItin.style.display='none';
 
   if(sub==='journal') {
-    // Show journal tab content
+    // Show journal tab content — always close sightings feed
+    var sfw = document.getElementById('tripSightingsFeedWrap');
+    if(sfw) sfw.style.display='none';
     var jt = document.getElementById('tab-journal');
     if(jt) { jt.classList.add('active'); jt.style.display=''; }
     renderTripJournal(); updateTripStats(); updateTripBlocks();
@@ -6831,10 +6833,7 @@ function openViewTripModal() {
   ov.innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">' +
       '<div style="font-size:13px;font-weight:700;color:var(--text)">&#x1F4CB; Trip Preview</div>' +
-      '<div style="display:flex;gap:8px">' +
-        '<button onclick="exportTripJournalGuarded()" style="background:var(--accent);border:none;color:var(--bg);border-radius:7px;padding:7px 14px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#x1F4E4; Export</button>' +
-        '<button onclick="document.getElementById(\'viewTripModal\').remove()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:7px;padding:7px 12px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;font-weight:700">&times;</button>' +
-      '</div>' +
+      '<button onclick="document.getElementById(\'viewTripModal\').remove()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:7px;padding:7px 12px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;font-weight:700">&times;</button>' +
     '</div>' +
     '<iframe id="tripPreviewFrame" style="flex:1;width:100%;border:none;background:#0f1417"></iframe>';
   document.body.appendChild(ov);
@@ -10110,7 +10109,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.31';
+var APP_VERSION = '5.32';
 
 // Clear stale caches when version changes
 (function() {
@@ -11024,7 +11023,7 @@ function _plotMapMarkers() {
     (FACILITIES.landmarks||[]).filter(function(d){ return (d.badges||[]).indexOf('lookout')>=0; }).forEach(function(d){ allLookMarkers.push(d); });
     allLookMarkers.forEach(function(l) {
       var m = L.marker([l.lat, l.lng], {icon: lookIcon})
-        .bindPopup('<b>'+l.name+'</b><br>'+(l.hours||'')+' &bull; '+(l.note||''));
+        .bindPopup('<b>'+l.name+'</b><br>'+(l.note||''));
       m.addTo(_map); _mapLayers.lookouts.push(m);
     });
   }
