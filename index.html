@@ -1109,13 +1109,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div id="tripSightingsFeedList"></div>
         </div>
 
-        <!-- Sightings feed label -->
-        <div id="journalFeedAnchor" style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;padding:14px 16px 6px;border-bottom:1px solid var(--border)">Sightings Feed</div>
 
-        <!-- Sightings feed -->
-        <div id="tripJournalList" style="padding:10px 16px 16px">
-          <div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">Your trip journal is empty.<br>Log sightings in Wildlife and tag locations to build your story.</div>
-        </div>
 
       </div><!-- /tab-journal -->
 
@@ -1422,9 +1416,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.30</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.31</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.30 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.31 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4981,7 +4975,7 @@ function detectGateClose(location) {
 function loadSightings() {
   try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
 }
-function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements,100); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} KFGSync.push(); }
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); setTimeout(checkNewAchievements,100); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} try{renderSightings();}catch(e){} try{renderTripSightings();}catch(e){} try{updateTripStats();}catch(e){} KFGSync.push(); }
 
 function renderSightings() {
   var list=document.getElementById('sightingsList'); if(!list) return;
@@ -6098,21 +6092,6 @@ function toggleMyTrail() {
 
 // ── TRIP MEMORY EXPORT ────────────────────────────────────────────
 function buildTripExportHtml() {
-  // Captures the HTML that exportTripMemory would open in a new window
-  var captured = null;
-  var origOpen = window.open;
-  window.open = function(url) {
-    if(url && url.indexOf('data:text/html') === 0) {
-      try { captured = decodeURIComponent(url.replace('data:text/html;charset=utf-8,','')); } catch(e){ captured = url; }
-    }
-    return { focus: function(){} };
-  };
-  exportTripMemory();
-  window.open = origOpen;
-  return captured;
-}
-
-function exportTripMemory() {
   var nick       = getUserNickname() || 'Safari Explorer';
   var sightings  = loadSightings();
   var journal    = loadJournalEntries ? loadJournalEntries() : [];
@@ -6436,8 +6415,19 @@ function exportTripMemory() {
   '</div>';
 
   html += '</body></html>';
+  return html;
+}
 
-  // Open in a new window and trigger print-to-PDF
+function exportTripMemory() {
+  var sightings = loadSightings();
+  var journal = loadJournalEntries ? loadJournalEntries() : [];
+  if(!sightings.length && !journal.length) {
+    showToast('Log some sightings or journal entries first — then export your trip!', 3000);
+    return;
+  }
+  var html = buildTripExportHtml();
+  if(!html) return;
+
   var printWin = window.open('', '_blank');
   if(printWin) {
     printWin.document.write(html);
@@ -6766,43 +6756,54 @@ function showTripSub(sub) {
 
 function toggleTripSightingsFeed() {
   var wrap = document.getElementById('tripSightingsFeedWrap');
-  var list = document.getElementById('tripSightingsFeedList');
   if(!wrap) return;
   var isOpen = wrap.style.display !== 'none';
-  if(isOpen) {
-    wrap.style.display = 'none';
-    return;
-  }
+  if(isOpen) { wrap.style.display='none'; return; }
   wrap.style.display = 'block';
-  if(!list) return;
-  var sightings = loadSightings().filter(function(s){ return !s.protected; });
-  if(!sightings.length) {
-    list.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text3);font-size:12px">No sightings logged yet.<br>Tap any species in Wildlife to log a sighting.</div>';
-    return;
-  }
-  list.innerHTML = sightings.slice().reverse().map(function(s, i) {
-    var idx = sightings.length - 1 - i;
-    var t = new Date(s.ts || s.time || Date.now());
-    var dateStr = t.toLocaleDateString('en-ZA', {day:'numeric', month:'short'});
-    var timeStr = t.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    var imgSrc = (window.ANIMAL_IMG && ANIMAL_IMG[s.id]) || (window.BIRD_IMG && BIRD_IMG[s.id]) || '';
-    return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px">' +
-      (imgSrc ? '<img src="'+imgSrc+'" style="width:40px;height:40px;border-radius:7px;object-fit:cover;flex-shrink:0">' : '<div style="width:40px;height:40px;border-radius:7px;background:var(--bg4);flex-shrink:0"></div>') +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:12px;font-weight:700;color:var(--text)">'+(s.name||s.species||'Sighting')+'</div>' +
-        '<div style="font-size:10px;color:var(--text3);margin-top:1px">'+dateStr+' &middot; '+timeStr+(s.road?' &middot; '+s.road:'')+'</div>' +
-      '</div>' +
-      '<button onclick="deleteSighting('+idx+')" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:0;flex-shrink:0">&#x2715;</button>' +
-    '</div>';
-  }).join('');
+  renderTripSightings();
   // Scroll to feed
   var container = document.getElementById('content');
   if(wrap && container) {
-    var top = 0; var el = wrap;
-    while(el && el !== container) { top += el.offsetTop; el = el.offsetParent; }
-    container.scrollTo({top: top - 8, behavior: 'smooth'});
+    var top=0, el=wrap;
+    while(el && el!==container){ top+=el.offsetTop; el=el.offsetParent; }
+    container.scrollTo({top:top-8, behavior:'smooth'});
   }
 }
+
+function renderTripSightings() {
+  var list = document.getElementById('tripSightingsFeedList');
+  if(!list) return;
+  var sightings = loadSightings();
+  var nonProt = sightings.filter(function(s){ return !s.protected; });
+  if(!nonProt.length) {
+    list.innerHTML = '<div style="padding:24px 16px;text-align:center;color:var(--text3);font-size:13px">No sightings logged yet.<br>Tap any species to log a sighting.</div>';
+    return;
+  }
+  list.innerHTML = nonProt.slice().reverse().map(function(s,i){
+    var idx = nonProt.length-1-i;
+    var t = s.time ? new Date(s.time) : new Date();
+    var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+    var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var road = s.road ? ' on '+s.road : '';
+    return '<div class="card" style="margin-bottom:9px">' +
+      '<div class="card-head">' +
+        '<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;margin-right:10px">' +
+          ((ANIMAL_IMG[s.id]||BIRD_IMG[s.id]) ? '<img src="'+(ANIMAL_IMG[s.id]||BIRD_IMG[s.id])+'" style="width:100%;height:100%;object-fit:cover">' : '<div style="width:100%;height:100%;background:var(--bg3)"></div>') +
+        '</div>' +
+        '<div class="card-titles">' +
+          '<div class="card-title">'+s.name+'</div>' +
+          '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+          '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
+          '<button onclick="deleteSightingFromWildlife('+i+');renderTripSightings();" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+
 
 function scrollToJournalFeed() {
   var anchor = document.getElementById('journalFeedAnchor');
@@ -10109,7 +10110,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.30';
+var APP_VERSION = '5.31';
 
 // Clear stale caches when version changes
 (function() {
