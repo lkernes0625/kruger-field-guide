@@ -225,7 +225,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 .finder-cat:active{border-color:var(--accent)}
 .finder-cat-icon{font-size:24px;margin-bottom:6px}
 .finder-cat-label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.finder-results{padding:0 16px;display:flex;flex-direction:column;gap:9px}
+.finder-results{padding:10px 16px 0;display:flex;flex-direction:column;gap:9px}
 .finder-result{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;display:flex;align-items:center;gap:12px}
 .finder-result-rank{width:28px;height:28px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0}
 .finder-result-info{flex:1}
@@ -824,7 +824,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
     <div class="screen" id="screen-map">
       <div class="sec-head"><h2>Kruger Map</h2><p>Live GPS &middot; Camps &middot; Roads &middot; Sightings</p></div>
       
-      <div style="padding:0 16px 8px;display:flex;flex-wrap:wrap;gap:5px">
+      <div style="padding:14px 16px 8px;display:flex;flex-wrap:wrap;gap:5px">
         <button onclick="mapFilterToggle('camps')" id="mapFlt-camps" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F3D5; Camps</button>
         <button onclick="mapFilterToggle('gates')" id="mapFlt-gates" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F6AA; Gates</button>
         <button onclick="mapFilterToggle('dams')" id="mapFlt-dams" class="filter-btn" style="font-size:10px;flex:1;min-width:calc(33% - 4px)">&#x1F30A; Dams</button>
@@ -1347,9 +1347,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.25</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.26</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.25 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.26 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -1368,7 +1368,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       <div class="sec-head"><h2>Photography Intel</h2><p>Road light angles - Hides - Settings</p></div>
 
       <!-- Golden Hour + Shot of the Day -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 0">
         <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px;text-align:center">
           <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Sunrise</div>
           <div style="font-size:22px;font-weight:700;color:var(--accent)" id="photoSunrise">--:--</div>
@@ -9848,7 +9848,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.25';
+var APP_VERSION = '5.26';
 
 // Clear stale caches when version changes
 (function() {
@@ -10929,8 +10929,8 @@ function generateTripSchedule() {
     var dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()];
     var key = 'night_' + i;
 
-    html += '<div style="display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-bottom:8px">' +
-      '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 12px;min-width:110px">' +
+    html += '<div style="display:grid;grid-template-columns:100px 1fr;gap:10px;align-items:center;margin-bottom:8px">' +
+      '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px">' +
         '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
         '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
         '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
