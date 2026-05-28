@@ -1422,9 +1422,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.34</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.35</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.34 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.35 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4683,12 +4683,14 @@ function confirmLogSighting() {
   showToast('Sighting logged!' + (road ? ' \u2013 ' + road : ''), 2500);
   // Refresh Daily Challenge if currently visible
   if(window._currentScreenId === 'games') { setTimeout(function(){ if(typeof renderGameChallenge==='function') renderGameChallenge(); }, 200); }
-  // Prompt for nickname if first time, then push to feed
-  promptNickname(function(nickname) {
-    pushSightingToFeed(entry, nickname);
-    // Also push to family group feed if member
-    if(isFamilyMember()) pushFamilySighting(entry, nickname);
-  });
+  // Only mammals (spType==='species') push to the live Home feed
+  // Birds, reptiles, frogs and insects appear in My Trip only
+  if(window._spType === 'species' || !window._spType) {
+    promptNickname(function(nickname) {
+      pushSightingToFeed(entry, nickname);
+      if(isFamilyMember()) pushFamilySighting(entry, nickname);
+    });
+  }
 }
 
 
@@ -7546,12 +7548,14 @@ function confirmLogSighting() {
   showToast('Sighting logged!' + (road ? ' \u2013 ' + road : ''), 2500);
   // Refresh Daily Challenge if currently visible
   if(window._currentScreenId === 'games') { setTimeout(function(){ if(typeof renderGameChallenge==='function') renderGameChallenge(); }, 200); }
-  // Prompt for nickname if first time, then push to feed
-  promptNickname(function(nickname) {
-    pushSightingToFeed(entry, nickname);
-    // Also push to family group feed if member
-    if(isFamilyMember()) pushFamilySighting(entry, nickname);
-  });
+  // Only mammals (spType==='species') push to the live Home feed
+  // Birds, reptiles, frogs and insects appear in My Trip only
+  if(window._spType === 'species' || !window._spType) {
+    promptNickname(function(nickname) {
+      pushSightingToFeed(entry, nickname);
+      if(isFamilyMember()) pushFamilySighting(entry, nickname);
+    });
+  }
 }
 
 
@@ -10303,7 +10307,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.34';
+var APP_VERSION = '5.35';
 
 // Clear stale caches when version changes
 (function() {
@@ -10400,7 +10404,7 @@ var _recentlyViewed = [];
 try { _recentlyViewed = JSON.parse(localStorage.getItem('kfg_recently_viewed')||'[]'); } catch(e) {}
 
 function trackRecentlyViewed(type, idx) {
-  var sp = type==='bird' ? BIRDS[idx] : type==='reptile' ? REPTILES[idx] : type==='frog' ? FROGS[idx] : SPECIES[idx];
+  var sp = type==='bird' ? BIRDS[idx] : type==='reptile' ? REPTILES[idx] : type==='frog' ? FROGS[idx] : type==='insect' ? INSECTS[idx] : SPECIES[idx];
   if(!sp) return;
   var key = type + ':' + sp.id; // Use ID not index
   _recentlyViewed = _recentlyViewed.filter(function(k){ return k !== key; });
@@ -10420,7 +10424,7 @@ function renderRecentlyViewed() {
     var type = parts[0], spId = parts.slice(1).join(':');
     // Find by ID (new format) or by index (legacy format for backwards compat)
     var sp, idx;
-    var arr = type==='bird' ? BIRDS : type==='reptile' ? REPTILES : type==='frog' ? FROGS : SPECIES;
+    var arr = type==='bird' ? BIRDS : type==='reptile' ? REPTILES : type==='frog' ? FROGS : type==='insect' ? INSECTS : SPECIES;
     idx = arr.findIndex(function(s){ return s.id === spId; });
     if(idx < 0) idx = parseInt(spId); // legacy index fallback
     sp = arr[idx];
@@ -10428,7 +10432,7 @@ function renderRecentlyViewed() {
     var onclick = type==='bird'?'openBird('+idx+')':type==='reptile'?'openWildcardSpecies(\'reptile\','+idx+')':type==='frog'?'openWildcardSpecies(\'frog\','+idx+')':type==='insect'?'openInsect('+idx+')':'openSpecies('+idx+')';
     return '<div onclick="'+onclick+'" style="flex-shrink:0;width:52px;text-align:center;cursor:pointer">' +
       '<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:3px">' +
-        ((typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])?'<img src="'+(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F43E;</div>')+
+        ((typeof INSECT_IMG!=='undefined'&&INSECT_IMG[sp.id])||(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id])||ANIMAL_IMG[sp.id]?'<img src="'+((typeof INSECT_IMG!=='undefined'&&INSECT_IMG[sp.id])||(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id])||ANIMAL_IMG[sp.id])+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F43E;</div>')+
       '</div>' +
       '<div style="font-size:9px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sp.name+'</div>' +
     '</div>';
@@ -11644,7 +11648,7 @@ function _highlightAZLetter(letter) {
 
 function _getCurrentLetter() {
   var wt = window._wildlifeTab || 'species';
-  var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : 'speciesGrid';
+  var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : wt === 'insects' ? 'insectsGrid' : 'speciesGrid';
   var grid = document.getElementById(gridId);
   if (!grid) return '';
   var contentEl = document.getElementById('content');
@@ -11681,7 +11685,7 @@ function setAZFilter(letter) {
     if (az) az.style.opacity = '0';
   }, 2500);
   var wt = window._wildlifeTab || 'species';
-  var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : 'speciesGrid';
+  var gridId = wt === 'birds' ? 'birdsGrid' : wt === 'reptiles' ? 'reptilesGrid' : wt === 'frogs' ? 'frogsGrid' : wt === 'insects' ? 'insectsGrid' : 'speciesGrid';
   var grid = document.getElementById(gridId);
   if (!grid) return;
   var children = grid.children;
@@ -11764,7 +11768,7 @@ function initAZScroll() {
 
   var contentEl = document.getElementById('content');
   if (contentEl) contentEl.addEventListener('scroll', onScroll, {passive:true});
-  ['speciesGrid','birdsGrid','reptilesGrid','frogsGrid'].forEach(function(id) {
+  ['speciesGrid','birdsGrid','reptilesGrid','frogsGrid','insectsGrid'].forEach(function(id) {
     var g = document.getElementById(id);
     if (g) g.addEventListener('scroll', onScroll, {passive:true});
   });
