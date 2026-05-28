@@ -1422,9 +1422,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.39</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.40</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.39 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.40 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -5286,7 +5286,7 @@ function generateCard(s, canvasId, size, userImg) {
     // Location | date time — centred between name and footer
     ctx.fillStyle = '#c8d4d8';
     ctx.font = '500 ' + Math.round(size * 0.034) + 'px Montserrat,Arial,sans-serif';
-    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.870));
+    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.895));
 
 
   // Footer bar
@@ -5354,7 +5354,7 @@ function _renderFullCard(size, callback) {
     ctx.fillText(s.name, size / 2, Math.round(size * 0.825));
     ctx.fillStyle = '#c8d4d8';
     ctx.font = '500 ' + Math.round(size * 0.034) + 'px Montserrat,Arial,sans-serif';
-    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.870));
+    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.895));
     ctx.fillStyle = 'rgba(12,15,18,0.97)';
     ctx.fillRect(0, Math.round(size * 0.910), size, Math.round(size * 0.085));
     ctx.fillStyle = '#e8a020';
@@ -8150,7 +8150,7 @@ function generateCard(s, canvasId, size, userImg) {
     ctx.fillText(s.name, size / 2, Math.round(size * 0.825));
     ctx.fillStyle = '#c8d4d8';
     ctx.font = '500 ' + Math.round(size * 0.034) + 'px Montserrat,Arial,sans-serif';
-    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.870));
+    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.895));
     ctx.fillStyle = 'rgba(12,15,18,0.97)';
     ctx.fillRect(0, Math.round(size * 0.910), size, Math.round(size * 0.085));
     ctx.fillStyle = '#e8a020';
@@ -8211,7 +8211,7 @@ function _renderFullCard(size, callback) {
     ctx.fillText(s.name, size / 2, Math.round(size * 0.825));
     ctx.fillStyle = '#c8d4d8';
     ctx.font = '500 ' + Math.round(size * 0.034) + 'px Montserrat,Arial,sans-serif';
-    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.870));
+    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.895));
     ctx.fillStyle = 'rgba(12,15,18,0.97)';
     ctx.fillRect(0, Math.round(size * 0.910), size, Math.round(size * 0.085));
     ctx.fillStyle = '#e8a020';
@@ -10311,7 +10311,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.39';
+var APP_VERSION = '5.40';
 
 // Clear stale caches when version changes
 (function() {
