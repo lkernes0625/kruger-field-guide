@@ -1081,7 +1081,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
     </div>
     <!-- ======= GAMES SCREEN ======= -->
     <div class="screen" id="screen-games">
-      <div class="sec-head"><h2>Games</h2><p>Daily Challenge · Badges · Bingo</p></div>
+      <div class="sec-head"><h2>Games</h2><p>Daily Challenge · Bingo · Puzzle</p></div>
 
       <!-- GAME TABS -->
       <div style="display:flex;border-bottom:1px solid var(--border2);margin:0 16px 4px">
@@ -1347,9 +1347,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.24</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.25</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.24 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.25 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3681,11 +3681,16 @@ function showScreen(id) {
   // Init map on first visit
   if(id === 'map') setTimeout(function(){ initMap(); if(_map) _map.invalidateSize(); if(!window._heatmapActive){ toggleHeatmap(); } }, 300);
   if(id === 'games') {
-    // Render synchronously — don't wait, it causes blank screen flicker
+    // Reset all game tabs cleanly, then activate challenge
     try {
-      var btn = document.getElementById('gameTab-challenge');
-      if(btn) { btn.style.borderBottomColor='var(--accent)'; btn.style.color='var(--accent)'; }
+      document.querySelectorAll('.game-tab').forEach(function(b){
+        b.classList.remove('active');
+        b.style.borderBottomColor='transparent';
+        b.style.color='var(--text3)';
+      });
       document.querySelectorAll('.game-tab-content').forEach(function(p){ p.style.display='none'; });
+      var btn = document.getElementById('gameTab-challenge');
+      if(btn) { btn.classList.add('active'); btn.style.borderBottomColor='var(--accent)'; btn.style.color='var(--accent)'; }
       var cp = document.getElementById('gamePanel-challenge');
       if(cp) cp.style.display='block';
       safe(renderGameChallenge);
@@ -3782,15 +3787,15 @@ function shareGiftKey(giftKey) {
   function getContent() { return document.getElementById('content'); }
 
   function onTouchStart(e) {
-    // Don't swipe if touching a modal, map, scrollable inner element, or My Trip screen
+    // Don't swipe on: modals, map, or My Trip screen (scrollable content, not swipeable)
+    if(window._currentScreenId === 'trip') return;
     var target = e.target;
     while(target && target !== document.body) {
       if(target.classList && (
         target.classList.contains('modal-sheet') ||
         target.classList.contains('leaflet-container') ||
         target.id === 'speciesModal' ||
-        target.id === 'birdModal' ||
-        target.id === 'screen-trip'
+        target.id === 'birdModal'
       )) return;
       target = target.parentElement;
     }
@@ -9843,7 +9848,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.24';
+var APP_VERSION = '5.25';
 
 // Clear stale caches when version changes
 (function() {
@@ -10930,9 +10935,12 @@ function generateTripSchedule() {
         '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
         '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
       '</div>' +
-      '<select onchange="saveTripSchedule('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:11px">' +
-        '<option value="">Select camp...</option>' + campOpts + extraOpts +
-      '</select>' +
+      '<div style="position:relative">' +
+        '<select onchange="saveTripSchedule('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 30px 10px 12px;font-family:Montserrat,sans-serif;font-size:11px;-webkit-appearance:none;appearance:none">' +
+          '<option value="">Select camp...</option>' + campOpts + extraOpts +
+        '</select>' +
+        '<span style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:11px">&#x25BC;</span>' +
+      '</div>' +
     '</div>';
   }
 
@@ -12872,34 +12880,56 @@ function tapPuzzleTile(pos) {
 function renderTripBadges() {
   var container = document.getElementById('tripBadgesContent');
   if(!container) return;
-  // Render badges into trip badges panel
+  // Re-use the full MILESTONES array — same 14 badges as the achievements system
   var sightings = [];
-  try { sightings = JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); } catch(e) {}
-  var badgeList = [
-    {id:'big5',label:'Big 5',icon:'🦁',desc:'Spot all Big 5',species:['Lion','Elephant','Leopard','Buffalo','White Rhino'],color:'#c8962a'},
-    {id:'first_sighting',label:'First Sighting',icon:'👁',desc:'Log your first sighting',species:[],color:'#4a8a6a'},
-    {id:'10_species',label:'10 Species',icon:'📋',desc:'Log 10 different species',species:[],color:'#4a6a9a'},
-    {id:'25_species',label:'25 Species',icon:'🔭',desc:'Log 25 different species',species:[],color:'#6a4a9a'},
-  ];
-  var seen = sightings.map(function(s){ return s.species; });
-  var uniqueSeen = seen.filter(function(v,i,a){ return a.indexOf(v)===i; });
+  try { sightings = loadSightings().filter(function(s){ return !s.protected; }); } catch(e) {}
+  var earned = [];
+  try { earned = JSON.parse(localStorage.getItem('kfg_achievements')||'[]'); } catch(e) {}
+
+  function getProgress(m) {
+    if(m.id==='predator5'||m.id==='big5'){ var ids=m.id==='big5'?['lion','elephant','leopard','buffalo','white_rhino']:['lion','leopard','cheetah','wild_dog','spotted_hyena']; return{cur:ids.filter(function(id){return sightings.some(function(x){return x.id===id;});}).length,total:5};}
+    if(m.id==='ten_species'){return{cur:Math.min(Object.keys(sightings.reduce(function(a,x){a[x.id]=1;return a;},{})).length,10),total:10};}
+    if(m.id==='twenty_five'){return{cur:Math.min(sightings.length,25),total:25};}
+    if(m.id==='fifty_sightings'){return{cur:Math.min(sightings.length,50),total:50};}
+    if(m.id==='hundred'){return{cur:Math.min(sightings.length,100),total:100};}
+    if(m.id==='elephant_herd'){return{cur:Math.min(sightings.filter(function(x){return x.id==='elephant';}).length,3),total:3};}
+    if(m.id==='rhino_both'){var c=(sightings.some(function(x){return x.id==='white_rhino';})?1:0)+(sightings.some(function(x){return x.id==='black_rhino';})?1:0);return{cur:c,total:2};}
+    if(m.id==='antelope10'){var ante=sightings.filter(function(x){return typeof SPECIES!=='undefined'&&SPECIES.find(function(sp){return sp.id===x.id&&sp.category==='antelope';});});return{cur:Math.min(Object.keys(ante.reduce(function(a,x){a[x.id]=1;return a;},{})).length,10),total:10};}
+    return null;
+  }
+
   var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-  badgeList.forEach(function(b){
-    var earned = false;
-    if(b.id==='big5') earned = b.species.every(function(s){ return uniqueSeen.indexOf(s)>=0; });
-    else if(b.id==='first_sighting') earned = sightings.length>0;
-    else if(b.id==='10_species') earned = uniqueSeen.length>=10;
-    else if(b.id==='25_species') earned = uniqueSeen.length>=25;
-    html += '<div style="background:var(--bg3);border:1px solid '+(earned?b.color:'var(--border)')+';border-radius:12px;padding:12px;text-align:center;opacity:'+(earned?'1':'0.5')+'">' +
-      '<div style="font-size:28px;margin-bottom:6px">'+b.icon+'</div>' +
-      '<div style="font-size:11px;font-weight:700;color:'+(earned?b.color:'var(--text3)')+'">'+b.label+'</div>' +
-      '<div style="font-size:9px;color:var(--text3);margin-top:3px">'+b.desc+'</div>' +
-      (earned?'<div style="font-size:9px;color:'+b.color+';font-weight:700;margin-top:4px">✓ Earned</div>':'') +
-    '</div>';
+  var newlyEarned = [];
+  (typeof MILESTONES !== 'undefined' ? MILESTONES : []).forEach(function(m) {
+    var unlocked = false;
+    try { unlocked = m.check(sightings); } catch(e) {}
+    var wasEarned = earned.indexOf(m.id) >= 0;
+    if(unlocked && !wasEarned) { earned.push(m.id); newlyEarned.push(m); }
+    var prog = getProgress(m);
+    html += '<div data-badge-id="'+m.id+'" onclick="openBadgeModal(this.getAttribute(\'data-badge-id\'))" style="background:'+(unlocked?'rgba(232,160,32,.08)':'var(--bg3)')+';border:1px solid '+(unlocked?'rgba(232,160,32,.4)':'var(--border)')+';border-radius:12px;padding:12px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent">';
+    html += '<div style="font-size:28px;margin-bottom:6px;'+(unlocked?'':'filter:grayscale(.6)')+'">'+m.icon+'</div>';
+    html += '<div style="font-size:11px;font-weight:700;color:'+(unlocked?'var(--accent)':'var(--text2)')+';margin-bottom:2px">'+m.title+'</div>';
+    if(prog) {
+      var pct = Math.round((prog.cur/prog.total)*100);
+      html += '<div style="margin-top:5px;background:var(--bg4);border-radius:99px;height:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+(unlocked?'var(--accent)':'#4a6a8a')+';border-radius:99px"></div></div>';
+      html += '<div style="font-size:8px;color:var(--text3);margin-top:3px">'+(unlocked?'DONE':prog.cur+' / '+prog.total)+'</div>';
+    } else if(unlocked) {
+      html += '<div style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700">✓ UNLOCKED</div>';
+    } else {
+      html += '<div style="font-size:8px;color:var(--text3);margin-top:3px">Tap to see how</div>';
+    }
+    html += '</div>';
   });
   html += '</div>';
-  html += '<div style="margin-top:10px;font-size:10px;color:var(--text3);text-align:center">'+uniqueSeen.length+' species logged · '+sightings.length+' total sightings</div>';
+  if(!sightings.length) {
+    html = '<div style="background:rgba(232,160,32,.06);border:1px solid rgba(232,160,32,.2);border-radius:10px;padding:12px;text-align:center;font-size:11px;color:var(--text3);margin-bottom:12px">Log sightings in Wildlife to start unlocking badges!</div>' + html;
+  }
   container.innerHTML = html;
+  if(newlyEarned.length) {
+    localStorage.setItem('kfg_achievements', JSON.stringify(earned));
+    try { KFGSync.push(); } catch(e) {}
+    newlyEarned.forEach(function(m){ try { showToast(m.icon+' Badge unlocked: '+m.title+'!'); } catch(e){} });
+  }
 }
 
 function renderBadges() {
