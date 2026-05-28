@@ -10929,13 +10929,13 @@ function generateTripSchedule() {
     var dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()];
     var key = 'night_' + i;
 
-    html += '<div style="display:grid;grid-template-columns:100px 1fr;gap:10px;align-items:center;margin-bottom:8px">' +
-      '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px">' +
-        '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
-        '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
-        '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
+    html += '<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">' +
+      '<div style="flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;min-width:0;width:auto">' +
+        '<div style="font-size:10px;font-weight:700;color:var(--accent);white-space:nowrap">Night '+(i+1)+'</div>' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap">'+dateStr+'</div>' +
+        '<div style="font-size:9px;color:var(--text3);white-space:nowrap">'+dayName+'</div>' +
       '</div>' +
-      '<div style="position:relative">' +
+      '<div style="position:relative;flex:1;min-width:0">' +
         '<select onchange="saveTripSchedule('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 30px 10px 12px;font-family:Montserrat,sans-serif;font-size:11px;-webkit-appearance:none;appearance:none">' +
           '<option value="">Select camp...</option>' + campOpts + extraOpts +
         '</select>' +
