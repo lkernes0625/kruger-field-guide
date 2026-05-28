@@ -1087,8 +1087,8 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-              <button onclick="openTagLocation()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 4px;font-family:Montserrat,sans-serif;font-size:8px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4CD; Tag Location</button>
-              <button onclick="scrollToJournalFeed()" style="background:none;border:1px solid var(--border2);color:var(--text2);border-radius:7px;padding:6px 4px;font-family:Montserrat,sans-serif;font-size:8px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F98F; Sightings</button>
+              <button onclick="openTagLocation()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 0;width:100%;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4CD; Pin</button>
+              <button onclick="scrollToJournalFeed()" style="background:none;border:1px solid var(--border2);color:var(--text2);border-radius:7px;padding:6px 0;width:100%;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F98F; Sightings</button>
             </div>
           </div>
 
@@ -1096,7 +1096,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F4D6; Journal</div>
             <div id="blockJournalSummary" style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:8px">Log sightings to build your story.</div>
-            <button onclick="exportTripJournalGuarded()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:7px;padding:8px;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4E4; Export Journal</button>
+            <button onclick="exportTripJournalGuarded()" style="width:100%;background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 0;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4E4; Export Journal</button>
           </div>
 
         </div><!-- /grid -->
@@ -1414,9 +1414,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.27</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.28</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.27 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.28 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -6743,7 +6743,12 @@ function showTripSub(sub) {
 
 function scrollToJournalFeed() {
   var anchor = document.getElementById('journalFeedAnchor');
-  if(anchor) anchor.scrollIntoView({behavior:'smooth',block:'start'});
+  var container = document.getElementById('content');
+  if(anchor && container) {
+    var anchorTop = anchor.getBoundingClientRect().top;
+    var containerTop = container.getBoundingClientRect().top;
+    container.scrollBy({top: anchorTop - containerTop - 8, behavior:'smooth'});
+  }
 }
 
 function exportTripJournalGuarded() {
@@ -10013,7 +10018,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.27';
+var APP_VERSION = '5.28';
 
 // Clear stale caches when version changes
 (function() {
