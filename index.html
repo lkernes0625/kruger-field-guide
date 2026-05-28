@@ -870,6 +870,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         <button class="wildlife-tab" onclick="switchWildlifeTab('birds',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:10px 0;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">BIRDS</button>
         <button class="wildlife-tab" onclick="switchWildlifeTab('reptiles',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:10px 0;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">REPTILES</button>
         <button class="wildlife-tab" onclick="switchWildlifeTab('frogs',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:10px 0;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">FROGS</button>
+        <button class="wildlife-tab" onclick="switchWildlifeTab('insects',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:10px 0;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.04em">INSECTS</button>
 
       </div>
 
@@ -879,6 +880,8 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         <button class="filter-btn" onclick="setWildlifeFilter('endangered',this)" id="mammalEndBtn" style="flex:1;font-size:10px;padding:7px 2px">Endangered</button>
         <button class="filter-btn" onclick="setWildlifeFilter('rare',this)" id="mammalRareBtn" style="flex:1;font-size:10px;padding:7px 2px">Rare</button>
         <span id="mammalOnlyFilters" style="display:none"></span>
+        <button class="filter-btn" id="insectAllBtn" onclick="setInsectFilter('all',this)" style="display:none;flex:1;font-size:10px;padding:7px 2px">All</button>
+        <button class="filter-btn" id="insectScorpionBtn" onclick="setInsectFilter('scorpion',this)" style="display:none;flex:1;font-size:10px;padding:7px 2px">Scorpions</button>
         <span id="birdOnlyFilters" style="display:none;gap:5px;width:100%;position:absolute"><button id="birdAllBtn" class="filter-btn active" onclick="resetBirdFilters()" style="flex:1">ALL</button><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)" style="flex:1">TOP 6</button><button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)" style="flex:1">ENDANGERED</button></span>
       </div>
 
@@ -928,6 +931,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       </div>
       <div id="wildlifePanel-frogs" style="display:none">
         <div class="species-grid" id="frogsGrid"></div>
+      </div>
+      <div id="wildlifePanel-insects" style="display:none">
+        <div class="species-grid" id="insectsGrid"></div>
       </div>
       <div id="wildlifePanel-sightings" style="display:none">
         <div id="sightingsList" style="padding:12px 16px"></div>
@@ -1416,9 +1422,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.33</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.34</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.33 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.34 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4416,7 +4422,7 @@ function openGPSCapture() {
 }
 
 function openSightingPanel() {
-  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : SPECIES[window._spIdx];
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : window._spType === 'insect' ? INSECTS[window._spIdx] : SPECIES[window._spIdx];
   if(!sp) return;
   // Auto-capture GPS first, then show confirm popup
   window._sightingLat = null;
@@ -4644,7 +4650,7 @@ function showFeedNotificationBanner(item) {
 }
 
 function confirmLogSighting() {
-  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : SPECIES[window._spIdx];
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : window._spType === 'insect' ? INSECTS[window._spIdx] : SPECIES[window._spIdx];
   if(!sp) return;
   var road = window._sightingRoad || '';
   var lat = window._sightingLat || null;
@@ -7279,7 +7285,7 @@ function openGPSCapture() {
 }
 
 function openSightingPanel() {
-  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : SPECIES[window._spIdx];
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : window._spType === 'insect' ? INSECTS[window._spIdx] : SPECIES[window._spIdx];
   if(!sp) return;
   // Auto-capture GPS first, then show confirm popup
   window._sightingLat = null;
@@ -7507,7 +7513,7 @@ function showFeedNotificationBanner(item) {
 }
 
 function confirmLogSighting() {
-  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : SPECIES[window._spIdx];
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : window._spType === 'insect' ? INSECTS[window._spIdx] : SPECIES[window._spIdx];
   if(!sp) return;
   var road = window._sightingRoad || '';
   var lat = window._sightingLat || null;
@@ -9745,6 +9751,56 @@ var FROGS = [
 
 ];
 
+// ============================================================
+// INSECTS — SCORPIONS
+// ============================================================
+var INSECT_IMG = {
+  "chubbs_lesser_thicktail_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-chubbs-lesser-thicktail-scorpion.webp?alt=media",
+  "eastern_bark_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-eastern-bark-scorpion.webp?alt=media",
+  "eastern_nomad_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-eastern-nomad-scorpion.webp?alt=media",
+  "giant_rock_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-giant-rock-scorpion.webp?alt=media",
+  "golden_green_lesser_thicktail": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-golden-green-lesser-thicktail.webp?alt=media",
+  "joness_creeping_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-joness-creeping-scorpion.webp?alt=media",
+  "mozambique_thicktail_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-mozambique-thicktail-scorpion.webp?alt=media",
+  "olive_lesser_thicktail_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-olive-lesser-thicktail-scorpion.webp?alt=media",
+  "rough_burrowing_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-rough-burrowing-scorpion.webp?alt=media",
+  "rough_thicktail_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-rough-thicktail-scorpion.webp?alt=media",
+  "transvaal_thicktail_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-transvaal-thicktail-scorpion.webp?alt=media",
+  "tree_creeper_scorpion": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Finsects%2Fscorpions-tree-creeper-scorpion.webp?alt=media"
+};
+
+var INSECTS = [
+  {id:"chubbs_lesser_thicktail_scorpion",name:"Chubb's Lesser Thicktail Scorpion",latin:"Uroplectes chubbi",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"4-5 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Bushveld and rocky areas throughout Kruger",roads:"Found under rocks and bark throughout the park",time:"Nocturnal — active after dark",camera:"Macro lens · close focus · torch light",behaviour:"A slender scorpion with a thin, elongated tail. Less dangerous than thicktail species. Shelters under bark and loose stones during the day. Hunts small insects at night. Fluorescent green-blue under UV light.",keyFeatures:"Slender build; thin metasoma (tail); pale yellowish-brown coloration; relatively small size; less bulbous telson than thicktail scorpions.",description:"Chubb's Lesser Thicktail Scorpion is one of several Uroplectes species found in Kruger. Despite the 'thicktail' in its name, it is considerably more slender than the true thicktail scorpions of the Parabuthus genus. It favours rocky outcrops and tree bark as shelter. Its venom is not considered medically significant. Like all scorpions it glows blue-green under ultraviolet light — a UV torch at night is the most reliable way to find it.",distribution:"Distributed across northeastern South Africa including Kruger National Park. Found in all vegetation zones within the park wherever suitable rocky or bark shelter exists.",habitat:"Rocky outcrops, loose bark, termite mounds and leaf litter in bushveld and woodland.",food:"Small insects, spiders and other invertebrates caught by active nocturnal hunting.",breeding:"Viviparous — gives birth to live young which are carried on the mother's back until first moult.",voice:"Silent."},
+  {id:"eastern_bark_scorpion",name:"Eastern Bark Scorpion",latin:"Uroplectes triangulifer",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"5-7 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Woodland and tree-rich areas throughout Kruger",roads:"Rocky koppies, dead trees, loose bark along any road",time:"Nocturnal — peak activity 20:00-02:00",camera:"Macro lens · UV torch · close focus",behaviour:"A bark specialist — spends days hidden under loose bark of dead trees and wooden structures. Rapid runner when disturbed. Not considered medically significant. Glows strongly under UV light.",keyFeatures:"Flattened body ideal for bark crevices; yellowish-orange coloration with darker markings; moderately sized telson; long slender pedipalps.",description:"The Eastern Bark Scorpion is well adapted for life under tree bark, with a dorsoventrally flattened body that allows it to squeeze into tight crevices. It is one of the most commonly encountered scorpions in Kruger's rest camp areas, often found on or around wooden structures at night. Its venom is mild and not considered dangerous to healthy adults.",distribution:"Common in woodland and bushveld throughout northeastern South Africa. Widespread in Kruger in all wooded zones.",habitat:"Under loose bark of dead and dying trees, wooden structures, and rocky outcrops in woodland.",food:"Insects, spiders and small arthropods.",breeding:"Viviparous. Female carries young on back after birth.",voice:"Silent."},
+  {id:"eastern_nomad_scorpion",name:"Eastern Nomad Scorpion",latin:"Lychas tricarinatus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"4-6 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Sandy and rocky areas throughout Kruger",roads:"Sandy soils along H1-2, H1-4 and northern zones",time:"Nocturnal",camera:"Macro lens · UV torch",behaviour:"A nomadic hunter — does not maintain a fixed retreat. Actively roams sandy and rocky ground at night in search of prey. Slender and fast-moving. Mild venom.",keyFeatures:"Slender build; yellowish-brown with darker stripes; three distinct keels on tail segments; relatively long legs for active hunting.",description:"The Eastern Nomad Scorpion is an active hunter that roams rather than waiting in a fixed retreat, earning its common name. It is found across sandy bushveld and rocky outcrops throughout the park. Its three-keeled tail segments are diagnostic. Not considered medically significant.",distribution:"Northeastern South Africa, Mozambique and Zimbabwe. Found throughout Kruger especially in the drier central and northern zones.",habitat:"Sandy soils, rocky ground and leaf litter in bushveld and mopane woodland.",food:"Insects, spiders and other small arthropods.",breeding:"Viviparous live birth. Young carried on mother's back.",voice:"Silent."},
+  {id:"giant_rock_scorpion",name:"Giant Rock Scorpion",latin:"Hadogenes troglodytes",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"13-21 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Rocky koppies and granite outcrops throughout Kruger",roads:"Rocky koppies along S65, H9, granite outcrops in south and central",time:"Nocturnal — emerges after dark",camera:"Wide macro · torch · careful approach",behaviour:"Africa's largest scorpion by length. Highly flattened to slip into rock crevices. Very slow metabolism — can survive months without food. Despite impressive size, its venom is extremely mild — uses powerful claws (pedipalps) to crush prey instead. Docile unless provoked.",keyFeatures:"Enormous size (up to 21cm); extremely flattened body; very large pedipalps (claws); dark brown to black coloration; relatively small, slender telson for its size.",description:"The Giant Rock Scorpion is the longest scorpion in Africa and a spectacular find on any game drive. Its massively flattened body allows it to hide in the narrowest granite crevices. Despite its intimidating appearance, it is one of the least venomous scorpions in southern Africa — relying instead on its powerful crushing claws. Slow to reproduce and long-lived, with individuals potentially surviving over 25 years.",distribution:"Rocky outcrops and koppies throughout Kruger and the broader northeastern South African bushveld. Most reliably found on granite koppies.",habitat:"Granite and rocky outcrops, boulder piles and rocky hillsides. Strictly associated with suitable rock crevices.",food:"Large insects, smaller scorpions, lizards and other arthropods crushed by powerful pedipalps.",breeding:"Viviparous. Extremely slow reproduction — small litters and long gestation.",voice:"Silent."},
+  {id:"golden_green_lesser_thicktail",name:"Golden-Green Lesser Thicktail",latin:"Uroplectes olivaceus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"4-6 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Bushveld and mixed woodland throughout Kruger",roads:"Found under rocks and bark throughout the park",time:"Nocturnal",camera:"Macro lens · UV torch",behaviour:"Named for its distinctive golden-green coloration under natural and UV light. A typical Uroplectes — shelters under stones and bark during the day, hunts at night. Mild venom.",keyFeatures:"Distinctive golden-green to olive coloration; slender build; thin tail; moderate size.",description:"The Golden-Green Lesser Thicktail is one of the more visually striking scorpions in Kruger, its olive-gold coloration making it distinctive from other Uroplectes species. Relatively common throughout the park's bushveld zones. Not dangerous to healthy adults.",distribution:"Northeastern South Africa and southern Mozambique. Common throughout Kruger in suitable habitat.",habitat:"Rocky outcrops, loose bark, stones and leaf litter in bushveld.",food:"Insects and small arthropods.",breeding:"Viviparous. Young carried on mother's back after birth.",voice:"Silent."},
+  {id:"joness_creeping_scorpion",name:"Jones's Creeping Scorpion",latin:"Opisthophthalmus wahlbergii",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"7-10 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Sandy soils and grassland in Kruger",roads:"Open sandy areas, H1-3 area, southern grasslands",time:"Nocturnal — emerges after sunset",camera:"Macro lens · UV torch · ground level",behaviour:"A burrowing species that excavates sandy soil burrows. Ambushes prey from the burrow entrance. Medium venom potency — potentially painful sting but rarely medically significant. Robust build with strong claws.",keyFeatures:"Robust, heavily built; dark brown to black; strong pedipalps; moderately thick tail; rough granular texture on body segments.",description:"Jones's Creeping Scorpion belongs to the Opisthophthalmus genus, which contains southern Africa's most robust burrowing scorpions. It excavates substantial burrows in sandy soil and is a sit-and-wait predator that ambushes insects from the burrow entrance. More likely to sting than bark or rock scorpions when encountered.",distribution:"Sandy bushveld and grassland zones of northeastern South Africa. Occurs in the southern and central zones of Kruger.",habitat:"Sandy soils, grassland edges and open bushveld with suitable burrowing substrate.",food:"Insects, spiders and other ground-dwelling arthropods.",breeding:"Viviparous. Longer gestation than smaller species. Young carried on back.",voice:"Silent."},
+  {id:"mozambique_thicktail_scorpion",name:"Mozambique Thicktail Scorpion",latin:"Parabuthus mozambicus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"10-14 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Northern Kruger — mopane and sandy zones",roads:"H1-6, H1-7, H1-8 and sandy northern areas",time:"Nocturnal",camera:"Macro lens · UV torch · careful handling distance",behaviour:"One of Kruger's most dangerous scorpions. A thicktail Parabuthus — the bulbous telson (tail tip) distinguishes these highly venomous scorpions. Can spray venom at eyes when threatened. Should not be handled or approached closely.",keyFeatures:"Large size; characteristic bulbous, thick telson; dark brown to black body; thick tail segments; robust build.",description:"The Mozambique Thicktail Scorpion is one of the genuinely medically significant scorpions found in Kruger National Park, particularly in the northern mopane zones. Its bulbous telson contains potent cytotoxic venom. It is capable of spraying venom and should be given a wide berth. Children and the elderly are at greater risk from a sting. Seek medical attention immediately if stung.",distribution:"Northern Mozambique, southern Tanzania and northern South Africa. In Kruger found primarily in the northern zones north of Letaba.",habitat:"Sandy soils, mopane woodland, rocky outcrops and open bushveld in northern Kruger.",food:"Large insects, other scorpions, small lizards and mice.",breeding:"Viviparous. Young carried on mother's back for extended period.",voice:"Silent — can hiss by rubbing body segments (stridulation) when threatened."},
+  {id:"olive_lesser_thicktail_scorpion",name:"Olive Lesser Thicktail Scorpion",latin:"Uroplectes planimanus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"4-5 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Bushveld and rocky areas throughout Kruger",roads:"Rocky outcrops and bark throughout the park",time:"Nocturnal",camera:"Macro lens · UV torch",behaviour:"A small, olive-brown Uroplectes scorpion. Shelters under bark and stones. Mild venom. One of several very similar lesser thicktail species in Kruger.",keyFeatures:"Olive-brown coloration; small size; slender tail; flattened build suitable for bark shelter.",description:"The Olive Lesser Thicktail Scorpion is a small, relatively common Uroplectes scorpion found in bushveld habitats throughout Kruger. Its olive-brown colour and slender build are typical of the genus. It is not considered medically significant.",distribution:"Widespread across northeastern South Africa and Mozambique. Common in Kruger throughout.",habitat:"Rocky outcrops, loose bark, stones and leaf litter.",food:"Small insects and arthropods.",breeding:"Viviparous. Young carried on back.",voice:"Silent."},
+  {id:"rough_burrowing_scorpion",name:"Rough Burrowing Scorpion",latin:"Opisthophthalmus roughi",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"7-11 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Rocky and sandy areas in Kruger",roads:"H3, S3 area and central rocky zones",time:"Nocturnal",camera:"Macro lens · UV torch",behaviour:"Heavily built burrowing scorpion. Excavates burrows under rocks in sandy soil. Strong claws used to crush prey. Potentially painful sting. Rough granular surface texture gives this species its name.",keyFeatures:"Robust heavily granular body texture; strong pedipalps; dark colouration; medium-thick tail.",description:"The Rough Burrowing Scorpion is named for its distinctly granular body surface — a rough, bumpy texture that distinguishes it from smoother species. A capable burrower found in rocky areas with sandy substrate. Should be treated with caution.",distribution:"South Africa and Mozambique. Found in rocky and sandy zones throughout Kruger.",habitat:"Rocky ground with sandy substrate, hillsides and boulder fields.",food:"Insects, spiders and other arthropods.",breeding:"Viviparous.",voice:"Silent."},
+  {id:"rough_thicktail_scorpion",name:"Rough Thicktail Scorpion",latin:"Parabuthus villosus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"12-18 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Sandy and rocky areas — southern and central Kruger",roads:"H1-1, H3, S3 area and open sandy ground",time:"Nocturnal",camera:"Macro lens · UV torch · safety distance",behaviour:"One of southern Africa's largest and most dangerous scorpions. Covered in fine hairs (setae) giving a rough, villose appearance. Potent cytotoxic venom. Can spray venom defensively. Medical emergency if stung — especially in children.",keyFeatures:"Large; covered in fine setae (hairs) giving rough appearance; thick bulbous telson; dark brown-black; heavy build.",description:"The Rough Thicktail Scorpion (Hairy Thicktail) is one of the most venomous scorpions in southern Africa. Its fine covering of setae gives it the rough, almost furry texture that distinguishes it from the smooth-bodied Mozambique Thicktail. Found in the southern and central Kruger in sandy and rocky terrain. Any suspected sting requires immediate medical attention.",distribution:"Widely distributed in southern Africa from Kruger westward through arid zones. In Kruger found primarily in the southern half.",habitat:"Sandy soils, rocky areas and open bushveld.",food:"Large insects, other scorpions, lizards and small rodents.",breeding:"Viviparous. Small litter. Young carried on back.",voice:"Silent — stridulates when threatened."},
+  {id:"transvaal_thicktail_scorpion",name:"Transvaal Thicktail Scorpion",latin:"Parabuthus transvaalicus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"11-15 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Throughout Kruger — bushveld and rocky areas",roads:"Found throughout the park, common near Skukuza, Satara, Pretoriuskop",time:"Nocturnal — most active in warm months",camera:"Macro lens · UV torch · safety distance",behaviour:"The most commonly encountered dangerous scorpion in Kruger. Large, dark and with a characteristic thick tail and bulbous telson. Potent neurotoxic-cytotoxic venom. Can spray venom up to 1 metre. Medical emergency if stung. Glows bright blue-green under UV.",keyFeatures:"Large dark brown to black; thick bulbous telson; smooth body; robust pedipalps; found throughout Kruger.",description:"The Transvaal Thicktail Scorpion is the scorpion most likely to be encountered by visitors in Kruger and is potentially deadly. It is found throughout the park from south to north in all habitat types. Its large size, dark colouration and thick bulbous tail make it identifiable. Never approach, handle or provoke. If stung seek emergency medical treatment immediately. Despite its danger, it is an ecologically important predator of insects and rodents.",distribution:"Throughout Kruger National Park and the broader Lowveld. One of the most widespread scorpions in the park.",habitat:"All habitat types in Kruger — rocky areas, sandy soils, open bushveld, camp surrounds.",food:"Large insects, beetles, other scorpions, lizards and mice.",breeding:"Viviparous. Young carried on back. Slow reproductive rate.",voice:"Silent — stridulates (rubs body parts) when threatened."},
+  {id:"tree_creeper_scorpion",name:"Tree Creeper Scorpion",latin:"Uroplectes carinatus",classification:"Arachnida",category:"scorpion",trophic:"Carnivore",totalLength:"4-6 cm",mass:"N/A",gestation:"Viviparous",conservation:"Least Concern (LC)",zone:"Woodland — tree-rich areas throughout Kruger",roads:"Under bark on trees along H4-1, riverine woodland",time:"Nocturnal",camera:"Macro lens · UV torch",behaviour:"A specialist tree and bark-dweller. Climbs trees readily and is found high up under loose bark. Slender and fast. Mild venom. One of the more commonly seen scorpions on night walks.",keyFeatures:"Slender; yellowish-brown with darker lateral keels; flattened for bark-dwelling; active climber.",description:"The Tree Creeper Scorpion is well adapted to arboreal life, readily climbing trees and hiding under loose bark well above the ground. It is one of the scorpions most likely to be encountered on night walks in Kruger's riverine woodland areas. Mild venom, not considered medically significant.",distribution:"Northeastern South Africa and Mozambique. Common in riverine and woodland zones throughout Kruger.",habitat:"Woodland trees, loose bark, wooden structures and rocky outcrops in wooded areas.",food:"Small insects, spiders and arthropods found on bark surfaces.",breeding:"Viviparous. Young carried on back.",voice:"Silent."}
+];
+
+// Scorpion language names
+var INSECT_LANGUAGES = {
+  "chubbs_lesser_thicktail_scorpion": {"af":"Chubb se Dikkert-skerpioen","zu":"Isikhova se-Chubb","ts":"Ntshungu wa Chubb","fr":"Scorpion de Chubb","de":"Chubb-Dickschranzskorpion","es":"Escorpión de Chubb"},
+  "eastern_bark_scorpion": {"af":"Oostelike Bastaard-skerpioen","zu":"Isikhova se-Mbaza","ts":"Ntshungu wa Mbaza","fr":"Scorpion de l'écorce de l'est","de":"Östlicher Rindenskorpion","es":"Escorpión de corteza oriental"},
+  "eastern_nomad_scorpion": {"af":"Oostelike Nomade-skerpioen","zu":"Isikhova se-Nomad","ts":"Ntshungu wa Nomad","fr":"Scorpion nomade de l'est","de":"Östlicher Nomadenskorpion","es":"Escorpión nómada oriental"},
+  "giant_rock_scorpion": {"af":"Reuse Rots-skerpioen","zu":"Isikhova esikhulu","ts":"Ntshungu nkulu wa Mawe","fr":"Grand scorpion des rochers","de":"Riesenfelsenskorpion","es":"Escorpión de roca gigante"},
+  "golden_green_lesser_thicktail": {"af":"Goue-groen Kleiner Dikkert","zu":"Isikhova se-Gold-green","ts":"Ntshungu wa Golide","fr":"Petit scorpion or-vert","de":"Goldgrüner Kleindickschranzskorpion","es":"Escorpión verde dorado menor"},
+  "joness_creeping_scorpion": {"af":"Jones se Kruipskerpioen","zu":"Isikhova sika-Jones","ts":"Ntshungu wa Jones","fr":"Scorpion rampant de Jones","de":"Jones Kriechskorpion","es":"Escorpión rastrero de Jones"},
+  "mozambique_thicktail_scorpion": {"af":"Mosambiekse Dikkert-skerpioen","zu":"Isikhova se-Mozambique","ts":"Ntshungu wa Mozambique","fr":"Scorpion à queue épaisse du Mozambique","de":"Mosambik-Dickschranzskorpion","es":"Escorpión colagruesa de Mozambique"},
+  "olive_lesser_thicktail_scorpion": {"af":"Olyfkleurige Klein Dikkert","zu":"Isikhova se-Olive","ts":"Ntshungu wa Oliva","fr":"Petit scorpion olive","de":"Olivfarbener Kleindickschranzskorpion","es":"Escorpión menor cola gruesa oliva"},
+  "rough_burrowing_scorpion": {"af":"Growwe Graaf-skerpioen","zu":"Isikhova se-Rough","ts":"Ntshungu wa ku-humba","fr":"Scorpion fouisseur rugueux","de":"Rauer Grabskorpion","es":"Escorpión excavador áspero"},
+  "rough_thicktail_scorpion": {"af":"Growwe Dikkert-skerpioen","zu":"Isikhova se-Hairy","ts":"Ntshungu wa Swau","fr":"Scorpion à queue épaisse rugueux","de":"Rauer Dickschranzskorpion","es":"Escorpión colagruesa áspero"},
+  "transvaal_thicktail_scorpion": {"af":"Transvaalse Dikkert-skerpioen","zu":"Isikhova se-Transvaal","ts":"Ntshungu wa Transvaal","fr":"Scorpion à queue épaisse du Transvaal","de":"Transvaal-Dickschranzskorpion","es":"Escorpión colagruesa de Transvaal"},
+  "tree_creeper_scorpion": {"af":"Boomsluiper-skerpioen","zu":"Isikhova se-Muti","ts":"Ntshungu wa Xihlati","fr":"Scorpion grimpeur des arbres","de":"Baumkletterskorpion","es":"Escorpión trepador de árboles"}
+};
+
+
 function renderReptiles() {
   var el = document.getElementById('reptilesGrid'); if(!el) return;
   var search = (document.getElementById('wildlifeSearch')?document.getElementById('wildlifeSearch').value.toLowerCase().trim():'');
@@ -9955,7 +10011,7 @@ function setBirdTop6Filter(btn) {
 }
 
 function openWildcardSpecies(type, i) {
-  var arr = type==='reptile'?REPTILES:FROGS;
+  var arr = type==='reptile'?REPTILES:type==='frog'?FROGS:type==='insect'?INSECTS:FROGS;
   var sp = arr[i]; if(!sp) return;
   window._spIdx=i; window._spType=type; selectedStars=0;
   trackRecentlyViewed(type, i);
@@ -10055,6 +10111,112 @@ function openBird(idx) {
   if(sheet) sheet.scrollTop = 0;
   modal.classList.add('open');
 }
+
+// ============================================================
+// INSECTS — RENDER, OPEN, FILTER
+// ============================================================
+var _insectFilter = 'all';
+
+function setInsectFilter(filter, btn) {
+  _insectFilter = filter;
+  document.querySelectorAll('#insectAllBtn,#insectScorpionBtn').forEach(function(b){
+    b.classList.remove('active');
+  });
+  if(btn) btn.classList.add('active');
+  renderInsects();
+}
+
+function renderInsects() {
+  var grid = document.getElementById('insectsGrid');
+  if(!grid || typeof INSECTS === 'undefined') return;
+  var sightings = loadSightings();
+  var search = (document.getElementById('wildlifeSearch') ? document.getElementById('wildlifeSearch').value : '').toLowerCase().trim();
+  var filtered = INSECTS.filter(function(sp) {
+    if(search) {
+      if(sp.name.toLowerCase().indexOf(search) < 0 && (sp.latin||'').toLowerCase().indexOf(search) < 0) return false;
+    }
+    if(_insectFilter === 'scorpion') return sp.category === 'scorpion';
+    return true;
+  });
+  filtered.sort(function(a,b){ return a.name.localeCompare(b.name); });
+  if(!filtered.length) {
+    grid.innerHTML = '<div style="padding:24px;color:var(--text3);text-align:center;font-size:12px">No insects match this filter.</div>';
+    return;
+  }
+  grid.className = 'species-grid';
+  grid.innerHTML = filtered.map(function(sp) {
+    var idx = INSECTS.indexOf(sp);
+    var ticked = sightings.some(function(s){ return s.id === sp.id; });
+    var imgSrc = INSECT_IMG[sp.id] || '';
+    return '<div class="sp-card" data-spname="'+sp.name+'" onclick="openInsect('+idx+')">' +
+      '<div class="sp-img-wrap">' +
+        (imgSrc ? '<img src="'+imgSrc+'" alt="'+sp.name+'" class="sp-img">' : '<div style="width:100%;height:100%;background:#0e1418"></div>') +
+        (ticked ? '<div class="sp-tick">✓</div>' : '') +
+      '</div>' +
+      '<div class="sp-name">'+sp.name+'</div>' +
+      '<div class="sp-latin">'+sp.latin+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+function getInsectLanguagesHtml(id) {
+  var langs = INSECT_LANGUAGES ? INSECT_LANGUAGES[id] : null;
+  if(!langs) return '';
+  var labels = {af:'Afrikaans',zu:'Zulu',ts:'Shangaan',fr:'French',de:'German',es:'Spanish'};
+  var rows = Object.keys(labels).filter(function(k){ return langs[k]; }).map(function(k){
+    return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">'
+      +'<span style="font-size:11px;color:var(--text3)">'+labels[k]+'</span>'
+      +'<span style="font-size:11px;color:var(--text1);font-weight:600">'+langs[k]+'</span></div>';
+  }).join('');
+  return '<div style="margin-top:14px;padding-top:14px;border-top:2px solid var(--border2)">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Names in Other Languages</div>'
+    +rows+'</div>';
+}
+
+function openInsect(idx) {
+  var sp = INSECTS[idx]; if(!sp) return;
+  window._spIdx = idx; window._spType = 'insect';
+  trackRecentlyViewed('insect', idx);
+  var modal = document.getElementById('speciesModal'); if(!modal) return;
+  modal.querySelector('.modal-title').textContent = sp.name;
+  var imgSrc = INSECT_IMG[sp.id] || '';
+  modal.querySelector('.modal-body').innerHTML =
+    (imgSrc ? '<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">' : '') +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
+      '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>' +
+      '<button onclick="openSightingPanel()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:7px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Sighting</button>' +
+    '</div>' +
+    (sp.classification ? '<div class="drow"><div class="dlabel">Classification</div><div class="dval">'+sp.classification+'</div></div>' : '') +
+    (sp.trophic ? '<div class="drow"><div class="dlabel">Trophic Level</div><div class="dval">'+sp.trophic+'</div></div>' : '') +
+    (sp.conservation ? '<div class="drow"><div class="dlabel">Conservation</div><div class="dval" style="color:'+(sp.conservation.indexOf('Critical')>=0?'#e05545':sp.conservation.indexOf('Endangered')>=0?'#e07545':'var(--text)')+'">'+sp.conservation+'</div></div>' : '') +
+    ((sp.totalLength && sp.totalLength !== 'N/A') || (sp.mass && sp.mass !== 'N/A') || (sp.gestation && sp.gestation !== 'N/A') ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Size</div>' : '') +
+    (sp.totalLength && sp.totalLength !== 'N/A' ? '<div class="drow"><div class="dlabel">Total Length</div><div class="dval">'+sp.totalLength+'</div></div>' : '') +
+    (sp.mass && sp.mass !== 'N/A' ? '<div class="drow"><div class="dlabel">Mass</div><div class="dval">'+sp.mass+'</div></div>' : '') +
+    (sp.gestation && sp.gestation !== 'N/A' ? '<div class="drow"><div class="dlabel">Gestation / Birth</div><div class="dval">'+sp.gestation+'</div></div>' : '') +
+    '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Field Intelligence</div>' +
+    '<div class="drow"><div class="dlabel">Zone</div><div class="dval">'+sp.zone+'</div></div>' +
+    '<div class="drow"><div class="dlabel">Where to Find</div><div class="dval">'+sp.roads+'</div></div>' +
+    '<div class="drow"><div class="dlabel">Best Time</div><div class="dval">'+sp.time+'</div></div>' +
+    '<div class="drow"><div class="dlabel">Camera</div><div class="dval">'+sp.camera+'</div></div>' +
+    '<div class="drow" style="display:block"><div class="dlabel">Field Notes</div><div class="dval" style="margin-top:4px">'+(sp.behaviour||sp.behavior||'')+'</div></div>' +
+    (sp.keyFeatures ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Key Features</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.keyFeatures+'</div>' : '') +
+    (sp.description ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Description</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.description+'</div>' : '') +
+    (sp.distribution ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Distribution</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.distribution+'</div>' : '') +
+    (sp.habitat ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Habitat</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.habitat+'</div>' : '') +
+    (sp.food ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>' : '') +
+    (sp.breeding ? '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>' : '') +
+    getInsectLanguagesHtml(sp.id) +
+    '<div id="sightingPanel" style="display:none;margin-top:12px">' +
+      '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>' +
+      '<button id="logSightingBtn" onclick="confirmLogSighting()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase">Log Sighting</button>' +
+    '</div>';
+  var existingOv = document.getElementById('imgFullscreenOverlay');
+  if(existingOv) existingOv.remove();
+  var sheet = modal.querySelector('.modal-sheet');
+  if(sheet) sheet.scrollTop = 0;
+  modal.classList.add('open');
+}
+
 function switchWildlifeTab(tab, btn) {
   window._wildlifeTab = tab;
   setTimeout(function(){
@@ -10070,31 +10232,43 @@ function switchWildlifeTab(tab, btn) {
   var mamRareBtn = document.getElementById('mammalRareBtn');
   var birdFilters = document.getElementById('birdOnlyFilters');
   var birdAllBtn = document.getElementById('birdAllBtn');
+  var insectAllBtn = document.getElementById('insectAllBtn');
+  var insectScorpionBtn = document.getElementById('insectScorpionBtn');
   if(tab === 'species') {
-    // Show mammals buttons
     [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b){ b.style.display=''; } });
     if(birdFilters){ birdFilters.style.display='none'; birdFilters.style.position=''; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
+    if(insectAllBtn) insectAllBtn.style.display='none';
+    if(insectScorpionBtn) insectScorpionBtn.style.display='none';
   } else if(tab === 'birds') {
-    // Hide mammal-specific buttons, show bird buttons
     [mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(mamAllBtn){ mamAllBtn.style.display='none'; }
     if(birdFilters){ birdFilters.style.display='flex'; birdFilters.style.position=''; birdFilters.style.width='100%'; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='flex';
-    // Ensure ALL is highlighted when switching to birds tab
     var bab = document.getElementById('birdAllBtn');
     if(bab && !bab.classList.contains('active')) bab.classList.add('active');
-  } else {
-    // Other tabs: hide all filter buttons
+    if(insectAllBtn) insectAllBtn.style.display='none';
+    if(insectScorpionBtn) insectScorpionBtn.style.display='none';
+  } else if(tab === 'insects') {
     [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(birdFilters){ birdFilters.style.display='none'; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
+    if(insectAllBtn){ insectAllBtn.style.display=''; insectAllBtn.classList.add('active'); }
+    if(insectScorpionBtn) insectScorpionBtn.style.display='';
+    _insectFilter = 'all';
+    renderInsects();
+  } else {
+    [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
+    if(birdFilters){ birdFilters.style.display='none'; }
+    if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
+    if(insectAllBtn) insectAllBtn.style.display='none';
+    if(insectScorpionBtn) insectScorpionBtn.style.display='none';
   }
   var birdBtns = document.getElementById('birdOnlyFilters');
   if(birdBtns) birdBtns.style.display = tab==='birds' ? 'flex' : 'none';
   // Reset top6 when leaving birds tab
   if(tab!=='birds'){ _birdHabitatFilter=''; var t6=document.getElementById('top6Btn'); if(t6)t6.classList.remove('active'); }
-  ['species','birds','reptiles','frogs','sightings'].forEach(function(t) {
+  ['species','birds','reptiles','frogs','insects','sightings'].forEach(function(t) {
     var panel = document.getElementById('wildlifePanel-'+t);
     if(panel) panel.style.display = t === tab ? 'block' : 'none';
   });
@@ -10129,7 +10303,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.33';
+var APP_VERSION = '5.34';
 
 // Clear stale caches when version changes
 (function() {
@@ -10251,7 +10425,7 @@ function renderRecentlyViewed() {
     if(idx < 0) idx = parseInt(spId); // legacy index fallback
     sp = arr[idx];
     if(!sp) return '';
-    var onclick = type==='bird'?'openBird('+idx+')':type==='reptile'?'openWildcardSpecies(\'reptile\','+idx+')':type==='frog'?'openWildcardSpecies(\'frog\','+idx+')':'openSpecies('+idx+')';
+    var onclick = type==='bird'?'openBird('+idx+')':type==='reptile'?'openWildcardSpecies(\'reptile\','+idx+')':type==='frog'?'openWildcardSpecies(\'frog\','+idx+')':type==='insect'?'openInsect('+idx+')':'openSpecies('+idx+')';
     return '<div onclick="'+onclick+'" style="flex-shrink:0;width:52px;text-align:center;cursor:pointer">' +
       '<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:3px">' +
         ((typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])?'<img src="'+(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F43E;</div>')+
