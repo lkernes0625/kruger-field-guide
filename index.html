@@ -239,6 +239,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 .finder-status-closed{font-size:9px;color:#e05545;font-weight:700}
 
 /* WEATHER CARD */
+.game-tab{border-bottom:2px solid transparent;color:var(--text3);transition:all .15s}
+.game-tab.active{border-bottom-color:var(--accent);color:var(--accent)}
 .weather-card{margin:14px 16px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .weather-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .weather-card-title{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-weight:700}
@@ -261,7 +263,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 /* ITINERARY */
 .itin-input-row{display:flex;flex-direction:column;gap:8px;padding:12px 16px}
 .itin-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:3px}
-.itin-select,.itin-input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:10px 12px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;-webkit-appearance:none;appearance:none}
+.itin-select,.itin-input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:10px 12px 10px 12px;padding-right:30px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
 .itin-select:focus,.itin-input:focus{outline:none;border-color:var(--accent)}
 .itin-add-stop{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;color:var(--accent);font-size:12px;font-weight:600}
 .itin-stop-row{display:flex;align-items:center;gap:8px;padding:0 16px;margin-bottom:8px}
@@ -688,7 +690,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
                 <option>Pafuri Gate</option><option>Paul Kruger Gate</option><option>Phabeni Gate</option>
                 <option>Phalaborwa Gate</option><option>Punda Maria Gate</option>
               </select>
-              <div style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#ffffff;font-size:12px">&#9660;</div>
+              <div style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px">&#9660;</div>
             </div>
             <button id="deptClearBtn" onclick="document.getElementById('deptGateSelect').value='';document.getElementById('deptResult').style.display='none';this.style.display='none'" style="display:none;background:var(--bg4);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:9px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;flex-shrink:0">✕</button>
             <button onclick="calcDepartureTime()" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:9px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">Calculate</button>
@@ -936,29 +938,22 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
     <!-- === FIELD FINDER === -->
     <div class="screen" id="screen-finder">
       <div class="sec-head"><h2>Field Finder</h2><p>Nearest facilities from your GPS position</p></div>
-      <div class="weather-card">
-        <div class="weather-card-header">
-          <div class="weather-card-title">&#9925; Field Conditions</div>
-          <div class="weather-online-badge badge badge-green" id="weatherBadge"></div>
-        </div>
-        <div class="weather-grid">
-          <div class="weather-stat"><div class="weather-stat-val" id="wTemp">--&deg;</div><div class="weather-stat-label">Temp</div></div>
-          <div class="weather-stat"><div class="weather-stat-val" id="wWind">--</div><div class="weather-stat-label">Wind km/h</div></div>
-          <div class="weather-stat"><div class="weather-stat-val" id="wUV">--</div><div class="weather-stat-label">UV Index</div></div>
-          <div class="weather-stat"><div class="weather-stat-val" id="wRain">--%</div><div class="weather-stat-label">Rain %</div></div>
-        </div>
-        <div class="weather-intelligence"><div class="weather-intel-label">🎯 Safari Intelligence</div><div class="weather-intel-text" id="weatherIntel">Loading field conditions...</div></div>
-      </div>
-      <div class="finder-icon-grid">
+      <!-- Row 1: Fuel + Toilets (2-wide) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px 0">
         <div class="finder-icon-btn" onclick="findNearest('fuel',this)"><img id="fi-fuel" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-fuel.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Fuel</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('toilet',this)"><img id="fi-toilet" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-toilet.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Toilets</div></div>
+      </div>
+      <!-- Rows 2–4: 3-column grid -->
+      <div class="finder-icon-grid" style="padding-top:10px">
         <div class="finder-icon-btn" onclick="findNearest('restaurant',this)"><img id="fi-food" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-restaurant.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Food</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('medical',this)"><img id="fi-medical" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-medical.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Medical</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('picnic',this)"><img id="fi-picnic" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-picnic-spots.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Picnic Spots</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('shop',this)"><img id="fi-shops" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-shops.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Shops</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('picnic',this)"><img id="fi-picnic" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-picnic-spots.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Picnic Sites</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('lookout',this)"><img id="fi-lookout" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-lookout.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Lookouts</div></div>
         <div class="finder-icon-btn" onclick="findNearest('dam',this)"><img id="fi-dams" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-dams.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Dams</div></div>
         <div class="finder-icon-btn" onclick="findNearest('landmark',this)"><img id="fi-landmarks" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-landmarks.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Landmarks</div></div>
         <div class="finder-icon-btn" onclick="findNearest('camp',this)"><img id="fi-camp" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-rest-camp.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Camps</div></div>
         <div class="finder-icon-btn" onclick="findNearest('gate',this)"><img id="fi-gate" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-entrance-gate.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Gates</div></div>
-        <div class="finder-icon-btn" onclick="findNearest('lookout',this)"><img id="fi-lookout" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-lookout.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Lookouts</div></div>
+        <div class="finder-icon-btn" onclick="findNearest('medical',this)"><img id="fi-medical" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Ficons%2Ficon-medical.webp?alt=media" class="finder-icon-img"><div class="finder-icon-label">Medical</div></div>
       </div>
       <div class="divlabel" id="finderResultsLabel" style="display:none">Nearest results</div>
       <div class="finder-results" id="finderResults"></div>
@@ -968,7 +963,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
     <div class="screen" id="screen-trip">
       <div class="sec-head"><h2>My Trip</h2><p>Plan &middot; Track &middot; Share</p></div>
       <div id="myTripTabs" class="trip-tabs-scroll">
-        <div class="trip-tab active" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('licenses',this)">Licenses</div>
+        <div class="trip-tab active" onclick="switchTripTab('journal',this)">Journal</div><div class="trip-tab" onclick="switchTripTab('itinerary',this)">Itinerary</div><div class="trip-tab" onclick="switchTripTab('badges',this)">Badges</div><div class="trip-tab" onclick="switchTripTab('checklist',this)">Checklist</div><div class="trip-tab" onclick="switchTripTab('licenses',this)">Licenses</div>
       </div>
 
       <!-- ITINERARY TAB -->
@@ -1011,6 +1006,13 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         </div>
         <div id="savedTripsWrap" style="display:none;padding:0 16px 16px"></div>
       </div><!-- /tab-itinerary -->
+      <div class="trip-tab-content" id="tab-badges">
+        <div style="padding:16px 16px 0">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Earn badges by logging sightings on your trip.</div>
+          <div id="tripBadgesContent" style="margin-top:12px"></div>
+        </div>
+      </div>
+
       <div class="trip-tab-content" id="tab-checklist">
         <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:11px;color:var(--text3);font-weight:500" id="checklistProgress">Loading...</div>
@@ -1083,10 +1085,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
       <!-- GAME TABS -->
       <div style="display:flex;border-bottom:1px solid var(--border2);margin:0 16px 4px">
-        <button class="game-tab active" id="gameTab-challenge" onclick="switchGameTab('challenge',this)" style="flex:1;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">CHALLENGE</button>
-        <button class="game-tab" id="gameTab-badges" onclick="switchGameTab('badges',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">BADGES</button>
-        <button class="game-tab" id="gameTab-bingo" onclick="switchGameTab('bingo',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">BINGO</button>
-        <button class="game-tab" id="gameTab-puzzle" onclick="switchGameTab('puzzle',this)" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">PUZZLE</button>
+        <button class="game-tab active" id="gameTab-challenge" onclick="switchGameTab('challenge',this)" style="flex:1;background:none;border:none;padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">CHALLENGE</button>
+        <button class="game-tab" id="gameTab-bingo" onclick="switchGameTab('bingo',this)" style="flex:1;background:none;border:none;padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">BINGO</button>
+        <button class="game-tab" id="gameTab-puzzle" onclick="switchGameTab('puzzle',this)" style="flex:1;background:none;border:none;padding:8px 4px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">PUZZLE</button>
       </div>
 
       <!-- DAILY CHALLENGE TAB -->
@@ -1346,9 +1347,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.23</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.24</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.23 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.24 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -1378,6 +1379,21 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div style="font-size:22px;font-weight:700;color:#e05545" id="photoSunset">--:--</div>
           <div style="font-size:9px;color:var(--text3);margin-top:2px">Golden hour starts -45min</div>
         </div>
+      </div>
+
+      <!-- Field Conditions -->
+      <div class="weather-card">
+        <div class="weather-card-header">
+          <div class="weather-card-title">&#9925; Field Conditions</div>
+          <div class="weather-online-badge badge badge-green" id="weatherBadge"></div>
+        </div>
+        <div class="weather-grid">
+          <div class="weather-stat"><div class="weather-stat-val" id="wTemp">--&deg;</div><div class="weather-stat-label">Temp</div></div>
+          <div class="weather-stat"><div class="weather-stat-val" id="wWind">--</div><div class="weather-stat-label">Wind km/h</div></div>
+          <div class="weather-stat"><div class="weather-stat-val" id="wUV">--</div><div class="weather-stat-label">UV Index</div></div>
+          <div class="weather-stat"><div class="weather-stat-val" id="wRain">--%</div><div class="weather-stat-label">Rain %</div></div>
+        </div>
+        <div class="weather-intelligence"><div class="weather-intel-label">🎯 Safari Intelligence</div><div class="weather-intel-text" id="weatherIntel">Loading field conditions...</div></div>
       </div>
 
       <!-- Light Conditions -->
@@ -3766,14 +3782,15 @@ function shareGiftKey(giftKey) {
   function getContent() { return document.getElementById('content'); }
 
   function onTouchStart(e) {
-    // Don't swipe if touching a modal, map, or scrollable inner element
+    // Don't swipe if touching a modal, map, scrollable inner element, or My Trip screen
     var target = e.target;
     while(target && target !== document.body) {
       if(target.classList && (
         target.classList.contains('modal-sheet') ||
         target.classList.contains('leaflet-container') ||
         target.id === 'speciesModal' ||
-        target.id === 'birdModal'
+        target.id === 'birdModal' ||
+        target.id === 'screen-trip'
       )) return;
       target = target.parentElement;
     }
@@ -6606,6 +6623,7 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 function switchTripTab(tab, el) {
   document.querySelectorAll('#screen-trip .trip-tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('#screen-trip .trip-tab-content').forEach(function(t){ t.classList.remove('active'); });
+  if(tab==='badges') safe(renderTripBadges);
   if(el) el.classList.add('active');
   var tc = document.getElementById('tab-'+tab);
   if(tc) tc.classList.add('active');
@@ -9133,7 +9151,7 @@ function findNearest(type, btn) {
       // For public services (toilet/fuel/food/shop/wifi/medical), also include public SANParks camps
       if(facilityType==='camps'){
         CAMPS.forEach(function(c){ facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),hours:c.hours}); });
-      } else if(['fuel','food','medical','wifi','shops'].indexOf(facilityType)>=0){
+      } else if(['fuel','food','medical','wifi'].indexOf(facilityType)>=0){
         var svcTypes=['Main Camp','Satellite Camp','Bushveld Camp','Bush Lodge','Tented Camp'];
         CAMPS.filter(function(c){return svcTypes.indexOf(c.type)>=0;}).forEach(function(c){
           // Skip if camp name already covered by a FACILITIES entry (partial match)
@@ -9143,16 +9161,36 @@ function findNearest(type, btn) {
             return fn.indexOf(cname)>=0 || cname.indexOf(fn)>=0;
           });
           if(alreadyCovered) return;
-          var has=(facilityType==='fuel'&&c.fuel)||(facilityType==='food'&&c.restaurant)||(facilityType==='shops'&&c.shop)||(facilityType==='wifi'&&c.wifi)||(facilityType==='medical'&&c.clinic&&c.type==='Main Camp');
+          var has=(facilityType==='fuel'&&c.fuel)||(facilityType==='food'&&c.restaurant)||(facilityType==='wifi'&&c.wifi)||(facilityType==='medical'&&c.clinic&&c.type==='Main Camp');
           if(has) facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),fromCamp:true});
         });
       } else if(facilityType==='toilet'){
+        // Toilets: Main Camps and Gates only (off-limits areas excluded)
         var seen2=facilities.map(function(f){return f.name.toLowerCase();});
         CAMPS.filter(function(c){return c.type==='Main Camp';}).forEach(function(c){
           if(seen2.indexOf(c.name.toLowerCase())>=0) return;
           facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),fromCamp:true});
           seen2.push(c.name.toLowerCase());
         });
+        // Also include gates (they have toilets)
+        if(FACILITIES.gate){FACILITIES.gate.forEach(function(g){
+          if(seen2.indexOf(g.name.toLowerCase())>=0) return;
+          facilities.push({name:g.name,lat:g.lat,lng:g.lng,note:'Gate',fromCamp:true});
+          seen2.push(g.name.toLowerCase());
+        });}
+      } else if(facilityType==='shops'){
+        // Shops: Main Camps and Gates only
+        var seenS=facilities.map(function(f){return f.name.toLowerCase();});
+        CAMPS.filter(function(c){return c.type==='Main Camp'&&c.shop;}).forEach(function(c){
+          if(seenS.indexOf(c.name.toLowerCase())>=0) return;
+          facilities.push({name:c.name,lat:c.lat,lng:c.lng,note:c.type+(c.phone?' · '+c.phone:''),fromCamp:true});
+          seenS.push(c.name.toLowerCase());
+        });
+        if(FACILITIES.gate){FACILITIES.gate.filter(function(g){return g.shop;}).forEach(function(g){
+          if(seenS.indexOf(g.name.toLowerCase())>=0) return;
+          facilities.push({name:g.name,lat:g.lat,lng:g.lng,note:'Gate',fromCamp:true});
+          seenS.push(g.name.toLowerCase());
+        });}
       }
       if(!facilities || !facilities.length) {
         results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">No data</div><p>No ' + type + ' data available yet. Check the Park tab for full listings.</p></div>';
@@ -9805,7 +9843,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.23';
+var APP_VERSION = '5.24';
 
 // Clear stale caches when version changes
 (function() {
@@ -12485,13 +12523,13 @@ function renderDailyChallenge() {
 // ── GAMES SCREEN ─────────────────────────────────────────────────
 function switchGameTab(tab, btn) {
   document.querySelectorAll('.game-tab').forEach(function(b){
+    b.classList.remove('active');
     b.style.borderBottomColor='transparent'; b.style.color='var(--text3)';
   });
-  if(btn){ btn.style.borderBottomColor='var(--accent)'; btn.style.color='var(--accent)'; }
+  if(btn){ btn.classList.add('active'); btn.style.borderBottomColor='var(--accent)'; btn.style.color='var(--accent)'; }
   document.querySelectorAll('.game-tab-content').forEach(function(p){ p.style.display='none'; });
   var panel = document.getElementById('gamePanel-'+tab);
   if(panel) panel.style.display='block';
-  if(tab==='badges') safe(renderBadges);
   if(tab==='bingo')  safe(renderGameBingo);
   if(tab==='challenge') safe(renderGameChallenge);
   if(tab==='puzzle') safe(renderPuzzleSelector);
@@ -12831,6 +12869,39 @@ function tapPuzzleTile(pos) {
 
 // ============================================
 // renderBadges — alias for renderAchievements, targeting the Games screen grid
+function renderTripBadges() {
+  var container = document.getElementById('tripBadgesContent');
+  if(!container) return;
+  // Render badges into trip badges panel
+  var sightings = [];
+  try { sightings = JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); } catch(e) {}
+  var badgeList = [
+    {id:'big5',label:'Big 5',icon:'🦁',desc:'Spot all Big 5',species:['Lion','Elephant','Leopard','Buffalo','White Rhino'],color:'#c8962a'},
+    {id:'first_sighting',label:'First Sighting',icon:'👁',desc:'Log your first sighting',species:[],color:'#4a8a6a'},
+    {id:'10_species',label:'10 Species',icon:'📋',desc:'Log 10 different species',species:[],color:'#4a6a9a'},
+    {id:'25_species',label:'25 Species',icon:'🔭',desc:'Log 25 different species',species:[],color:'#6a4a9a'},
+  ];
+  var seen = sightings.map(function(s){ return s.species; });
+  var uniqueSeen = seen.filter(function(v,i,a){ return a.indexOf(v)===i; });
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  badgeList.forEach(function(b){
+    var earned = false;
+    if(b.id==='big5') earned = b.species.every(function(s){ return uniqueSeen.indexOf(s)>=0; });
+    else if(b.id==='first_sighting') earned = sightings.length>0;
+    else if(b.id==='10_species') earned = uniqueSeen.length>=10;
+    else if(b.id==='25_species') earned = uniqueSeen.length>=25;
+    html += '<div style="background:var(--bg3);border:1px solid '+(earned?b.color:'var(--border)')+';border-radius:12px;padding:12px;text-align:center;opacity:'+(earned?'1':'0.5')+'">' +
+      '<div style="font-size:28px;margin-bottom:6px">'+b.icon+'</div>' +
+      '<div style="font-size:11px;font-weight:700;color:'+(earned?b.color:'var(--text3)')+'">'+b.label+'</div>' +
+      '<div style="font-size:9px;color:var(--text3);margin-top:3px">'+b.desc+'</div>' +
+      (earned?'<div style="font-size:9px;color:'+b.color+';font-weight:700;margin-top:4px">✓ Earned</div>':'') +
+    '</div>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:10px;font-size:10px;color:var(--text3);text-align:center">'+uniqueSeen.length+' species logged · '+sightings.length+' total sightings</div>';
+  container.innerHTML = html;
+}
+
 function renderBadges() {
   var grid = document.getElementById('achievementsGrid');
   if(!grid) return;
