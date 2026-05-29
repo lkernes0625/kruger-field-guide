@@ -10450,6 +10450,9 @@ function initAZScroll() {
 }
 
 function initApp() {
+  // Guard: never run more than once - prevents multiple poll loops
+  if(window._appInitialised) { return; }
+  window._appInitialised = true;
   // Fix 3: Request GPS permission upfront so sightings always have location
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
