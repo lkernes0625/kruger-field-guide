@@ -5493,6 +5493,7 @@ function shareNative() {
     } else { _doCopy(caption); }
   }
 }
+function _doCopy(t){
   if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){showToast('Caption copied — paste to share!');}).catch(function(){});
   else showToast('Copy: '+t.substring(0,80));
 }
