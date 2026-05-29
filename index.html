@@ -10528,11 +10528,15 @@ function initApp() {
         });
         window._feedAllItems = data.concat(curRss);
         renderFeed(window._feedAllItems);
-        // Show banner for newest sighting/road — suppress own
+        // Show banner for newest sighting/road — suppress own and already-notified
         if(data[0] && (data[0].type === 'sighting' || data[0].type === 'road')) {
           var myNick = getUserNickname();
           var isOwnSighting = myNick && data[0].source && data[0].source === 'Sighted by ' + myNick;
-          if(!isOwnSighting) {
+          // Use a dedicated tracker so loadFeed() resetting _firebaseSightings doesn't re-trigger
+          var itemSig = (data[0].timestamp || data[0].time || '') + ':' + (data[0].title || '');
+          var alreadyNotified = window._lastNotifiedSig === itemSig;
+          if(!isOwnSighting && !alreadyNotified) {
+            window._lastNotifiedSig = itemSig;
             showFeedNotificationBanner(data[0]);
             if(data[0].type==='sighting') triggerSightingNotification(data[0].title||'New sighting');
           }
