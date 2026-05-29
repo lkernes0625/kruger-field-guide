@@ -4786,7 +4786,7 @@ async function pushSightingToFeed(entry, nickname) {
       window._feedAllItems = [newEntry].concat(base);
       renderFeed(window._feedAllItems);
       showToast('&#x1F98F; Sighting live on feed!', 2000);
-      triggerSightingNotification(entry.name);
+      // Do NOT notify the person who just logged their own sighting
     } else {
       showToast('Saved locally \u2014 no connection', 1800);
     }
@@ -5455,43 +5455,77 @@ function shareNative() {
   if(!s){showToast('No sighting selected');return;}
   var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
   window._currentCaption = caption;
-  if(typeof _renderFullCard === 'function') {
+
+  // Branded card drawn entirely on canvas (no cross-origin images) so toBlob always works
+  function renderBrandedCard(cb) {
+    var fc = document.getElementById('cardCanvas');
+    if(!fc){ fc=document.createElement('canvas'); fc.id='cardCanvas'; fc.style.display='none'; document.body.appendChild(fc); }
+    fc.width=1080; fc.height=1080;
+    var ctx=fc.getContext('2d');
+    var road = s.road ? s.road : 'Kruger National Park';
+    var t2 = s.time ? new Date(s.time) : new Date();
+    var dateStr = t2.toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});
+    var timeStr = t2.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var bg=ctx.createLinearGradient(0,0,0,1080);
+    bg.addColorStop(0,'#0e1418'); bg.addColorStop(1,'#1a2530');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,1080,1080);
+    ctx.fillStyle='#e8a020'; ctx.fillRect(0,0,1080,44);
+    ctx.fillStyle='rgba(232,160,32,0.08)'; ctx.fillRect(0,44,1080,320);
+    ctx.beginPath(); ctx.arc(540,260,145,0,Math.PI*2);
+    ctx.fillStyle='rgba(232,160,32,0.13)'; ctx.fill();
+    ctx.strokeStyle='rgba(232,160,32,0.4)'; ctx.lineWidth=3; ctx.stroke();
+    ctx.fillStyle='rgba(232,160,32,0.55)'; ctx.font='108px serif'; ctx.textAlign='center';
+    ctx.fillText('\uD83D\uDC3E',540,300);
+    ctx.fillStyle='#ffffff'; ctx.textAlign='center';
+    ctx.font='bold 76px Montserrat,Arial,sans-serif';
+    ctx.fillText(s.name, 540, 530);
+    if(s.latin){
+      ctx.fillStyle='rgba(200,212,216,0.65)';
+      ctx.font='italic 33px Montserrat,Arial,sans-serif';
+      ctx.fillText(s.latin, 540, 585);
+    }
+    ctx.fillStyle='#c8d4d8';
+    ctx.font='500 31px Montserrat,Arial,sans-serif';
+    ctx.fillText(road, 540, 660);
+    ctx.font='500 27px Montserrat,Arial,sans-serif';
+    ctx.fillStyle='rgba(200,212,216,0.65)';
+    ctx.fillText(dateStr + '   ' + timeStr, 540, 710);
+    ctx.strokeStyle='rgba(232,160,32,0.35)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(200,748); ctx.lineTo(880,748); ctx.stroke();
+    ctx.fillStyle='rgba(12,15,18,0.97)'; ctx.fillRect(0,930,1080,150);
+    ctx.fillStyle='#e8a020';
+    ctx.font='bold 41px Montserrat,Arial,sans-serif';
+    ctx.fillText('KRANTZ OUTDOORS', 540, 998);
+    ctx.fillStyle='rgba(200,212,216,0.5)';
+    ctx.font='500 23px Montserrat,Arial,sans-serif';
+    ctx.fillText('KRUGER FIELD GUIDE  ·  kruger.krantzoutdoors.com', 540, 1046);
+    cb(fc);
+  }
+
+  // Try with background photo; if canvas gets tainted by CORS, fall back to branded card
+  function tryWithPhoto(cb) {
+    if(!_renderFullCard){ renderBrandedCard(cb); return; }
     _renderFullCard(1080, function(canvas) {
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-      var byteStr = atob(dataUrl.split(',')[1]);
-      var arr = new Uint8Array(byteStr.length);
-      for(var i=0;i<byteStr.length;i++) arr[i]=byteStr.charCodeAt(i);
-      var blob = new Blob([arr],{type:'image/jpeg'});
+      try { canvas.toDataURL('image/jpeg',0.01); cb(canvas); }
+      catch(e){ renderBrandedCard(cb); }
+    });
+  }
+
+  tryWithPhoto(function(canvas) {
+    canvas.toBlob(function(blob) {
+      if(!blob){ _doCopy(caption); return; }
       var file = new File([blob],'kruger-sighting.jpg',{type:'image/jpeg'});
       if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         navigator.share({files:[file], text:caption, title:s.name+' sighted in Kruger'})
           .then(function(){ showToast('Shared!'); })
-          .catch(function(e){
-            if(e.name!=='AbortError') {
-              if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
-              var a=document.createElement('a'); a.download='kruger-sighting.jpg'; a.href=dataUrl;
-              document.body.appendChild(a); a.click(); document.body.removeChild(a);
-              showToast('Caption copied. Image saved.');
-            }
-          });
+          .catch(function(e){ if(e.name!=='AbortError') _doCopy(caption); });
       } else if(navigator.share) {
         navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
           .then(function(){showToast('Shared!');})
           .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
-      } else {
-        if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
-        var a=document.createElement('a'); a.download='kruger-sighting.jpg'; a.href=dataUrl;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        showToast('Caption copied. Image downloaded.');
-      }
-    });
-  } else {
-    if(navigator.share){
-      navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
-        .then(function(){showToast('Shared!');})
-        .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
-    } else { _doCopy(caption); }
-  }
+      } else { _doCopy(caption); }
+    }, 'image/jpeg', 0.92);
+  });
 }
 function _doCopy(t){
   if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){showToast('Caption copied â€” paste to share!');}).catch(function(){});
@@ -10219,8 +10253,10 @@ function captureGPSForSighting(callback) {
   }
   var btn = document.getElementById('gpsStatusBtn');
   if(btn) btn.textContent = '&#x1F4CD; Getting GPS...';
+  // Always fresh high-accuracy fix - permission already granted at login so no double prompt
   navigator.geolocation.getCurrentPosition(
     function(pos) {
+      _gpsCache = pos; _gpsCacheTime = Date.now(); // side-effect cache update
       var lat = pos.coords.latitude;
       var lng = pos.coords.longitude;
       var road = findNearestRoad(lat, lng);
@@ -10231,7 +10267,7 @@ function captureGPSForSighting(callback) {
       if(btn) btn.textContent = '&#x1F4CD; GPS unavailable';
       callback(null, null, null);
     },
-    {timeout: 8000, enableHighAccuracy: true}
+    {timeout: 10000, enableHighAccuracy: true, maximumAge: 0}
   );
 }
 
@@ -10420,7 +10456,7 @@ function initApp() {
   // Fix 3: Request GPS permission upfront so sightings always have location
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      function(pos){ _gpsCache = pos; _gpsCacheTime = Date.now(); },
+      function(){}, // permission granted - sightings always get their own fresh high-accuracy fix
       function(){},
       { timeout: 8000, enableHighAccuracy: false }
     );
@@ -10499,7 +10535,10 @@ function initApp() {
         if(data[0] && (data[0].type === 'sighting' || data[0].type === 'road')) {
           var myNick = getUserNickname();
           var isOwnSighting = myNick && data[0].source && data[0].source === 'Sighted by ' + myNick;
-          if(!isOwnSighting) showFeedNotificationBanner(data[0]);
+          if(!isOwnSighting) {
+            showFeedNotificationBanner(data[0]);
+            if(data[0].type==='sighting') triggerSightingNotification(data[0].title||'New sighting');
+          }
         }
       }
     }).catch(function(){});
