@@ -375,10 +375,10 @@ svg.animal-art{width:100%;height:100%}
 
 /* Finder icon grid */
 .finder-icon-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 16px}
-.finder-icon-btn{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 8px 10px;text-align:center;cursor:pointer;transition:all .15s}
+.finder-icon-btn{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 8px 12px;text-align:center;cursor:pointer;transition:all .15s}
 .finder-icon-btn.active{border-color:var(--accent);background:rgba(232,160,32,.08)}
 .finder-icon-btn:active{border-color:var(--accent)}
-.finder-icon-img{width:44px;height:44px;object-fit:contain;display:block;margin:0 auto 8px}
+.finder-icon-img{width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 8px}
 .finder-icon-label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
 
 /* Wildlife filter buttons */
@@ -1056,28 +1056,27 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
           <!-- Block 1: Active Trip -->
           <div onclick="showTripSub('itinerary')" id="block-trip"
-               style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent">
-            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">&#x1F5D3; Active Trip</div>
+               style="background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+            <div style="font-size:9px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">&#x1F5D3; Active Trip</div>
             <div id="block-trip-body">
               <div style="font-size:10px;color:var(--text3);line-height:1.5">Tap to plan your trip</div>
-              <div style="margin-top:8px;font-size:18px;color:var(--border2)">+</div>
+              <div style="margin-top:8px;font-size:20px;color:var(--accent);font-weight:700">+</div>
             </div>
           </div>
 
-          <!-- Block 2: Badges -->
+          <!-- Block 2: Badges — always 2 rows, auto columns -->
           <div onclick="showTripSub('badges')" id="block-badges"
-               style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent">
-            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">&#x1F3C6; Badges</div>
+               style="background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+            <div style="font-size:9px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">&#x1F3C6; Badges</div>
             <div id="block-badges-body">
-              <div style="font-size:22px;font-weight:700;color:var(--accent)" id="blockBadgeEarned">0</div>
-              <div style="font-size:9px;color:var(--text3);margin-top:1px">of 14 earned</div>
-              <div id="blockBadgeIcons" style="margin-top:6px;display:flex;gap:3px;flex-wrap:wrap"></div>
+              <div id="blockBadgeGrid" style="display:grid;gap:3px"></div>
+              <div style="font-size:9px;color:var(--text3);margin-top:5px"><span id="blockBadgeEarned" style="color:var(--accent);font-weight:700">0</span> of <span id="blockBadgeTotal">14</span> earned</div>
             </div>
           </div>
 
           <!-- Block 3: Sightings -->
-          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px">
-            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F441; Sightings</div>
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:12px;padding:12px">
+            <div style="font-size:9px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F441; Sightings</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:8px">
               <div style="text-align:center">
                 <div style="font-size:18px;font-weight:700;color:var(--accent)" id="statSpecies">0</div>
@@ -1099,8 +1098,8 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
 
           <!-- Block 4: Journal & Export -->
-          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px">
-            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F4D6; Journal</div>
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:12px;padding:12px">
+            <div style="font-size:9px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">&#x1F4D6; Journal</div>
             <div id="blockJournalSummary" style="font-size:10px;color:var(--text3);line-height:1.6;margin-bottom:8px">Log sightings to build your story.</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
               <button onclick="openViewTripModal()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:7px;padding:6px 0;font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.04em">&#x1F4CB; View Trip</button>
@@ -1422,9 +1421,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.41</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.42</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.41 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.42 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3773,6 +3772,7 @@ function showScreen(id) {
   }
   if(id === 'photo') { try { safe(renderPhotoIntel); safe(initPhotoIntel); } catch(e) {} }
   if(id === 'trip') { setTimeout(function(){ renderTripJournal(); updateTripStats(); updateTripBlocks(); renderTripSightings(); }, 50); }
+  if(id === 'finder') { setTimeout(function(){ var fuelBtn = document.querySelector('.finder-icon-btn'); if(fuelBtn && !document.querySelector('.finder-icon-btn.active')) { findNearest('fuel', fuelBtn); } }, 100); }
 }
 
 async function renderLicensesTab() {
@@ -6932,7 +6932,7 @@ function updateTripBlocks() {
       var fromStr = new Date(dates.from+'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
       var toStr   = new Date(dates.to  +'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
       block1.innerHTML =
-        '<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px">'+fromStr+' &rarr; '+toStr+'</div>'+
+        '<div style="font-size:13px;font-weight:400;color:var(--accent);margin-bottom:3px">'+fromStr+' &rarr; '+toStr+'</div>'+
         (dates.entry?'<div style="font-size:9px;color:var(--text3)">In: '+dates.entry+'</div>':'')+
         (dates.exit ?'<div style="font-size:9px;color:var(--text3)">Out: '+dates.exit+'</div>':'')+
         (nights?'<div style="font-size:9px;color:var(--accent);margin-top:4px;font-weight:700">'+nights+' camps planned</div>':'<div style="font-size:9px;color:var(--text3);margin-top:4px">Tap to plan camps</div>');
@@ -6947,12 +6947,17 @@ function updateTripBlocks() {
   try { earned = JSON.parse(localStorage.getItem('kfg_achievements')||'[]'); } catch(e){}
   var countEl = document.getElementById('blockBadgeEarned');
   if(countEl) countEl.textContent = earned.length;
-  var iconsEl = document.getElementById('blockBadgeIcons');
-  if(iconsEl && typeof MILESTONES !== 'undefined') {
-    var sightings = loadSightings().filter(function(s){ return !s.protected; });
-    var shown = MILESTONES.filter(function(m){ try{return m.check(sightings);}catch(e){return false;} }).slice(0,4);
-    iconsEl.innerHTML = shown.map(function(m){
-      return '<span style="font-size:16px" title="'+m.title+'">'+m.icon+'</span>';
+  var totalEl = document.getElementById('blockBadgeTotal');
+  if(totalEl && typeof MILESTONES !== 'undefined') totalEl.textContent = MILESTONES.length;
+  var gridEl = document.getElementById('blockBadgeGrid');
+  if(gridEl && typeof MILESTONES !== 'undefined') {
+    var sightings2 = loadSightings().filter(function(s){ return !s.protected; });
+    var total = MILESTONES.length;
+    var cols = Math.ceil(total / 2);
+    gridEl.style.gridTemplateColumns = 'repeat('+cols+', 1fr)';
+    gridEl.innerHTML = MILESTONES.map(function(m){
+      var isEarned = m.check ? (function(){ try{ return m.check(sightings2); }catch(e){ return false; } })() : false;
+      return '<div title="'+m.title+'" style="text-align:center;font-size:14px;opacity:'+(isEarned?'1':'0.18')+';transition:opacity .3s">'+m.icon+'</div>';
     }).join('');
   }
   // Block 4: Journal summary
@@ -10339,7 +10344,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.41';
+var APP_VERSION = '5.42';
 
 // Clear stale caches when version changes
 (function() {
@@ -10484,6 +10489,11 @@ function deleteSighting(idx) {
   if(i >= 0) sightings.splice(i, 1);
   saveSightings(sightings);
   renderSightings();
+  try{renderSpecies();}catch(e){}
+  try{renderBirds();}catch(e){}
+  try{renderReptiles();}catch(e){}
+  try{renderFrogs();}catch(e){}
+  try{renderInsects();}catch(e){}
   updateTripStats();
   if(typeof renderTripJournal==="function") renderTripJournal();
   showToast('Sighting removed', 1500);
@@ -12915,9 +12925,11 @@ function renderSpeciesTotals() {
     if(!n||n.length<2) return;
     counts[n]=(counts[n]||0)+1;
   });
-  // Count local sightings — these are always accurate for the current user
+  // Count local sightings — mammals only
   (loadSightings?loadSightings():[]).forEach(function(s){
     if(new Date(s.ts||s.time||0).toDateString()!==todayStr) return;
+    // Only mammals (id must exist in SPECIES array)
+    if(!SPECIES.some(function(sp){ return sp.id === s.id; })) return;
     var n=s.name||s.species||''; if(!n) return;
     counts[n]=(counts[n]||0)+1;
   });
