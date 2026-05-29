@@ -4650,10 +4650,7 @@ function showFeedNotificationBanner(item) {
     }
   };
   document.body.appendChild(banner);
-  // Also fire true push notification if permission granted
-  if('Notification' in window && Notification.permission === 'granted') {
-    try { new Notification(item.title||'Kruger Update', { body: item.desc||'', icon:'' }); } catch(e) {}
-  }
+  // OS notification is fired by triggerSightingNotification() in the poll loop - not here, to avoid doubles
   setTimeout(function(){ var b=document.getElementById('feedNotifBanner'); if(b) b.remove(); }, 6000);
 }
 
