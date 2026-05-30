@@ -4746,7 +4746,11 @@ async function pushSightingToFeed(entry, nickname) {
       desc: entry.name + (entry.latin ? ' (' + entry.latin + ')' : '') + ' logged at ' + timeStr + ' on ' + dateStr + (entry.road ? ' near ' + entry.road : '') + '.',
       source: 'Sighted by ' + nick,
       time: entry.time,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      lat: entry.lat || null,
+      lng: entry.lng || null,
+      road: entry.road || null,
+      name: entry.name || null
     };
 
     // Read → prepend → write to Firebase
@@ -6091,7 +6095,6 @@ function toggleHeatmap() {
       return s.type === 'sighting' &&
              !s.protected &&
              s.category !== 'endangered' &&
-             (s.animal_type === 'mammal' || s.animal_type === 'mammals' || (!s.animal_type && !s.category)) &&
              new Date(s.timestamp || s.time || 0).toDateString() === todayStr;
     });
     var localSightings = loadSightings().filter(function(s){
