@@ -6113,25 +6113,33 @@ function toggleHeatmap() {
           points.push([parseFloat(s.lat), parseFloat(s.lng), 1.0]);
           return;
         }
-        // Road field stored on entry
+        // Try road field first, then extract from title
         var roadName = s.road || null;
-        // Extract road from title e.g. "Impala - H1-2" or "Impala - Near Satara"
         if(!roadName && s.title) {
-          var m = s.title.match(/—\s*(.+)$/);
-          if(m) roadName = m[1].trim();
+          // Extract road code e.g "H1-2", "S28", "S100" from title
+          var roadMatch = s.title.match(/\b([HS]\d+(?:-\d+)?)\b/);
+          if(roadMatch) roadName = roadMatch[1];
+        }
+        if(!roadName && s.title) {
+          // Extract "Near X" camp name from title
+          var nearMatch = s.title.match(/Near\s+([^,\.]+)/i);
+          if(nearMatch) roadName = nearMatch[0].trim();
         }
         if(roadName) {
-          var rw = ROAD_WAYPOINTS.find(function(r){
-            return r.road === roadName || (r.road && r.road.indexOf(roadName) >= 0) || (roadName && roadName.indexOf(r.road) >= 0);
-          });
+          // Match road code exactly
+          var rw = ROAD_WAYPOINTS.find(function(r){ return r.road === roadName; });
           if(rw) { points.push([rw.lat, rw.lng, 0.5]); return; }
+          // Match partial road code e.g "H1" matches "H1-2"
+          var rw2 = ROAD_WAYPOINTS.find(function(r){ return r.road && r.road.indexOf(roadName) >= 0; });
+          if(rw2) { points.push([rw2.lat, rw2.lng, 0.4]); return; }
+          // Match camp name in FACILITIES
+          if(FACILITIES && FACILITIES.fuel) {
+            var camp = FACILITIES.fuel.find(function(c){ return roadName.toLowerCase().indexOf(c.name.toLowerCase()) >= 0; });
+            if(camp) { points.push([camp.lat, camp.lng, 0.4]); return; }
+          }
         }
-        // Last resort: use name to find a rough waypoint
-        if(s.name || s.title) {
-          var nm = (s.name || s.title || '').split('—')[0].trim();
-          var anyRw = ROAD_WAYPOINTS[Math.floor(Math.random() * Math.min(ROAD_WAYPOINTS.length, 20))];
-          if(anyRw) points.push([anyRw.lat + (Math.random()-0.5)*0.05, anyRw.lng + (Math.random()-0.5)*0.05, 0.2]);
-        }
+        // Last resort: centre of Kruger with small random offset so points are visible
+        points.push([-24.0 + (Math.random()-0.5)*1.5, 31.5 + (Math.random()-0.5)*1.5, 0.15]);
       });
 
       if(!points.length) {
@@ -10277,18 +10285,63 @@ function calculateFromSchedule() {
 // GPS CAPTURE + NEAREST ROAD MATCHING
 // ============================================
 var ROAD_WAYPOINTS = [
+  // H roads - main tarred routes
   {road:'H1-1', lat:-25.05, lng:31.49}, {road:'H1-2', lat:-24.90, lng:31.57},
   {road:'H1-3', lat:-24.70, lng:31.70}, {road:'H1-4', lat:-24.50, lng:31.72},
   {road:'H1-5', lat:-24.20, lng:31.72}, {road:'H1-6', lat:-23.95, lng:31.70},
   {road:'H1-7', lat:-23.60, lng:31.55}, {road:'H1-8', lat:-23.10, lng:31.45},
-  {road:'H3',   lat:-25.00, lng:31.65}, {road:'H4-1', lat:-25.05, lng:31.68},
-  {road:'H4-2', lat:-25.15, lng:31.85}, {road:'H7',   lat:-24.40, lng:31.95},
-  {road:'H9',   lat:-24.55, lng:31.55}, {road:'H10',  lat:-24.25, lng:31.60},
-  {road:'H12',  lat:-23.85, lng:31.70}, {road:'S1',   lat:-25.10, lng:31.55},
-  {road:'S3',   lat:-25.15, lng:31.30}, {road:'S28',  lat:-24.80, lng:31.85},
-  {road:'S41',  lat:-24.30, lng:31.80}, {road:'S44',  lat:-23.90, lng:31.65},
-  {road:'S65',  lat:-24.60, lng:31.75}, {road:'S100', lat:-24.50, lng:31.90},
-  {road:'S106', lat:-23.70, lng:31.75}, {road:'S114', lat:-25.20, lng:31.90},
+  {road:'H1-9', lat:-22.40, lng:31.30},
+  {road:'H2-2', lat:-25.00, lng:31.40},
+  {road:'H3',   lat:-25.00, lng:31.65},
+  {road:'H4-1', lat:-25.05, lng:31.68}, {road:'H4-2', lat:-25.15, lng:31.85},
+  {road:'H5',   lat:-25.10, lng:31.75},
+  {road:'H6',   lat:-24.55, lng:31.95},
+  {road:'H7',   lat:-24.40, lng:31.95},
+  {road:'H8',   lat:-24.30, lng:31.78},
+  {road:'H9',   lat:-24.55, lng:31.55},
+  {road:'H10',  lat:-24.25, lng:31.60},
+  {road:'H11',  lat:-25.00, lng:31.52},
+  {road:'H12',  lat:-23.85, lng:31.70},
+  {road:'H13-1',lat:-22.70, lng:31.10}, {road:'H13-2',lat:-22.70, lng:31.05},
+  {road:'H14',  lat:-23.93, lng:31.48},
+  // S roads - sand/gravel routes
+  {road:'S1',   lat:-25.10, lng:31.55},
+  {road:'S3',   lat:-25.15, lng:31.30},
+  {road:'S4',   lat:-25.10, lng:31.35},
+  {road:'S7',   lat:-25.05, lng:31.38},
+  {road:'S10',  lat:-25.02, lng:31.38},
+  {road:'S11',  lat:-24.98, lng:31.45},
+  {road:'S12',  lat:-24.45, lng:31.88},
+  {road:'S14',  lat:-25.02, lng:31.35},
+  {road:'S21',  lat:-25.08, lng:31.72},
+  {road:'S22',  lat:-25.12, lng:31.62},
+  {road:'S23',  lat:-25.22, lng:31.70},
+  {road:'S25',  lat:-25.22, lng:31.82},
+  {road:'S26',  lat:-25.20, lng:31.75},
+  {road:'S27',  lat:-25.25, lng:31.90},
+  {road:'S28',  lat:-24.80, lng:31.85},
+  {road:'S29',  lat:-24.35, lng:31.65},
+  {road:'S30',  lat:-24.72, lng:31.48},
+  {road:'S33',  lat:-24.65, lng:31.68},
+  {road:'S34',  lat:-24.68, lng:31.60},
+  {road:'S35',  lat:-24.40, lng:31.60},
+  {road:'S36',  lat:-24.55, lng:31.65},
+  {road:'S37',  lat:-24.52, lng:31.80},
+  {road:'S39',  lat:-24.38, lng:31.72},
+  {road:'S40',  lat:-24.42, lng:31.92},
+  {road:'S41',  lat:-24.30, lng:31.80},
+  {road:'S44',  lat:-23.90, lng:31.65},
+  {road:'S65',  lat:-24.60, lng:31.75},
+  {road:'S82',  lat:-25.18, lng:31.88},
+  {road:'S89',  lat:-24.48, lng:31.75},
+  {road:'S100', lat:-24.50, lng:31.90},
+  {road:'S106', lat:-23.70, lng:31.75},
+  {road:'S112', lat:-25.10, lng:31.58},
+  {road:'S114', lat:-25.20, lng:31.65},
+  {road:'S128', lat:-24.70, lng:31.45},
+  {road:'S144', lat:-23.80, lng:31.55},
+  {road:'S145', lat:-24.60, lng:31.60},
+  {road:'S147', lat:-24.42, lng:31.73},
 ];
 
 function findNearestRoad(lat, lng) {
