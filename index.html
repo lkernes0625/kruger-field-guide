@@ -1420,9 +1420,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.46</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.47</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.46 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.47 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -3046,7 +3046,7 @@ var FACILITIES = {
     { name:'Paul Kruger Gate', lat:-24.9809, lng:31.4848, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:30 - call: 013 735 5107', hours:'06:00-18:30' },
     { name:'Numbi Gate', lat:-25.1552, lng:31.1981, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - call: 013 735 5135', hours:'06:00-18:00' },
     { name:'Phabeni Gate', lat:-25.0249, lng:31.2410, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - day visitors only', hours:'06:00-18:00' },
-    { name:'Malelane Gate', lat:-25.4608, lng:31.5332, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - call: 013 735 6152', hours:'06:00-18:00' },
+    { name:'Malelane Gate', lat:-25.4708, lng:31.5332, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - call: 013 735 6152', hours:'06:00-18:00' },
     { name:'Crocodile Bridge', lat:-25.3582, lng:31.8934, note:'Closes 17:30 - call: 013 735 6012', hours:'06:00-17:30' },
     { name:'Orpen Gate', lat:-24.4812, lng:31.3898, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 17:30 - call: 013 735 6355', hours:'06:00-17:30' },
     { name:'Phalaborwa Gate', lat:-23.9417, lng:31.1654, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:30 - call: 013 735 3548', hours:'06:00-18:30' },
@@ -3993,7 +3993,7 @@ function calcDistance() {
     'Letaba':[-23.8540,31.5744],'Mopani':[-23.5206,31.3969],'Shingwedzi':[-23.1080,31.4353],
     'Punda Maria':[-22.6917,31.0167],'Paul Kruger Gate':[-24.9809,31.4848],
     'Numbi Gate':[-25.1552,31.1981],'Phabeni Gate':[-25.0249,31.2410],
-    'Malelane Gate':[-25.4608,31.5332],'Crocodile Bridge Gate':[-25.3582,31.8934],
+    'Malelane Gate':[-25.4708,31.5332],'Crocodile Bridge Gate':[-25.3582,31.8934],
     'Crocodile Bridge':[-25.3582,31.8934],
     'Orpen Gate':[-24.4812,31.3898],'Phalaborwa Gate':[-23.9417,31.1654],
     'Punda Maria Gate':[-22.7364,31.0104],
@@ -4012,14 +4012,14 @@ function calcDistance() {
     'Lukimbi Safari Lodge':[-25.3000,31.5000],'The Outpost':[-22.4800,31.1800],
     'Imbali Safari Lodge':[-25.2600,31.5400],'Skukuza Safari Lodge':[-24.9900,31.5800],
     'Satara Plains Camp':[-24.4000,31.7800],'Mdluli Safari Camp':[-25.0200,31.6800],
-    'Nkambeni Tented Camp':[-25.4600,31.5400],'Hoyo Hoyo Tsonga Lodge':[-24.3500,31.4500],
+    'Nkambeni Tented Camp':[-25.4700,31.5400],'Hoyo Hoyo Tsonga Lodge':[-24.3500,31.4500],
     'Fitzpatricks Lodge at Jock Safari Lodge':[-25.2100,31.6800],
     'Pafuri Camp':[-22.4500,31.3100],'Baobab Hill Bush House':[-22.5200,31.1900],
     'Camp Shawu':[-24.0500,31.8400],'Camp Shonga':[-24.0500,31.8400],
     'Plains Camp Tented Safari':[-24.6000,31.5000],
     'Rhino Post Safari Lodge':[-24.8200,31.7800],
     'Singita Lebombo':[-24.3200,31.9200],'Singita Sweni':[-24.3200,31.9200],
-    'Malelane':[-25.4600,31.5200],'Orpen':[-24.4800,31.3900]
+    'Malelane':[-25.4700,31.5200],'Orpen':[-24.4800,31.3900]
   };
   var c1 = COORDS[from], c2 = COORDS[to];
   if(c1 && c2) {
@@ -4622,13 +4622,13 @@ function checkInstallNudge() {
 }
 
 function triggerSightingNotification(spName) {
-  if('Notification' in window && Notification.permission==='granted' && localStorage.getItem('kfg_feed_notify')==='1') {
+  if('Notification' in window && Notification.permission==='granted' && localStorage.getItem('kfg_feed_notify')!=='0') {
     try { new Notification('Kruger Sighting: '+spName, { body:'New sighting logged in Kruger National Park', icon:'' }); } catch(e) {}
   }
 }
 
 function showFeedNotificationBanner(item) {
-  if(localStorage.getItem('kfg_feed_notify') !== '1') return;
+  if(localStorage.getItem('kfg_feed_notify') === '0') return; // default is ON
   var existing = document.getElementById('feedNotifBanner');
   if(existing) existing.remove();
   var icon = item.type === 'road' ? '🚧' : '🦁';
@@ -6086,8 +6086,26 @@ function toggleHeatmap() {
   if(btn) btn.classList.add('active');
   function buildHeat() {
     var todayStr = new Date().toDateString();
-    var allSightings = loadSightings().filter(function(s){
-      return !s.protected && new Date(s.ts||s.time||0).toDateString() === todayStr;
+    // Combine Firebase sightings (all users) with local sightings for full park picture
+    var firebaseSightings = (window._firebaseSightings || []).filter(function(s){
+      return s.type === 'sighting' &&
+             !s.protected &&
+             s.category !== 'endangered' &&
+             (s.animal_type === 'mammal' || s.animal_type === 'mammals' || (!s.animal_type && !s.category)) &&
+             new Date(s.timestamp || s.time || 0).toDateString() === todayStr;
+    });
+    var localSightings = loadSightings().filter(function(s){
+      return !s.protected &&
+             s.category !== 'endangered' &&
+             new Date(s.ts||s.time||0).toDateString() === todayStr;
+    });
+    // Merge both, deduplicate by timestamp+name
+    var seen = {};
+    var allSightings = firebaseSightings.concat(localSightings).filter(function(s){
+      var key = (s.timestamp||s.ts||s.time||'') + ':' + (s.title||s.name||'');
+      if(seen[key]) return false;
+      seen[key] = true;
+      return true;
     });
     var points = [];
     allSightings.forEach(function(s) {
@@ -8964,7 +8982,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.46';
+var APP_VERSION = '5.47';
 
 // Clear stale caches when version changes
 (function() {
@@ -10461,6 +10479,12 @@ function initApp() {
       { timeout: 8000, enableHighAccuracy: false }
     );
   }
+  // Request notification permission upfront - notify is ON by default
+  if(localStorage.getItem('kfg_feed_notify') !== '0') {
+    if('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }
 
   // Force reload if cached version doesn't match — uses timestamp to guarantee fresh fetch
   var storedBuild = localStorage.getItem('kfg_build');
@@ -10550,7 +10574,7 @@ function initApp() {
   safe(initPullToRefresh);
   checkForUpdate();
   // Feed toggle
-  try { updateFeedToggleUI(localStorage.getItem('kfg_feed_notify')==='1'); } catch(e) {}
+  try { updateFeedToggleUI(localStorage.getItem('kfg_feed_notify')!=='0'); } catch(e) {} // default ON
   // Restore saved gate selection
   try {
     var g = JSON.parse(localStorage.getItem('kfg_gate'));
