@@ -461,7 +461,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         autocomplete="email"
         style="text-transform:none;letter-spacing:0;font-weight:400;font-size:13px;margin-bottom:8px">
       <div class="license-error" id="licenseError">Invalid key &mdash; check your Etsy order email</div>
-      <input class="license-input" id="licenseInput" type="text" maxlength="24" placeholder="e.g. KO-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+      <input class="license-input" id="licenseInput" type="text" maxlength="20" placeholder="e.g. KO-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
       <button class="license-btn" onclick="validateLicense()">Unlock My Guide &rarr;</button>
     </div>
 
@@ -1420,9 +1420,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.48</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.49</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.48 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.49 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -1875,6 +1875,7 @@ var SPECIES_LANGUAGES = {"lion": {"af": "Leeu", "zu": "Ibhubesi", "ts": "Nghala"
   "black_headed_heron": {"af":"Swartkopreier","zu":"iNkonjane","ts":"Nswi ya Ntlhaveni","fr":"Héron mélanocéphale","de":"Schwarzkopfreiher","es":"Garza cabecinegra"},
   "blacksmith_lapwing": {"af":"Bontkiewiet","zu":"uNhlekehleke","ts":"Xikhokhovela xa Tiko","fr":"Vanneau armé","de":"Schmiedekiebitz","es":"Avefría herrera"},
   "black_stork": {"af":"Grootswartspreeu","zu":"uMkhwenyana Omnyama","ts":"Makholokwana ya Ntima","fr":"Cigogne noire","de":"Schwarzstorch","es":"Cigüeña negra"},
+  "woolly_necked_stork": {"af":"Wolnekooievaar","zu":"uMkhwenyana Wezinwele","ts":"Makholokwana ya Nwele","fr":"Cigogne épiscopale","de":"Wollhalsstorch","es":"Cigüeña de cuello lanoso"},
   "blue_cheeked_bee_eater": {"af":"Blouwanggroupspeg","zu":"iNhlava Yamanzi","ts":"Xihlalantshwa xa Matiti","fr":"Guêpier de Perse","de":"Blauwangenspint","es":"Abejaruco persa"},
   "broad_billed_roller": {"af":"Geelbektroupant","zu":"iNtaka ya Ntlhaveni","ts":"Xigholo xa Ntiho","fr":"Rolle violet","de":"Zimtroller","es":"Carraca violácea"},
   "brown_hooded_kingfisher": {"af":"Bosveldvisvanger","zu":"isGwili Samahlathi","ts":"Xihlalantshwa xa Hlathi","fr":"Martin-chasseur à tête brune","de":"Braunkapfeneisvogel","es":"Martín cazador encapuchado"},
@@ -2164,6 +2165,7 @@ var BIRD_IMG = {
   'black_headed_heron':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-black-headed-heron.webp?alt=media',
   'blacksmith_lapwing':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-blacksmith-lapwing.webp?alt=media',
   'black_stork':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-black-stork.webp?alt=media',
+  'woolly_necked_stork':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-woolly-necked-stork.webp?alt=media',
   'blue_cheeked_bee_eater':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-blue-cheeked-bee-eater.webp?alt=media',
   'broad_billed_roller':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-broad-billed-roller.webp?alt=media',
   'brown_hooded_kingfisher':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-brown-hooded-kingfisher.webp?alt=media',
@@ -2541,6 +2543,7 @@ var BIRDS = [
   {"id":"black_headed_heron","name":"Black-headed Heron","latin":"Ardea melanocephala","classification":"Aves","category":"wader","subcategory":"Herons","trophic":"Carnivore","totalLength":"85-96 cm","wingSpan":"150-165 cm","mass":"1.0-2.0 kg","gestation":"24-26 days (incubation)","conservation":"Least Concern (LC)","zone":"Open grassland and wetland margins","roads":"H1-1 grasslands, H6, open areas near watercourses throughout Kruger","time":"Early morning and late afternoon","camera":"300mm - f/6.3 - 1/1000s - ISO 400","behaviour":"Large heron that hunts in grassland as well as water — the most terrestrial of the large herons. Stands motionless then strikes with explosive speed. Takes insects, lizards and small mammals from dry ground readily.","habitat":"Open grassland, savanna and dry land as well as wetland margins. Less water-dependent than other herons — frequently hunts far from water in short grassland.","color":"grey","protected":false,"keyFeatures":"Large grey heron; black crown and hindneck contrasting sharply with white face and throat; grey body; dark bill; diagnostic bold black cap.","description":"The black-headed heron is the most terrestrial of Kruger's large herons, equally at home stalking through grassland as standing at a waterhole. It preys on a surprisingly wide range of animals — from fish and frogs to grasshoppers, lizards and even small snakes. The bold black cap contrasting with the white face gives it a distinctive, slightly fierce appearance. Standing over 90cm tall it is one of Africa's largest herons and commands attention wherever it stands in the open plains.","distribution":"Throughout Kruger in grassland and along watercourses. Particularly common on the open plains north of Satara, along the H1-1 and H6 roads. More of a grassland bird than a purely waterside species.","food":"Fish, frogs, lizards, large insects, small mammals and occasionally small birds. One of the most versatile hunters among all of Africa's herons.","breeding":"Colonial nester in tall trees. 3-4 eggs. Incubation 24-26 days. Both parents feed chicks by regurgitation.","voice":"Deep harsh kraak given in flight. Various croaking sounds at the nest colony."},
   {"id":"blacksmith_lapwing","name":"Blacksmith Lapwing","latin":"Vanellus armatus","classification":"Aves","category":"wader","subcategory":"Shoreline Waders","trophic":"Omnivore","totalLength":"29-31 cm","wingSpan":"68-75 cm","mass":"130-200 g","gestation":"28-30 days (incubation)","conservation":"Least Concern (LC)","zone":"Short grass and waterhole margins throughout Kruger","roads":"Waterholes throughout the park, Shingwedzi area, open short-grass areas","time":"Active all day","camera":"300mm - f/6.3 - 1/1000s - ISO 400","behaviour":"Named for its metallic tink-tink-tink call resembling a blacksmith's hammer on an anvil. Highly aggressive defence of nest — will dive-bomb predators including eagles and lions without hesitation.","habitat":"Open short grass, bare ground and muddy margins of dams and rivers. Requires open areas near water. Nests on bare ground near water.","color":"black","protected":false,"keyFeatures":"Black, white and grey pattern; black cap; white crown; black chest band; red eye; named for its distinctive metallic ringing call.","description":"The blacksmith lapwing is one of Kruger's most commonly heard birds — its rapid, metallic tink-tink-tink call is the sound of every waterhole and open grassland in the park. Bold, aggressive and utterly fearless in defence of its nest, it will physically attack animals many times its size, diving repeatedly at anything that approaches too closely. The striking black, white and grey plumage is unmistakable. Every visitor to Kruger will see and hear this species daily without exception.","distribution":"Throughout Kruger wherever there is short grass and open ground near water. Abundant at waterholes and river margins. One of the most common and widespread birds in the entire park year-round.","food":"Insects, worms, small molluscs and other invertebrates picked from short grass and mud at waterhole margins.","breeding":"Ground nest — a simple scrape. 2-4 eggs. Both parents incubate and defend fiercely. Chicks are precocial and follow parents immediately from hatching.","voice":"Loud metallic tink-tink-tink — one of the most characteristic sounds of Kruger. Given constantly when alarmed or disturbed."},
   {"id":"black_stork","name":"Black Stork","latin":"Ciconia nigra","classification":"Aves","category":"wader","subcategory":"Storks","trophic":"Carnivore","totalLength":"95-100 cm","wingSpan":"145-155 cm","mass":"2.8-3.4 kg","gestation":"32-38 days (incubation)","conservation":"Least Concern (LC)","zone":"Rocky rivers and gorges in Kruger","roads":"Olifants River gorge area, rocky river sections","time":"Morning foraging along river margins","camera":"400mm - f/6.3 - 1/1000s - ISO 400","behaviour":"Shy, solitary stork of rocky rivers and gorges. Unlike White Stork, actively avoids human habitation. Soars on thermals above river valleys. Breeds on cliff ledges. Always an uncommon sighting in Kruger.","habitat":"Rivers, dams and large water bodies with exposed perches near clear shallow water for fishing. Shy and retiring — avoids human disturbance near nest sites.","color":"black","protected":false,"keyFeatures":"All-black except for white belly; red bill and legs; iridescent green and purple sheen on black plumage; much shyer and less common than White Stork.","description":"The black stork is one of Kruger's most sought-after and uncommonly seen large waterbirds. Unlike its bold white cousin it is a bird of wild, remote rivers and rocky gorges, avoiding human contact entirely and favouring pristine wild landscapes. Its all-black plumage with a vivid white belly and brilliant red bill is striking at any distance. It soars effortlessly on thermals over river valleys and nests on cliff ledges inaccessible to predators. Every sighting in Kruger should be carefully noted.","distribution":"Rocky rivers and gorges in Kruger. Most likely along the Olifants River gorge near Olifants Camp. Migratory birds pass through seasonally adding to any resident birds present.","food":"Fish, frogs, small reptiles and invertebrates taken from shallow water at rocky river edges.","breeding":"Nests on sheltered cliff ledges or in large trees near rocky rivers. 3-5 eggs. Incubation 32-38 days. Both parents feed chicks.","voice":"Generally silent in flight and while foraging. Occasional hissing and bill-clattering at the nest when disturbed."},
+  {"id":"woolly_necked_stork","name":"Woolly-necked Stork","latin":"Ciconia episcopus","classification":"Aves","category":"wader","subcategory":"Storks","trophic":"Carnivore","totalLength":"75-92 cm","wingSpan":"140-160 cm","mass":"1.0-2.3 kg","gestation":"30-31 days (incubation)","conservation":"Vulnerable (VU)","zone":"Rivers, floodplains and woodland near water","roads":"Sabie River, Olifants River, H4-1, Luvuvhu River north","time":"07:00-17:00","camera":"400mm - f/5.6 - 1/1000s - ISO 400","behaviour":"A striking, medium-large stork of riverine woodland and floodplains. The brilliant white woolly neck contrasts sharply with the iridescent dark body. Forages in shallow water and on dry ground away from water. Usually solitary or in pairs. More secretive than Yellow-billed Stork.","habitat":"Woodland near rivers, floodplains, shallow dams and wetland margins. Less dependent on open water than other storks — forages on dry ground in woodland and savanna, returning to tall trees near water to roost.","color":"black","protected":false,"keyFeatures":"Iridescent black-purple upperparts; brilliant white woolly neck (diagnostic — unique among Kruger storks); white lower belly and vent; deeply forked tail hidden under long tertials; red bill; dark red legs; white neck conspicuous at any distance; wingspan 140-160cm.","description":"The woolly-necked stork is one of Kruger's most distinctively plumaged storks — the brilliant white woolly neck surrounded by iridescent dark purple-black plumage creates an unmistakable contrast visible at great distances. It is a bird of riverine woodland and floodplains, equally comfortable foraging on dry ground among trees and wading in shallow water. In Kruger it is encountered as singles or pairs, never in the large flocks of Abdim's or White Stork, and each sighting has the quality of a genuine discovery. Its forking tail feathers and deeply iridescent upperparts shimmer green and purple in good light, making it one of the most photogenic storks in Africa.","distribution":"Uncommon to locally common along the major rivers of Kruger — the Sabie River near Lower Sabie and Skukuza, the Olifants River, the Letaba River near Letaba Camp, and particularly the Luvuvhu River in the far north near Pafuri. Most reliably seen in the southern and northern extremities of the park. Scan tall trees near rivers at dawn for roosting birds.","food":"Frogs, crabs, fish, large insects, small reptiles and small mammals. A generalist predator that forages on dry ground as readily as in shallow water — one of the most versatile feeders among Kruger's storks.","breeding":"Solitary nester — builds a large flat stick nest high in a tall tree near water, often a riparian fig or fever tree. Lays 2-4 white eggs. Incubation 30-31 days by both parents. Chicks fledge at approximately 55-60 days.","voice":"Generally silent. Soft grunting sounds at the nest. Bill-clattering during courtship. Less vocal than most other Kruger storks."},
   {"id":"blue_cheeked_bee_eater","name":"Blue-cheeked Bee-eater","latin":"Merops persicus","classification":"Aves","category":"tree_bird","subcategory":"Bee-eaters","trophic":"Insectivore","totalLength":"27-31 cm","wingSpan":"45-50 cm","mass":"44-58 g","gestation":"20-22 days (incubation)","conservation":"Least Concern (LC)","zone":"Open areas near water and woodland edges in northern Kruger","roads":"Luvuvhu River, Olifants floodplains, S1 north","time":"06:00-11:00 and 15:00-18:00","camera":"400mm - f/5.6 - 1/2000s - ISO 400","behaviour":"Migratory bee-eater from central Asia present in Kruger mainly as a non-breeding visitor. Perches on dead branches near water and flies out in acrobatic aerial pursuit of large flying insects.","habitat":"Open habitats — over water, open savanna and woodland during migration. Catches large insects in aerial pursuit. A Palaearctic migrant present in summer months.","color":"green","protected":false,"keyFeatures":"Mainly green; blue-green cheeks are the key field mark; rufous throat; blue supercilium; elongated central tail feathers; larger than European Bee-eater.","description":"The blue-cheeked bee-eater is a spectacular migratory visitor to Kruger, present mainly between August and April as birds move between their Asian breeding grounds and African wintering areas. It is larger and more richly coloured than the European bee-eater, with vivid blue-green cheeks and a rufous throat that catch the light beautifully. Like all bee-eaters it hunts bees, wasps and other large flying insects with acrobatic precision, catching them in mid-air and returning to a perch where it beats the sting out before swallowing.","distribution":"Most regularly seen in the northern regions of Kruger particularly along the Luvuvhu River and Pafuri area. Also recorded along the Olifants River floodplains. A non-breeding visitor most numerous between November and March.","food":"Bees, wasps, dragonflies and other large flying insects caught in aerial pursuit. Expertly removes stings before consumption.","breeding":"Does not breed in Kruger. Nests in sandy riverbanks in central Asia and the Middle East.","voice":"Liquid rolling prrrp-prrrp call given in flight. Softer and noticeably lower-pitched than European Bee-eater."},
   {"id":"broad_billed_roller","name":"Broad-billed Roller","latin":"Eurystomus glaucurus","classification":"Aves","category":"tree_bird","subcategory":"Rollers","trophic":"Insectivore","totalLength":"27-30 cm","wingSpan":"52-58 cm","mass":"75-100 g","gestation":"17-22 days (incubation)","conservation":"Least Concern (LC)","zone":"Woodland and riverine forest canopy in northern Kruger","roads":"Pafuri, Luvuvhu River forests, S1 north","time":"Crepuscular — most active at dawn and dusk","camera":"300mm - f/5.6 - 1/1000s - ISO 800","behaviour":"A roller of the forest canopy rather than open country. Hunts at dusk and dawn by hawking insects over the tree canopy. Perches at treetop level. More secretive than Lilac-breasted Roller. Attracted to fires.","habitat":"Dense riverine forest and mature woodland with large trees throughout Kruger. Requires closed-canopy forest near rivers. Catches large insects in aerial sallies from the canopy.","color":"rufous","protected":false,"keyFeatures":"Rufous-cinnamon body; blue wings and tail; bright yellow broad flat bill; blue throat; conspicuous blue wing flashes visible in flight.","description":"The broad-billed roller is the least familiar of Kruger's rollers, preferring dense woodland and riverine forest to the open perches favoured by its flashier relatives. It is a crepuscular hunter, most active at dawn and dusk when it hawks insects over the forest canopy with swift acrobatic flight. Its broad flattened yellow bill is the diagnostic feature that separates it from other rollers. Most likely encountered in the Pafuri area where tall riverine forest provides its preferred habitat.","distribution":"Northern Kruger in tall riverine forest and woodland. Most reliable at Pafuri and along the Luvuvhu River. A summer visitor that arrives in October and departs in April.","food":"Flying insects especially large beetles, moths and termites caught in aerial pursuit during crepuscular periods at dawn and dusk.","breeding":"Nests in natural tree holes. 2-4 eggs. Incubation 17-22 days. Both parents share incubation duties.","voice":"Harsh rattling ratchet call. Considerably more vocal at dusk than during the day."},
   {"id":"brown_hooded_kingfisher","name":"Brown-hooded Kingfisher","latin":"Halcyon albiventris","classification":"Aves","category":"water","subcategory":"Kingfishers","trophic":"Carnivore","totalLength":"18-23 cm","wingSpan":"29-33 cm","mass":"40-65 g","gestation":"13-14 days (incubation)","conservation":"Least Concern (LC)","zone":"Woodland and bush — not necessarily near water","roads":"H4-1, H1-2, any woodland road in Kruger","time":"06:00-11:00 and 15:00-18:00","camera":"300mm - f/5.6 - 1/800s - ISO 400","behaviour":"Dry woodland kingfisher that hunts insects and lizards from perches. Not dependent on water at all. Perches on fence posts and low branches. Relatively tame and easy to observe. One of the most common kingfishers in Kruger.","habitat":"Woodland and riverine forest edges. Less water-dependent than other kingfishers — hunts insects and lizards in woodland rather than fish in rivers.","color":"brown","protected":false,"keyFeatures":"Brown head and back; white belly; red bill with black culmen; blue rump and wings visible in flight; larger than pygmy kingfishers.","description":"The brown-hooded kingfisher is the common woodland kingfisher of Kruger, found along almost every bush road perching on fence posts, low branches or dead stumps from which it hunts. Unlike the glamorous waterside kingfishers this species is a terrestrial predator pursuing insects, lizards and even small snakes. The red bill with the black ridge along the top is the key identification feature. It is one of the most obliging birds in the park often allowing very close approach when perched.","distribution":"Throughout Kruger in woodland and bush. Very common along all roads with good tree cover. Present year-round. One of the most reliably seen kingfishers in the entire park.","food":"Large insects, lizards, small snakes, frogs and occasionally small birds. Hunts from a perch and beats prey against the perch before swallowing.","breeding":"Digs a horizontal tunnel in an earth bank or termite mound. 3-5 eggs. Incubation 13-14 days. Both parents share incubation.","voice":"Loud descending wailing call — kee-kee-kee-kee — one of the most familiar sounds of Kruger woodland throughout the year."},
@@ -2826,7 +2829,7 @@ var CAMPS = [
   { name:'Crocodile Bridge', type:'Main Camp', zone:'South', lat:-25.3574, lng:31.8934, phone:'013 735 6012', shopPhone:'013 735 6012', dutyPhone:'013 735 6012', fuelType:'Petrol and Diesel', fuel:true, shop:true, restaurant:false, atm:true, clinic:false, wifi:false, note:'Small camp at southern border. Best starting point for H4-2 and H10. Excellent big 5 territory from day one.', highlights:'Gateway camp with immediate access to the H4-2. The Crocodile River along the camp boundary delivers hippo and crocodile sightings from the fence. Buffalo almost guaranteed within 5 km.', nearestGate:'Crocodile Bridge Gate', gateDistance:'1 km', bestRoads:'H4-2 (lion, buffalo, cheetah), S28 (wild dog, rhino)', wildlife:'Lion, buffalo, white rhino, hippo, crocodile, cheetah', pool:false, laundry:true, boma:false, units:20, familyRating:3 },
   { name:'Letaba', type:'Main Camp', zone:'Central', lat:-23.8540, lng:31.5744, phone:'013 735 6636', shopPhone:'013 735 6636', dutyPhone:'013 735 6636', fuelType:'Petrol and Diesel', fuel:true, shop:true, restaurant:true, atm:true, clinic:false, wifi:false, note:'Elephant museum on site with famous tusker skulls. S47 loop is the best elephant road in central Kruger.', highlights:'Letaba River views and the unmissable Elephant Hall (Magnificent Seven). Engelhard Dam is world-class elephant photography. The H7 and S47 loop are among the best drives in Kruger.', nearestGate:'Phalaborwa Gate', gateDistance:'50 km', bestRoads:'S47 loop (elephant, lion), H7 (lion, leopard, wild dog)', wildlife:'Elephant, lion, leopard, wild dog, roan antelope', pool:true, laundry:true, boma:false, units:100, familyRating:5 },
   { name:'Lower Sabie', type:'Main Camp', zone:'South', lat:-25.1196, lng:31.9153, phone:'013 735 6056', shopPhone:'013 735 6056', dutyPhone:'013 735 6056', fuelType:'Petrol and Diesel', fuel:true, shop:true, restaurant:true, atm:true, clinic:false, wifi:false, note:'Best waterhole in the park on H10. Book bungalows 3-6 for direct Sabie River outlook. Outstanding lion and leopard territory.', highlights:'One of the most popular camps in Kruger — the H4-2 and H10 consistently deliver big cat sightings. Sunset Dam adjacent to camp has permanent hippo, crocodile and extraordinary waterbird diversity.', nearestGate:'Crocodile Bridge Gate', gateDistance:'35 km', bestRoads:'H4-2 (lion, cheetah, leopard), H10 (wild dog), Sunset Dam', wildlife:'Lion, leopard, cheetah, wild dog, hippo, white rhino', pool:true, laundry:true, boma:false, units:95, familyRating:5 },
-  { name:'Malelane', type:'Satellite Camp', zone:'South', lat:-25.4864, lng:31.5115, phone:'013 735 6152', shopPhone:'013 735 6152', dutyPhone:'013 735 6152', fuelType:'Petrol and Diesel', fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, note:'Satellite of Berg-en-Dal. Small intimate camp at Malelane Gate. Good starting point for H3. White rhino country.', highlights:'Small satellite camp on the Crocodile River. Extremely peaceful with few guests. White rhino walk past the fence. Ideal early-morning base before day visitors arrive on H3.', nearestGate:'Malelane Gate', gateDistance:'1 km', bestRoads:'H3 (white rhino, cheetah, wild dog), S114', wildlife:'White rhino, leopard, cheetah, nyala', pool:false, laundry:false, boma:false, units:10, familyRating:3, satellite:{checkin:'No on-site reception desk. Stop and check in at Malelane Gate (3 km away) before proceeding to camp to collect your permits and keys.', kitchen:'Communal kitchen with gas-powered shared freezer for food storage. Self-catering only.', notes:'You are required to open and close the camp\'s main perimeter security gate yourself on every arrival and departure.'} },
+  { name:'Malelane', type:'Satellite Camp', zone:'South', lat:-25.4764, lng:31.5115, phone:'013 735 6152', shopPhone:'013 735 6152', dutyPhone:'013 735 6152', fuelType:'Petrol and Diesel', fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, note:'Satellite of Berg-en-Dal. Small intimate camp at Malelane Gate. Good starting point for H3. White rhino country.', highlights:'Small satellite camp on the Crocodile River. Extremely peaceful with few guests. White rhino walk past the fence. Ideal early-morning base before day visitors arrive on H3.', nearestGate:'Malelane Gate', gateDistance:'1 km', bestRoads:'H3 (white rhino, cheetah, wild dog), S114', wildlife:'White rhino, leopard, cheetah, nyala', pool:false, laundry:false, boma:false, units:10, familyRating:3, satellite:{checkin:'No on-site reception desk. Stop and check in at Malelane Gate (3 km away) before proceeding to camp to collect your permits and keys.', kitchen:'Communal kitchen with gas-powered shared freezer for food storage. Self-catering only.', notes:'You are required to open and close the camp\'s main perimeter security gate yourself on every arrival and departure.'} },
   { name:'Mopani', type:'Main Camp', zone:'North', lat:-23.5206, lng:31.3969, phone:'013 735 6536', shopPhone:'013 735 6536', dutyPhone:'013 735 6536', fuelType:'Petrol and Diesel', fuel:true, shop:true, restaurant:true, atm:true, clinic:false, wifi:false, note:'Pioneer Dam - reliable waterhole. Dense mopane woodland - best nyala and steenbok territory.', highlights:'Built on a rocky koppie overlooking Pioneer Dam. Constant elephant traffic at the waterhole. The S142 Shongololo loop is outstanding for elephant. Good base for rare northern species — roan, sable, eland.', nearestGate:'Phalaborwa Gate', gateDistance:'90 km', bestRoads:'S142 (elephant, roan), H1-6 (elephant, lion), S50', wildlife:'Elephant, lion, leopard, roan antelope, sable antelope', pool:true, laundry:true, boma:false, units:103, familyRating:4 },
   { name:'Olifants', type:'Main Camp', zone:'Central', lat:-24.0058, lng:31.7402, phone:'013 735 6606', shopPhone:'013 735 6606', dutyPhone:'013 735 6606', fuelType:'Petrol and Diesel', fuel:true, shop:true, restaurant:true, atm:true, clinic:false, wifi:false, note:'Most spectacular position - elevated above the Olifants River. Restaurant deck at sunset is world-class. Petrol only.', highlights:'Perched on a cliff above the Olifants River gorge — the most dramatic camp setting in Kruger. Views from the restaurant terrace are world-class. Predators spotted from the fence regularly. Hippo and crocodile below at all hours.', nearestGate:'Phalaborwa Gate', gateDistance:'70 km', bestRoads:'S93 (elephant, lion), H8 (leopard, buffalo), S92 loop', wildlife:'Elephant, lion, leopard, buffalo, hippo, wild dog', pool:true, laundry:true, boma:false, units:111, familyRating:4 },
   { name:'Orpen', type:'Main Camp', zone:'Central', lat:-24.4754, lng:31.3907, phone:'013 735 6355', shopPhone:'013 735 6355', dutyPhone:'013 735 6355', fuelType:'Petrol and Diesel', fuel:true, shop:true, restaurant:false, atm:true, clinic:false, wifi:false, note:'Small private-feel camp at Orpen Gate. Good base for Timbavati access. Orpen Dam nearby for reliable game.', highlights:'Wild, almost unfenced feel. Orpen Dam just outside the gate is a premier lion waterhole. Wild dog packs regularly use the area. Much quieter than Satara with comparable predator density.', nearestGate:'Orpen Gate', gateDistance:'1 km', bestRoads:'H7 (lion, leopard, wild dog), Orpen Dam (lion)', wildlife:'Lion, leopard, wild dog, cheetah, white rhino', pool:true, laundry:true, boma:false, units:26, familyRating:3 },
@@ -3046,7 +3049,7 @@ var FACILITIES = {
     { name:'Paul Kruger Gate', lat:-24.9809, lng:31.4848, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:30 - call: 013 735 5107', hours:'06:00-18:30' },
     { name:'Numbi Gate', lat:-25.1552, lng:31.1981, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - call: 013 735 5135', hours:'06:00-18:00' },
     { name:'Phabeni Gate', lat:-25.0249, lng:31.2410, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - day visitors only', hours:'06:00-18:00' },
-    { name:'Malelane Gate', lat:-25.4808, lng:31.5332, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - call: 013 735 6152', hours:'06:00-18:00' },
+    { name:'Malelane Gate', lat:-25.4608, lng:31.5332, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:00 - call: 013 735 6152', hours:'06:00-18:00' },
     { name:'Crocodile Bridge', lat:-25.3582, lng:31.8934, note:'Closes 17:30 - call: 013 735 6012', hours:'06:00-17:30' },
     { name:'Orpen Gate', lat:-24.4812, lng:31.3898, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 17:30 - call: 013 735 6355', hours:'06:00-17:30' },
     { name:'Phalaborwa Gate', lat:-23.9417, lng:31.1654, fuel:false, shop:false, restaurant:false, atm:false, clinic:false, wifi:false, pool:false, laundry:false, boma:false, note:'Closes 18:30 - call: 013 735 3548', hours:'06:00-18:30' },
@@ -3993,7 +3996,7 @@ function calcDistance() {
     'Letaba':[-23.8540,31.5744],'Mopani':[-23.5206,31.3969],'Shingwedzi':[-23.1080,31.4353],
     'Punda Maria':[-22.6917,31.0167],'Paul Kruger Gate':[-24.9809,31.4848],
     'Numbi Gate':[-25.1552,31.1981],'Phabeni Gate':[-25.0249,31.2410],
-    'Malelane Gate':[-25.4808,31.5332],'Crocodile Bridge Gate':[-25.3582,31.8934],
+    'Malelane Gate':[-25.4608,31.5332],'Crocodile Bridge Gate':[-25.3582,31.8934],
     'Crocodile Bridge':[-25.3582,31.8934],
     'Orpen Gate':[-24.4812,31.3898],'Phalaborwa Gate':[-23.9417,31.1654],
     'Punda Maria Gate':[-22.7364,31.0104],
@@ -4012,14 +4015,14 @@ function calcDistance() {
     'Lukimbi Safari Lodge':[-25.3000,31.5000],'The Outpost':[-22.4800,31.1800],
     'Imbali Safari Lodge':[-25.2600,31.5400],'Skukuza Safari Lodge':[-24.9900,31.5800],
     'Satara Plains Camp':[-24.4000,31.7800],'Mdluli Safari Camp':[-25.0200,31.6800],
-    'Nkambeni Tented Camp':[-25.4800,31.5400],'Hoyo Hoyo Tsonga Lodge':[-24.3500,31.4500],
+    'Nkambeni Tented Camp':[-25.4600,31.5400],'Hoyo Hoyo Tsonga Lodge':[-24.3500,31.4500],
     'Fitzpatricks Lodge at Jock Safari Lodge':[-25.2100,31.6800],
     'Pafuri Camp':[-22.4500,31.3100],'Baobab Hill Bush House':[-22.5200,31.1900],
     'Camp Shawu':[-24.0500,31.8400],'Camp Shonga':[-24.0500,31.8400],
     'Plains Camp Tented Safari':[-24.6000,31.5000],
     'Rhino Post Safari Lodge':[-24.8200,31.7800],
     'Singita Lebombo':[-24.3200,31.9200],'Singita Sweni':[-24.3200,31.9200],
-    'Malelane':[-25.4800,31.5200],'Orpen':[-24.4800,31.3900]
+    'Malelane':[-25.4500,31.5200],'Orpen':[-24.4800,31.3900]
   };
   var c1 = COORDS[from], c2 = COORDS[to];
   if(c1 && c2) {
@@ -4622,13 +4625,13 @@ function checkInstallNudge() {
 }
 
 function triggerSightingNotification(spName) {
-  if('Notification' in window && Notification.permission==='granted' && localStorage.getItem('kfg_feed_notify')!=='0') {
+  if('Notification' in window && Notification.permission==='granted' && localStorage.getItem('kfg_feed_notify')==='1') {
     try { new Notification('Kruger Sighting: '+spName, { body:'New sighting logged in Kruger National Park', icon:'' }); } catch(e) {}
   }
 }
 
 function showFeedNotificationBanner(item) {
-  if(localStorage.getItem('kfg_feed_notify') === '0') return; // default is ON
+  if(localStorage.getItem('kfg_feed_notify') !== '1') return;
   var existing = document.getElementById('feedNotifBanner');
   if(existing) existing.remove();
   var icon = item.type === 'road' ? '🚧' : '🦁';
@@ -4650,7 +4653,10 @@ function showFeedNotificationBanner(item) {
     }
   };
   document.body.appendChild(banner);
-  // OS notification is fired by triggerSightingNotification() in the poll loop - not here, to avoid doubles
+  // Also fire true push notification if permission granted
+  if('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification(item.title||'Kruger Update', { body: item.desc||'', icon:'' }); } catch(e) {}
+  }
   setTimeout(function(){ var b=document.getElementById('feedNotifBanner'); if(b) b.remove(); }, 6000);
 }
 
@@ -4746,11 +4752,7 @@ async function pushSightingToFeed(entry, nickname) {
       desc: entry.name + (entry.latin ? ' (' + entry.latin + ')' : '') + ' logged at ' + timeStr + ' on ' + dateStr + (entry.road ? ' near ' + entry.road : '') + '.',
       source: 'Sighted by ' + nick,
       time: entry.time,
-      timestamp: Date.now(),
-      lat: entry.lat || null,
-      lng: entry.lng || null,
-      road: entry.road || null,
-      name: entry.name || null
+      timestamp: Date.now()
     };
 
     // Read → prepend → write to Firebase
@@ -4787,7 +4789,6 @@ async function pushSightingToFeed(entry, nickname) {
       window._feedAllItems = [newEntry].concat(base);
       renderFeed(window._feedAllItems);
       showToast('&#x1F98F; Sighting live on feed!', 2000);
-      // Do NOT notify the person who just logged their own sighting
     } else {
       showToast('Saved locally \u2014 no connection', 1800);
     }
@@ -5455,78 +5456,11 @@ function shareNative() {
   var s = window._currentSighting;
   if(!s){showToast('No sighting selected');return;}
   var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
-  window._currentCaption = caption;
-
-  // Branded card drawn entirely on canvas (no cross-origin images) so toBlob always works
-  function renderBrandedCard(cb) {
-    var fc = document.getElementById('cardCanvas');
-    if(!fc){ fc=document.createElement('canvas'); fc.id='cardCanvas'; fc.style.display='none'; document.body.appendChild(fc); }
-    fc.width=1080; fc.height=1080;
-    var ctx=fc.getContext('2d');
-    var road = s.road ? s.road : 'Kruger National Park';
-    var t2 = s.time ? new Date(s.time) : new Date();
-    var dateStr = t2.toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});
-    var timeStr = t2.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    var bg=ctx.createLinearGradient(0,0,0,1080);
-    bg.addColorStop(0,'#0e1418'); bg.addColorStop(1,'#1a2530');
-    ctx.fillStyle=bg; ctx.fillRect(0,0,1080,1080);
-    ctx.fillStyle='#e8a020'; ctx.fillRect(0,0,1080,44);
-    ctx.fillStyle='rgba(232,160,32,0.08)'; ctx.fillRect(0,44,1080,320);
-    ctx.beginPath(); ctx.arc(540,260,145,0,Math.PI*2);
-    ctx.fillStyle='rgba(232,160,32,0.13)'; ctx.fill();
-    ctx.strokeStyle='rgba(232,160,32,0.4)'; ctx.lineWidth=3; ctx.stroke();
-    ctx.fillStyle='rgba(232,160,32,0.55)'; ctx.font='108px serif'; ctx.textAlign='center';
-    ctx.fillText('\uD83D\uDC3E',540,300);
-    ctx.fillStyle='#ffffff'; ctx.textAlign='center';
-    ctx.font='bold 76px Montserrat,Arial,sans-serif';
-    ctx.fillText(s.name, 540, 530);
-    if(s.latin){
-      ctx.fillStyle='rgba(200,212,216,0.65)';
-      ctx.font='italic 33px Montserrat,Arial,sans-serif';
-      ctx.fillText(s.latin, 540, 585);
-    }
-    ctx.fillStyle='#c8d4d8';
-    ctx.font='500 31px Montserrat,Arial,sans-serif';
-    ctx.fillText(road, 540, 660);
-    ctx.font='500 27px Montserrat,Arial,sans-serif';
-    ctx.fillStyle='rgba(200,212,216,0.65)';
-    ctx.fillText(dateStr + '   ' + timeStr, 540, 710);
-    ctx.strokeStyle='rgba(232,160,32,0.35)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(200,748); ctx.lineTo(880,748); ctx.stroke();
-    ctx.fillStyle='rgba(12,15,18,0.97)'; ctx.fillRect(0,930,1080,150);
-    ctx.fillStyle='#e8a020';
-    ctx.font='bold 41px Montserrat,Arial,sans-serif';
-    ctx.fillText('KRANTZ OUTDOORS', 540, 998);
-    ctx.fillStyle='rgba(200,212,216,0.5)';
-    ctx.font='500 23px Montserrat,Arial,sans-serif';
-    ctx.fillText('KRUGER FIELD GUIDE  �  kruger.krantzoutdoors.com', 540, 1046);
-    cb(fc);
-  }
-
-  // Try with background photo; if canvas gets tainted by CORS, fall back to branded card
-  function tryWithPhoto(cb) {
-    if(!_renderFullCard){ renderBrandedCard(cb); return; }
-    _renderFullCard(1080, function(canvas) {
-      try { canvas.toDataURL('image/jpeg',0.01); cb(canvas); }
-      catch(e){ renderBrandedCard(cb); }
-    });
-  }
-
-  tryWithPhoto(function(canvas) {
-    canvas.toBlob(function(blob) {
-      if(!blob){ _doCopy(caption); return; }
-      var file = new File([blob],'kruger-sighting.jpg',{type:'image/jpeg'});
-      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
-        navigator.share({files:[file], text:caption, title:s.name+' sighted in Kruger'})
-          .then(function(){ showToast('Shared!'); })
-          .catch(function(e){ if(e.name!=='AbortError') _doCopy(caption); });
-      } else if(navigator.share) {
-        navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
-          .then(function(){showToast('Shared!');})
-          .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
-      } else { _doCopy(caption); }
-    }, 'image/jpeg', 0.92);
-  });
+  if(navigator.share){
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
+      .then(function(){showToast('Shared!');})
+      .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
+  } else { _doCopy(caption); }
 }
 function _doCopy(t){
   if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){showToast('Caption copied — paste to share!');}).catch(function(){});
@@ -6090,95 +6024,25 @@ function toggleHeatmap() {
   if(btn) btn.classList.add('active');
   function buildHeat() {
     var todayStr = new Date().toDateString();
-
-    function plotPoints(firebaseSightings) {
-      // Local sightings
-      var localSightings = loadSightings().filter(function(s){
-        return !s.protected && new Date(s.ts||s.time||0).toDateString() === todayStr;
-      });
-
-      // Merge, deduplicate
-      var seen = {};
-      var allSightings = firebaseSightings.concat(localSightings).filter(function(s){
-        var key = (s.timestamp||s.ts||s.time||'') + ':' + (s.title||s.name||'');
-        if(seen[key]) return false;
-        seen[key] = true;
-        return true;
-      });
-
-      var points = [];
-      allSightings.forEach(function(s) {
-        // Exact GPS coords (highest accuracy)
-        if(s.lat && s.lng) {
-          points.push([parseFloat(s.lat), parseFloat(s.lng), 1.0]);
-          return;
-        }
-        // Try road field first, then extract from title
-        var roadName = s.road || null;
-        if(!roadName && s.title) {
-          // Extract road code e.g "H1-2", "S28", "S100" from title
-          var roadMatch = s.title.match(/\b([HS]\d+(?:-\d+)?)\b/);
-          if(roadMatch) roadName = roadMatch[1];
-        }
-        if(!roadName && s.title) {
-          // Extract "Near X" camp name from title
-          var nearMatch = s.title.match(/Near\s+([^,\.]+)/i);
-          if(nearMatch) roadName = nearMatch[0].trim();
-        }
-        if(roadName) {
-          // Match road code exactly
-          var rw = ROAD_WAYPOINTS.find(function(r){ return r.road === roadName; });
-          if(rw) { points.push([rw.lat, rw.lng, 0.5]); return; }
-          // Match partial road code e.g "H1" matches "H1-2"
-          var rw2 = ROAD_WAYPOINTS.find(function(r){ return r.road && r.road.indexOf(roadName) >= 0; });
-          if(rw2) { points.push([rw2.lat, rw2.lng, 0.4]); return; }
-          // Match camp name in FACILITIES
-          if(FACILITIES && FACILITIES.fuel) {
-            var camp = FACILITIES.fuel.find(function(c){ return roadName.toLowerCase().indexOf(c.name.toLowerCase()) >= 0; });
-            if(camp) { points.push([camp.lat, camp.lng, 0.4]); return; }
-          }
-        }
-        // Last resort: centre of Kruger with small random offset so points are visible
-        points.push([-24.0 + (Math.random()-0.5)*1.5, 31.5 + (Math.random()-0.5)*1.5, 0.15]);
-      });
-
-      if(!points.length) {
-        showToast('No sightings today yet — be the first to log one!', 3000);
-        window._heatmapActive = false;
-        if(btn) btn.classList.remove('active');
-        return;
-      }
-      if(window.L && L.heatLayer) {
-        window._heatmapLayer = L.heatLayer(points, {radius:35,blur:25,maxZoom:14,gradient:{0.2:'#0033ff',0.5:'#00ff88',0.8:'#ffaa00',1:'#ff2200'}});
-        window._heatmapLayer.addTo(window._map);
-      }
-    }
-
-    // Always fetch fresh from Firebase so heatmap has latest data
-    fetch(FIREBASE_URL + '/feed.json').then(function(r){ return r.ok ? r.json() : null; }).then(function(data) {
-      var firebaseSightings = [];
-      if(Array.isArray(data)) {
-        window._firebaseSightings = data;
-        firebaseSightings = data.filter(function(s){
-          return s.type === 'sighting' && !s.protected &&
-                 new Date(s.timestamp || s.time || 0).toDateString() === todayStr;
-        });
-      } else {
-        // Offline fallback - use cached
-        firebaseSightings = (window._firebaseSightings || []).filter(function(s){
-          return s.type === 'sighting' && !s.protected &&
-                 new Date(s.timestamp || s.time || 0).toDateString() === todayStr;
-        });
-      }
-      plotPoints(firebaseSightings);
-    }).catch(function(){
-      // Offline - use cached
-      var firebaseSightings = (window._firebaseSightings || []).filter(function(s){
-        return s.type === 'sighting' && !s.protected &&
-               new Date(s.timestamp || s.time || 0).toDateString() === todayStr;
-      });
-      plotPoints(firebaseSightings);
+    var allSightings = loadSightings().filter(function(s){
+      return !s.protected && new Date(s.ts||s.time||0).toDateString() === todayStr;
     });
+    var points = [];
+    allSightings.forEach(function(s) {
+      var lat = s.lat, lng = s.lng;
+      // Use exact GPS if available (higher intensity), else road waypoint (lower intensity)
+      if(lat && lng) {
+        points.push([lat, lng, 1.0]);
+      } else if(s.road) {
+        var rw = ROAD_WAYPOINTS.find(function(r){ return r.road === s.road; });
+        if(rw) points.push([rw.lat, rw.lng, 0.3]);
+      }
+    });
+    if(!points.length) { showToast('No sightings logged yet — log species in Wildlife to build your heatmap.'); window._heatmapActive=false; if(btn)btn.classList.remove('active'); return; }
+    if(window.L && L.heatLayer) {
+      window._heatmapLayer = L.heatLayer(points, {radius:35,blur:25,maxZoom:14,gradient:{0.2:'#0033ff',0.5:'#00ff88',0.8:'#ffaa00',1:'#ff2200'}});
+      window._heatmapLayer.addTo(window._map);
+    }
   }
   if(!window._leafletHeatLoaded) {
     var sc = document.createElement('script');
@@ -7408,6 +7272,1455 @@ function renderParkInfo() {
 // Update switchParkTab to handle new family and parkinfo tabs
 
 
+// ============================================
+// RENDER EMERGENCY
+// ============================================
+function renderEmergency() {
+  var contacts = [
+    { name:'Emergency Centre', number:'013 735 4325', note:'KNP 24hr emergency', color:'red' },
+    { name:'Emergency Alternative', number:'013 735 4319', note:'Backup emergency line', color:'red' },
+    { name:'Emergency Mobile', number:'082 911 6113', note:'Mobile emergency', color:'red' },
+    { name:'Medical Clinic - Skukuza', number:'013 735 4116', note:'Skukuza rest camp clinic', color:'amber' },
+    { name:'ER24 Private Ambulance', number:'084 124', note:'Private emergency ambulance', color:'amber' },
+    { name:'Netcare 911', number:'082 911', note:'Netcare emergency response', color:'amber' },
+    { name:'Police - Skukuza', number:'013 735 4004', note:'SAP Skukuza', color:'blue' },
+    { name:'Crime Stop', number:'086 001 0111', note:'Anonymous crime tip line', color:'blue' },
+    { name:'Snared Animals - Poaching', number:'013 735 4325', note:'Report poaching and snared animals', color:'blue' },
+    { name:'Poison Centre - Snake & Spider', number:'082 446 8946', note:'24hr poison helpline', color:'blue' },
+    { name:'Land Invasion - Illegal Structures', number:'013 735 4000', note:'Skukuza main reception', color:'blue' }
+  ];
+  var list = document.getElementById('emergencyList');
+  if(!list) return;
+  var colorMap = {red:'#cc3322', amber:'var(--accent)', blue:'#4488cc'};
+  list.innerHTML = contacts.map(function(c) {
+    var ph = c.number.replace(/[^0-9+]/g,'');
+    return '<div class="card" style="margin:0 16px 9px;border-left:3px solid ' + colorMap[c.color] + '">' +
+      '<a href="tel:' + ph + '" style="display:block;text-decoration:none">' +
+      '<div class="card-head">' +
+        '<div style="flex:1">' +
+          '<div class="card-title">' + c.name + '</div>' +
+          '<div class="card-meta">' + c.note + '</div>' +
+        '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:' + colorMap[c.color] + ';white-space:nowrap;padding-left:10px">' + c.number + '</div>' +
+      '</div></a>' +
+    '</div>';
+  }).join('');
+}
+
+function makeSVG(sp) {
+  if (ANIMAL_IMG[sp.id]) {
+    var prot = sp.protected ? '<div class="sp-img-protected">PROTECTED</div>' : '';
+    return '<div class="sp-img-wrap">' +
+      '<img src="'+ANIMAL_IMG[sp.id]+'" alt="'+sp.name+'" class="sp-img">' +
+      prot +
+      '</div>';
+  }
+  // Fallback SVG for species without photo
+  return '<div class="sp-img-wrap sp-img-fallback">' +
+    '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">' +
+    '<rect width="100" height="100" fill="' + (sp.protected ? '#1a0808' : '#0e1418') + '"/>' +
+    '<text x="50" y="55" text-anchor="middle" fill="#5a6b75" font-size="10" font-family="Montserrat,sans-serif">' + sp.name + '</text>' +
+    '</svg></div>';
+}
+
+function openGPSCapture() {
+  window._sightingLat = null;
+  window._sightingLng = null;
+  window._sightingRoad = null;
+  captureGPSForSighting(function(lat, lng, road) {
+    window._sightingLat = lat;
+    window._sightingLng = lng;
+    window._sightingRoad = road;
+  });
+}
+
+function openSightingPanel() {
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : window._spType === 'insect' ? INSECTS[window._spIdx] : SPECIES[window._spIdx];
+  if(!sp) return;
+  // Auto-capture GPS first, then show confirm popup
+  window._sightingLat = null;
+  window._sightingLng = null;
+  window._sightingRoad = null;
+  captureGPSForSighting(function(lat, lng, road) {
+    window._sightingLat = lat;
+    window._sightingLng = lng;
+    window._sightingRoad = road;
+    showSightingConfirmPopup(sp, road);
+  });
+  // Show popup immediately with GPS loading state, don't wait
+  showSightingConfirmPopup(sp, null);
+}
+
+function showSightingConfirmPopup(sp, road) {
+  // Remove any existing popup
+  var existing = document.getElementById('sightingConfirmPopup');
+  if(existing) existing.remove();
+  var gpsText = road ? '&#x1F4CD; Near ' + road : (window._sightingLat ? '&#x1F4CD; GPS captured' : '&#x1F4CD; Getting location...');
+  var popup = document.createElement('div');
+  popup.id = 'sightingConfirmPopup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:24px';
+  popup.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:320px;text-align:center">' +
+      '<div style="font-size:32px;margin-bottom:8px">&#x1F98F;</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">' + sp.name + '</div>' +
+      '<div id="sightingPopupGPS" style="font-size:12px;color:var(--text3);margin-bottom:20px">' + gpsText + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+        '<button onclick="cancelSightingPopup()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Cancel</button>' +
+        '<button onclick="confirmSightingPopup()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Log Sighting</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(popup);
+  // Update GPS text when location arrives
+  var gpsCheckInterval = setInterval(function() {
+    var gpsEl = document.getElementById('sightingPopupGPS');
+    if(!gpsEl) { clearInterval(gpsCheckInterval); return; }
+    if(window._sightingRoad) {
+      gpsEl.textContent = '📍 Near ' + window._sightingRoad;
+      clearInterval(gpsCheckInterval);
+    } else if(window._sightingLat) {
+      gpsEl.textContent = '📍 GPS captured';
+      clearInterval(gpsCheckInterval);
+    }
+  }, 500);
+  setTimeout(function(){ clearInterval(gpsCheckInterval); }, 15000);
+}
+
+function cancelSightingPopup() {
+  var p = document.getElementById('sightingConfirmPopup');
+  if(p) p.remove();
+}
+
+function confirmSightingPopup() {
+  var p = document.getElementById('sightingConfirmPopup');
+  if(p) p.remove();
+  confirmLogSighting();
+}
+
+var selectedStars = 0;
+
+function selectStar(n) {
+  selectedStars = n;
+  [1,2,3,4,5].forEach(function(i) {
+    var el = document.getElementById('mstar'+i);
+    if(el) el.style.opacity = i<=n ? '1' : '0.3';
+  });
+  var btn = document.getElementById('logSightingBtn');
+  if(btn) btn.style.display = 'block';
+}
+
+function getUserNickname() {
+  return localStorage.getItem('kfg_user_nickname') || '';
+}
+
+function promptNickname(callback) {
+  var existing = getUserNickname();
+  if(existing) { callback(existing); return; }
+  // Show nickname popup
+  var popup = document.createElement('div');
+  popup.id = 'nicknamePopup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:24px';
+  popup.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:320px">' +
+      '<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">What should we call you?</div>' +
+      '<div style="font-size:12px;color:var(--text3);margin-bottom:16px">Your name will show on the community feed when you log sightings. You can change this later in the About screen.</div>' +
+      '<input id="nicknameInput" type="text" placeholder="e.g. Ruan, Cape Town Birder..." maxlength="24" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 12px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none;margin-bottom:12px">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+        '<button onclick="saveNickname()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Save</button>' +
+        '<button onclick="skipNickname()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Skip</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(popup);
+  document.getElementById('nicknameInput').focus();
+  window._nicknameCallback = callback;
+}
+
+function saveNickname() {
+  var val = (document.getElementById('nicknameInput')||{}).value||'';
+  val = val.trim().substring(0,24);
+  if(!val) { skipNickname(); return; }
+  localStorage.setItem('kfg_user_nickname', val);
+  var p = document.getElementById('nicknamePopup'); if(p) p.remove();
+  showToast('Welcome, ' + val + '! 🦁', 2000);
+  if(window._nicknameCallback) window._nicknameCallback(val);
+}
+
+function skipNickname() {
+  localStorage.setItem('kfg_user_nickname', 'Anonymous');
+  var p = document.getElementById('nicknamePopup'); if(p) p.remove();
+  if(window._nicknameCallback) window._nicknameCallback('Anonymous');
+}
+
+var ONBOARD_SLIDES = [
+  { icon:'🦁', title:'Welcome to Kruger Field Guide', desc:'Your complete Kruger National Park companion. Plan your trip, track your sightings, and get live intelligence from the bush.' },
+  { icon:'📡', title:'Live Intelligence Feed', desc:'See real-time sightings and road reports from other visitors. Log your own and they appear instantly for everyone in the park.' },
+  { icon:'📍', title:'Find Anything, Anywhere', desc:'GPS-powered Field Finder locates the nearest fuel, food, water, toilets and dams from wherever you are in the park.' },
+  { icon:'📖', title:'Log Your Journey', desc:'Every sighting, landmark and road report is saved to your personal Trip Journal. Export your complete Kruger story when you leave.' }
+];
+var _onboardIdx = 0;
+
+function showOnboarding() {
+  if(localStorage.getItem('kfg_onboarded') === '1') return;
+  _onboardIdx = 0;
+  renderOnboardSlide();
+}
+
+function renderOnboardSlide() {
+  var existing = document.getElementById('onboardOverlay');
+  if(existing) existing.remove();
+  var s = ONBOARD_SLIDES[_onboardIdx];
+  var isLast = _onboardIdx === ONBOARD_SLIDES.length - 1;
+  var el = document.createElement('div');
+  el.id = 'onboardOverlay';
+  el.className = 'onboard-overlay';
+  var dots = ONBOARD_SLIDES.map(function(_, i) {
+    return '<div class="onboard-dot' + (i === _onboardIdx ? ' active' : '') + '"></div>';
+  }).join('');
+  el.innerHTML =
+    '<div class="onboard-icon">' + s.icon + '</div>' +
+    '<div class="onboard-title">' + s.title + '</div>' +
+    '<div class="onboard-desc">' + s.desc + '</div>' +
+    '<div class="onboard-dots">' + dots + '</div>' +
+    '<button class="onboard-btn" onclick="onboardNext()">' + (isLast ? "Let's Go 🦁" : 'Next →') + '</button>' +
+    (!isLast ? '<button class="onboard-skip" onclick="onboardDone()">Skip</button>' : '');
+  document.body.appendChild(el);
+}
+
+function onboardNext() {
+  _onboardIdx++;
+  if(_onboardIdx >= ONBOARD_SLIDES.length) { onboardDone(); return; }
+  renderOnboardSlide();
+}
+
+function onboardDone() {
+  localStorage.setItem('kfg_onboarded', '1');
+  var el = document.getElementById('onboardOverlay');
+  if(el) { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(function(){ el.remove(); }, 300); }
+}
+
+function changeNickname() {
+  localStorage.removeItem('kfg_user_nickname');
+  promptNickname(function(name) {
+    showToast('Name updated to ' + name, 2000);
+    var nd = document.getElementById('aboutNicknameDisplay');
+    if(nd) nd.textContent = name;
+  });
+}
+
+function dismissInstallNudge() {
+  var el = document.getElementById('installNudge');
+  if(el) el.style.display = 'none';
+  localStorage.setItem('kfg_install_nudge_dismissed', '1');
+}
+
+function checkInstallNudge() {
+  // Only show in Safari browser on iOS — not when installed as PWA
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isInStandaloneMode = window.navigator.standalone === true;
+  var isDismissed = localStorage.getItem('kfg_install_nudge_dismissed') === '1';
+  if(isIOS && !isInStandaloneMode && !isDismissed) {
+    // Show after 3 seconds so it doesn't interrupt unlock/onboarding
+    setTimeout(function() {
+      var el = document.getElementById('installNudge');
+      if(el) el.style.display = 'block';
+    }, 3000);
+  }
+}
+
+function triggerSightingNotification(spName) {
+  if('Notification' in window && Notification.permission==='granted' && localStorage.getItem('kfg_feed_notify')==='1') {
+    try { new Notification('Kruger Sighting: '+spName, { body:'New sighting logged in Kruger National Park', icon:'' }); } catch(e) {}
+  }
+}
+
+function showFeedNotificationBanner(item) {
+  if(localStorage.getItem('kfg_feed_notify') !== '1') return;
+  var existing = document.getElementById('feedNotifBanner');
+  if(existing) existing.remove();
+  var icon = item.type === 'road' ? '🚧' : '🦁';
+  var banner = document.createElement('div');
+  banner.id = 'feedNotifBanner';
+  banner.style.cssText = 'position:fixed;top:env(safe-area-inset-top,0);left:0;right:0;z-index:9999;padding:12px 16px;background:var(--bg2);border-bottom:2px solid var(--accent);display:flex;align-items:center;gap:10px;animation:slideDown .3s ease;cursor:pointer';
+  banner.innerHTML =
+    '<span style="font-size:20px">'+icon+'</span>' +
+    '<div style="flex:1;min-width:0">' +
+      '<div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(item.title||'New Update')+'</div>' +
+      '<div style="font-size:10px;color:var(--text3)">'+(item.source||'')+'</div>' +
+    '</div>' +
+    '<button onclick="document.getElementById(\'feedNotifBanner\').remove()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0;line-height:1">&#x2715;</button>';
+  banner.onclick = function(e) {
+    if(e.target.tagName !== 'BUTTON') {
+      showScreen('home');
+      setFeedTab(item.type === 'road' ? 'roads' : 'sightings', null);
+      banner.remove();
+    }
+  };
+  document.body.appendChild(banner);
+  // Also fire true push notification if permission granted
+  if('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification(item.title||'Kruger Update', { body: item.desc||'', icon:'' }); } catch(e) {}
+  }
+  setTimeout(function(){ var b=document.getElementById('feedNotifBanner'); if(b) b.remove(); }, 6000);
+}
+
+function confirmLogSighting() {
+  var sp = window._spType === 'bird' ? BIRDS[window._spIdx] : window._spType === 'reptile' ? REPTILES[window._spIdx] : window._spType === 'frog' ? FROGS[window._spIdx] : window._spType === 'insect' ? INSECTS[window._spIdx] : SPECIES[window._spIdx];
+  if(!sp) return;
+  var road = window._sightingRoad || '';
+  var lat = window._sightingLat || null;
+  var lng = window._sightingLng || null;
+  var sightings = loadSightings();
+  var entry = {
+    id:sp.id, name:sp.name, latin:sp.latin,
+    stars:3, time:new Date().toISOString(),
+    road:road, lat:lat, lng:lng,
+    protected:false,
+    svgPath:sp.svgPath||'', color:sp.color||'#5a6b75'
+  };
+  sightings.push(entry);
+  saveSightings(sightings);
+  // Add to trip journal automatically
+  // sightings shown via loadSightings() in renderTripJournal — no separate journal entry needed
+  try{renderSpecies();}catch(e){}
+  try{renderBirds();}catch(e){}
+  try{renderReptiles();}catch(e){}
+  try{renderFrogs();}catch(e){}
+  try{renderInsects();}catch(e){}
+  renderSightings();
+  updateTripStats();
+  if(typeof renderTripJournal==="function") renderTripJournal();
+  if(_map && lat && lng && typeof L !== 'undefined') {
+    var sightIcon = _makeIcon('&#x1F98F;', '#c8962a');
+    var m = L.marker([lat, lng], {icon: sightIcon})
+      .bindPopup('<b>'+sp.name+'</b><br>'+(road||'')+' &bull; Just now')
+      .addTo(_map);
+    _mapLayers.sightings.push(m);
+  }
+  closeModal('speciesModal');
+  showToast('Sighting logged!' + (road ? ' \u2013 ' + road : ''), 2500);
+  // Refresh Daily Challenge if currently visible
+  if(window._currentScreenId === 'games') { setTimeout(function(){ if(typeof renderGameChallenge==='function') renderGameChallenge(); }, 200); }
+  // Only mammals (spType==='species') push to the live Home feed
+  // Birds, reptiles, frogs and insects appear in My Trip only
+  if(window._spType === 'species' || !window._spType) {
+    promptNickname(function(nickname) {
+      pushSightingToFeed(entry, nickname);
+      if(isFamilyMember()) pushFamilySighting(entry, nickname);
+    });
+  }
+}
+
+
+function logProtectedSighting() {
+  var sp = SPECIES[window._spIdx];
+  if(!sp) return;
+  logSightingDirect(sp.id, true, 3);
+}
+
+function logSightingDirect(spId, isProtected, stars) {
+  var sp = SPECIES.find(function(s){ return s.id===spId; });
+  if(!sp) return;
+  // Get road if selected
+  var roadEl = document.getElementById('sightingRoad');
+  var road = roadEl ? roadEl.value : '';
+  var sightings = loadSightings();
+  var entry = {
+    id:spId, name:sp.name, latin:sp.latin,
+    stars:stars||3, time:new Date().toISOString(),
+    road:road,
+    protected:isProtected||sp.protected,
+    svgPath:sp.svgPath, color:sp.color
+  };
+  sightings.push(entry);
+  saveSightings(sightings);
+  renderSpecies();
+  renderSightings();
+  updateTripStats();
+  if(typeof renderTripJournal==="function") renderTripJournal();
+  closeModal('speciesModal');
+  if(!isProtected) {
+    pushSightingToFeed(entry);
+  }
+}
+
+async function pushSightingToFeed(entry, nickname) {
+  try {
+    var nick = nickname || getUserNickname() || 'Kruger Field Guide';
+    var t = new Date(entry.time);
+    var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+
+    var newEntry = {
+      type:'sighting', tag:'sighting', icon:'&#x1F98F;',
+      title: entry.name + (entry.road ? ' — ' + entry.road : ''),
+      desc: entry.name + (entry.latin ? ' (' + entry.latin + ')' : '') + ' logged at ' + timeStr + ' on ' + dateStr + (entry.road ? ' near ' + entry.road : '') + '.',
+      source: 'Sighted by ' + nick,
+      time: entry.time,
+      timestamp: Date.now()
+    };
+
+    // Read → prepend → write to Firebase
+    var current = [];
+    try {
+      var readResp = await fetch(FIREBASE_URL + '/feed.json');
+      if(readResp.ok) {
+        var existing = await readResp.json();
+        if(Array.isArray(existing)) current = existing;
+      }
+    } catch(e) {}
+
+    current.unshift(newEntry);
+    if(current.length > 20) current = current.slice(0, 20);
+
+    var writeResp = await fetch(FIREBASE_URL + '/feed.json', {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(current)
+    });
+
+    if(writeResp.ok) {
+      // Update the protected firebase sightings store — this survives all RSS merges
+      window._firebaseSightings = current;
+      localStorage.setItem('kfg_firebase_sightings', JSON.stringify(current));
+      // Prepend to live feed — strip any old entry for same animal within last 10s to avoid duplicates
+      var base = (window._feedAllItems || []).filter(function(f) {
+        if(f.source === 'Kruger Field Guide' && f.title && f.title.indexOf(entry.name) >= 0) {
+          var age = Date.now() - (f.timestamp || 0);
+          return age > 10000; // keep entries older than 10s
+        }
+        return true;
+      });
+      window._feedAllItems = [newEntry].concat(base);
+      renderFeed(window._feedAllItems);
+      showToast('&#x1F98F; Sighting live on feed!', 2000);
+    } else {
+      showToast('Saved locally \u2014 no connection', 1800);
+    }
+  } catch(e) {
+    console.warn('Feed push failed:', e);
+    showToast('Saved locally \u2014 no connection', 1800);
+  }
+}
+
+async function loadWeather() {
+  var month = new Date().getMonth()+1;
+  var seasonal = SEASONAL[month];
+  var deg = String.fromCharCode(176);
+  // Set seasonal defaults immediately - never blank
+  var seasonalTemp = [34,33,31,28,24,20,21,23,27,31,33,34];
+  var seasonalWind = [12,11,10,9,8,7,7,9,11,13,13,12];
+  var t0 = seasonalTemp[month-1], w0 = seasonalWind[month-1];
+  function setEl(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+  setEl('wTemp', t0+deg);
+  setEl('wWind', w0+' km/h');
+  setEl('wUV', month>=4&&month<=9?'5':'9');
+  setEl('wRain', month>=11||month<=3?'60%':'5%');
+  setEl('weatherTemp', t0+deg);
+  setEl('weatherDesc', seasonal.desc);
+  setEl('weatherField', seasonal.desc);
+  setEl('weatherIntel', seasonal.intel);
+  var badge = document.getElementById('weatherBadge');
+  if(badge){badge.textContent='Seasonal';badge.className='weather-online-badge badge badge-amber';}
+  var deg = String.fromCharCode(176);
+  
+  // Set seasonal defaults immediately - always visible even offline
+  setEl('weatherIntel', seasonal.intel);
+  setEl('weatherField', seasonal.desc);
+  setEl('weatherDesc', seasonal.desc);
+  // Seasonal temperature estimates by month (Kruger averages)
+  var seasonalTemp = [34,33,31,28,24,20,21,23,27,31,33,34];
+  var seasonalWind = [12,11,10,9,8,7,7,9,11,13,13,12];
+  var t = seasonalTemp[month-1], w = seasonalWind[month-1];
+  setEl('wTemp', t + deg);
+  setEl('wWind', w + ' km/h');
+  setEl('wUV', month >= 4 && month <= 9 ? '5' : '9');
+  setEl('wRain', month >= 11 || month <= 3 ? '60%' : '5%');
+  setEl('weatherTemp', t + deg);
+  var badge = document.getElementById('weatherBadge');
+  if(badge){ badge.textContent='Seasonal'; badge.className='weather-online-badge badge badge-amber'; }
+
+  // Open-Meteo - free, no API key, works globally
+  var url = 'https://api.open-meteo.com/v1/forecast' +
+    '?latitude=-24.9966&longitude=31.5960' +
+    '&current=temperature_2m,wind_speed_10m,precipitation_probability,uv_index,weather_code' +
+    '&wind_speed_unit=kmh' +
+    '&timezone=Africa/Johannesburg';
+  try {
+    var r = await fetch(url, {mode:'cors'});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var d = await r.json();
+    if (!d.current) throw new Error('No current data');
+    var c = d.current;
+    var temp = Math.round(c.temperature_2m);
+    var wind = Math.round(c.wind_speed_10m);
+    var rain = c.precipitation_probability || 0;
+    var uv   = Math.round(c.uv_index || 0);
+    var wcode = c.weather_code || 0;
+    var wDesc = wcode===0 ? 'Clear sky'
+              : wcode<=2 ? 'Partly cloudy'
+              : wcode<=45 ? 'Overcast'
+              : wcode<=67 ? 'Rain'
+              : wcode<=77 ? 'Snow/hail'
+              : 'Thunderstorm';
+    var deg = String.fromCharCode(176);
+    setEl('wTemp', temp + deg);
+    setEl('wWind', wind + ' km/h');
+    setEl('wUV', uv);
+    setEl('wRain', rain + '%');
+    setEl('weatherTemp', temp + deg);
+    setEl('weatherDesc', wDesc);
+    // Update badge
+    var badge = document.getElementById('weatherBadge');
+    if (badge) { badge.textContent = 'Live'; badge.className = 'weather-online-badge badge badge-green'; }
+    // Enrich intel
+    var intel = seasonal.intel;
+    if (wind > 20) intel += ' Wind ' + wind + 'km/h - telephoto shimmer above 400mm.';
+    if (rain > 60) intel += ' Rain likely - plan afternoon drive carefully.';
+    if (temp > 35) intel += ' Heat extreme - return by 10:00 for clean shots.';
+    if (uv > 8)   intel += ' UV extreme - SPF50+ essential.';
+    setEl('weatherIntel', intel);
+  } catch(e) {
+    // Offline or API down - seasonal data already showing
+    var badge = document.getElementById('weatherBadge');
+    if (badge) { badge.textContent = 'Seasonal'; badge.className = 'weather-online-badge badge badge-amber'; }
+  }
+}
+
+function loadItinState() {
+  try {
+    var saved = localStorage.getItem('kfg_itin');
+    if(saved) {
+      var d = JSON.parse(saved);
+      var entryEl = document.getElementById('itinEntry');
+      var exitEl = document.getElementById('itinExit');
+      if(entryEl) entryEl.value = d.entry||'';
+      if(exitEl) exitEl.value = d.exit||'';
+      itinStops = d.stops||[];
+      renderItinStops();
+    }
+  } catch(e){}
+}
+
+function saveItinState() {
+  var entryEl = document.getElementById('itinEntry');
+  var exitEl = document.getElementById('itinExit');
+  localStorage.setItem('kfg_itin', JSON.stringify({
+    entry:entryEl?entryEl.value:'',
+    exit:exitEl?exitEl.value:'',
+    stops:itinStops
+  }));
+}
+
+function addItinStop() {
+  itinStops.push('');
+  renderItinStops();
+  saveItinState();
+}
+
+function removeItinStop(i) {
+  itinStops.splice(i,1);
+  renderItinStops();
+  saveItinState();
+}
+
+function renderItinStops() {
+  var container = document.getElementById('itinStops');
+  if(!container) return;
+  var campOptions = CAMPS.map(function(c){ return '<option value="'+c.name+'">'+c.name+'</option>'; }).join('');
+  var extraOptions = '<option value="Sabi Sands Private Reserve">Sabi Sands Private Reserve</option><option value="MalaMala Game Reserve">MalaMala Game Reserve</option><option value="Timbavati Private Reserve">Timbavati Private Reserve</option>';
+  container.innerHTML = itinStops.map(function(s,i){
+    return '<div class="itin-stop-row">' +
+      '<div class="itin-stop-num">'+(i+1)+'</div>' +
+      '<select class="itin-stop-select" onchange="itinStops['+i+']=this.value;saveItinState()">' +
+        '<option value="">Select camp / reserve...</option>' + campOptions + extraOptions +
+      '</select>' +
+      '<div class="itin-stop-remove" onclick="removeItinStop('+i+')">x</div>' +
+    '</div>';
+  }).join('');
+  // Restore selections
+  var selects = container.querySelectorAll('.itin-stop-select');
+  itinStops.forEach(function(s,i){ if(selects[i]&&s) selects[i].value=s; });
+}
+
+function calculateItinerary() {
+  var entryEl = document.getElementById('itinEntry');
+  var exitEl = document.getElementById('itinExit');
+  var entry = entryEl ? entryEl.value : '';
+  var exit = exitEl ? exitEl.value : '';
+  if(!entry) { showToast('Please select your entry gate'); return; }
+  var stops = itinStops.filter(function(s){ return s; });
+  if(!stops.length) { showToast('Add at least one overnight stop'); return; }
+  var all = [entry].concat(stops);
+  if(exit) all.push(exit);
+  var legs = [], totalKm = 0;
+  for(var i=0;i<all.length-1;i++) {
+    var from=all[i], to=all[i+1];
+    var d = (DIST[from]&&DIST[from][to])||(DIST[to]&&DIST[to][from]);
+    var rk = from+'-'+to;
+    var note = ROUTE_NOTES[rk]||ROUTE_NOTES[to+'-'+from]||'Drive at 40km/h. Stay alert - wildlife on the road at all times.';
+    if(d) totalKm+=d.km;
+    var gateClose = detectGateClose(to);
+    var acts = ACTIVITIES_75KM[to]||[];
+    legs.push({from:from,to:to,d:d,note:note,gateClose:gateClose,activities:acts});
+  }
+  var resultsEl = document.getElementById('itinResults');
+  if(!resultsEl) return;
+  resultsEl.innerHTML = '<div class="itin-result">' +
+    '<div class="itin-result-header">' +
+      '<div class="itin-result-title">Your Itinerary &mdash; '+all.length+' stops</div>' +
+      '<div class="itin-result-total">'+(totalKm?totalKm+'km total':'')+'</div>' +
+    '</div>' +
+    legs.map(function(leg,i){
+      return '<div class="itin-leg">' +
+        '<div class="itin-leg-line"><div class="itin-leg-dot"></div>'+(i<legs.length-1?'<div class="itin-leg-vline"></div>':'')+'</div>' +
+        '<div class="itin-leg-info">' +
+          '<div class="itin-leg-route">'+leg.from+' to '+leg.to+'</div>' +
+          '<div class="itin-leg-stats">'+(leg.d?leg.d.h+' / '+leg.d.km+'km':'Calculating...')+' at 40km/h</div>' +
+          '<div class="itin-leg-note">'+leg.note+'</div>' +
+          (leg.gateClose?'<div class="itin-leg-warning">[!] '+leg.to+' closes at '+leg.gateClose+' - plan accordingly</div>':'') +
+          (leg.activities.length?'<div class="itin-activities"><div class="itin-activities-title">Within 75km of '+leg.to+'</div>'+leg.activities.map(function(a){ return '<span class="itin-activity-chip">'+a+'</span>'; }).join('')+'</div>':'') +
+        '</div></div>';
+    }).join('') +
+  '</div>';
+  saveItinState();
+}
+
+function detectGateClose(location) {
+  var gateMap = {
+    'Paul Kruger Gate':'18:30','Numbi Gate':'18:00','Kruger Gate':'18:00',
+    'Phabeni Gate':'18:00','Malelane Gate':'18:00','Crocodile Bridge':'17:30',
+    'Orpen Gate':'17:30','Phalaborwa Gate':'18:30','Punda Maria Gate':'17:30'
+  };
+  return gateMap[location]||null;
+}
+
+// ============================================
+// SIGHTINGS
+// ============================================
+function loadSightings() {
+  try{ return JSON.parse(localStorage.getItem('kfg_sightings')||'[]'); }catch(e){ return []; }
+}
+function saveSightings(s) { localStorage.setItem('kfg_sightings',JSON.stringify(s)); try{renderDailyChallenge();}catch(e){} try{renderSpeciesTotals();}catch(e){} try{renderSightings();}catch(e){} try{renderTripSightings();}catch(e){} try{updateTripStats();}catch(e){} try{updateTripBlocks();}catch(e){} setTimeout(checkNewAchievements,100); KFGSync.push(); }
+
+function renderSightings() {
+  var list=document.getElementById('sightingsList'); if(!list) return;
+  var sightings=loadSightings();
+  var nonProt=sightings.filter(function(s){return !s.protected;});
+  if(!nonProt.length) {
+    list.innerHTML='<div style="padding:24px 16px;text-align:center;color:var(--text3);font-size:13px">No sightings logged yet.<br>Tap any species to log a sighting.</div>';
+    return;
+  }
+  list.innerHTML=nonProt.slice().reverse().map(function(s,i){
+    var idx=nonProt.length-1-i;
+    var stars=STAR_FULL.repeat(s.stars||3)+STAR_EMPTY.repeat(5-(s.stars||3));
+    var t=s.time?new Date(s.time):new Date();
+    var dateStr=t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+    var timeStr=t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var road=s.road?' on '+s.road:'';
+    return '<div class="card" style="margin-bottom:9px">' +
+      '<div class="card-head">' +
+        '<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;margin-right:10px">' +
+          ((ANIMAL_IMG[s.id]||BIRD_IMG[s.id])?'<img src="'+(ANIMAL_IMG[s.id]||BIRD_IMG[s.id])+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:var(--bg3)"></div>')+
+        '</div>' +
+        '<div class="card-titles">' +
+          '<div class="card-title">'+s.name+'</div>' +
+          '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+          '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
+          '<button onclick="deleteSightingFromWildlife('+i+')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function updateTripStats() {
+  var sightings = loadSightings().filter(function(s){ return !s.protected; });
+  var uniqueSpecies = Object.keys(sightings.reduce(function(a,s){ a[s.id]=1; return a; },{})).length;
+  var total = sightings.length;
+  var big5ids = ['lion','leopard','elephant','buffalo','white_rhino','black_rhino'];
+  var big5seen = big5ids.filter(function(id){ return sightings.some(function(s){ return s.id===id; }); });
+  var el1 = document.getElementById('statSpecies'); if(el1) el1.textContent = uniqueSpecies;
+  var el2 = document.getElementById('statSightings'); if(el2) el2.textContent = total;
+  var el3 = document.getElementById('statBig5'); if(el3) el3.textContent = big5seen.length + '/5';
+  var el1 = document.getElementById('statSpecies'); if(el1) el1.textContent = uniqueSpecies;
+  var el2 = document.getElementById('statSightings'); if(el2) el2.textContent = total;
+  var el3 = document.getElementById('statStars'); if(el3) el3.textContent = avgStars.toFixed(1);
+  // Render sightings in My Trip tab
+  var tripList = document.getElementById('tripSightingsList');
+  if(tripList) {
+    if(!sightings.length) {
+      tripList.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">No sightings logged yet.<br>Tap any species in Wildlife to log a sighting.</div>';
+    } else {
+      tripList.innerHTML = sightings.slice().reverse().map(function(s, i) {
+        var idx = sightings.length - 1 - i;
+        var stars = STAR_FULL.repeat(s.stars||3) + STAR_EMPTY.repeat(5-(s.stars||3));
+        var t = s.time ? new Date(s.time) : new Date();
+        var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'short'});
+        var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+        var road = s.road ? ' on ' + s.road : '';
+        return '<div class="card" style="margin-bottom:9px">' +
+          '<div class="card-head">' +
+            '<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;margin-right:10px">' +
+              ((ANIMAL_IMG[s.id]||BIRD_IMG[s.id])?'<img src="'+(ANIMAL_IMG[s.id]||BIRD_IMG[s.id])+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;background:var(--bg3)"></div>')+
+            '</div>' +
+            '<div class="card-titles">' +
+              '<div class="card-title">'+s.name+'</div>' +
+              '<div class="card-meta">'+dateStr+' at '+timeStr+road+'</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;flex-shrink:0">' +
+              '<button onclick="openShareModal('+idx+')" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Share</button>' +
+              '<button onclick="deleteSighting('+idx+')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text3);border-radius:8px;padding:8px 10px;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer">&#x1F5D1;</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  }
+}
+
+function buildCaption(s, platform) {
+  if(!s) return '';
+  var t = s.time ? new Date(s.time) : new Date();
+  var date = t.toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});
+  var time = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  var road = s.road || 'Kruger National Park';
+  var tags = '#KrantzOutdoors #WildByNature #AfricaByChoice #KrugerNationalPark #KrugerPark #BigFive #AfricanWildlife #SafariLife #GameDrive #WildlifePhotography #SouthAfrica #KrugerThroughMyLens #SANParks';
+
+  // Standard format — all platforms except X
+  var caption =
+    s.name + ' just sighted on ' + road + '\n' +
+    date + ' at ' + time + '\n' +
+    'Kruger National Park\n' +
+    '\n' +
+    'Logged with the Krantz Outdoors Kruger Field Guide\n' +
+    'Get yours: etsy.com/shop/KrantzOutdoors\n' +
+    '\n' +
+    tags;
+
+  // X: keep under 280 chars
+  if(platform === 'x') {
+    return s.name + ' just sighted on ' + road + '\n' +
+      date + ' at ' + time + ' | Kruger National Park\n' +
+      'Logged with the Krantz Outdoors Field Guide\n' +
+      'etsy.com/shop/KrantzOutdoors\n' +
+      '#KrantzOutdoors #WildByNature #KrugerPark #AfricanWildlife';
+  }
+
+  return caption;
+}
+
+function openShareModal(idx) {
+  var sightings = loadSightings();
+  var s = sightings[idx];
+  if(!s || s.protected) return;
+  window._currentSighting = s;
+  window._currentCaption = buildCaption(s);
+  window._userPhoto = null;
+  document.getElementById('shareModalTitle').textContent = 'Share: ' + s.name;
+
+  var t = s.time ? new Date(s.time) : new Date();
+  var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'long'});
+  var road = s.road ? s.road : 'Kruger National Park';
+
+  document.getElementById('shareModalBody').innerHTML =
+    '<div style="text-align:center;padding:12px 0 6px">' +
+      '<canvas id="previewCanvas" width="300" height="300" style="width:220px;height:220px;border-radius:12px;display:block;margin:0 auto 8px;box-shadow:0 4px 16px rgba(0,0,0,.5)"></canvas>' +
+      '<div style="font-size:10px;color:var(--text3);margin-bottom:8px">' + s.name + ' &bull; ' + road + ' &bull; ' + dateStr + '</div>' +
+      '<label style="display:inline-block;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:7px 16px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.06em">&#x1F4F7; USE MY PHOTO<input type="file" accept="image/*" onchange="useMyPhoto(this)" style="display:none"></label>' +
+    '</div>' +
+    // Primary share button — native share sheet covers ALL platforms on mobile
+    '<button onclick="shareNative()" style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:14px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;letter-spacing:.04em">&#x1F4E4; Share to Social Media</button>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">' +
+      '<button onclick="saveCard()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:11px 8px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4BE; Save Image</button>' +
+      '<button onclick="copyCaption()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:11px 8px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4CB; Copy Caption</button>' +
+    '</div>' +
+    '<div style="font-size:10px;color:var(--text3);text-align:center;padding-bottom:4px">Opens your phone\'s share sheet &mdash; pick Instagram, Facebook, Pinterest or any app</div>';
+
+  document.getElementById('shareModal').classList.add('open');
+  setTimeout(function() {
+    generateCard(s, 'previewCanvas', 300, null);
+  }, 50);
+}
+
+function useMyPhoto(input) {
+  var file = input.files && input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    // Show drag/pinch crop tool in modal
+    var body = document.getElementById('shareModalBody');
+    if(!body) return;
+    var cropHtml =
+      '<div style="text-align:center;padding:8px 0 4px;font-size:11px;color:var(--text2);margin-bottom:6px">Drag to reposition &bull; Pinch to zoom</div>'+
+      '<div id="cropContainer" style="position:relative;width:100%;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:#0e1418;cursor:grab;touch-action:none">'+
+        '<img id="cropImg" src="'+dataUrl+'" style="position:absolute;transform-origin:0 0;user-select:none;-webkit-user-select:none;pointer-events:none">'+
+      '</div>'+
+      '<div style="display:flex;gap:8px;margin-top:10px">'+
+        '<button onclick="confirmCrop()" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:11px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Use This Position</button>'+
+        '<button onclick="cancelCrop()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:11px 14px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Cancel</button>'+
+      '</div>';
+    // Insert crop tool above share buttons
+    var firstChild = body.firstChild;
+    var cropDiv = document.createElement('div');
+    cropDiv.id = 'cropToolWrap';
+    cropDiv.innerHTML = cropHtml;
+    body.insertBefore(cropDiv, firstChild);
+    // Hide preview canvas while cropping
+    var pc = document.getElementById('previewCanvas');
+    if(pc) pc.parentNode.style.display = 'none';
+    window._cropDataUrl = dataUrl;
+    // Init crop state after image loads
+    var img = document.getElementById('cropImg');
+    img.onload = function() { initCropTool(img); };
+    if(img.complete) initCropTool(img);
+  };
+  reader.readAsDataURL(file);
+}
+
+function initCropTool(img) {
+  var container = document.getElementById('cropContainer');
+  if(!container || !img) return;
+  var cw = container.offsetWidth;
+  // Start: fit image to fill square container
+  var scale = Math.max(cw / img.naturalWidth, cw / img.naturalHeight);
+  var tx = (cw - img.naturalWidth * scale) / 2;
+  var ty = (cw - img.naturalHeight * scale) / 2;
+  window._crop = { tx:tx, ty:ty, scale:scale, startTx:tx, startTy:ty, startScale:scale };
+  applyCrop(img);
+  attachCropGestures(container, img);
+}
+
+function applyCrop(img) {
+  var c = window._crop;
+  img.style.transform = 'translate('+c.tx+'px,'+c.ty+'px) scale('+c.scale+')';
+}
+
+function clampCrop(img, c) {
+  var container = document.getElementById('cropContainer');
+  if(!container) return;
+  var cw = container.offsetWidth;
+  var iw = img.naturalWidth * c.scale;
+  var ih = img.naturalHeight * c.scale;
+  if(iw >= cw) { c.tx = Math.min(0, Math.max(cw - iw, c.tx)); }
+  else { c.tx = (cw - iw) / 2; }
+  if(ih >= cw) { c.ty = Math.min(0, Math.max(cw - ih, c.ty)); }
+  else { c.ty = (cw - ih) / 2; }
+}
+
+function attachCropGestures(container, img) {
+  var drag = false, lastX, lastY, lastDist;
+  container.addEventListener('mousedown', function(e){ drag=true; lastX=e.clientX; lastY=e.clientY; e.preventDefault(); });
+  window.addEventListener('mousemove', function(e){ if(!drag) return; var dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY; var c=window._crop; c.tx+=dx; c.ty+=dy; clampCrop(img,c); applyCrop(img); });
+  window.addEventListener('mouseup', function(){ drag=false; });
+  container.addEventListener('touchmove', function(e){
+    e.preventDefault();
+    var t=e.touches;
+    if(t.length===1){ var dx=t[0].clientX-lastX, dy=t[0].clientY-lastY; lastX=t[0].clientX; lastY=t[0].clientY; var c=window._crop; c.tx+=dx; c.ty+=dy; clampCrop(img,c); applyCrop(img); }
+    else if(t.length===2){
+      var dist=Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY);
+      if(lastDist){ var ratio=dist/lastDist; var c=window._crop; var cw=container.offsetWidth; var cx=cw/2, cy=cw/2; c.tx=(c.tx-cx)*ratio+cx; c.ty=(c.ty-cy)*ratio+cy; c.scale=Math.max(c.scale*ratio, Math.max(cw/img.naturalWidth, cw/img.naturalHeight)); clampCrop(img,c); applyCrop(img); }
+      lastDist=dist;
+    }
+  },{passive:false});
+  container.addEventListener('touchstart', function(e){ var t=e.touches; if(t.length===1){lastX=t[0].clientX; lastY=t[0].clientY;} if(t.length===2){lastDist=Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);} });
+  container.addEventListener('touchend', function(){ lastDist=null; });
+}
+
+function confirmCrop() {
+  var img = document.getElementById('cropImg');
+  var container = document.getElementById('cropContainer');
+  if(!img || !container) return;
+  var c = window._crop;
+  var cw = container.offsetWidth;
+  // Render cropped image to offscreen canvas
+  var oc = document.createElement('canvas');
+  oc.width = 512; oc.height = 512;
+  var ctx = oc.getContext('2d');
+  var scale = c.scale;
+  var sx = (-c.tx / scale);
+  var sy = (-c.ty / scale);
+  var sw = cw / scale;
+  var sh = cw / scale;
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, 512, 512);
+  window._userPhoto = oc.toDataURL('image/jpeg', 0.92);
+  cancelCrop();
+  var s = window._currentSighting;
+  if(s) generateCard(s, 'previewCanvas', 300, window._userPhoto);
+  var pc = document.getElementById('previewCanvas');
+  if(pc && pc.parentNode) pc.parentNode.style.display = '';
+}
+
+function cancelCrop() {
+  var wrap = document.getElementById('cropToolWrap');
+  if(wrap) wrap.remove();
+  var pc = document.getElementById('previewCanvas');
+  if(pc && pc.parentNode) pc.parentNode.style.display = '';
+}
+
+function generateCard(s, canvasId, size, userImg) {
+  var canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  canvas.width = size; canvas.height = size;
+  var ctx = canvas.getContext('2d');
+  var road = s.road ? s.road : 'Kruger National Park';
+  var t = s.time ? new Date(s.time) : new Date();
+  var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});
+  var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+  function drawOverlay() {
+    // Amber top bar — thin brand stripe
+    ctx.fillStyle = '#e8a020';
+    ctx.fillRect(0, 0, size, Math.round(size * 0.04));
+
+    // Bottom overlay — 18% height
+    var overlayY = Math.round(size * 0.74);
+    var overlayH = size - overlayY;
+    var grad = ctx.createLinearGradient(0, overlayY - Math.round(size*0.06), 0, size);
+    grad.addColorStop(0, 'rgba(10,13,16,0)');
+    grad.addColorStop(0.3, 'rgba(10,13,16,0.88)');
+    grad.addColorStop(1, 'rgba(10,13,16,0.97)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, overlayY - Math.round(size*0.06), size, overlayH + Math.round(size*0.06));
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold ' + Math.round(size * 0.072) + 'px Montserrat,Arial,sans-serif';
+    ctx.fillText(s.name, size / 2, Math.round(size * 0.825));
+    ctx.fillStyle = '#c8d4d8';
+    ctx.font = '500 ' + Math.round(size * 0.034) + 'px Montserrat,Arial,sans-serif';
+    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.895));
+    ctx.fillStyle = 'rgba(12,15,18,0.97)';
+    ctx.fillRect(0, Math.round(size * 0.910), size, Math.round(size * 0.085));
+    ctx.fillStyle = '#e8a020';
+    ctx.font = 'bold ' + Math.round(size * 0.042) + 'px Montserrat,Arial,sans-serif';
+    ctx.fillText('KRANTZ OUTDOORS', size / 2, Math.round(size * 0.965));
+  }
+
+  var stockImg = INSECT_IMG[s.id] || ANIMAL_IMG[s.id] || BIRD_IMG[s.id];
+  var srcToUse = userImg || stockImg || null;
+
+  if(srcToUse) {
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      ctx.fillStyle = '#15191c';
+      ctx.fillRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+      drawOverlay();
+    };
+    img.onerror = function() {
+      ctx.fillStyle = '#15191c';
+      ctx.fillRect(0, 0, size, size);
+      drawOverlay();
+    };
+    img.src = srcToUse;
+  } else {
+    ctx.fillStyle = '#15191c';
+    ctx.fillRect(0, 0, size, size);
+    drawOverlay();
+  }
+}
+
+function _renderFullCard(size, callback) {
+  var s = window._currentSighting;
+  if(!s) return;
+  var canvas = document.getElementById('cardCanvas');
+  if(!canvas) { canvas = document.createElement('canvas'); canvas.id = 'cardCanvas'; canvas.style.display='none'; document.body.appendChild(canvas); }
+  canvas.width = size; canvas.height = size;
+  var road = s.road ? s.road : 'Kruger National Park';
+  var t = s.time ? new Date(s.time) : new Date();
+  var dateStr = t.toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});
+  var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  var ctx = canvas.getContext('2d');
+
+  function drawOverlay() {
+    ctx.fillStyle = '#e8a020';
+    ctx.fillRect(0, 0, size, Math.round(size * 0.04));
+    var overlayY = Math.round(size * 0.74);
+    var grad = ctx.createLinearGradient(0, overlayY - Math.round(size*0.06), 0, size);
+    grad.addColorStop(0, 'rgba(10,13,16,0)');
+    grad.addColorStop(0.3, 'rgba(10,13,16,0.88)');
+    grad.addColorStop(1, 'rgba(10,13,16,0.97)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, overlayY - Math.round(size*0.06), size, size - overlayY + Math.round(size*0.06));
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold ' + Math.round(size * 0.072) + 'px Montserrat,Arial,sans-serif';
+    ctx.fillText(s.name, size / 2, Math.round(size * 0.825));
+    ctx.fillStyle = '#c8d4d8';
+    ctx.font = '500 ' + Math.round(size * 0.034) + 'px Montserrat,Arial,sans-serif';
+    ctx.fillText(road + '  |  ' + dateStr + '  ' + timeStr, size / 2, Math.round(size * 0.895));
+    ctx.fillStyle = 'rgba(12,15,18,0.97)';
+    ctx.fillRect(0, Math.round(size * 0.910), size, Math.round(size * 0.085));
+    ctx.fillStyle = '#e8a020';
+    ctx.font = 'bold ' + Math.round(size * 0.042) + 'px Montserrat,Arial,sans-serif';
+    ctx.fillText('KRANTZ OUTDOORS', size / 2, Math.round(size * 0.965));
+    callback(canvas);
+  }
+
+  var src = window._userPhoto || INSECT_IMG[s.id] || ANIMAL_IMG[s.id] || BIRD_IMG[s.id] || null;
+  if(src) {
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      ctx.fillStyle = '#15191c'; ctx.fillRect(0,0,size,size);
+      ctx.drawImage(img, 0, 0, size, size);
+      drawOverlay();
+    };
+    img.onerror = function() {
+      ctx.fillStyle = '#15191c'; ctx.fillRect(0,0,size,size);
+      drawOverlay();
+    };
+    img.src = src;
+  } else {
+    ctx.fillStyle = '#15191c'; ctx.fillRect(0,0,size,size);
+    drawOverlay();
+  }
+}
+
+function saveCard() {
+  var s = window._currentSighting; if(!s) return;
+  var fname = 'krantz-'+(s.name||'sighting').toLowerCase().replace(/\s/g,'-')+'.jpg';
+  _renderFullCard(1080, function(canvas) {
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    // On iOS/Android: use navigator.share to trigger "Save to Photos" prompt
+    if(navigator.share && navigator.canShare) {
+      var byteStr = atob(dataUrl.split(',')[1]);
+      var arr = new Uint8Array(byteStr.length);
+      for(var i=0;i<byteStr.length;i++) arr[i]=byteStr.charCodeAt(i);
+      var blob = new Blob([arr],{type:'image/jpeg'});
+      var file = new File([blob], fname, {type:'image/jpeg'});
+      if(navigator.canShare({files:[file]})) {
+        navigator.share({files:[file], title:'Kruger Sighting - '+s.name})
+          .then(function(){ showToast('Image saved!'); })
+          .catch(function(e){
+            if(e.name !== 'AbortError') {
+              // Fallback to download link
+              var a = document.createElement('a');
+              a.download = fname; a.href = dataUrl;
+              document.body.appendChild(a); a.click(); document.body.removeChild(a);
+              showToast('Image saved!');
+            }
+          });
+        return;
+      }
+    }
+    // Desktop fallback: direct download
+    var a = document.createElement('a');
+    a.download = fname; a.href = dataUrl;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('Image saved!');
+  });
+}
+
+function _shareWithCard(platform, size) {
+  var s = window._currentSighting; if(!s) return;
+  var caption = buildCaption(s, platform);
+  window._currentCaption = caption;
+  _renderFullCard(size, function(canvas) {
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    var byteStr = atob(dataUrl.split(',')[1]);
+    var arr = new Uint8Array(byteStr.length);
+    for(var i=0;i<byteStr.length;i++) arr[i]=byteStr.charCodeAt(i);
+    var blob = new Blob([arr],{type:'image/jpeg'});
+    var file = new File([blob],'krantz-sighting.jpg',{type:'image/jpeg'});
+    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+      navigator.share({files:[file], text:caption})
+        .catch(function(e){
+          if(e.name!=='AbortError') {
+            if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
+            var a=document.createElement('a'); a.download='krantz-sighting.jpg'; a.href=dataUrl;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            showToast('Caption copied. Image saved.');
+          }
+        });
+    } else {
+      if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
+      var a=document.createElement('a'); a.download='krantz-sighting.jpg'; a.href=dataUrl;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('Caption copied. Image saved. Post to '+platform+'.');
+    }
+  });
+}
+
+function shareNative() {
+  var s = window._currentSighting;
+  if(!s){showToast('No sighting selected');return;}
+  var caption=(typeof buildCaption==='function')?buildCaption(s):(s.name+' spotted in Kruger! #KrugerNationalPark #KrantzOutdoors');
+  if(navigator.share){
+    navigator.share({title:s.name+' sighted in Kruger',text:caption,url:'https://kruger.krantzoutdoors.com'})
+      .then(function(){showToast('Shared!');})
+      .catch(function(e){if(e.name!=='AbortError')_doCopy(caption);});
+  } else { _doCopy(caption); }
+}
+function _doCopy(t){
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){showToast('Caption copied — paste to share!');}).catch(function(){});
+  else showToast('Copy: '+t.substring(0,80));
+}
+function _shareNativeOld() {
+  var s = window._currentSighting; if(!s) return;
+  var caption = buildCaption(s);
+  window._currentCaption = caption;
+  _renderFullCard(1080, function(canvas) {
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    var byteStr = atob(dataUrl.split(',')[1]);
+    var arr = new Uint8Array(byteStr.length);
+    for(var i=0;i<byteStr.length;i++) arr[i]=byteStr.charCodeAt(i);
+    var blob = new Blob([arr],{type:'image/jpeg'});
+    var file = new File([blob],'krantz-sighting.jpg',{type:'image/jpeg'});
+    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+      // Native share sheet — covers Instagram, Facebook, Pinterest, WhatsApp, all installed apps
+      navigator.share({files:[file], text:caption, title:s.name+' sighted in Kruger'})
+        .then(function(){ showToast('Shared!'); })
+        .catch(function(e){
+          if(e.name !== 'AbortError') {
+            // User dismissed or share failed — copy caption + offer download
+            if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
+            var a = document.createElement('a'); a.download='krantz-sighting.jpg'; a.href=dataUrl;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            showToast('Caption copied. Image saved.');
+          }
+        });
+    } else {
+      // Desktop — copy caption and download image
+      if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
+      var a = document.createElement('a'); a.download='krantz-sighting.jpg'; a.href=dataUrl;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('Caption copied. Image downloaded. Post to your platform.');
+    }
+  });
+}
+
+function shareToWhatsApp() { _shareWithCard('whatsapp', 1080); }
+
+function shareToX() {
+  var s = window._currentSighting; if(!s) return;
+  var caption = buildCaption(s, 'x');
+  window._currentCaption = caption;
+  // Copy caption to clipboard then open X intent
+  if(navigator.clipboard) navigator.clipboard.writeText(caption).catch(function(){});
+  // Also download image for manual attachment
+  _renderFullCard(1080, function(canvas) {
+    var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    var a = document.createElement('a'); a.download='krantz-sighting-x.jpg'; a.href=dataUrl;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    // Open X with text pre-filled
+    setTimeout(function(){
+      window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(caption),'_blank');
+    }, 300);
+    showToast('Caption copied. Image saved. Attach in X.', 3000);
+  });
+}
+
+function shareToInstagram() { shareNative(); }
+function shareToFacebook() { shareNative(); }
+function shareToPinterest() { shareNative(); }
+
+function copyCaption() {
+  var caption = window._currentCaption||'';
+  if(navigator.clipboard) navigator.clipboard.writeText(caption).then(function(){ showToast('Caption copied!'); }).catch(function(){});
+}
+
+// ============================================
+// TRIP EXPORT
+// ============================================
+function exportTripSummary() {
+  var sightings = loadSightings();
+  if(!sightings.length) { showToast('Log some sightings first!'); return; }
+  var canvas = document.getElementById('cardCanvas');
+  var ctx = canvas.getContext('2d');
+  canvas.width = 1080; canvas.height = 1080;
+  ctx.fillStyle = '#15191c'; ctx.fillRect(0,0,1080,1080);
+  ctx.fillStyle = '#e8a020'; ctx.fillRect(0,0,1080,43);
+  ctx.fillStyle = '#ffffff'; ctx.font = 'bold 70px Montserrat,sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('MY KRUGER TRIP', 540, 140);
+  ctx.fillStyle = '#5a6b75'; ctx.font = '36px Montserrat,sans-serif';
+  ctx.fillText(new Date().toLocaleDateString('en-ZA',{month:'long',year:'numeric'}), 540, 200);
+  var unique = Object.keys(sightings.reduce(function(a,s){ a[s.id]=1; return a; },{}));
+  ctx.fillStyle = '#e8a020'; ctx.font = 'bold 120px Montserrat,sans-serif';
+  ctx.fillText(sightings.length, 540, 420);
+  ctx.fillStyle = '#a8b4bc'; ctx.font = '40px Montserrat,sans-serif';
+  ctx.fillText('TOTAL SIGHTINGS', 540, 480);
+  ctx.fillStyle = '#e8a020'; ctx.font = 'bold 80px Montserrat,sans-serif';
+  ctx.fillText(unique.length, 540, 600);
+  ctx.fillStyle = '#a8b4bc'; ctx.font = '40px Montserrat,sans-serif';
+  ctx.fillText('SPECIES', 540, 650);
+  var avgS = Math.round(sightings.reduce(function(a,s){ return a+s.stars; },0)/sightings.length);
+  ctx.fillStyle = '#e8a020'; ctx.font = '50px serif';
+  ctx.fillText(STAR_FULL.repeat(avgS||3), 540, 740);
+  ctx.fillStyle = '#1c2126'; ctx.fillRect(0,870,1080,210);
+  ctx.fillStyle = '#e8a020'; ctx.font = 'bold 46px Montserrat,sans-serif';
+  ctx.fillText('KRANTZ OUTDOORS', 540, 940);
+  ctx.fillStyle = '#5a6b75'; ctx.font = '32px Montserrat,sans-serif';
+  ctx.fillText('Wild by Nature - Africa by Choice', 540, 990);
+  ctx.fillText('etsy.com/shop/KrantzOutdoors', 540, 1040);
+  var a = document.createElement('a');
+  a.download = 'krantz-trip-summary.jpg';
+  a.href = canvas.toDataURL('image/jpeg',0.92);
+  a.click();
+}
+
+// ============================================
+// CHECKLIST
+// ============================================
+var checklistState = {};
+
+function loadChecklistState() {
+  try{ checklistState = JSON.parse(localStorage.getItem('kfg_checklist')||'{}'); }catch(e){ checklistState={}; }
+}
+function saveChecklistState() { localStorage.setItem('kfg_checklist',JSON.stringify(checklistState)); KFGSync.push(); }
+function resetChecklist() { checklistState={}; saveChecklistState(); renderChecklist(); }
+
+function handleCheckTap(el) {
+  var key = el.getAttribute('data-key');
+  toggleCheckItem(key, el);
+}
+
+function toggleCheckItem(key, el) {
+  checklistState[key] = !checklistState[key];
+  saveChecklistState();
+  if(checklistState[key]) el.classList.add('checked');
+  else el.classList.remove('checked');
+  updateChecklistProgress();
+}
+
+function updateChecklistProgress() {
+  var total=0, checked=0;
+  Object.keys(CHECKLIST).forEach(function(cat){
+    CHECKLIST[cat].forEach(function(item,i){
+      total++;
+      if(checklistState[cat+':'+i]) checked++;
+    });
+  });
+  var el = document.getElementById('checklistProgress');
+  if(el) el.textContent = checked+' of '+total+' items packed';
+  var badge = document.getElementById('checklistBadge');
+  if(badge) badge.textContent = checked+'/'+total;
+}
+
+function renderChecklist() {
+  var container = document.getElementById('checklistContent');
+  if(!container) return;
+  loadChecklistState();
+  var html = '';
+  Object.keys(CHECKLIST).forEach(function(cat){
+    html += '<div style="padding:0 16px 4px"><div class="divlabel" style="padding:14px 0 8px;margin:0">'+cat+'</div>';
+    CHECKLIST[cat].forEach(function(item,i){
+      var key = cat+':'+i;
+      var isChecked = checklistState[key] ? 'checked' : '';
+      html += '<div class="checklist-item '+isChecked+'" data-key="'+key+'" onclick="handleCheckTap(this)">' +
+        '<div class="check-box"></div>' +
+        '<div class="check-text">'+item.text+'</div>' +
+        '<div class="check-priority priority-'+item.priority+'">'+item.priority+'</div>' +
+      '</div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  updateChecklistProgress();
+}
+
+// ============================================
+// PHOTO INTEL
+// ============================================
+var SHOTS_OF_DAY = [
+  { title:'Backlit Elephant at Sunset Dam', detail:'H4-2 near Lower Sabie. Arrive 17:00. Position facing west — silhouettes against the water. 400mm f/8 1/2000s ISO400.' },
+  { title:'Lion on S21 Rocky Outcrops', detail:'S21 south of Satara. Dawn patrol 06:00-07:30. Lions use the flat rocks to warm up. 500mm f/6.3 1/800s.' },
+  { title:'Buffalo Herd at H3 Waterhole', detail:'H3 between Skukuza and Lower Sabie. 07:00-09:00. Dust and backlight. 300mm f/7.1 1/500s overcast preferred.' },
+  { title:'Leopard Draping at S127', detail:'S127 near Olifants. Late afternoon 15:30-17:30. Check large marula trees. 600mm f/5.6 1/1000s.' },
+  { title:'Hippo Yawn at Sunset Dam', detail:'Sunset Dam, Lower Sabie. Any time of day — position at water level. 400mm f/6.3 1/1600s.' },
+  { title:'Giraffe at S44 Waterhole', detail:'S44 near Letaba. Dawn 06:00-08:00. Wide-legged drinking stance. 200mm f/8 1/400s include environment.' },
+  { title:'Wild Dog Dawn Hunt', detail:'H1-7 and H1-8 near Shingwedzi. 05:30-07:00. Follow the pack — movement burst mode. 600mm f/5.6 1/2000s.' },
+  { title:'Kingfisher at Lake Panic Hide', detail:'Lake Panic, Skukuza. 07:00-10:00. Giant Kingfisher dives. Position low, 600mm f/6.3 1/3200s.' },
+  { title:'Cheetah on Termite Mound', detail:'H1-3 near Satara. Mid-morning 09:00-11:00. Scan termite mounds for surveying cheetah. 500mm f/6.3 1/1000s.' },
+  { title:'Ground Hornbill Family Walk', detail:'Any gravel road at dawn. Walk slowly along verge. 400mm f/6.3 1/800s. Shoot at ground level.' },
+  { title:'Crocodile Basking at Nthandanyathi', detail:'Nthandanyathi Hide, Croc Bridge. 09:00-12:00. Bank basking with wide open mouths. 300mm f/8.' },
+  { title:'Impala Ram Portrait', detail:'Any road throughout the park. Golden hour light. 200-400mm. Look for single males in open light. f/5.6 1/640s.' },
+  { title:'Waterbuck at River Crossing', detail:'H4-1 near Skukuza on Sabie River. 06:30-08:30. Crossing sequences. 400mm f/6.3 1/800s.' },
+  { title:'Elephant Dust Bath', detail:'Any waterhole. 14:00-16:30. Post-drink dust bath with dramatic side light. 200mm f/8 1/500s backlit.' },
+];
+
+function renderPhotoIntel() {
+  // Golden Hour
+  var now = new Date();
+  var doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+  // Kruger approx lat -24. Sunrise/sunset calculation (simplified)
+  var B = (360/365) * (doy - 81) * Math.PI/180;
+  var eqTime = 9.87*Math.sin(2*B) - 7.53*Math.cos(B) - 1.5*Math.sin(B);
+  var lat = -24 * Math.PI/180;
+  var decl = 23.45 * Math.sin(B) * Math.PI/180;
+  var ha = Math.acos(-Math.tan(lat)*Math.tan(decl)) * 180/Math.PI;
+  var noon = 12 - eqTime/60 + (31.6 - 30)/15; // Kruger ~31.6E, timezone +2
+  var srH = noon - ha/15;
+  var ssH = noon + ha/15;
+  function toTime(h){ var hh=Math.floor(h), mm=Math.round((h-hh)*60); return (hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm; }
+  var srEl = document.getElementById('photoSunrise');
+  var ssEl = document.getElementById('photoSunset');
+  if(srEl) srEl.textContent = toTime(srH);
+  if(ssEl) ssEl.textContent = toTime(ssH);
+
+  // Light Conditions
+  var hour = now.getHours() + now.getMinutes()/60;
+  var lightEl = document.getElementById('lightStatus');
+  var tipEl = document.getElementById('lightTip');
+  var lightMsg, lightTip;
+  if(hour >= srH && hour < srH+0.75) { lightMsg = '&#x1F305; Golden Hour — Sunrise'; lightTip = 'Warm directional light. Best time for mammal portraits and landscapes.'; }
+  else if(hour >= srH+0.75 && hour < srH+2.5) { lightMsg = '&#x2600;&#xFE0F; Morning Light — Good'; lightTip = 'Soft warm light. Excellent for action and behaviour shots.'; }
+  else if(hour >= srH+2.5 && hour < ssH-2.5) { lightMsg = '&#x1F506; Harsh Midday Light'; lightTip = 'High contrast shadows. Use overcast days. Shoot in shade. Focus on close-up details.'; }
+  else if(hour >= ssH-2.5 && hour < ssH-0.75) { lightMsg = '&#x1F307; Afternoon Light — Good'; lightTip = 'Warm side light returning. Good for waterhole action and dust.'; }
+  else if(hour >= ssH-0.75 && hour < ssH+0.25) { lightMsg = '&#x1F304; Golden Hour — Sunset'; lightTip = 'Best light of the day. Silhouettes, warm tones, waterhole reflections.'; }
+  else { lightMsg = '&#x1F319; After Hours'; lightTip = 'No photography after gate close. Plan your route back.'; }
+  if(lightEl) lightEl.innerHTML = lightMsg;
+  if(tipEl) tipEl.textContent = lightTip;
+
+  // Shot of the Day — rotates daily
+  var shotIdx = doy % SHOTS_OF_DAY.length;
+  var shot = SHOTS_OF_DAY[shotIdx];
+  var sdEl = document.getElementById('shotOfDay');
+  var sdDetailEl = document.getElementById('shotOfDayDetail');
+  if(sdEl) sdEl.textContent = shot.title;
+  if(sdDetailEl) sdDetailEl.textContent = shot.detail;
+
+  var roadsEl = document.getElementById('photoRoads');
+  if(roadsEl) {
+    roadsEl.innerHTML = PHOTO_ROADS.map(function(r){
+      return '<div class="photo-road-card">' +
+        '<div class="photo-road-header">' +
+          '<div><div class="road-code">'+r.code+'</div><div class="road-type">'+r.type+'</div></div>' +
+          '<div class="sun-indicator"><div class="sun-label">Best light</div><div class="sun-dirs">' +
+            '<span class="sun-dir-badge morning">AM: '+r.morning+'</span>' +
+            '<span class="sun-dir-badge afternoon">PM: '+r.afternoon+'</span>' +
+          '</div></div>' +
+        '</div>' +
+        '<div class="photo-road-body"><div class="photo-road-subject">'+r.subjects+'</div>' +
+          '<div class="settings-row">'+r.settings.map(function(s){ return '<div class="settings-chip">'+s+'</div>'; }).join('')+'</div>' +
+        '</div></div>';
+    }).join('');
+  }
+  var hidesEl = document.getElementById('photoHides');
+  if(hidesEl) {
+    hidesEl.innerHTML = PHOTO_HIDES.map(function(h){
+      var bc = h.status==='open'?'badge-green':'badge-amber';
+      var bt = h.status==='open'?'No booking':'Pre-book';
+      return '<div class="card">' +
+        '<div class="card-head" onclick="toggleCard(this)">' +
+          '<div class="card-icon">&#x1F50D;</div>' +
+          '<div class="card-titles"><div class="card-title">'+h.name+'</div><div class="card-meta">'+h.location+'</div></div>' +
+          '<div class="badge '+bc+'">'+bt+'</div>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="drow"><div class="dlabel">Subjects</div><div class="dval">'+h.subjects+'</div></div>' +
+          '<div class="drow"><div class="dlabel">Best time</div><div class="dval">'+h.bestTime+'</div></div>' +
+          '<div class="drow"><div class="dlabel">Focal</div><div class="dval">'+h.focal+'</div></div>' +
+          '<div class="drow"><div class="dlabel">Booking</div><div class="dval">'+h.booking+'</div></div>' +
+          '<div class="drow" style="border:none"><div class="dlabel">Pro tip</div><div class="dval" style="text-align:left;font-size:11px;color:var(--text2)">'+h.tip+'</div></div>' +
+        '</div></div>';
+    }).join('');
+  }
+}
+
+// ============================================
+// HELPERS
+// ============================================
+function toggleCard(headerEl) {
+  var b = headerEl.nextElementSibling;
+  if(b && b.classList.contains('card-body')) b.classList.toggle('open');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Swipe down to close any modal sheet
+(function() {
+  function addSwipeClose(modalId) {
+    var modal = document.getElementById(modalId);
+    if(!modal) return;
+    var sheet = modal.querySelector('.modal-sheet');
+    if(!sheet) return;
+    var startY = 0, startScroll = 0, dragging = false;
+    sheet.addEventListener('touchstart', function(e) {
+      startY = e.touches[0].clientY;
+      startScroll = sheet.scrollTop;
+      dragging = true;
+    }, {passive:true});
+    sheet.addEventListener('touchmove', function(e) {
+      if(!dragging) return;
+      var dy = e.touches[0].clientY - startY;
+      // Only close-swipe when at top of sheet
+      if(dy > 0 && startScroll <= 0) {
+        sheet.style.transform = 'translateY(' + Math.min(dy, 200) + 'px)';
+        sheet.style.transition = 'none';
+      }
+    }, {passive:true});
+    sheet.addEventListener('touchend', function(e) {
+      if(!dragging) return;
+      dragging = false;
+      var dy = e.changedTouches[0].clientY - startY;
+      sheet.style.transition = 'transform .2s ease';
+      if(dy > 80 && startScroll <= 0) {
+        sheet.style.transform = 'translateY(100%)';
+        setTimeout(function() {
+          modal.classList.remove('open');
+          sheet.style.transform = '';
+          sheet.style.transition = '';
+        }, 200);
+      } else {
+        sheet.style.transform = '';
+        setTimeout(function(){ sheet.style.transition = ''; }, 200);
+      }
+    }, {passive:true});
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    addSwipeClose('speciesModal');
+    addSwipeClose('shareModal');
+    addSwipeClose('logModal');
+  });
+})();
+function switchParkTab(tab, el) {
+  document.querySelectorAll('#parkTabs .trip-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('#screen-camps .trip-tab-content').forEach(function(t){ t.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  var tc = document.getElementById('parktab-'+tab);
+  if(tc) tc.classList.add('active');
+  if(tab==='camps') { initCampSelect(); renderCamps(); }
+  if(tab==='lookouts') renderLookouts();
+  if(tab==='picnic') renderPicnic();
+  if(tab==='dams') renderDams();
+  if(tab==='landmarks') renderLandmarks();
+  if(tab==='parkinfo') { renderParkInfo('about'); }
+  if(tab==='family') {
+    renderFamilyFeedHeader();
+    renderFamilyFeed();
+    loadFamilyFeed();
+  }
+}
+
+function renderFamilyFeedHeader() {
+  var el = document.getElementById('familyFeedHeader');
+  if(!el) return;
+  var groupId = getFamilyGroupId();
+  if(!groupId) { el.innerHTML=''; return; }
+  el.innerHTML = '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">' +
+    '<div>' +
+      '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Family Group</div>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.05em">'+groupId+'</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:8px">' +
+      '<button onclick="showFamilyGroupModal(\''+groupId+'\',false)" style="background:var(--bg2);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:6px 10px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Share Code</button>' +
+      '<button onclick="if(confirm(\'Leave family group?\'))leaveFamilyGroup()" style="background:rgba(204,51,34,.15);border:1px solid rgba(204,51,34,.3);color:#e05545;border-radius:8px;padding:6px 10px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Leave</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function switchParkInfoTab(tab, btn) {
+  _parkInfoTab = tab;
+  document.querySelectorAll('.pkinfo-tab').forEach(function(b){
+    b.style.borderBottomColor = 'transparent';
+    b.style.color = 'var(--text3)';
+  });
+  if(btn){ btn.style.borderBottomColor = 'var(--accent)'; btn.style.color = 'var(--accent)'; }
+  renderParkInfo();
+}
 
 function renderLookouts() {
   var el = document.getElementById('lookoutsList'); if(!el) return;
@@ -9038,7 +10351,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.48';
+var APP_VERSION = '5.49';
 
 // Clear stale caches when version changes
 (function() {
@@ -10285,63 +11598,18 @@ function calculateFromSchedule() {
 // GPS CAPTURE + NEAREST ROAD MATCHING
 // ============================================
 var ROAD_WAYPOINTS = [
-  // H roads - main tarred routes
   {road:'H1-1', lat:-25.05, lng:31.49}, {road:'H1-2', lat:-24.90, lng:31.57},
   {road:'H1-3', lat:-24.70, lng:31.70}, {road:'H1-4', lat:-24.50, lng:31.72},
   {road:'H1-5', lat:-24.20, lng:31.72}, {road:'H1-6', lat:-23.95, lng:31.70},
   {road:'H1-7', lat:-23.60, lng:31.55}, {road:'H1-8', lat:-23.10, lng:31.45},
-  {road:'H1-9', lat:-22.40, lng:31.30},
-  {road:'H2-2', lat:-25.00, lng:31.40},
-  {road:'H3',   lat:-25.00, lng:31.65},
-  {road:'H4-1', lat:-25.05, lng:31.68}, {road:'H4-2', lat:-25.15, lng:31.85},
-  {road:'H5',   lat:-25.10, lng:31.75},
-  {road:'H6',   lat:-24.55, lng:31.95},
-  {road:'H7',   lat:-24.40, lng:31.95},
-  {road:'H8',   lat:-24.30, lng:31.78},
-  {road:'H9',   lat:-24.55, lng:31.55},
-  {road:'H10',  lat:-24.25, lng:31.60},
-  {road:'H11',  lat:-25.00, lng:31.52},
-  {road:'H12',  lat:-23.85, lng:31.70},
-  {road:'H13-1',lat:-22.70, lng:31.10}, {road:'H13-2',lat:-22.70, lng:31.05},
-  {road:'H14',  lat:-23.93, lng:31.48},
-  // S roads - sand/gravel routes
-  {road:'S1',   lat:-25.10, lng:31.55},
-  {road:'S3',   lat:-25.15, lng:31.30},
-  {road:'S4',   lat:-25.10, lng:31.35},
-  {road:'S7',   lat:-25.05, lng:31.38},
-  {road:'S10',  lat:-25.02, lng:31.38},
-  {road:'S11',  lat:-24.98, lng:31.45},
-  {road:'S12',  lat:-24.45, lng:31.88},
-  {road:'S14',  lat:-25.02, lng:31.35},
-  {road:'S21',  lat:-25.08, lng:31.72},
-  {road:'S22',  lat:-25.12, lng:31.62},
-  {road:'S23',  lat:-25.22, lng:31.70},
-  {road:'S25',  lat:-25.22, lng:31.82},
-  {road:'S26',  lat:-25.20, lng:31.75},
-  {road:'S27',  lat:-25.25, lng:31.90},
-  {road:'S28',  lat:-24.80, lng:31.85},
-  {road:'S29',  lat:-24.35, lng:31.65},
-  {road:'S30',  lat:-24.72, lng:31.48},
-  {road:'S33',  lat:-24.65, lng:31.68},
-  {road:'S34',  lat:-24.68, lng:31.60},
-  {road:'S35',  lat:-24.40, lng:31.60},
-  {road:'S36',  lat:-24.55, lng:31.65},
-  {road:'S37',  lat:-24.52, lng:31.80},
-  {road:'S39',  lat:-24.38, lng:31.72},
-  {road:'S40',  lat:-24.42, lng:31.92},
-  {road:'S41',  lat:-24.30, lng:31.80},
-  {road:'S44',  lat:-23.90, lng:31.65},
-  {road:'S65',  lat:-24.60, lng:31.75},
-  {road:'S82',  lat:-25.18, lng:31.88},
-  {road:'S89',  lat:-24.48, lng:31.75},
-  {road:'S100', lat:-24.50, lng:31.90},
-  {road:'S106', lat:-23.70, lng:31.75},
-  {road:'S112', lat:-25.10, lng:31.58},
-  {road:'S114', lat:-25.20, lng:31.65},
-  {road:'S128', lat:-24.70, lng:31.45},
-  {road:'S144', lat:-23.80, lng:31.55},
-  {road:'S145', lat:-24.60, lng:31.60},
-  {road:'S147', lat:-24.42, lng:31.73},
+  {road:'H3',   lat:-25.00, lng:31.65}, {road:'H4-1', lat:-25.05, lng:31.68},
+  {road:'H4-2', lat:-25.15, lng:31.85}, {road:'H7',   lat:-24.40, lng:31.95},
+  {road:'H9',   lat:-24.55, lng:31.55}, {road:'H10',  lat:-24.25, lng:31.60},
+  {road:'H12',  lat:-23.85, lng:31.70}, {road:'S1',   lat:-25.10, lng:31.55},
+  {road:'S3',   lat:-25.15, lng:31.30}, {road:'S28',  lat:-24.80, lng:31.85},
+  {road:'S41',  lat:-24.30, lng:31.80}, {road:'S44',  lat:-23.90, lng:31.65},
+  {road:'S65',  lat:-24.60, lng:31.75}, {road:'S100', lat:-24.50, lng:31.90},
+  {road:'S106', lat:-23.70, lng:31.75}, {road:'S114', lat:-25.20, lng:31.90},
 ];
 
 function findNearestRoad(lat, lng) {
@@ -10369,10 +11637,8 @@ function captureGPSForSighting(callback) {
   }
   var btn = document.getElementById('gpsStatusBtn');
   if(btn) btn.textContent = '&#x1F4CD; Getting GPS...';
-  // Always fresh high-accuracy fix - permission already granted at login so no double prompt
   navigator.geolocation.getCurrentPosition(
     function(pos) {
-      _gpsCache = pos; _gpsCacheTime = Date.now(); // side-effect cache update
       var lat = pos.coords.latitude;
       var lng = pos.coords.longitude;
       var road = findNearestRoad(lat, lng);
@@ -10383,7 +11649,7 @@ function captureGPSForSighting(callback) {
       if(btn) btn.textContent = '&#x1F4CD; GPS unavailable';
       callback(null, null, null);
     },
-    {timeout: 10000, enableHighAccuracy: true, maximumAge: 0}
+    {timeout: 8000, enableHighAccuracy: true}
   );
 }
 
@@ -10569,24 +11835,6 @@ function initAZScroll() {
 }
 
 function initApp() {
-  // Guard: never run more than once - prevents multiple poll loops
-  if(window._appInitialised) { return; }
-  window._appInitialised = true;
-  // Fix 3: Request GPS permission upfront so sightings always have location
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(){}, // permission granted - sightings always get their own fresh high-accuracy fix
-      function(){},
-      { timeout: 8000, enableHighAccuracy: false }
-    );
-  }
-  // Request notification permission upfront - notify is ON by default
-  if(localStorage.getItem('kfg_feed_notify') !== '0') {
-    if('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }
-
   // Force reload if cached version doesn't match — uses timestamp to guarantee fresh fetch
   var storedBuild = localStorage.getItem('kfg_build');
   if(storedBuild && storedBuild !== APP_VERSION) {
@@ -10639,43 +11887,36 @@ function initApp() {
   safe(renderRecentlyViewed);
   safe(loadWeather);
   safe(loadFeed);
-  // Poll Firebase every 8s — real-time feed updates from other users
+  // Poll Firebase every 15s — picks up sightings from other users automatically
   setInterval(function() {
     fetch(FIREBASE_URL + '/feed.json').then(function(r){ return r.ok ? r.json() : null; }).then(function(data) {
       if(!Array.isArray(data) || !data.length) return;
-      // Compare using array length + first item timestamp — catches additions from any user
-      var newSig = data.length + ':' + (data[0].timestamp || data[0].time || '');
-      var cur0 = window._firebaseSightings && window._firebaseSightings[0];
-      var curSig = window._firebaseSightings ? window._firebaseSightings.length + ':' + (cur0 && (cur0.timestamp || cur0.time) || '') : '';
+      // Compare by stringifying first entry to detect any change
+      var newSig = JSON.stringify(data[0]);
+      var curSig = window._firebaseSightings && window._firebaseSightings[0] ? JSON.stringify(window._firebaseSightings[0]) : '';
       if(newSig !== curSig) {
         window._firebaseSightings = data;
         localStorage.setItem('kfg_firebase_sightings', JSON.stringify(data));
-        // Rebuild: keep RSS non-user items, put Firebase sightings first
+        // Rebuild with proper sort — preserves all RSS items while re-sorting by timestamp
         var curRss = (window._feedAllItems || []).filter(function(f){
-          return f.source && f.source !== 'Kruger Field Guide' && !String(f.source).startsWith('Sighted by ');
+          return f.source && f.source !== 'Kruger Field Guide' && f.source !== 'Sighted by ' + getUserNickname();
         });
-        window._feedAllItems = data.concat(curRss);
+        window._feedAllItems = rebuildFeed ? rebuildFeed(curRss) : data.concat(curRss);
         renderFeed(window._feedAllItems);
-        // Show banner for newest sighting/road — suppress own and already-notified
+        // Show banner for newest sighting/road item — suppress if own sighting
         if(data[0] && (data[0].type === 'sighting' || data[0].type === 'road')) {
           var myNick = getUserNickname();
           var isOwnSighting = myNick && data[0].source && data[0].source === 'Sighted by ' + myNick;
-          // Use a dedicated tracker so loadFeed() resetting _firebaseSightings doesn't re-trigger
-          var itemSig = (data[0].timestamp || data[0].time || '') + ':' + (data[0].title || '');
-          var alreadyNotified = window._lastNotifiedSig === itemSig;
-          if(!isOwnSighting && !alreadyNotified) {
-            window._lastNotifiedSig = itemSig;
-            if(data[0].type==='sighting') triggerSightingNotification(data[0].title||'New sighting');
-          }
+          if(!isOwnSighting) showFeedNotificationBanner(data[0]);
         }
       }
     }).catch(function(){});
-  }, 8000);
+  }, 15000);
   safe(updateTripStats);
   safe(initPullToRefresh);
   checkForUpdate();
   // Feed toggle
-  try { updateFeedToggleUI(localStorage.getItem('kfg_feed_notify')!=='0'); } catch(e) {} // default ON
+  try { updateFeedToggleUI(localStorage.getItem('kfg_feed_notify')==='1'); } catch(e) {}
   // Restore saved gate selection
   try {
     var g = JSON.parse(localStorage.getItem('kfg_gate'));
@@ -11482,6 +12723,121 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+async function validateLicense() {
+  var inp = document.getElementById('licenseInput');
+  if(!inp) return;
+  var key = inp.value.trim().toUpperCase();
+  if(!key) { showLicenseError('Please enter your license key'); return; }
+
+  // Validate Feed Name and email
+  var nameInp  = document.getElementById('licenseNameInput');
+  var emailInp = document.getElementById('licenseEmailInput');
+  var feedName = nameInp  ? nameInp.value.trim()  : '';
+  var userEmail= emailInp ? emailInp.value.trim() : '';
+  if(!feedName)  { showLicenseError('Please enter your Feed Name'); if(nameInp) nameInp.focus(); return; }
+  if(!userEmail || !userEmail.includes('@')) { showLicenseError('Please enter a valid email address'); if(emailInp) emailInp.focus(); return; }
+
+  // Demo keys — instant, no network needed
+  if(DEMO_KEYS.indexOf(key) >= 0) {
+    localStorage.setItem('kfg_v2_license', key);
+    localStorage.setItem('kfg_user_nickname', feedName);
+    localStorage.setItem('kfg_user_email', userEmail);
+    var gate = document.getElementById('licenseGate');
+    if(gate) gate.classList.remove('show');
+    applyLogos(); initApp(); return;
+  }
+
+  if(!key.startsWith('KO-')) {
+    showLicenseError('Invalid key — check your Etsy order email');
+    return;
+  }
+
+  var btn = document.querySelector('.license-btn');
+  if(btn) { btn.textContent = 'Checking…'; btn.disabled = true; }
+
+  var resetBtn = function() {
+    if(btn) { btn.textContent = 'Unlock My Guide →'; btn.disabled = false; }
+  };
+
+  // Get or create permanent device ID (IndexedDB — survives cache clears)
+  var deviceId = await KFGDevice.getId();
+
+  // 1. /api/claim — sets server-side expiry on first activation,
+  //    transfers device binding on new phone, returns days remaining
+  try {
+    var claimResp = await fetch(VERCEL_CLAIM_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ key: key, device_id: deviceId, user_email: userEmail })
+    });
+    if(claimResp.ok) {
+      var claimData = await claimResp.json();
+      if(claimData.valid) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        localStorage.setItem('kfg_user_nickname', feedName);
+        localStorage.setItem('kfg_user_email', userEmail);
+        if(claimData.expires_at)     localStorage.setItem('kfg_license_expiry', String(claimData.expires_at));
+        if(claimData.days_remaining) localStorage.setItem('kfg_license_days',   String(claimData.days_remaining));
+        if(claimData.type)           localStorage.setItem('kfg_license_type',    claimData.type);
+        if(claimData.pack_id)        localStorage.setItem('kfg_pack_id',         claimData.pack_id);
+        if(claimData.pack_role)      localStorage.setItem('kfg_pack_role',        claimData.pack_role);
+        if(claimData.transferred) showToast('📱 Guide transferred to this device ✓', 3000);
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+      if(claimData.expired) { resetBtn(); showLicenseError('Your license has expired. Renew at krantzoutdoors.com'); return; }
+      resetBtn();
+      showLicenseError('Invalid key — check your Etsy order email');
+      return;
+    }
+  } catch(e) { /* claim endpoint unreachable — fall through */ }
+
+  // 2. Fallback: /api/validate (read-only)
+  try {
+    var valResp = await fetch(VERCEL_VALIDATE_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ key: key, device_id: deviceId })
+    });
+    if(valResp.ok) {
+      var valData = await valResp.json();
+      if(valData.valid || valData.unclaimed || valData.legacy) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        if(valData.expires_at)     localStorage.setItem('kfg_license_expiry', String(valData.expires_at));
+        if(valData.days_remaining) localStorage.setItem('kfg_license_days',   String(valData.days_remaining));
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+      if(valData.expired) { resetBtn(); showLicenseError('Your license has expired. Renew at krantzoutdoors.com'); return; }
+      resetBtn();
+      showLicenseError('Invalid key — check your Etsy order email');
+      return;
+    }
+  } catch(e) {}
+
+  // 3. Last resort: GitHub raw fallback (all endpoints down / offline)
+  try {
+    var resp3 = await fetch(LICENSE_URL + '?t=' + Date.now());
+    if(resp3.ok) {
+      var data3 = await resp3.json();
+      var validKeys = Array.isArray(data3) ? data3 : (data3.keys || []);
+      if(validKeys.indexOf(key) >= 0) {
+        resetBtn();
+        localStorage.setItem('kfg_v2_license', key);
+        var gate = document.getElementById('licenseGate');
+        if(gate) gate.classList.remove('show');
+        applyLogos(); initApp(); return;
+      }
+    }
+  } catch(e) {}
+
+  resetBtn();
+  showLicenseError('Invalid key — check your Etsy order email');
+}
 
 // ── GLOBAL SAFE WRAPPER ──────────────────────────────────────────
 function safe(fn) { try { fn(); } catch(e) { console.warn('[KFG]', e); } }
@@ -11489,7 +12845,7 @@ function safe(fn) { try { fn(); } catch(e) { console.warn('[KFG]', e); } }
 // ── GATE DEPARTURE CALCULATOR ────────────────────────────────────
 var GATE_COORDS = {
   'Paul Kruger Gate':{lat:-25.0061,lng:31.5219},'Numbi Gate':{lat:-25.1153,lng:31.2364},
-  'Phabeni Gate':{lat:-24.9811,lng:31.3500},'Malelane Gate':{lat:-25.4875,lng:31.5294},
+  'Phabeni Gate':{lat:-24.9811,lng:31.3500},'Malelane Gate':{lat:-25.4775,lng:31.5294},
   'Crocodile Bridge Gate':{lat:-25.3605,lng:31.8947},'Orpen Gate':{lat:-24.4848,lng:31.3876},
   'Phalaborwa Gate':{lat:-23.9469,lng:31.1553},'Punda Maria Gate':{lat:-22.6917,lng:31.0139},
   'Pafuri Gate':{lat:-22.4491,lng:31.3197},'Giriyondo Border Post':{lat:-23.7519,lng:31.9828}
