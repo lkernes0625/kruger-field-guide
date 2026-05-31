@@ -8761,7 +8761,6 @@ function openWildcardSpecies(type, i) {
   modal.querySelector('.modal-body').innerHTML=
     (imgSrc?'<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">'+(type==='reptile'?'&#x1F40A;':'&#x1F438;')+'</div>')+
-    (sp.latin?buildXCPlayer(sp.id,sp.latin):'')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
         '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
@@ -8811,6 +8810,7 @@ function openBird(idx) {
   modal.querySelector('.modal-body').innerHTML=
     (imgSrc?'<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
+    (sp.latin?buildXCPlayer(sp.id,sp.latin):'')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
         '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
