@@ -891,7 +891,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         <span id="birdOnlyFilters" style="display:none;gap:5px;width:100%;position:absolute"><button id="birdAllBtn" class="filter-btn active" onclick="resetBirdFilters()" style="flex:1">ALL</button><button id="top6Btn" class="filter-btn" onclick="setBirdTop6Filter(this)" style="flex:1">TOP 6</button><button id="endangeredBtn" class="filter-btn" onclick="setBirdEndangeredFilter(this)" style="flex:1">ENDANGERED</button></span>
       </div>
 
-      <div id="recentlyViewedWrap" style="display:none;padding:8px 16px 10px">
+      <div id="recentlyViewedWrap" style="display:none;padding:6px 16px 2px">
         <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Recently Viewed</div>
         <div id="recentlyViewedList" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px"></div>
       </div>
@@ -1426,9 +1426,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.50</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.52</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.50 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.52 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -4384,7 +4384,7 @@ function openSpecies(idx) {
   modal.querySelector('.modal-title').textContent=sp.name;
   var roadOpts='<option value="">Select road / location</option><option>H1-1</option><option>H1-2</option><option>H1-3</option><option>H1-4</option><option>H3</option><option>H4-1</option><option>H4-2</option><option>H7</option><option>H9</option><option>H10</option><option>H12</option><option>H14</option><option>S1</option><option>S3</option><option>S28</option><option>S65</option><option>S100</option><option>S106</option><option>S114</option><option>Waterhole</option><option>Near Camp</option>';
   modal.querySelector('.modal-body').innerHTML=
-    (BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id]?'<img src="'+(BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':'')+
+    (BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id]?'<img id="modalBirdImg" src="'+(BIRD_IMG[sp.id]||ANIMAL_IMG[sp.id])+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':'')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
       (sp.protected?
@@ -9053,7 +9053,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.50';
+var APP_VERSION = '5.52';
 
 // Clear stale caches when version changes
 (function() {
@@ -12293,35 +12293,18 @@ function xcPlay(birdId,latin,pid){
   var btn=document.getElementById('xcbtn-'+pid);
   if(_xcState.recordings[pid]){xcStartAudio(pid,_xcState.recordings[pid]);return;}
   if(btn)btn.innerHTML='&#x23F3;';
-  var q=latin.replace(/ /g,'+');
-  var cbName='_xc'+(Date.now()%99999);
-  var script=document.createElement('script');
-  var done=false;
-  window[cbName]=function(data){
-    done=true;
-    try{document.head.removeChild(script);}catch(e){}
-    delete window[cbName];
-    var recs=(data.recordings||[]);
-    if(!recs.length){xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;}
-    _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
-  };
-  script.onerror=function(){
-    if(done)return;
-    try{document.head.removeChild(script);}catch(e){}
-    delete window[cbName];
-    xcShowMeta(pid,null,'No signal — requires internet');
-    if(btn)btn.innerHTML='&#x25B6;';
-  };
-  script.src='https://xeno-canto.org/api/2/recordings?query='+q+'&page=1&callback='+cbName;
-  document.head.appendChild(script);
-  setTimeout(function(){
-    if(!done){
-      try{document.head.removeChild(script);}catch(e){}
-      delete window[cbName];
-      xcShowMeta(pid,null,'Timeout — check connection');
+  var q=encodeURIComponent(latin);
+  fetch('https://xeno-canto.org/api/3/recordings?query='+q+'&key=demo&page=1')
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(function(data){
+      var recs=(data.recordings||[]);
+      if(!recs.length){xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;}
+      _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
+    })
+    .catch(function(e){
+      xcShowMeta(pid,null,'No signal \u2014 requires internet');
       if(btn)btn.innerHTML='&#x25B6;';
-    }
-  },8000);;
+    });
 }
 function xcStartAudio(pid,rec){
   var btn=document.getElementById('xcbtn-'+pid);
@@ -12348,12 +12331,20 @@ function xcUpdateMeta(pid,rec){
 }
 function xcShowMeta(pid,rec,msg){var m=document.getElementById('xcmeta-'+pid);if(m)m.innerHTML='<span class="xc-badge">'+msg+'</span>';}
 function buildXCPlayer(birdId,latin){
-  var q=encodeURIComponent(latin);
-  var embedUrl='https://xeno-canto.org/species/embed?query='+q+'&view=1';
+  var pid='xc-'+birdId;
+  setTimeout(function(){xcBuildWave('xcwave-'+pid);},50);
   return '<div class="xc-player">'
     +'<div class="xc-section-label">Bird Call</div>'
-    +'<iframe src="'+embedUrl+'" style="width:100%;height:80px;border:none;border-radius:6px;background:transparent" loading="lazy" scrolling="no" allow="autoplay"></iframe>'
+    +'<div class="xc-controls">'
+    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-birdid="'+birdId+'" data-latin="'+latin+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
+    +'<div class="xc-wave"><div class="xc-progress" id="xcprog-'+pid+'" style="width:0%"></div><div class="xc-bars" id="xcwave-'+pid+'"></div></div>'
+    +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
+    +'</div>'
+    +'<div class="xc-meta" id="xcmeta-'+pid+'"><span class="xc-badge" style="opacity:.5">Tap play to load</span></div>'
     +'</div>';
+}
+function xcPlayBtn(btn){
+  xcPlay(btn.getAttribute('data-birdid'),btn.getAttribute('data-latin'),btn.getAttribute('data-pid'));
 }
 
 function openSoundID(){var m=document.getElementById('soundIdModal');if(m){m.style.display='flex';resetSoundID();}}
