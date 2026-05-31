@@ -125,7 +125,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg2);color:var
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);align-items:flex-end}
 .modal-overlay.open{display:flex}
-.modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;width:100%;max-height:85dvh;overflow-y:auto;padding-bottom:max(env(safe-area-inset-bottom,20px),60px);animation:slideUp .22s ease;touch-action:pan-y}
+.modal-sheet{background:var(--bg2);border:1px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;width:100%;max-height:85dvh;overflow-y:auto;padding-bottom:max(env(safe-area-inset-bottom,20px),60px);animation:slideUp .22s ease;touch-action:manipulation}
 .modal-drag-handle{width:40px;height:5px;background:var(--border2);border-radius:3px;margin:12px auto 6px;cursor:pointer}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
 @keyframes slideDown{from{transform:translateY(-100%)}to{transform:none}}
@@ -1426,9 +1426,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.54</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.55</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.54 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.55 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -9053,7 +9053,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.54';
+var APP_VERSION = '5.55';
 
 // Clear stale caches when version changes
 (function() {
@@ -11649,7 +11649,7 @@ function _showSightingsBoard() {
   panel.style.cssText='position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.75);display:flex;align-items:flex-end;justify-content:center';
   // Swipe down to dismiss
   var startY=0, dragging=false;
-  panel.innerHTML='<div id="sightingsBoardSheet" style="background:var(--bg2);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:0 20px 32px;max-height:75vh;overflow-y:auto;touch-action:pan-y">'
+  panel.innerHTML='<div id="sightingsBoardSheet" style="background:var(--bg2);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:0 20px 32px;max-height:75vh;overflow-y:auto;touch-action:manipulation">'
     +'<div style="display:flex;justify-content:center;padding:10px 0 4px"><div style="width:40px;height:5px;background:var(--border2);border-radius:3px;cursor:pointer" onclick="_closeSightingsBoard()"></div></div>'
     +'<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;padding-top:6px">📊 Today Sightings in Kruger</div>'
     +entries.map(function(n,i){
@@ -12293,16 +12293,28 @@ function xcPlay(birdId,latin,pid){
   var btn=document.getElementById('xcbtn-'+pid);
   if(_xcState.recordings[pid]){xcStartAudio(pid,_xcState.recordings[pid]);return;}
   if(btn)btn.innerHTML='&#x23F3;';
-  var q=encodeURIComponent(latin);
-  var xcUrl='https://xeno-canto.org/api/3/recordings?query='+q+'&key=15b6abfed66d575c9fc3da124281d6626ef5a4f3&page=1';
-  var proxyUrl='https://api.allorigins.win/get?url='+encodeURIComponent(xcUrl);
-  fetch(proxyUrl)
+  var q=encodeURIComponent(latin+' call sound');
+  var wmUrl='https://commons.wikimedia.org/w/api.php?action=query&list=search'
+    +'&srsearch='+q+'&srnamespace=6&srlimit=5&format=json&origin=*';
+  fetch(wmUrl)
     .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
-    .then(function(proxy){
-      var data=JSON.parse(proxy.contents);
-      var recs=(data.recordings||[]);
-      if(!recs.length){xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;}
-      _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
+    .then(function(data){
+      var results=(data.query&&data.query.search)||[];
+      // Filter to audio files only (ogg, mp3, flac, wav)
+      var audioFiles=results.filter(function(r){
+        var t=(r.title||'').toLowerCase();
+        return t.match(/\.(ogg|mp3|flac|wav)$/);
+      });
+      if(!audioFiles.length){
+        xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;
+      }
+      // Build direct audio URL from filename
+      var filename=audioFiles[0].title.replace('File:','').replace(/ /g,'_');
+      var audioUrl='https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(filename);
+      var fakeRec={file:audioUrl,q:'A',type:'call',id:'wm',loc:'WikiMedia Commons',length:''};
+      _xcState.recordings[pid]=fakeRec;
+      xcUpdateMeta(pid,fakeRec);
+      xcStartAudio(pid,fakeRec);
     })
     .catch(function(){
       xcShowMeta(pid,null,'No signal \u2014 requires internet');
