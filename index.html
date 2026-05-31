@@ -853,16 +853,21 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       <div class="sec-head" style="display:flex;justify-content:space-between;align-items:center;padding-right:16px">
         <div><h2>Wildlife Guide</h2><p>Tap species to log sighting &middot; Protected species private</p></div>
         <button id="wildlifeViewBtn" onclick="toggleWildlifeView()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;flex-shrink:0" title="Toggle view">&#x229E;</button>
-        <button id="soundIdBtn" onclick="openSoundID()" style="display:none;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;flex-shrink:0;margin-left:6px" title="Identify bird by sound">&#x1F3A4;</button>
       </div>
 
       <div style="padding:10px 16px 10px">
-        <div style="position:relative">
-          <input type="text" placeholder="Search all species, birds, reptiles, frogs..."
-            id="wildlifeSearch" oninput="searchSpecies(this.value)"
-            style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px 36px 10px 36px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px">&#128269;</span>
-          <button onclick="clearWildlifeSearch()" id="wildlifeSearchClear" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;font-size:15px;cursor:pointer;line-height:1;padding:0;display:none;align-items:center;justify-content:center">&#x2715;</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="position:relative;flex:1">
+            <input type="text" placeholder="Search species..."
+              id="wildlifeSearch" oninput="searchSpecies(this.value)"
+              style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px 36px 10px 36px;font-family:Montserrat,sans-serif;font-size:16px;box-sizing:border-box;-webkit-appearance:none">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px">&#128269;</span>
+            <button onclick="clearWildlifeSearch()" id="wildlifeSearchClear" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;font-size:15px;cursor:pointer;line-height:1;padding:0;display:none;align-items:center;justify-content:center">&#x2715;</button>
+          </div>
+          <button id="soundIdBtn" onclick="openSoundID()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:0 14px;height:44px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;letter-spacing:.04em;line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px" title="Identify bird by sound">
+            <span style="font-size:16px;line-height:1">&#x1F3A4;</span>
+            <span>SOUND ID</span>
+          </button>
         </div>
       </div>
 
@@ -8976,7 +8981,6 @@ function switchWildlifeTab(tab, btn) {
   var insectScorpionBtn = document.getElementById('insectScorpionBtn');
   if(tab === 'species') {
     [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b){ b.style.display=''; } });
-    var sib2=document.getElementById('soundIdBtn'); if(sib2) sib2.style.display='none';
     if(birdFilters){ birdFilters.style.display='none'; birdFilters.style.position=''; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
     if(insectAllBtn) insectAllBtn.style.display='none';
@@ -8984,7 +8988,7 @@ function switchWildlifeTab(tab, btn) {
   } else if(tab === 'birds') {
     [mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(mamAllBtn){ mamAllBtn.style.display='none'; }
-    var sib=document.getElementById('soundIdBtn'); if(sib) sib.style.display='';
+
     if(birdFilters){ birdFilters.style.display='flex'; birdFilters.style.position=''; birdFilters.style.width='100%'; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='flex';
     var bab = document.getElementById('birdAllBtn');
@@ -12285,25 +12289,39 @@ function xcPlay(birdId,latin,pid){
   var btn=document.getElementById('xcbtn-'+pid);
   if(_xcState.recordings[pid]){xcStartAudio(pid,_xcState.recordings[pid]);return;}
   if(btn)btn.innerHTML='&#x23F3;';
-  var q=encodeURIComponent(latin);
-  var apiUrl='https://xeno-canto.org/api/2/recordings?query='+q+'&page=1';
-  fetch(apiUrl,{mode:'cors'})
-    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-    .then(function(data){
-      var recs=(data.recordings||[]);
-      if(!recs.length){
-        xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;
-      }
-      _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
-    })
-    .catch(function(){
-      xcShowMeta(pid,null,'Could not load — check connection');
+  var q=latin.replace(/ /g,'+');
+  var cbName='_xc'+(Date.now()%99999);
+  var script=document.createElement('script');
+  var done=false;
+  window[cbName]=function(data){
+    done=true;
+    try{document.head.removeChild(script);}catch(e){}
+    delete window[cbName];
+    var recs=(data.recordings||[]);
+    if(!recs.length){xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;}
+    _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
+  };
+  script.onerror=function(){
+    if(done)return;
+    try{document.head.removeChild(script);}catch(e){}
+    delete window[cbName];
+    xcShowMeta(pid,null,'No signal — requires internet');
+    if(btn)btn.innerHTML='&#x25B6;';
+  };
+  script.src='https://xeno-canto.org/api/2/recordings?query='+q+'&page=1&callback='+cbName;
+  document.head.appendChild(script);
+  setTimeout(function(){
+    if(!done){
+      try{document.head.removeChild(script);}catch(e){}
+      delete window[cbName];
+      xcShowMeta(pid,null,'Timeout — check connection');
       if(btn)btn.innerHTML='&#x25B6;';
-    });
+    }
+  },8000);;
 }
 function xcStartAudio(pid,rec){
   var btn=document.getElementById('xcbtn-'+pid);
-  var audio=new Audio(rec.file);audio.crossOrigin='anonymous';
+  var audio=new Audio(rec.file);
   _xcState.audio=audio;_xcState.id=pid;
   audio.ontimeupdate=function(){
     if(!audio.duration)return;
@@ -12328,7 +12346,18 @@ function xcShowMeta(pid,rec,msg){var m=document.getElementById('xcmeta-'+pid);if
 function buildXCPlayer(birdId,latin){
   var pid='xc-'+birdId;
   setTimeout(function(){xcBuildWave('xcwave-'+pid);},50);
-  return '<div class="xc-player"><div class="xc-section-label">Bird Call</div><div class="xc-controls"><button class="xc-play-btn" id="xcbtn-'+pid+'" onclick="xcPlay(\''+birdId+'\',\''+latin+'\',\''+pid+'\')" title="Play bird call">&#x25B6;</button><div class="xc-wave"><div class="xc-progress" id="xcprog-'+pid+'" style="width:0%"></div><div class="xc-bars" id="xcwave-'+pid+'"></div></div><span class="xc-time" id="xctimer-'+pid+'">0:00</span></div><div class="xc-meta" id="xcmeta-'+pid+'"><span class="xc-badge" style="opacity:.5">Tap play to load</span></div></div>';
+  return '<div class="xc-player">'
+    +'<div class="xc-section-label">Bird Call</div>'
+    +'<div class="xc-controls">'
+    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-birdid="'+birdId+'" data-latin="'+latin+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
+    +'<div class="xc-wave"><div class="xc-progress" id="xcprog-'+pid+'" style="width:0%"></div><div class="xc-bars" id="xcwave-'+pid+'"></div></div>'
+    +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
+    +'</div>'
+    +'<div class="xc-meta" id="xcmeta-'+pid+'"><span class="xc-badge" style="opacity:.5">Tap play to load</span></div>'
+    +'</div>';
+}
+function xcPlayBtn(btn){
+  xcPlay(btn.getAttribute('data-birdid'),btn.getAttribute('data-latin'),btn.getAttribute('data-pid'));
 }
 
 function openSoundID(){var m=document.getElementById('soundIdModal');if(m){m.style.display='flex';resetSoundID();}}
