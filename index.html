@@ -1426,9 +1426,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.52</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.53</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.52 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.53 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -9053,7 +9053,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.52';
+var APP_VERSION = '5.53';
 
 // Clear stale caches when version changes
 (function() {
@@ -12294,7 +12294,7 @@ function xcPlay(birdId,latin,pid){
   if(_xcState.recordings[pid]){xcStartAudio(pid,_xcState.recordings[pid]);return;}
   if(btn)btn.innerHTML='&#x23F3;';
   var q=encodeURIComponent(latin);
-  fetch('https://xeno-canto.org/api/3/recordings?query='+q+'&key=demo&page=1')
+  fetch('https://xeno-canto.org/api/3/recordings?query='+q+'&key=15b6abfed66d575c9fc3da124281d6626ef5a4f3&page=1')
     .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
     .then(function(data){
       var recs=(data.recordings||[]);
