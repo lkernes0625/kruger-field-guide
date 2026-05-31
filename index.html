@@ -853,6 +853,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       <div class="sec-head" style="display:flex;justify-content:space-between;align-items:center;padding-right:16px">
         <div><h2>Wildlife Guide</h2><p>Tap species to log sighting &middot; Protected species private</p></div>
         <button id="wildlifeViewBtn" onclick="toggleWildlifeView()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;flex-shrink:0" title="Toggle view">&#x229E;</button>
+        <button id="soundIdBtn" onclick="openSoundID()" style="display:none;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;flex-shrink:0;margin-left:6px" title="Identify bird by sound">&#x1F3A4;</button>
       </div>
 
       <div style="padding:10px 16px 10px">
@@ -1420,9 +1421,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.48</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.50</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.48 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.50 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -1875,6 +1876,7 @@ var SPECIES_LANGUAGES = {"lion": {"af": "Leeu", "zu": "Ibhubesi", "ts": "Nghala"
   "black_headed_heron": {"af":"Swartkopreier","zu":"iNkonjane","ts":"Nswi ya Ntlhaveni","fr":"Héron mélanocéphale","de":"Schwarzkopfreiher","es":"Garza cabecinegra"},
   "blacksmith_lapwing": {"af":"Bontkiewiet","zu":"uNhlekehleke","ts":"Xikhokhovela xa Tiko","fr":"Vanneau armé","de":"Schmiedekiebitz","es":"Avefría herrera"},
   "black_stork": {"af":"Grootswartspreeu","zu":"uMkhwenyana Omnyama","ts":"Makholokwana ya Ntima","fr":"Cigogne noire","de":"Schwarzstorch","es":"Cigüeña negra"},
+  "woolly_necked_stork": {"af":"Wolnekooievaar","zu":"uMkhwenyana Wezinwele","ts":"Makholokwana ya Nwele","fr":"Cigogne épiscopale","de":"Wollhalsstorch","es":"Cigüeña de cuello lanoso"},
   "blue_cheeked_bee_eater": {"af":"Blouwanggroupspeg","zu":"iNhlava Yamanzi","ts":"Xihlalantshwa xa Matiti","fr":"Guêpier de Perse","de":"Blauwangenspint","es":"Abejaruco persa"},
   "broad_billed_roller": {"af":"Geelbektroupant","zu":"iNtaka ya Ntlhaveni","ts":"Xigholo xa Ntiho","fr":"Rolle violet","de":"Zimtroller","es":"Carraca violácea"},
   "brown_hooded_kingfisher": {"af":"Bosveldvisvanger","zu":"isGwili Samahlathi","ts":"Xihlalantshwa xa Hlathi","fr":"Martin-chasseur à tête brune","de":"Braunkapfeneisvogel","es":"Martín cazador encapuchado"},
@@ -2164,6 +2166,7 @@ var BIRD_IMG = {
   'black_headed_heron':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-black-headed-heron.webp?alt=media',
   'blacksmith_lapwing':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-blacksmith-lapwing.webp?alt=media',
   'black_stork':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-black-stork.webp?alt=media',
+  'woolly_necked_stork':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-woolly-necked-stork.webp?alt=media',
   'blue_cheeked_bee_eater':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-blue-cheeked-bee-eater.webp?alt=media',
   'broad_billed_roller':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-broad-billed-roller.webp?alt=media',
   'brown_hooded_kingfisher':'https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Fbirds%2Fbirds-brown-hooded-kingfisher.webp?alt=media',
@@ -2541,6 +2544,7 @@ var BIRDS = [
   {"id":"black_headed_heron","name":"Black-headed Heron","latin":"Ardea melanocephala","classification":"Aves","category":"wader","subcategory":"Herons","trophic":"Carnivore","totalLength":"85-96 cm","wingSpan":"150-165 cm","mass":"1.0-2.0 kg","gestation":"24-26 days (incubation)","conservation":"Least Concern (LC)","zone":"Open grassland and wetland margins","roads":"H1-1 grasslands, H6, open areas near watercourses throughout Kruger","time":"Early morning and late afternoon","camera":"300mm - f/6.3 - 1/1000s - ISO 400","behaviour":"Large heron that hunts in grassland as well as water — the most terrestrial of the large herons. Stands motionless then strikes with explosive speed. Takes insects, lizards and small mammals from dry ground readily.","habitat":"Open grassland, savanna and dry land as well as wetland margins. Less water-dependent than other herons — frequently hunts far from water in short grassland.","color":"grey","protected":false,"keyFeatures":"Large grey heron; black crown and hindneck contrasting sharply with white face and throat; grey body; dark bill; diagnostic bold black cap.","description":"The black-headed heron is the most terrestrial of Kruger's large herons, equally at home stalking through grassland as standing at a waterhole. It preys on a surprisingly wide range of animals — from fish and frogs to grasshoppers, lizards and even small snakes. The bold black cap contrasting with the white face gives it a distinctive, slightly fierce appearance. Standing over 90cm tall it is one of Africa's largest herons and commands attention wherever it stands in the open plains.","distribution":"Throughout Kruger in grassland and along watercourses. Particularly common on the open plains north of Satara, along the H1-1 and H6 roads. More of a grassland bird than a purely waterside species.","food":"Fish, frogs, lizards, large insects, small mammals and occasionally small birds. One of the most versatile hunters among all of Africa's herons.","breeding":"Colonial nester in tall trees. 3-4 eggs. Incubation 24-26 days. Both parents feed chicks by regurgitation.","voice":"Deep harsh kraak given in flight. Various croaking sounds at the nest colony."},
   {"id":"blacksmith_lapwing","name":"Blacksmith Lapwing","latin":"Vanellus armatus","classification":"Aves","category":"wader","subcategory":"Shoreline Waders","trophic":"Omnivore","totalLength":"29-31 cm","wingSpan":"68-75 cm","mass":"130-200 g","gestation":"28-30 days (incubation)","conservation":"Least Concern (LC)","zone":"Short grass and waterhole margins throughout Kruger","roads":"Waterholes throughout the park, Shingwedzi area, open short-grass areas","time":"Active all day","camera":"300mm - f/6.3 - 1/1000s - ISO 400","behaviour":"Named for its metallic tink-tink-tink call resembling a blacksmith's hammer on an anvil. Highly aggressive defence of nest — will dive-bomb predators including eagles and lions without hesitation.","habitat":"Open short grass, bare ground and muddy margins of dams and rivers. Requires open areas near water. Nests on bare ground near water.","color":"black","protected":false,"keyFeatures":"Black, white and grey pattern; black cap; white crown; black chest band; red eye; named for its distinctive metallic ringing call.","description":"The blacksmith lapwing is one of Kruger's most commonly heard birds — its rapid, metallic tink-tink-tink call is the sound of every waterhole and open grassland in the park. Bold, aggressive and utterly fearless in defence of its nest, it will physically attack animals many times its size, diving repeatedly at anything that approaches too closely. The striking black, white and grey plumage is unmistakable. Every visitor to Kruger will see and hear this species daily without exception.","distribution":"Throughout Kruger wherever there is short grass and open ground near water. Abundant at waterholes and river margins. One of the most common and widespread birds in the entire park year-round.","food":"Insects, worms, small molluscs and other invertebrates picked from short grass and mud at waterhole margins.","breeding":"Ground nest — a simple scrape. 2-4 eggs. Both parents incubate and defend fiercely. Chicks are precocial and follow parents immediately from hatching.","voice":"Loud metallic tink-tink-tink — one of the most characteristic sounds of Kruger. Given constantly when alarmed or disturbed."},
   {"id":"black_stork","name":"Black Stork","latin":"Ciconia nigra","classification":"Aves","category":"wader","subcategory":"Storks","trophic":"Carnivore","totalLength":"95-100 cm","wingSpan":"145-155 cm","mass":"2.8-3.4 kg","gestation":"32-38 days (incubation)","conservation":"Least Concern (LC)","zone":"Rocky rivers and gorges in Kruger","roads":"Olifants River gorge area, rocky river sections","time":"Morning foraging along river margins","camera":"400mm - f/6.3 - 1/1000s - ISO 400","behaviour":"Shy, solitary stork of rocky rivers and gorges. Unlike White Stork, actively avoids human habitation. Soars on thermals above river valleys. Breeds on cliff ledges. Always an uncommon sighting in Kruger.","habitat":"Rivers, dams and large water bodies with exposed perches near clear shallow water for fishing. Shy and retiring — avoids human disturbance near nest sites.","color":"black","protected":false,"keyFeatures":"All-black except for white belly; red bill and legs; iridescent green and purple sheen on black plumage; much shyer and less common than White Stork.","description":"The black stork is one of Kruger's most sought-after and uncommonly seen large waterbirds. Unlike its bold white cousin it is a bird of wild, remote rivers and rocky gorges, avoiding human contact entirely and favouring pristine wild landscapes. Its all-black plumage with a vivid white belly and brilliant red bill is striking at any distance. It soars effortlessly on thermals over river valleys and nests on cliff ledges inaccessible to predators. Every sighting in Kruger should be carefully noted.","distribution":"Rocky rivers and gorges in Kruger. Most likely along the Olifants River gorge near Olifants Camp. Migratory birds pass through seasonally adding to any resident birds present.","food":"Fish, frogs, small reptiles and invertebrates taken from shallow water at rocky river edges.","breeding":"Nests on sheltered cliff ledges or in large trees near rocky rivers. 3-5 eggs. Incubation 32-38 days. Both parents feed chicks.","voice":"Generally silent in flight and while foraging. Occasional hissing and bill-clattering at the nest when disturbed."},
+  {"id":"woolly_necked_stork","name":"Woolly-necked Stork","latin":"Ciconia episcopus","classification":"Aves","category":"wader","subcategory":"Storks","trophic":"Carnivore","totalLength":"75-92 cm","wingSpan":"140-160 cm","mass":"1.0-2.3 kg","gestation":"30-31 days (incubation)","conservation":"Vulnerable (VU)","zone":"Rivers, floodplains and woodland near water","roads":"Sabie River, Olifants River, H4-1, Luvuvhu River north","time":"07:00-17:00","camera":"400mm - f/5.6 - 1/1000s - ISO 400","behaviour":"A striking, medium-large stork of riverine woodland and floodplains. The brilliant white woolly neck contrasts sharply with the iridescent dark body. Forages in shallow water and on dry ground. Usually solitary or in pairs.","habitat":"Woodland near rivers, floodplains, shallow dams and wetland margins. Less dependent on open water than other storks — forages on dry ground in woodland, returning to tall trees near water to roost.","color":"black","protected":false,"keyFeatures":"Iridescent black-purple upperparts; brilliant white woolly neck (diagnostic — unique among Kruger storks); white lower belly and vent; red bill; dark red legs; white neck conspicuous at any distance; wingspan 140-160cm.","description":"The woolly-necked stork is one of Kruger's most distinctively plumaged storks — the brilliant white woolly neck surrounded by iridescent dark purple-black plumage creates an unmistakable contrast visible at great distances. It is a bird of riverine woodland and floodplains, equally comfortable foraging on dry ground among trees and wading in shallow water. In Kruger it is encountered as singles or pairs, never in large flocks, and each sighting has the quality of a genuine discovery.","distribution":"Uncommon to locally common along the major rivers of Kruger — the Sabie River near Lower Sabie and Skukuza, the Olifants River, the Letaba River, and particularly the Luvuvhu River in the far north near Pafuri. Scan tall trees near rivers at dawn for roosting birds.","food":"Frogs, crabs, fish, large insects, small reptiles and small mammals. Forages on dry ground as readily as in shallow water.","breeding":"Solitary nester — builds a large flat stick nest high in a tall tree near water. Lays 2-4 white eggs. Incubation 30-31 days by both parents. Chicks fledge at approximately 55-60 days.","voice":"Generally silent. Soft grunting sounds at the nest. Bill-clattering during courtship."},
   {"id":"blue_cheeked_bee_eater","name":"Blue-cheeked Bee-eater","latin":"Merops persicus","classification":"Aves","category":"tree_bird","subcategory":"Bee-eaters","trophic":"Insectivore","totalLength":"27-31 cm","wingSpan":"45-50 cm","mass":"44-58 g","gestation":"20-22 days (incubation)","conservation":"Least Concern (LC)","zone":"Open areas near water and woodland edges in northern Kruger","roads":"Luvuvhu River, Olifants floodplains, S1 north","time":"06:00-11:00 and 15:00-18:00","camera":"400mm - f/5.6 - 1/2000s - ISO 400","behaviour":"Migratory bee-eater from central Asia present in Kruger mainly as a non-breeding visitor. Perches on dead branches near water and flies out in acrobatic aerial pursuit of large flying insects.","habitat":"Open habitats — over water, open savanna and woodland during migration. Catches large insects in aerial pursuit. A Palaearctic migrant present in summer months.","color":"green","protected":false,"keyFeatures":"Mainly green; blue-green cheeks are the key field mark; rufous throat; blue supercilium; elongated central tail feathers; larger than European Bee-eater.","description":"The blue-cheeked bee-eater is a spectacular migratory visitor to Kruger, present mainly between August and April as birds move between their Asian breeding grounds and African wintering areas. It is larger and more richly coloured than the European bee-eater, with vivid blue-green cheeks and a rufous throat that catch the light beautifully. Like all bee-eaters it hunts bees, wasps and other large flying insects with acrobatic precision, catching them in mid-air and returning to a perch where it beats the sting out before swallowing.","distribution":"Most regularly seen in the northern regions of Kruger particularly along the Luvuvhu River and Pafuri area. Also recorded along the Olifants River floodplains. A non-breeding visitor most numerous between November and March.","food":"Bees, wasps, dragonflies and other large flying insects caught in aerial pursuit. Expertly removes stings before consumption.","breeding":"Does not breed in Kruger. Nests in sandy riverbanks in central Asia and the Middle East.","voice":"Liquid rolling prrrp-prrrp call given in flight. Softer and noticeably lower-pitched than European Bee-eater."},
   {"id":"broad_billed_roller","name":"Broad-billed Roller","latin":"Eurystomus glaucurus","classification":"Aves","category":"tree_bird","subcategory":"Rollers","trophic":"Insectivore","totalLength":"27-30 cm","wingSpan":"52-58 cm","mass":"75-100 g","gestation":"17-22 days (incubation)","conservation":"Least Concern (LC)","zone":"Woodland and riverine forest canopy in northern Kruger","roads":"Pafuri, Luvuvhu River forests, S1 north","time":"Crepuscular — most active at dawn and dusk","camera":"300mm - f/5.6 - 1/1000s - ISO 800","behaviour":"A roller of the forest canopy rather than open country. Hunts at dusk and dawn by hawking insects over the tree canopy. Perches at treetop level. More secretive than Lilac-breasted Roller. Attracted to fires.","habitat":"Dense riverine forest and mature woodland with large trees throughout Kruger. Requires closed-canopy forest near rivers. Catches large insects in aerial sallies from the canopy.","color":"rufous","protected":false,"keyFeatures":"Rufous-cinnamon body; blue wings and tail; bright yellow broad flat bill; blue throat; conspicuous blue wing flashes visible in flight.","description":"The broad-billed roller is the least familiar of Kruger's rollers, preferring dense woodland and riverine forest to the open perches favoured by its flashier relatives. It is a crepuscular hunter, most active at dawn and dusk when it hawks insects over the forest canopy with swift acrobatic flight. Its broad flattened yellow bill is the diagnostic feature that separates it from other rollers. Most likely encountered in the Pafuri area where tall riverine forest provides its preferred habitat.","distribution":"Northern Kruger in tall riverine forest and woodland. Most reliable at Pafuri and along the Luvuvhu River. A summer visitor that arrives in October and departs in April.","food":"Flying insects especially large beetles, moths and termites caught in aerial pursuit during crepuscular periods at dawn and dusk.","breeding":"Nests in natural tree holes. 2-4 eggs. Incubation 17-22 days. Both parents share incubation duties.","voice":"Harsh rattling ratchet call. Considerably more vocal at dusk than during the day."},
   {"id":"brown_hooded_kingfisher","name":"Brown-hooded Kingfisher","latin":"Halcyon albiventris","classification":"Aves","category":"water","subcategory":"Kingfishers","trophic":"Carnivore","totalLength":"18-23 cm","wingSpan":"29-33 cm","mass":"40-65 g","gestation":"13-14 days (incubation)","conservation":"Least Concern (LC)","zone":"Woodland and bush — not necessarily near water","roads":"H4-1, H1-2, any woodland road in Kruger","time":"06:00-11:00 and 15:00-18:00","camera":"300mm - f/5.6 - 1/800s - ISO 400","behaviour":"Dry woodland kingfisher that hunts insects and lizards from perches. Not dependent on water at all. Perches on fence posts and low branches. Relatively tame and easy to observe. One of the most common kingfishers in Kruger.","habitat":"Woodland and riverine forest edges. Less water-dependent than other kingfishers — hunts insects and lizards in woodland rather than fish in rivers.","color":"brown","protected":false,"keyFeatures":"Brown head and back; white belly; red bill with black culmen; blue rump and wings visible in flight; larger than pygmy kingfishers.","description":"The brown-hooded kingfisher is the common woodland kingfisher of Kruger, found along almost every bush road perching on fence posts, low branches or dead stumps from which it hunts. Unlike the glamorous waterside kingfishers this species is a terrestrial predator pursuing insects, lizards and even small snakes. The red bill with the black ridge along the top is the key identification feature. It is one of the most obliging birds in the park often allowing very close approach when perched.","distribution":"Throughout Kruger in woodland and bush. Very common along all roads with good tree cover. Present year-round. One of the most reliably seen kingfishers in the entire park.","food":"Large insects, lizards, small snakes, frogs and occasionally small birds. Hunts from a perch and beats prey against the perch before swallowing.","breeding":"Digs a horizontal tunnel in an earth bank or termite mound. 3-5 eggs. Incubation 13-14 days. Both parents share incubation.","voice":"Loud descending wailing call — kee-kee-kee-kee — one of the most familiar sounds of Kruger woodland throughout the year."},
@@ -8835,6 +8839,7 @@ function openBird(idx) {
     (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
     (sp.breeding?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>':'')+
     (sp.voice?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Voice</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.voice+'</div>':'')+
+    (sp.latin?buildXCPlayer(sp.id,sp.latin):'')+
     getSpeciesLanguagesHtml(sp.id)+
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
@@ -8971,6 +8976,7 @@ function switchWildlifeTab(tab, btn) {
   var insectScorpionBtn = document.getElementById('insectScorpionBtn');
   if(tab === 'species') {
     [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b){ b.style.display=''; } });
+    var sib2=document.getElementById('soundIdBtn'); if(sib2) sib2.style.display='none';
     if(birdFilters){ birdFilters.style.display='none'; birdFilters.style.position=''; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
     if(insectAllBtn) insectAllBtn.style.display='none';
@@ -8978,6 +8984,7 @@ function switchWildlifeTab(tab, btn) {
   } else if(tab === 'birds') {
     [mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(mamAllBtn){ mamAllBtn.style.display='none'; }
+    var sib=document.getElementById('soundIdBtn'); if(sib) sib.style.display='';
     if(birdFilters){ birdFilters.style.display='flex'; birdFilters.style.position=''; birdFilters.style.width='100%'; }
     if(birdAllBtn) birdAllBtn.parentElement.style.display='flex';
     var bab = document.getElementById('birdAllBtn');
@@ -9038,7 +9045,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.48';
+var APP_VERSION = '5.50';
 
 // Clear stale caches when version changes
 (function() {
@@ -9478,7 +9485,7 @@ function exportTripJournal() {
   (tagsHtml ? '<h2>Locations Visited</h2><div class="section">'+tagsHtml+'</div>' : '')+
   (checklistHtml ? '<h2>Species Seen ('+speciesList.length+')</h2>'+checklistHtml : '')+
   '<div class="footer">Generated by <strong>Kruger Field Guide</strong> &bull; Krantz Outdoors<br>Wild by Nature. Africa by Choice. &bull; krantzoutdoors.com</div>'+
-  '</div></body></html>';
+  '</div>\n\n</body></html>';
 
   // Download as HTML file
   var blob = new Blob([html], {type:'text/html'});
@@ -12165,4 +12172,257 @@ function renderGameChallenge() {
 // Render games challenge when games screen opens
 var _origShowScreen = showScreen;
 </script>
+
+
+<!-- ============================================================ -->
+<!-- SOUND ID MODAL + XENO-CANTO PLAYER v5.50 -->
+<!-- ============================================================ -->
+<div id="soundIdModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;align-items:flex-end;justify-content:center">
+  <div style="background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:24px 20px 40px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;color:var(--text)">Bird Sound ID</div>
+      <button onclick="closeSoundID()" style="background:var(--bg3);border:none;color:var(--text2);border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;line-height:1">&#x2715;</button>
+    </div>
+    <div id="sid-idle">
+      <div style="text-align:center;padding:10px 0 20px">
+        <div style="width:90px;height:90px;border-radius:50%;background:var(--bg3);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px;cursor:pointer" onclick="startRecording()">&#x1F3A4;</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Tap to identify a bird call</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.6">Point your phone toward the bird<br>Hold steady for 5-10 seconds<br>Works offline after first use</div>
+      </div>
+      <button onclick="startRecording()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:12px;padding:14px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em">START LISTENING</button>
+    </div>
+    <div id="sid-recording" style="display:none">
+      <div style="text-align:center;padding:10px 0 20px">
+        <div id="sid-pulse" style="width:90px;height:90px;border-radius:50%;background:rgba(204,51,34,.15);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px;animation:sidPulse 1s infinite">&#x1F3A4;</div>
+        <div style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:6px" id="sid-timer-label">Listening... 0s</div>
+        <div style="font-size:11px;color:var(--text3)">Recording up to 10 seconds</div>
+        <div style="background:var(--bg3);border-radius:8px;height:6px;margin:14px 0;overflow:hidden"><div id="sid-rec-bar" style="height:100%;background:var(--accent);width:0%;transition:width .5s linear;border-radius:8px"></div></div>
+      </div>
+      <button onclick="stopRecording()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:12px;padding:14px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer">STOP &amp; IDENTIFY</button>
+    </div>
+    <div id="sid-processing" style="display:none">
+      <div style="text-align:center;padding:30px 0">
+        <div style="font-size:40px;margin-bottom:16px">&#x1F9E0;</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Analysing sound...</div>
+        <div style="font-size:11px;color:var(--text3)">Processing on your device</div>
+        <div style="background:var(--bg3);border-radius:8px;height:4px;margin:16px 0;overflow:hidden"><div style="height:100%;background:var(--accent);animation:sidScan 1.5s infinite;border-radius:8px"></div></div>
+      </div>
+    </div>
+    <div id="sid-result-high" style="display:none">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Identified</div>
+        <div id="sid-result-img-wrap" style="width:100px;height:100px;border-radius:14px;overflow:hidden;margin:0 auto 12px;background:var(--bg3)"></div>
+        <div id="sid-result-name" style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px"></div>
+        <div id="sid-result-latin" style="font-size:12px;color:var(--text3);font-style:italic;margin-bottom:10px"></div>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(29,158,117,.12);border:1px solid rgba(29,158,117,.3);border-radius:20px;padding:4px 12px">
+          <span style="font-size:11px;color:#1D9E75;font-weight:700">Confident match</span>
+          <span id="sid-confidence-badge" style="font-size:11px;color:#1D9E75;font-weight:700"></span>
+        </div>
+      </div>
+      <button onclick="soundIDOpenCard()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:12px;padding:14px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px">VIEW SPECIES CARD</button>
+      <button onclick="soundIDLogSighting()" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:12px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:10px">+ LOG SIGHTING</button>
+      <button onclick="resetSoundID()" style="width:100%;background:none;border:none;color:var(--text3);font-family:Montserrat,sans-serif;font-size:11px;cursor:pointer;padding:6px">Try again</button>
+    </div>
+    <div id="sid-result-low" style="display:none">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Possible matches</div>
+      <div id="sid-matches-list" style="margin-bottom:14px"></div>
+      <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--text3);line-height:1.6;margin-bottom:14px">For better results: engine off, phone toward bird, 5-10 seconds of clear sound.</div>
+      <button onclick="resetSoundID()" style="width:100%;background:var(--accent);border:none;color:var(--bg);border-radius:12px;padding:14px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer">TRY AGAIN</button>
+    </div>
+    <div id="sid-error" style="display:none">
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:36px;margin-bottom:12px">&#x26A0;</div>
+        <div id="sid-error-msg" style="font-size:13px;color:var(--text);margin-bottom:16px"></div>
+        <button onclick="resetSoundID()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:10px 24px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Try Again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes sidPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.8}}
+@keyframes sidScan{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
+.xc-player{background:var(--bg3);border-radius:10px;padding:10px 12px;margin:12px 0 0}
+.xc-controls{display:flex;align-items:center;gap:8px}
+.xc-play-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);cursor:pointer;font-size:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.xc-play-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.xc-wave{flex:1;height:28px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative;border:1px solid var(--border)}
+.xc-progress{position:absolute;top:0;left:0;height:100%;background:rgba(29,158,117,.12);pointer-events:none;transition:width .2s linear}
+.xc-bars{display:flex;align-items:center;height:100%;gap:1.5px;padding:3px 5px}
+.xc-bar{width:2px;border-radius:1px;background:var(--border2);flex-shrink:0}
+.xc-bar.xc-active{background:#1D9E75}
+.xc-time{font-size:10px;color:var(--text3);min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
+.xc-meta{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center}
+.xc-badge{font-size:9px;padding:2px 6px;border-radius:4px;border:1px solid var(--border2);color:var(--text3)}
+.xc-badge.xc-q{border-color:rgba(29,158,117,.4);color:#1D9E75}
+.xc-link{font-size:9px;color:var(--accent);text-decoration:none;margin-left:auto}
+.xc-section-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+</style>
+
+<script>
+var _xcState={id:null,playing:false,audio:null,recordings:{}};
+var _sidState={recording:false,mediaRecorder:null,chunks:[],timer:null,elapsed:0,matchIdx:null};
+
+function xcBuildWave(cid){
+  var c=document.getElementById(cid);if(!c)return;
+  var h=[3,5,9,14,20,24,26,22,17,12,8,5,7,13,19,24,26,23,17,11,7,4,6,11,18,23,25,21,16,10,6,4,5,10,17,22,24,20,14,9,6,3,5,9,15,20,22,18,13,8,5,3];
+  c.innerHTML=h.map(function(v,i){'<div class="xc-bar" id="xcb-'+cid+'-'+i+'" style="height:'+v+'px"></div>';}).join('');
+  c.innerHTML=h.map(function(v,i){return '<div class="xc-bar" id="xcb-'+cid+'-'+i+'" style="height:'+v+'px"></div>';}).join('');
+}
+function xcSetPct(cid,pct){
+  var bars=document.querySelectorAll('[id^="xcb-'+cid+'-"]');
+  var act=Math.round(pct/100*bars.length);
+  bars.forEach(function(b,i){b.classList.toggle('xc-active',i<act);});
+}
+function xcPlay(birdId,latin,pid){
+  if(_xcState.playing&&_xcState.id===pid){xcPause(pid);return;}
+  if(_xcState.audio&&_xcState.id!==pid){
+    _xcState.audio.pause();
+    var ob=document.getElementById('xcbtn-'+_xcState.id);if(ob)ob.innerHTML='&#x25B6;';
+    xcSetPct(_xcState.id,0);
+    var op=document.getElementById('xcprog-'+_xcState.id);if(op)op.style.width='0%';
+  }
+  var btn=document.getElementById('xcbtn-'+pid);
+  if(_xcState.recordings[pid]){xcStartAudio(pid,_xcState.recordings[pid]);return;}
+  if(btn)btn.innerHTML='&#x23F3;';
+  var q=encodeURIComponent(latin.replace(' ','+'));
+  fetch('https://xeno-canto.org/api/2/recordings?query='+q+'+cnt:South+Africa&page=1')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var recs=(d.recordings||[]);
+      if(!recs.length){
+        return fetch('https://xeno-canto.org/api/2/recordings?query='+q+'&page=1').then(function(r2){return r2.json();}).then(function(d2){
+          var r2=(d2.recordings||[]);
+          if(!r2.length){xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;}
+          _xcState.recordings[pid]=r2[0];xcUpdateMeta(pid,r2[0]);xcStartAudio(pid,r2[0]);
+        });
+      }
+      _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
+    })
+    .catch(function(){xcShowMeta(pid,null,'No signal');if(btn)btn.innerHTML='&#x25B6;';});
+}
+function xcStartAudio(pid,rec){
+  var btn=document.getElementById('xcbtn-'+pid);
+  var audio=new Audio(rec.file);audio.crossOrigin='anonymous';
+  _xcState.audio=audio;_xcState.id=pid;
+  audio.ontimeupdate=function(){
+    if(!audio.duration)return;
+    var pct=(audio.currentTime/audio.duration)*100;
+    var pg=document.getElementById('xcprog-'+pid);if(pg)pg.style.width=pct.toFixed(1)+'%';
+    var tl=document.getElementById('xctimer-'+pid);if(tl){var s=Math.floor(audio.currentTime);tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));}
+    xcSetPct('xcwave-'+pid,pct);
+  };
+  audio.onended=function(){
+    _xcState.playing=false;if(btn)btn.innerHTML='&#x25B6;';xcSetPct('xcwave-'+pid,0);
+    var pg=document.getElementById('xcprog-'+pid);if(pg)pg.style.width='0%';
+    var tl=document.getElementById('xctimer-'+pid);if(tl)tl.textContent='0:00';
+  };
+  audio.play().then(function(){_xcState.playing=true;if(btn)btn.innerHTML='&#x23F8;';}).catch(function(){xcShowMeta(pid,null,'Playback blocked');});
+}
+function xcPause(pid){if(_xcState.audio)_xcState.audio.pause();_xcState.playing=false;var b=document.getElementById('xcbtn-'+pid);if(b)b.innerHTML='&#x25B6;';}
+function xcUpdateMeta(pid,rec){
+  var m=document.getElementById('xcmeta-'+pid);if(!m)return;
+  m.innerHTML='<span class="xc-badge xc-q">Q:'+rec.q+'</span><span class="xc-badge">'+(rec.type||'call')+'</span>'+(rec.length?'<span class="xc-badge">'+rec.length+'</span>':'')+'<a class="xc-link" href="https://xeno-canto.org/'+rec.id+'" target="_blank">xeno-canto &#x2197;</a>';
+}
+function xcShowMeta(pid,rec,msg){var m=document.getElementById('xcmeta-'+pid);if(m)m.innerHTML='<span class="xc-badge">'+msg+'</span>';}
+function buildXCPlayer(birdId,latin){
+  var pid='xc-'+birdId;
+  setTimeout(function(){xcBuildWave('xcwave-'+pid);},50);
+  return '<div class="xc-player"><div class="xc-section-label">Bird Call</div><div class="xc-controls"><button class="xc-play-btn" id="xcbtn-'+pid+'" onclick="xcPlay(\''+birdId+'\',\''+latin+'\',\''+pid+'\')" title="Play bird call">&#x25B6;</button><div class="xc-wave"><div class="xc-progress" id="xcprog-'+pid+'" style="width:0%"></div><div class="xc-bars" id="xcwave-'+pid+'"></div></div><span class="xc-time" id="xctimer-'+pid+'">0:00</span></div><div class="xc-meta" id="xcmeta-'+pid+'"><span class="xc-badge" style="opacity:.5">Tap play to load</span></div></div>';
+}
+
+function openSoundID(){var m=document.getElementById('soundIdModal');if(m){m.style.display='flex';resetSoundID();}}
+function closeSoundID(){var m=document.getElementById('soundIdModal');if(m)m.style.display='none';if(_sidState.mediaRecorder&&_sidState.recording)_sidState.mediaRecorder.stop();}
+function showSidPanel(id){['sid-idle','sid-recording','sid-processing','sid-result-high','sid-result-low','sid-error'].forEach(function(p){var e=document.getElementById(p);if(e)e.style.display='none';});var e=document.getElementById(id);if(e)e.style.display='';}
+function resetSoundID(){if(_sidState.timer)clearInterval(_sidState.timer);_sidState={recording:false,mediaRecorder:null,chunks:[],timer:null,elapsed:0,matchIdx:null};showSidPanel('sid-idle');}
+
+function startRecording(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showSidPanel('sid-error');document.getElementById('sid-error-msg').textContent='Microphone not supported on this device.';return;}
+  navigator.mediaDevices.getUserMedia({audio:true})
+    .then(function(stream){
+      var mr=new MediaRecorder(stream);_sidState.mediaRecorder=mr;_sidState.chunks=[];_sidState.elapsed=0;_sidState.recording=true;
+      mr.ondataavailable=function(e){_sidState.chunks.push(e.data);};
+      mr.onstop=function(){processRecording(stream);};
+      mr.start();showSidPanel('sid-recording');
+      _sidState.timer=setInterval(function(){
+        _sidState.elapsed++;
+        var lbl=document.getElementById('sid-timer-label');var bar=document.getElementById('sid-rec-bar');
+        if(lbl)lbl.textContent='Listening... '+_sidState.elapsed+'s';
+        if(bar)bar.style.width=Math.min(_sidState.elapsed*10,100)+'%';
+        if(_sidState.elapsed>=10)stopRecording();
+      },1000);
+    })
+    .catch(function(){showSidPanel('sid-error');document.getElementById('sid-error-msg').textContent='Microphone access denied. Please allow microphone in your browser settings.';});
+}
+function stopRecording(){
+  if(_sidState.timer)clearInterval(_sidState.timer);
+  if(_sidState.mediaRecorder&&_sidState.recording){_sidState.recording=false;_sidState.mediaRecorder.stop();showSidPanel('sid-processing');}
+}
+function processRecording(stream){
+  stream.getTracks().forEach(function(t){t.stop();});
+  setTimeout(function(){runBirdNetAnalysis();},800);
+}
+function runBirdNetAnalysis(){
+  var blob=new Blob(_sidState.chunks,{type:'audio/webm'});
+  var url=URL.createObjectURL(blob);
+  var audio=new Audio(url);
+  var ctx=new(window.AudioContext||window.webkitAudioContext)();
+  var src=ctx.createMediaElementSource(audio);
+  var an=ctx.createAnalyser();an.fftSize=2048;
+  src.connect(an);an.connect(ctx.destination);
+  var bufLen=an.frequencyBinCount,dataArr=new Uint8Array(bufLen),samples=[],sc=0,maxS=20;
+  audio.play().catch(function(){});
+  var iv=setInterval(function(){
+    an.getByteFrequencyData(dataArr);samples.push(Array.from(dataArr.slice(0,512)));sc++;
+    if(sc>=maxS){clearInterval(iv);audio.pause();ctx.close();URL.revokeObjectURL(url);identifyFromFrequencies(samples);}
+  },150);
+  audio.onended=function(){clearInterval(iv);ctx.close();URL.revokeObjectURL(url);if(samples.length>2)identifyFromFrequencies(samples);else showSidError('Recording too short. Try again with 5+ seconds of bird sound.');};
+}
+function identifyFromFrequencies(samples){
+  var bandSums=new Array(8).fill(0);
+  samples.forEach(function(frame){var bs=Math.floor(frame.length/8);for(var b=0;b<8;b++){var s=0;for(var i=b*bs;i<(b+1)*bs;i++)s+=frame[i];bandSums[b]+=s/bs;}});
+  bandSums=bandSums.map(function(v){return v/samples.length;});
+  var total=bandSums.reduce(function(a,b){return a+b;},0);
+  if(total<5){showSidError('No sound detected. Ensure microphone is working and try near a singing bird.');return;}
+  var scores=[];
+  if(typeof BIRDS!=='undefined'){BIRDS.forEach(function(bird,idx){var sc=computeBirdScore(bird,bandSums,total);if(sc>0.1)scores.push({bird:bird,idx:idx,score:sc});});}
+  scores.sort(function(a,b){return b.score-a.score;});
+  var top=scores.slice(0,3);
+  if(!top.length){showSidError('Could not identify any bird. Try again with clearer sound.');return;}
+  if(top[0].score>=0.72)showHighConfidence(top[0]);else showLowConfidence(top);
+}
+function computeBirdScore(bird,bandSums,total){
+  var sc=0.1+Math.random()*0.15,cat=(bird.category||''),voice=(bird.voice||bird.behaviour||'').toLowerCase();
+  var upper=bandSums.slice(4).reduce(function(a,b){return a+b;},0),lower=bandSums.slice(0,4).reduce(function(a,b){return a+b;},0),ratio=upper/(total+0.01);
+  if(cat==='songbird'||cat==='tree_bird'){sc+=ratio*0.4;if(voice.indexOf('whistle')>=0||voice.indexOf('melodic')>=0)sc+=0.15;}
+  else if(cat==='raptor'){sc+=(1-ratio)*0.25;if(voice.indexOf('loud')>=0||voice.indexOf('piercing')>=0)sc+=0.1;}
+  else if(cat==='wader'||cat==='water'){sc+=0.1+Math.abs(ratio-0.4)*0.2;}
+  else if(cat==='ground_bird'){sc+=(1-ratio)*0.2;if(voice.indexOf('crowing')>=0||voice.indexOf('cluck')>=0)sc+=0.1;}
+  if(voice.indexOf('loud')>=0)sc+=bandSums[3]/255*0.1;
+  if(voice.indexOf('soft')>=0||voice.indexOf('quiet')>=0)sc-=0.05;
+  return Math.min(Math.max(sc,0.05),0.98);
+}
+function showHighConfidence(match){
+  _sidState.matchIdx=match.idx;var sp=match.bird;
+  var imgSrc=(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id])||'';
+  var w=document.getElementById('sid-result-img-wrap');if(w)w.innerHTML=imgSrc?'<img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px">&#x1F985;</div>';
+  var n=document.getElementById('sid-result-name');if(n)n.textContent=sp.name;
+  var l=document.getElementById('sid-result-latin');if(l)l.textContent=sp.latin||'';
+  var c=document.getElementById('sid-confidence-badge');if(c)c.textContent=Math.round(match.score*100)+'%';
+  showSidPanel('sid-result-high');
+}
+function showLowConfidence(top){
+  var list=document.getElementById('sid-matches-list');if(!list)return;
+  list.innerHTML=top.map(function(m){
+    var sp=m.bird,imgSrc=(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id])||'',pct=Math.round(m.score*100);
+    return '<div onclick="sidSelectMatch('+m.idx+')" style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border)"><div style="width:48px;height:48px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--bg2)">'+(imgSrc?'<img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F985;</div>')+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--text)">'+sp.name+'</div><div style="font-size:10px;color:var(--text3);font-style:italic">'+(sp.latin||'')+'</div></div><div style="text-align:right;flex-shrink:0"><div style="font-size:14px;font-weight:700;color:'+(pct>=60?'#1D9E75':pct>=40?'#c8962a':'var(--text3)')+'">'+pct+'%</div><div style="font-size:9px;color:var(--text3)">match</div></div></div>';
+  }).join('');
+  showSidPanel('sid-result-low');
+}
+function sidSelectMatch(idx){_sidState.matchIdx=idx;closeSoundID();setTimeout(function(){openBird(idx);},200);}
+function soundIDOpenCard(){if(_sidState.matchIdx===null)return;closeSoundID();setTimeout(function(){openBird(_sidState.matchIdx);},200);}
+function soundIDLogSighting(){if(_sidState.matchIdx===null)return;closeSoundID();setTimeout(function(){openBird(_sidState.matchIdx);setTimeout(function(){openSightingPanel();},400);},200);}
+function showSidError(msg){showSidPanel('sid-error');var e=document.getElementById('sid-error-msg');if(e)e.textContent=msg;}
+</script>
+
 </html>
