@@ -12242,7 +12242,7 @@ var _origShowScreen = showScreen;
 <style>
 @keyframes sidPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.8}}
 @keyframes sidScan{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
-.xc-player{background:var(--bg3);border-radius:10px;padding:10px 12px;margin:12px 0 0}
+.xc-player{background:var(--bg3);border-radius:10px;padding:10px 12px;margin:12px 0 14px}
 .xc-controls{display:flex;align-items:center;gap:8px}
 .xc-play-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);cursor:pointer;font-size:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .xc-play-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
@@ -12286,18 +12286,20 @@ function xcPlay(birdId,latin,pid){
   if(_xcState.recordings[pid]){xcStartAudio(pid,_xcState.recordings[pid]);return;}
   if(btn)btn.innerHTML='&#x23F3;';
   var q=encodeURIComponent(latin);
-  var script=document.createElement('script');
-  var cbName='_xc_cb_'+pid.replace(/-/g,'_');
-  window[cbName]=function(data){
-    delete window[cbName];
-    document.head.removeChild(script);
-    var recs=(data.recordings||[]);
-    if(!recs.length){xcShowMeta(pid,null,'No recordings found for this species');if(btn)btn.innerHTML='&#x25B6;';return;}
-    _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
-  };
-  script.onerror=function(){xcShowMeta(pid,null,'No signal \u2014 requires internet');if(btn)btn.innerHTML='&#x25B6;';};
-  script.src='https://xeno-canto.org/api/2/recordings?query='+q+'&page=1&callback='+cbName;
-  document.head.appendChild(script);
+  var apiUrl='https://xeno-canto.org/api/2/recordings?query='+q+'&page=1';
+  fetch(apiUrl,{mode:'cors'})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(data){
+      var recs=(data.recordings||[]);
+      if(!recs.length){
+        xcShowMeta(pid,null,'No recordings found');if(btn)btn.innerHTML='&#x25B6;';return;
+      }
+      _xcState.recordings[pid]=recs[0];xcUpdateMeta(pid,recs[0]);xcStartAudio(pid,recs[0]);
+    })
+    .catch(function(){
+      xcShowMeta(pid,null,'Could not load — check connection');
+      if(btn)btn.innerHTML='&#x25B6;';
+    });
 }
 function xcStartAudio(pid,rec){
   var btn=document.getElementById('xcbtn-'+pid);
