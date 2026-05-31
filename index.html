@@ -7594,6 +7594,10 @@ function setLandmarkFilter(f,btn){
   renderLandmarks();
 }
 
+function toggleModalImg(){
+  var img=document.getElementById('modalBirdImg');
+  if(img) toggleImgFullscreen(img);
+}
 function toggleImgFullscreen(img) {
   if(img._full) {
     img.style.cssText = 'width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block';
@@ -8764,7 +8768,7 @@ function openWildcardSpecies(type, i) {
   var imgSrc=ANIMAL_IMG[sp.id]||'';
   var hasSize=(sp.totalLength&&sp.totalLength!=='N/A')||(sp.shoulderHeight&&sp.shoulderHeight!=='N/A')||(sp.mass&&sp.mass!=='N/A');
   modal.querySelector('.modal-body').innerHTML=
-    (imgSrc?'<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
+    (imgSrc?'<img id="modalBirdImg" src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">'+(type==='reptile'?'&#x1F40A;':'&#x1F438;')+'</div>')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
@@ -8813,7 +8817,7 @@ function openBird(idx) {
   var imgSrc=(typeof BIRD_IMG!=='undefined'&&BIRD_IMG[sp.id])||ANIMAL_IMG[sp.id]||'';
   var hasSize=(sp.totalLength&&sp.totalLength!=='N/A')||(sp.wingSpan)||(sp.shoulderHeight&&sp.shoulderHeight!=='N/A')||(sp.mass&&sp.mass!=='N/A');
   modal.querySelector('.modal-body').innerHTML=
-    (imgSrc?'<img src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleImgFullscreen(this)" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
+    (imgSrc?'<img id="modalBirdImg" src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
     (sp.latin?buildXCPlayer(sp.id,sp.latin):'')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
@@ -12344,20 +12348,12 @@ function xcUpdateMeta(pid,rec){
 }
 function xcShowMeta(pid,rec,msg){var m=document.getElementById('xcmeta-'+pid);if(m)m.innerHTML='<span class="xc-badge">'+msg+'</span>';}
 function buildXCPlayer(birdId,latin){
-  var pid='xc-'+birdId;
-  setTimeout(function(){xcBuildWave('xcwave-'+pid);},50);
+  var q=encodeURIComponent(latin);
+  var embedUrl='https://xeno-canto.org/species/embed?query='+q+'&view=1';
   return '<div class="xc-player">'
     +'<div class="xc-section-label">Bird Call</div>'
-    +'<div class="xc-controls">'
-    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-birdid="'+birdId+'" data-latin="'+latin+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
-    +'<div class="xc-wave"><div class="xc-progress" id="xcprog-'+pid+'" style="width:0%"></div><div class="xc-bars" id="xcwave-'+pid+'"></div></div>'
-    +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
-    +'</div>'
-    +'<div class="xc-meta" id="xcmeta-'+pid+'"><span class="xc-badge" style="opacity:.5">Tap play to load</span></div>'
+    +'<iframe src="'+embedUrl+'" style="width:100%;height:80px;border:none;border-radius:6px;background:transparent" loading="lazy" scrolling="no" allow="autoplay"></iframe>'
     +'</div>';
-}
-function xcPlayBtn(btn){
-  xcPlay(btn.getAttribute('data-birdid'),btn.getAttribute('data-latin'),btn.getAttribute('data-pid'));
 }
 
 function openSoundID(){var m=document.getElementById('soundIdModal');if(m){m.style.display='flex';resetSoundID();}}
