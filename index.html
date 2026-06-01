@@ -1426,9 +1426,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.71</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.72</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.71 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.72 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -9087,7 +9087,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.71';
+var APP_VERSION = '5.72';
 
 // Clear stale caches when version changes
 (function() {
@@ -12289,9 +12289,9 @@ var _origShowScreen = showScreen;
 .xc-player{background:var(--bg3);border-radius:10px;padding:10px 12px;margin:8px 0 12px}
 .xc-controls{display:flex;align-items:center;gap:10px}
 .xc-play-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--accent);color:var(--bg);cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.xc-track{flex:1;height:4px;background:var(--border2);border-radius:2px;position:relative;overflow:visible}
-.xc-track-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .3s linear;position:relative}
-.xc-playhead{width:12px;height:12px;border-radius:50%;background:var(--accent);position:absolute;right:-6px;top:-4px;box-shadow:0 0 4px rgba(232,160,32,.5)}
+.xc-track{flex:1;height:4px;background:var(--border2);border-radius:2px;position:relative;overflow:visible;cursor:pointer}
+.xc-track-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;position:absolute;top:0;left:0;pointer-events:none}
+.xc-playhead{width:14px;height:14px;border-radius:50%;background:var(--accent);position:absolute;top:50%;transform:translate(-50%,-50%);left:0%;box-shadow:0 0 6px rgba(232,160,32,.6);pointer-events:none;transition:left .3s linear}
 .xc-time{font-size:11px;color:var(--text2);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
 .xc-meta{display:none}
 .xc-section-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
@@ -12367,15 +12367,16 @@ function xcPlayAudioUrl(pid,audioUrl,btn){
     var tl=document.getElementById('xctimer-'+pid);
     if(tl) tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));
     var dur=audio.duration;
-    var fill=document.getElementById('xcfill-'+pid);
-    if(fill){
-      if(dur&&!isNaN(dur)){
-        fill.style.width=(audio.currentTime/dur*100).toFixed(1)+'%';
-      } else {
-        // No duration — animate fill cycling 0-100% every 30s
-        fill.style.width=((audio.currentTime%30)/30*100).toFixed(1)+'%';
-      }
+    var pct=0;
+    if(dur&&!isNaN(dur)){
+      pct=(audio.currentTime/dur*100);
+    } else {
+      pct=((audio.currentTime%30)/30*100);
     }
+    var fill=document.getElementById('xcfill-'+pid);
+    if(fill) fill.style.width=pct.toFixed(1)+'%';
+    var head=document.getElementById('xchead-'+pid);
+    if(head) head.style.left=pct.toFixed(1)+'%';
   };
   audio.onended=function(){
     _xcState.playing=false;if(btn)btn.innerHTML='&#x25B6;';xcSetPct('xcwave-'+pid,0);
@@ -12396,10 +12397,10 @@ function buildXCPlayer(birdId,latin,xcId){
   var pid='xc-'+birdId;
 
   return '<div class="xc-player">'
-    +'<div class="xc-section-label">&#x1F50A; Bird Call</div>'
+
     +'<div class="xc-controls">'
     +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-xcid="'+(xcId||'')+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
-    +'<div class="xc-track"><div class="xc-track-fill" id="xcfill-'+pid+'"><div class="xc-playhead" id="xchead-'+pid+'"></div></div></div>'
+    +'<div class="xc-track" id="xctrack-'+pid+'"><div class="xc-track-fill" id="xcfill-'+pid+'"></div><div class="xc-playhead" id="xchead-'+pid+'"></div></div>'
     +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
     +'</div>'
     +'<div class="xc-meta" id="xcmeta-'+pid+'"></div>'
@@ -12425,19 +12426,21 @@ function xcPlayBtn(btn){
     var tl=document.getElementById('xctimer-'+pid);
     if(tl) tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));
     var dur=audio.duration;
-    var fill=document.getElementById('xcfill-'+pid);
-    if(fill){
-      if(dur&&!isNaN(dur)){
-        fill.style.width=(audio.currentTime/dur*100).toFixed(1)+'%';
-      } else {
-        // No duration — animate fill cycling 0-100% every 30s
-        fill.style.width=((audio.currentTime%30)/30*100).toFixed(1)+'%';
-      }
+    var pct=0;
+    if(dur&&!isNaN(dur)){
+      pct=(audio.currentTime/dur*100);
+    } else {
+      pct=((audio.currentTime%30)/30*100);
     }
+    var fill=document.getElementById('xcfill-'+pid);
+    if(fill) fill.style.width=pct.toFixed(1)+'%';
+    var head=document.getElementById('xchead-'+pid);
+    if(head) head.style.left=pct.toFixed(1)+'%';
   };
   audio.onended=function(){
     btn.innerHTML='&#x25B6;';
     var fill=document.getElementById('xcfill-'+pid);if(fill)fill.style.width='0%';
+    var head=document.getElementById('xchead-'+pid);if(head)head.style.left='0%';
     var tl=document.getElementById('xctimer-'+pid);if(tl)tl.textContent='0:00';
   };
   audio.play().catch(function(e){ btn.innerHTML='&#x25B6;'; xcShowMeta(pid,null,'Error: '+e.message); });
