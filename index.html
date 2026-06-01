@@ -1426,9 +1426,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.68</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.69</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.68 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.69 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -9087,7 +9087,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.68';
+var APP_VERSION = '5.69';
 
 // Clear stale caches when version changes
 (function() {
@@ -12288,7 +12288,7 @@ var _origShowScreen = showScreen;
 @keyframes sidScan{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
 .xc-player{background:var(--bg3);border-radius:10px;padding:10px 12px;margin:12px 0 14px}
 .xc-controls{display:flex;align-items:center;gap:8px}
-.xc-play-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);cursor:pointer;font-size:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.xc-play-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--accent);color:var(--bg);cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .xc-play-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
 .xc-wave{flex:1;height:28px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative;border:1px solid var(--border)}
 .xc-progress{position:absolute;top:0;left:0;height:100%;background:rgba(29,158,117,.12);pointer-events:none;transition:width .2s linear}
@@ -12369,8 +12369,9 @@ function xcPlayAudioUrl(pid,audioUrl,btn){
   var audio=new Audio(audioUrl);
   _xcState.audio=audio;_xcState.id=pid;
   audio.ontimeupdate=function(){
-    if(!audio.duration)return;
-    var pct=(audio.currentTime/audio.duration)*100;
+    var dur=audio.duration||0;
+    if(!dur||isNaN(dur))return;
+    var pct=(audio.currentTime/dur)*100;
     var pg=document.getElementById('xcprog-'+pid);if(pg)pg.style.width=pct.toFixed(1)+'%';
     var tl=document.getElementById('xctimer-'+pid);if(tl){var s=Math.floor(audio.currentTime);tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));}
     xcSetPct('xcwave-'+pid,pct);
@@ -12392,7 +12393,7 @@ function xcUpdateMeta(pid,rec){
 function xcShowMeta(pid,rec,msg){var m=document.getElementById('xcmeta-'+pid);if(m)m.innerHTML='<span class="xc-badge">'+msg+'</span>';}
 function buildXCPlayer(birdId,latin,xcId){
   var pid='xc-'+birdId;
-  setTimeout(function(){xcBuildWave('xcwave-'+pid);},200);
+  setTimeout(function(){xcBuildWave('xcwave-'+pid);},600);
   return '<div class="xc-player">'
     +'<div class="xc-section-label">&#x1F50A; Bird Call</div>'
     +'<div class="xc-controls">'
@@ -12400,7 +12401,7 @@ function buildXCPlayer(birdId,latin,xcId){
     +'<div class="xc-wave"><div class="xc-progress" id="xcprog-'+pid+'" style="width:0%"></div><div class="xc-bars" id="xcwave-'+pid+'"></div></div>'
     +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
     +'</div>'
-    +'<div class="xc-meta" id="xcmeta-'+pid+'"><span class="xc-badge" style="opacity:.5">Tap ▶ to play</span>'+(xcId?'<a class="xc-link" href="https://xeno-canto.org/'+xcId+'" target="_blank">xeno-canto &#x2197;</a>':'')+'</div>'
+    +'<div class="xc-meta" id="xcmeta-'+pid+'">'+(xcId?'<a class="xc-link" href="https://xeno-canto.org/'+xcId+'" target="_blank">xeno-canto &#x2197;</a>':'')+'</div>'
     +'</div>';
 }
 function xcPlayBtn(btn){
@@ -12411,7 +12412,6 @@ function xcPlayBtn(btn){
     _xcState.audio.pause();
     _xcState.audio.currentTime=0;
     btn.innerHTML='&#x25B6;';
-    xcShowMeta(pid,null,'<span class="xc-badge" style="opacity:.5">Tap ▶ to play</span>');
     _xcState.audio=null;
     return;
   }
@@ -12420,8 +12420,9 @@ function xcPlayBtn(btn){
   btn.innerHTML='&#x23F8;';
   xcShowMeta(pid,null,'Playing…');
   audio.ontimeupdate=function(){
-    if(!audio.duration)return;
-    var pct=(audio.currentTime/audio.duration)*100;
+    var dur=audio.duration||0;
+    if(!dur||isNaN(dur))return;
+    var pct=(audio.currentTime/dur)*100;
     var pg=document.getElementById('xcprog-'+pid);if(pg)pg.style.width=pct.toFixed(1)+'%';
     var tl=document.getElementById('xctimer-'+pid);if(tl){var s=Math.floor(audio.currentTime);tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));}
     xcSetPct('xcwave-'+pid,pct);
@@ -12430,7 +12431,7 @@ function xcPlayBtn(btn){
     btn.innerHTML='&#x25B6;';
     xcSetPct('xcwave-'+pid,0);
     var pg=document.getElementById('xcprog-'+pid);if(pg)pg.style.width='0%';
-    xcShowMeta(pid,null,'<span class="xc-badge" style="opacity:.5">Tap ▶ to play</span>');
+    xcShowMeta(pid,null,'');
   };
   audio.play().catch(function(e){ btn.innerHTML='&#x25B6;'; xcShowMeta(pid,null,'Error: '+e.message); });
 }
