@@ -864,7 +864,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px">&#128269;</span>
             <button onclick="clearWildlifeSearch()" id="wildlifeSearchClear" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;font-size:15px;cursor:pointer;line-height:1;padding:0;display:none;align-items:center;justify-content:center">&#x2715;</button>
           </div>
-          <button id="soundIdBtn" onclick="openSoundID()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:0 14px;height:44px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;letter-spacing:.04em;line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px" title="Identify bird by sound">
+          <button id="soundIdBtn" onclick="openSoundID()" style="display:none;background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:0 14px;height:44px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;letter-spacing:.04em;line-height:1;flex-direction:column;align-items:center;justify-content:center;gap:2px" title="Identify bird by sound">
             <span style="font-size:16px;line-height:1">&#x1F3A4;</span>
             <span>SOUND ID</span>
           </button>
@@ -1426,9 +1426,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.62</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.65</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.62 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.65 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
@@ -8819,7 +8819,6 @@ function openBird(idx) {
   modal.querySelector('.modal-body').innerHTML=
     (imgSrc?'<img id="modalBirdImg" src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
-    (sp.latin?buildXCPlayer(sp.id,sp.latin):'')+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
         '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
@@ -9053,7 +9052,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.62';
+var APP_VERSION = '5.65';
 
 // Clear stale caches when version changes
 (function() {
