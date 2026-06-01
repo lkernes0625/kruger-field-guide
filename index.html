@@ -428,7 +428,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v5.73</div>
+    <div class="license-tagline">Kruger National Park &bull; v5.21</div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -8853,7 +8853,7 @@ function openBird(idx) {
   modal.querySelector('.modal-body').innerHTML=
     (imgSrc?'<img id="modalBirdImg" src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:8px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
-    buildXCPlayer(sp.id,sp.latin,sp.xc||'')+
+    ''+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
         '<div style="font-size:17px;font-weight:700;color:var(--text)">'+sp.name+'</div>'+
@@ -12399,7 +12399,7 @@ function buildXCPlayer(birdId,latin,xcId){
   return '<div class="xc-player">'
 
     +'<div class="xc-controls">'
-    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-xcid="'+(xcId||'')+'" data-latin="'+(latin||'')+'" data-birdid="'+birdId+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
+    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-xcid="'+(xcId||'')+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
     +'<div class="xc-track" id="xctrack-'+pid+'"><div class="xc-track-fill" id="xcfill-'+pid+'"></div><div class="xc-playhead" id="xchead-'+pid+'"></div></div>'
     +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
     +'</div>'
@@ -12409,13 +12409,7 @@ function buildXCPlayer(birdId,latin,xcId){
 function xcPlayBtn(btn){
   var pid=btn.getAttribute('data-pid');
   var xcId=btn.getAttribute('data-xcid');
-  var latin=btn.getAttribute('data-latin');
-  var birdId=btn.getAttribute('data-birdid');
-  // No static ID — use dynamic worker lookup
-  if(!xcId){
-    xcPlay(birdId, latin, pid);
-    return;
-  }
+  if(!xcId) return;
   if(_xcState.audio && !_xcState.audio.paused){
     _xcState.audio.pause();
     _xcState.audio.currentTime=0;
