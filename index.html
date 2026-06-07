@@ -1426,10 +1426,11 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           </div>
         </div>
         <div style="text-align:center;padding:16px 0 8px">
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.73</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.74</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.73 — BUILD NOTES</div>
+            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.74 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
+              • NEW: My Trip &rarr; Journal — Outside-park camp support. Select "Other / Outside Park..." in any night row to type your own accommodation name (guesthouses, farm stays, private lodges). Shows with 🏡 icon in journal &amp; export.<br>
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
               • FIXED: Daily Challenge — ticked immediately after logging, no need to navigate away and back<br>
               • FIXED: My Trail popups — star ratings removed<br>
@@ -9307,8 +9308,8 @@ function renderTripJournal() {
     html += groups[day].map(function(e) {
       var t       = new Date(e.time||Date.now());
       var timeStr = t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      var icon    = e.type==='sighting'?'&#x1F98F;':e.type==='landmark'?'&#x1F4CD;':e.type==='camp'?'&#x1F3D5;':'&#x1F4DD;';
-      var color   = e.type==='sighting'?'rgba(232,160,32,.2)':e.type==='landmark'?'rgba(42,96,180,.25)':e.type==='camp'?'rgba(58,138,74,.25)':'rgba(60,60,80,.25)';
+      var icon    = e.type==='sighting'?'&#x1F98F;':e.type==='landmark'?'&#x1F4CD;':e.type==='camp'?'&#x1F3D5;':e.type==='outside_camp'?'&#x1F3E1;':'&#x1F4DD;';
+      var color   = e.type==='sighting'?'rgba(232,160,32,.2)':e.type==='landmark'?'rgba(42,96,180,.25)':e.type==='camp'?'rgba(58,138,74,.25)':e.type==='outside_camp'?'rgba(120,80,180,.25)':'rgba(60,60,80,.25)';
       var stars   = '';
       var delBtn  = e._src==='journal'
         ? '<button onclick="deleteJournalEntry('+e._idx+')" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:0;flex-shrink:0">&#x2715;</button>'
@@ -10165,6 +10166,7 @@ function generateTripSchedule() {
 
   var campOpts = (CAMPS||[]).slice().sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(c){ return '<option value="'+c.name+'">'+c.name+' ('+c.type+')</option>'; }).join('');
   var extraOpts = '<option value="Sabi Sands">Sabi Sands</option><option value="Timbavati">Timbavati</option><option value="MalaMala">MalaMala</option>';
+  var customOpt = '<option value="__custom__">🏡 Other / Outside Park...</option>';
 
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem('kfg_trip_schedule')||'{}'); } catch(e) {}
@@ -10177,17 +10179,25 @@ function generateTripSchedule() {
     var dateStr = d.getDate() + ' ' + MONTHS[d.getMonth()];
     var key = 'night_' + i;
 
-    html += '<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">' +
-      '<div style="flex-shrink:0;width:86px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px">' +
-        '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
-        '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
-        '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
+    html += '<div style="margin-bottom:8px">' +
+      '<div style="display:flex;gap:10px;align-items:center">' +
+        '<div style="flex-shrink:0;width:86px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 10px">' +
+          '<div style="font-size:10px;font-weight:700;color:var(--accent)">Night '+(i+1)+'</div>' +
+          '<div style="font-size:11px;font-weight:600;color:var(--text)">'+dateStr+'</div>' +
+          '<div style="font-size:9px;color:var(--text3)">'+dayName+'</div>' +
+        '</div>' +
+        '<div style="position:relative;flex:1;min-width:0">' +
+          '<select id="nightSel_'+i+'" onchange="handleNightCampChange('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 30px 10px 12px;font-family:Montserrat,sans-serif;font-size:11px;-webkit-appearance:none;appearance:none">' +
+            '<option value="">Select camp...</option>' + campOpts + extraOpts + customOpt +
+          '</select>' +
+          '<span style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:11px">&#x25BC;</span>' +
+        '</div>' +
       '</div>' +
-      '<div style="position:relative;flex:1;min-width:0">' +
-        '<select onchange="saveTripSchedule('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 30px 10px 12px;font-family:Montserrat,sans-serif;font-size:11px;-webkit-appearance:none;appearance:none">' +
-          '<option value="">Select camp...</option>' + campOpts + extraOpts +
-        '</select>' +
-        '<span style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:11px">&#x25BC;</span>' +
+      '<div id="nightCustomWrap_'+i+'" style="display:none;margin-top:6px;margin-left:96px">' +
+        '<input id="nightCustomInput_'+i+'" type="text" placeholder="e.g. Hippo Hollow, Hazyview Guesthouse..." ' +
+          'oninput="saveCustomNightCamp('+i+',this.value)" ' +
+          'style="width:100%;background:var(--bg3);border:1px solid var(--accent);color:var(--text);border-radius:9px;padding:9px 12px;font-family:Montserrat,sans-serif;font-size:11px;box-sizing:border-box;-webkit-appearance:none">' +
+        '<div style="font-size:9px;color:var(--text3);margin-top:4px;padding-left:2px">🏡 Outside-park accommodation — name saved to your itinerary</div>' +
       '</div>' +
     '</div>';
   }
@@ -10195,11 +10205,24 @@ function generateTripSchedule() {
   html += '<button onclick="calculateFromSchedule()" class="itin-calc-btn" style="margin-top:4px">Calculate Driving Times &rarr;</button>';
   container.innerHTML = html;
 
-  // Restore saved selections
-  var selects = container.querySelectorAll('select');
+  // Restore saved selections (handle custom values)
   for(var j = 0; j < nights; j++) {
     var k = 'night_' + j;
-    if(saved[k] && selects[j]) selects[j].value = saved[k];
+    var savedVal = saved[k] || '';
+    var sel = document.getElementById('nightSel_'+j);
+    if(!sel) continue;
+    // Check if savedVal matches a known option
+    var knownOpt = sel.querySelector('option[value="'+savedVal.replace(/"/g,'&quot;')+'"]');
+    if(savedVal && !knownOpt) {
+      // It's a custom outside-park value — select __custom__ and show input
+      sel.value = '__custom__';
+      var wrap = document.getElementById('nightCustomWrap_'+j);
+      var inp = document.getElementById('nightCustomInput_'+j);
+      if(wrap) wrap.style.display = 'block';
+      if(inp) inp.value = savedVal;
+    } else if(savedVal) {
+      sel.value = savedVal;
+    }
   }
 
   // Show save/clear buttons
@@ -10319,6 +10342,25 @@ function saveTripSchedule(nightIdx, campName) {
   localStorage.setItem('kfg_trip_schedule', JSON.stringify(saved));
   KFGSync.push();
 }
+
+function handleNightCampChange(nightIdx, val) {
+  var wrap = document.getElementById('nightCustomWrap_'+nightIdx);
+  var inp  = document.getElementById('nightCustomInput_'+nightIdx);
+  if(val === '__custom__') {
+    if(wrap) wrap.style.display = 'block';
+    if(inp) { inp.value = ''; inp.focus(); }
+    saveTripSchedule(nightIdx, '');
+  } else {
+    if(wrap) wrap.style.display = 'none';
+    if(inp)  inp.value = '';
+    saveTripSchedule(nightIdx, val);
+  }
+}
+
+function saveCustomNightCamp(nightIdx, text) {
+  saveTripSchedule(nightIdx, text.trim());
+}
+
 
 function calculateFromSchedule() {
   var saved = {};
