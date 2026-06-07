@@ -1001,7 +1001,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       </div>
 
       <!-- ITINERARY TAB (legacy — keep for saveTripDates etc, hidden) -->
-      <div class="trip-tab-content" id="tab-itinerary" style="display:none!important">
+      <div class="trip-tab-content" id="tab-itinerary" style="display:none">
         <div style="padding:16px 16px 12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
           <div style="min-width:0">
             <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Arrival Date</div>
@@ -9088,7 +9088,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.73';
+var APP_VERSION = '5.74';
 
 // Clear stale caches when version changes
 (function() {
@@ -10165,7 +10165,6 @@ function generateTripSchedule() {
   }
 
   var campOpts = (CAMPS||[]).slice().sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(c){ return '<option value="'+c.name+'">'+c.name+' ('+c.type+')</option>'; }).join('');
-  var extraOpts = '<option value="Sabi Sands">Sabi Sands</option><option value="Timbavati">Timbavati</option><option value="MalaMala">MalaMala</option>';
   var customOpt = '<option value="__custom__">🏡 Other / Outside Park...</option>';
 
   var saved = {};
@@ -10188,7 +10187,7 @@ function generateTripSchedule() {
         '</div>' +
         '<div style="position:relative;flex:1;min-width:0">' +
           '<select id="nightSel_'+i+'" onchange="handleNightCampChange('+i+',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:10px 30px 10px 12px;font-family:Montserrat,sans-serif;font-size:11px;-webkit-appearance:none;appearance:none">' +
-            '<option value="">Select camp...</option>' + campOpts + extraOpts + customOpt +
+            '<option value="">Select camp...</option>' + customOpt + campOpts +
           '</select>' +
           '<span style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:11px">&#x25BC;</span>' +
         '</div>' +
