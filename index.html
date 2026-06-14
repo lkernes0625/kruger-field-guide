@@ -8854,6 +8854,7 @@ function openBird(idx) {
   modal.querySelector('.modal-body').innerHTML=
     (imgSrc?'<img id="modalBirdImg" src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:8px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
+    (sp.xc?buildXCPlayer(sp.id,sp.latin,sp.xc):'')+
     ''+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
@@ -8884,7 +8885,6 @@ function openBird(idx) {
     (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
     (sp.breeding?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>':'')+
     (sp.voice?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Voice</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.voice+'</div>':'')+
-    (sp.xc?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Listen</div>'+buildXCPlayer(sp.id,sp.latin,sp.xc):'')+
     getSpeciesLanguagesHtml(sp.id)+
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
@@ -12405,20 +12405,19 @@ function xcPlayAudioUrl(pid,audioUrl,btn){
   var audio=new Audio(audioUrl);
   _xcState.audio=audio;_xcState.id=pid;
   audio.ontimeupdate=function(){
-    var s=Math.floor(audio.currentTime);
+    var cur=audio.currentTime;
+    var s=Math.floor(cur);
     var tl=document.getElementById('xctimer-'+pid);
     if(tl) tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));
     var dur=audio.duration;
     var pct=0;
-    if(dur&&!isNaN(dur)){
-      pct=(audio.currentTime/dur*100);
-    } else {
-      pct=((audio.currentTime%30)/30*100);
+    if(dur&&isFinite(dur)&&dur>0){
+      pct=(cur/dur)*100;
     }
     var fill=document.getElementById('xcfill-'+pid);
-    if(fill) fill.style.width=pct.toFixed(1)+'%';
+    if(fill) fill.style.width=pct.toFixed(2)+'%';
     var head=document.getElementById('xchead-'+pid);
-    if(head) head.style.left=pct.toFixed(1)+'%';
+    if(head) head.style.left=pct.toFixed(2)+'%';
   };
   audio.onended=function(){
     _xcState.playing=false;if(btn)btn.innerHTML='&#x25B6;';xcSetPct('xcwave-'+pid,0);
