@@ -864,9 +864,13 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px">&#128269;</span>
             <button onclick="clearWildlifeSearch()" id="wildlifeSearchClear" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--bg4);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;font-size:15px;cursor:pointer;line-height:1;padding:0;display:none;align-items:center;justify-content:center">&#x2715;</button>
           </div>
-          <button id="soundIdBtn" onclick="openSoundID()" style="display:none;background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:0 14px;height:44px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;letter-spacing:.04em;line-height:1;flex-direction:column;align-items:center;justify-content:center;gap:2px" title="Identify bird by sound">
-            <span style="font-size:16px;line-height:1">&#x1F3A4;</span>
-            <span>SOUND ID</span>
+          <button id="soundIdBtn" onclick="openSoundID()" style="display:none;width:44px;height:44px;flex-shrink:0;cursor:pointer;padding:0;background:var(--bg3);border:1.5px solid var(--border2);border-radius:50%;align-items:center;justify-content:center" title="Identify bird by sound">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="9" y="2" width="6" height="11" rx="3" fill="var(--text)"/>
+              <path d="M5 11a7 7 0 0 0 14 0" stroke="var(--text)" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <line x1="12" y1="18" x2="12" y2="22" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="9" y1="22" x2="15" y2="22" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -9025,6 +9029,7 @@ function switchWildlifeTab(tab, btn) {
     if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
     if(insectAllBtn) insectAllBtn.style.display='none';
     if(insectScorpionBtn) insectScorpionBtn.style.display='none';
+    var sib=document.getElementById('soundIdBtn');if(sib){sib.style.display='none';}
   } else if(tab === 'birds') {
     [mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(mamAllBtn){ mamAllBtn.style.display='none'; }
@@ -9035,6 +9040,7 @@ function switchWildlifeTab(tab, btn) {
     if(bab && !bab.classList.contains('active')) bab.classList.add('active');
     if(insectAllBtn) insectAllBtn.style.display='none';
     if(insectScorpionBtn) insectScorpionBtn.style.display='none';
+    var sib=document.getElementById('soundIdBtn');if(sib){sib.style.display='flex';}
   } else if(tab === 'insects') {
     [mamAllBtn,mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(birdFilters){ birdFilters.style.display='none'; }
@@ -9089,7 +9095,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.75';
+var APP_VERSION = '5.76';
 
 // Clear stale caches when version changes
 (function() {
@@ -12341,6 +12347,7 @@ var _origShowScreen = showScreen;
 
 <script>
 var _xcState={id:null,playing:false,audio:null,recordings:{}};
+var BIRDNET_URL='https://birdnet-kruger-434199727876.us-central1.run.app';
 var _sidState={recording:false,mediaRecorder:null,chunks:[],timer:null,elapsed:0,matchIdx:null};
 
 function xcBuildWave(cid){
@@ -12405,19 +12412,18 @@ function xcPlayAudioUrl(pid,audioUrl,btn){
   var audio=new Audio(audioUrl);
   _xcState.audio=audio;_xcState.id=pid;
   audio.ontimeupdate=function(){
-    var cur=audio.currentTime;
-    var s=Math.floor(cur);
+    var s=Math.floor(audio.currentTime);
     var tl=document.getElementById('xctimer-'+pid);
     if(tl) tl.textContent=Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2));
     var dur=audio.duration;
     var pct=0;
     if(dur&&isFinite(dur)&&dur>0){
-      pct=(cur/dur)*100;
+      pct=(audio.currentTime/dur)*100;
     }
     var fill=document.getElementById('xcfill-'+pid);
-    if(fill) fill.style.width=pct.toFixed(2)+'%';
+    if(fill) fill.style.width=pct.toFixed(1)+'%';
     var head=document.getElementById('xchead-'+pid);
-    if(head) head.style.left=pct.toFixed(2)+'%';
+    if(head) head.style.left=pct.toFixed(1)+'%';
   };
   audio.onended=function(){
     _xcState.playing=false;if(btn)btn.innerHTML='&#x25B6;';xcSetPct('xcwave-'+pid,0);
@@ -12492,6 +12498,13 @@ function showSidPanel(id){['sid-idle','sid-recording','sid-processing','sid-resu
 function resetSoundID(){if(_sidState.timer)clearInterval(_sidState.timer);_sidState={recording:false,mediaRecorder:null,chunks:[],timer:null,elapsed:0,matchIdx:null};showSidPanel('sid-idle');}
 
 function startRecording(){
+  // Grab GPS for better BirdNET accuracy
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(p){
+      window._sidLat=p.coords.latitude;
+      window._sidLon=p.coords.longitude;
+    },function(){},{timeout:3000});
+  }
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showSidPanel('sid-error');document.getElementById('sid-error-msg').textContent='Microphone not supported on this device.';return;}
   navigator.mediaDevices.getUserMedia({audio:true})
     .then(function(stream){
@@ -12519,19 +12532,58 @@ function processRecording(stream){
 }
 function runBirdNetAnalysis(){
   var blob=new Blob(_sidState.chunks,{type:'audio/webm'});
-  var url=URL.createObjectURL(blob);
-  var audio=new Audio(url);
-  var ctx=new(window.AudioContext||window.webkitAudioContext)();
-  var src=ctx.createMediaElementSource(audio);
-  var an=ctx.createAnalyser();an.fftSize=2048;
-  src.connect(an);an.connect(ctx.destination);
-  var bufLen=an.frequencyBinCount,dataArr=new Uint8Array(bufLen),samples=[],sc=0,maxS=20;
-  audio.play().catch(function(){});
-  var iv=setInterval(function(){
-    an.getByteFrequencyData(dataArr);samples.push(Array.from(dataArr.slice(0,512)));sc++;
-    if(sc>=maxS){clearInterval(iv);audio.pause();ctx.close();URL.revokeObjectURL(url);identifyFromFrequencies(samples);}
-  },150);
-  audio.onended=function(){clearInterval(iv);ctx.close();URL.revokeObjectURL(url);if(samples.length>2)identifyFromFrequencies(samples);else showSidError('Recording too short. Try again with 5+ seconds of bird sound.');};
+  if(!blob||blob.size<1000){showSidError('No sound detected. Please try again closer to the bird.');return;}
+  var fd=new FormData();
+  fd.append('audio',blob,'recording.webm');
+  // Use device GPS if available, otherwise default to Kruger centre
+  var lat=window._sidLat||-23.9;
+  var lon=window._sidLon||31.5;
+  fd.append('lat',lat);
+  fd.append('lon',lon);
+  fetch('BIRDNET_URL/identify',{method:'POST',body:fd})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.success||!data.detections||data.detections.length===0){
+        showSidError('No bird identified. Try again with clearer sound near a singing bird.');
+        return;
+      }
+      // Match detections to our Kruger bird database
+      var matches=[];
+      data.detections.forEach(function(d){
+        for(var i=0;i<BIRDS.length;i++){
+          if(BIRDS[i].latin&&d.scientific_name&&
+             BIRDS[i].latin.toLowerCase()===d.scientific_name.toLowerCase()){
+            matches.push({bird:BIRDS[i],idx:i,score:d.confidence,name:d.common_name});
+            break;
+          }
+        }
+        // Also try partial match if no exact match
+        if(matches.length===0){
+          for(var i=0;i<BIRDS.length;i++){
+            if(BIRDS[i].latin&&d.scientific_name&&
+               BIRDS[i].latin.toLowerCase().indexOf(d.scientific_name.split(' ')[0].toLowerCase())>=0){
+              matches.push({bird:BIRDS[i],idx:i,score:d.confidence,name:d.common_name});
+              break;
+            }
+          }
+        }
+      });
+      if(matches.length===0){
+        // Show BirdNET result even if not in our DB
+        var top=data.detections[0];
+        showSidError('Identified: '+top.common_name+' ('+Math.round(top.confidence*100)+'%) — not in Kruger bird list.');
+        return;
+      }
+      var top=matches[0];
+      if(top.score>=0.5){
+        showSidResultHigh(top);
+      } else {
+        showSidResultLow(matches.slice(0,3));
+      }
+    })
+    .catch(function(err){
+      showSidError('Could not connect to identification service. Check your internet connection.');
+    });
 }
 function identifyFromFrequencies(samples){
   var bandSums=new Array(8).fill(0);
