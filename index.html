@@ -8884,6 +8884,7 @@ function openBird(idx) {
     (sp.food?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Food</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.food+'</div>':'')+
     (sp.breeding?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Breeding</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.breeding+'</div>':'')+
     (sp.voice?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Voice</div><div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6">'+sp.voice+'</div>':'')+
+    (sp.xc?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px">Listen</div>'+buildXCPlayer(sp.id,sp.latin,sp.xc):'')+
     getSpeciesLanguagesHtml(sp.id)+
     '<div id="sightingPanel" style="display:none;margin-top:12px">'+
       '<div id="gpsStatusBtn" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:600;margin-bottom:10px;text-align:left">&#x1F4CD; Getting your GPS location...</div>'+
@@ -9088,7 +9089,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.74';
+var APP_VERSION = '5.75';
 
 // Clear stale caches when version changes
 (function() {
@@ -12332,7 +12333,7 @@ var _origShowScreen = showScreen;
 .xc-play-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--accent);color:var(--bg);cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .xc-track{flex:1;height:4px;background:var(--border2);border-radius:2px;position:relative;overflow:visible;cursor:pointer}
 .xc-track-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;position:absolute;top:0;left:0;pointer-events:none}
-.xc-playhead{width:14px;height:14px;border-radius:50%;background:var(--accent);position:absolute;top:50%;transform:translate(-50%,-50%);left:0%;box-shadow:0 0 6px rgba(232,160,32,.6);pointer-events:none;transition:left .3s linear}
+.xc-playhead{width:14px;height:14px;border-radius:50%;background:var(--accent);position:absolute;top:50%;transform:translate(-50%,-50%);left:0%;box-shadow:0 0 6px rgba(232,160,32,.6);pointer-events:none}
 .xc-time{font-size:11px;color:var(--text2);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
 .xc-meta{display:none}
 .xc-section-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
