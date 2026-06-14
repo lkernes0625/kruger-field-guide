@@ -8858,7 +8858,7 @@ function openBird(idx) {
   modal.querySelector('.modal-body').innerHTML=
     (imgSrc?'<img id="modalBirdImg" src="'+imgSrc+'" alt="'+sp.name+'" onclick="toggleModalImg()" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:8px;background:var(--bg2);cursor:zoom-in;display:block">':
     '<div style="width:100%;height:180px;background:var(--bg3);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:48px">&#x1F985;</div>')+
-    (sp.xc?buildXCPlayer(sp.id,sp.latin,sp.xc):'')+
+    buildXCPlayer(sp.id,sp.latin,sp.xc||'')+
     ''+
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
       '<div>'+
@@ -9029,7 +9029,7 @@ function switchWildlifeTab(tab, btn) {
     if(birdAllBtn) birdAllBtn.parentElement.style.display='none';
     if(insectAllBtn) insectAllBtn.style.display='none';
     if(insectScorpionBtn) insectScorpionBtn.style.display='none';
-    var sib=document.getElementById('soundIdBtn');if(sib){sib.style.display='none';}
+    var sib2=document.getElementById('soundIdBtn');if(sib2){sib2.style.display='none';}
   } else if(tab === 'birds') {
     [mamBig5Btn,mamEndBtn,mamRareBtn].forEach(function(b){ if(b) b.style.display='none'; });
     if(mamAllBtn){ mamAllBtn.style.display='none'; }
@@ -12446,7 +12446,7 @@ function buildXCPlayer(birdId,latin,xcId){
   return '<div class="xc-player">'
 
     +'<div class="xc-controls">'
-    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-xcid="'+(xcId||'')+'" data-pid="'+pid+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
+    +'<button class="xc-play-btn" id="xcbtn-'+pid+'" data-xcid="'+(xcId||'')+'" data-pid="'+pid+'" data-latin="'+(latin||'')+'" data-birdid="'+birdId+'" onclick="xcPlayBtn(this)" title="Play bird call">&#x25B6;</button>'
     +'<div class="xc-track" id="xctrack-'+pid+'"><div class="xc-track-fill" id="xcfill-'+pid+'"></div><div class="xc-playhead" id="xchead-'+pid+'"></div></div>'
     +'<span class="xc-time" id="xctimer-'+pid+'">0:00</span>'
     +'</div>'
@@ -12456,7 +12456,13 @@ function buildXCPlayer(birdId,latin,xcId){
 function xcPlayBtn(btn){
   var pid=btn.getAttribute('data-pid');
   var xcId=btn.getAttribute('data-xcid');
-  if(!xcId) return;
+  var latin=btn.getAttribute('data-latin')||'';
+  var birdId=btn.getAttribute('data-birdid')||'';
+  if(!xcId){
+    // No static XC ID - use dynamic worker lookup
+    xcPlay(birdId,latin,pid);
+    return;
+  }
   if(_xcState.audio && !_xcState.audio.paused){
     _xcState.audio.pause();
     _xcState.audio.currentTime=0;
@@ -12498,13 +12504,7 @@ function showSidPanel(id){['sid-idle','sid-recording','sid-processing','sid-resu
 function resetSoundID(){if(_sidState.timer)clearInterval(_sidState.timer);_sidState={recording:false,mediaRecorder:null,chunks:[],timer:null,elapsed:0,matchIdx:null};showSidPanel('sid-idle');}
 
 function startRecording(){
-  // Grab GPS for better BirdNET accuracy
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(p){
-      window._sidLat=p.coords.latitude;
-      window._sidLon=p.coords.longitude;
-    },function(){},{timeout:3000});
-  }
+  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(p){window._sidLat=p.coords.latitude;window._sidLon=p.coords.longitude;},function(){},{timeout:3000});}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showSidPanel('sid-error');document.getElementById('sid-error-msg').textContent='Microphone not supported on this device.';return;}
   navigator.mediaDevices.getUserMedia({audio:true})
     .then(function(stream){
@@ -12535,19 +12535,15 @@ function runBirdNetAnalysis(){
   if(!blob||blob.size<1000){showSidError('No sound detected. Please try again closer to the bird.');return;}
   var fd=new FormData();
   fd.append('audio',blob,'recording.webm');
-  // Use device GPS if available, otherwise default to Kruger centre
-  var lat=window._sidLat||-23.9;
-  var lon=window._sidLon||31.5;
-  fd.append('lat',lat);
-  fd.append('lon',lon);
-  fetch('BIRDNET_URL/identify',{method:'POST',body:fd})
+  fd.append('lat',window._sidLat||-23.9);
+  fd.append('lon',window._sidLon||31.5);
+  fetch(BIRDNET_URL+'/identify',{method:'POST',body:fd})
     .then(function(r){return r.json();})
     .then(function(data){
       if(!data.success||!data.detections||data.detections.length===0){
         showSidError('No bird identified. Try again with clearer sound near a singing bird.');
         return;
       }
-      // Match detections to our Kruger bird database
       var matches=[];
       data.detections.forEach(function(d){
         for(var i=0;i<BIRDS.length;i++){
@@ -12557,33 +12553,17 @@ function runBirdNetAnalysis(){
             break;
           }
         }
-        // Also try partial match if no exact match
-        if(matches.length===0){
-          for(var i=0;i<BIRDS.length;i++){
-            if(BIRDS[i].latin&&d.scientific_name&&
-               BIRDS[i].latin.toLowerCase().indexOf(d.scientific_name.split(' ')[0].toLowerCase())>=0){
-              matches.push({bird:BIRDS[i],idx:i,score:d.confidence,name:d.common_name});
-              break;
-            }
-          }
-        }
       });
       if(matches.length===0){
-        // Show BirdNET result even if not in our DB
         var top=data.detections[0];
-        showSidError('Identified: '+top.common_name+' ('+Math.round(top.confidence*100)+'%) — not in Kruger bird list.');
+        showSidError('Heard: '+top.common_name+' ('+Math.round(top.confidence*100)+'%) — not in Kruger bird list.');
         return;
       }
       var top=matches[0];
-      if(top.score>=0.5){
-        showSidResultHigh(top);
-      } else {
-        showSidResultLow(matches.slice(0,3));
-      }
+      if(top.score>=0.5){showSidResultHigh(top);}
+      else{showSidResultLow(matches.slice(0,3));}
     })
-    .catch(function(err){
-      showSidError('Could not connect to identification service. Check your internet connection.');
-    });
+    .catch(function(){showSidError('Could not connect to identification service. Check your internet connection.');});
 }
 function identifyFromFrequencies(samples){
   var bandSums=new Array(8).fill(0);
