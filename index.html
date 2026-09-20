@@ -8299,8 +8299,10 @@ function findNearest(type, btn) {
           '<div style="font-size:24px;margin-bottom:8px">📍</div>' +
           '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Location Access Needed</div>' +
           '<div style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5">To find the nearest facilities, please enable location access for this app.</div>' +
-          '<div style="font-size:11px;color:var(--text3);margin-bottom:12px"><b>iPhone:</b> Settings → Privacy → Location Services → Safari → While Using<br><b>Android:</b> Settings → Apps → Browser → Permissions → Location</div>' +
-          '<button onclick="findNearest(\''+type+'\',null)" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:10px 20px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button>' +
+          '<div style="display:flex;gap:8px;justify-content:center">' +
+            '<button onclick="KFGGeo.help(\'find the nearest facilities\')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">How to fix</button>' +
+            '<button onclick="findNearest(\''+type+'\',null)" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:10px 20px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button>' +
+          '</div>' +
         '</div>';
       } else {
         var msg = err.code === 2 ? 'Location unavailable. Try moving to open ground.' : 'Location request timed out. Try again.';
@@ -8315,11 +8317,277 @@ function findNearest(type, btn) {
 
 var _wildlifeFilter = 'all';
 
-// GPS cache — ask permission once, reuse for 5 minutes
-var _gpsCache=null, _gpsCacheTime=0;
+// ============================================
+// GPS / LOCATION — single gateway for the whole app
+// ============================================
+// Important context before anyone "fixes" this again:
+//   * iOS Safari grants geolocation per BROWSING SESSION. There is NO web API
+//     that makes the browser remember a grant. Only the user can, via
+//     aA -> Website Settings -> Location -> Allow (or by installing to Home Screen).
+//   * So our job is: (a) ask as FEW times as possible, (b) ask at a moment where
+//     the reason is obvious, (c) show the user how to stop the prompts for good.
+//   * Every location request in this app must route through KFGGeo.ensure().
+//     Do not call navigator.geolocation.getCurrentPosition directly.
+var _gpsCache = null, _gpsCacheTime = 0;
+var GPS_CACHE_MS = 300000; // 5 minutes
+
+var KFGGeo = (function(){
+
+  // ── safe localStorage (private mode / quota can throw) ──────────
+  function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+  function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+  function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+  function supported(){ return !!(navigator && navigator.geolocation); }
+
+  function isStandalone(){
+    try {
+      return window.navigator.standalone === true ||
+             (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    } catch(e){ return false; }
+  }
+  function isIOS(){
+    try { return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+    catch(e){ return false; }
+  }
+
+  function fresh(){ return _gpsCache && (Date.now() - _gpsCacheTime) < GPS_CACHE_MS; }
+
+  // ── Permissions API: Safari 16+, Chrome, Firefox. 'unknown' elsewhere ──
+  function state(cb){
+    if(!navigator.permissions || !navigator.permissions.query){ cb('unknown'); return; }
+    try {
+      navigator.permissions.query({ name:'geolocation' })
+        .then(function(p){ cb(p.state); })
+        .catch(function(){ cb('unknown'); });
+    } catch(e){ cb('unknown'); }
+  }
+
+  // ── Coalescing: several widgets asking at once = ONE browser prompt ──
+  var queue = [], inFlight = false;
+
+  function fetchPosition(ok, fail, opts){
+    if(!supported()){ if(fail) fail({ code:2, message:'unsupported' }); return; }
+    if(fresh()){ ok(_gpsCache); return; }
+    queue.push({ ok:ok, fail:fail });
+    if(inFlight) return;
+    inFlight = true;
+    var o = opts || {};
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        _gpsCache = pos; _gpsCacheTime = Date.now();
+        inFlight = false;
+        var q = queue; queue = [];
+        markGranted();
+        q.forEach(function(c){ try { c.ok(pos); } catch(e){ console.warn('geo cb:', e); } });
+      },
+      function(err){
+        inFlight = false;
+        var q = queue; queue = [];
+        if(err && err.code === 1){
+          lsSet('kfg_geo_denied','1');
+          // Safari does not report geolocation through the Permissions API, so a
+          // hard denial only ever shows up here. Surface the fix once per session.
+          if(!o.silentDenial && !window._kfgDeniedShown){
+            window._kfgDeniedShown = true;
+            setTimeout(function(){ showDeniedCard(o.reason || 'use your location'); }, 400);
+          }
+        }
+        q.forEach(function(c){ if(c.fail){ try { c.fail(err); } catch(e){} } });
+      },
+      { timeout:            o.timeout != null ? o.timeout : 10000,
+        enableHighAccuracy: o.enableHighAccuracy !== false,
+        maximumAge:         o.maximumAge != null ? o.maximumAge : GPS_CACHE_MS }
+    );
+  }
+
+  function markGranted(){
+    lsDel('kfg_geo_denied');
+    var n = parseInt(lsGet('kfg_geo_grants') || '0', 10) + 1;
+    lsSet('kfg_geo_grants', String(n));
+    // By the 2nd grant the user has clearly been re-prompted across sessions.
+    // Show the "make it stick" tip once, ever, and only where it applies.
+    if(n >= 2 && lsGet('kfg_geo_tip_shown') !== '1' && !isStandalone()){
+      lsSet('kfg_geo_tip_shown','1');
+      setTimeout(showPersistTip, 1500);
+    }
+  }
+
+  // ── Shared bottom sheet ──────────────────────────────────────────
+  function sheet(id, inner){
+    var old = document.getElementById(id); if(old) old.remove();
+    var wrap = document.createElement('div');
+    wrap.id = id;
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.72);' +
+      'display:flex;align-items:flex-end;justify-content:center;padding:0;' +
+      'font-family:Montserrat,sans-serif;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)';
+    wrap.innerHTML =
+      '<div style="width:100%;max-width:520px;background:var(--bg2);border:1px solid var(--border2);' +
+      'border-radius:18px 18px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));' +
+      'box-shadow:0 -8px 40px rgba(0,0,0,.6)">' + inner + '</div>';
+    document.body.appendChild(wrap);
+    return wrap;
+  }
+  function closeSheet(id){ var el = document.getElementById(id); if(el) el.remove(); }
+
+  function safariSteps(){
+    if(isStandalone()) return '';
+    if(isIOS()){
+      return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;' +
+             'padding:11px 13px;margin:14px 0 0;font-size:10.5px;color:var(--text2);line-height:1.65">' +
+             '<b style="color:var(--accent)">Stop being asked every time</b><br>' +
+             'Safari forgets this when you close the tab. Tap <b>aA</b> in the address bar &rarr; ' +
+             '<b>Website Settings</b> &rarr; <b>Location</b> &rarr; <b>Allow</b>.<br>' +
+             'Or tap <b>Share &rarr; Add to Home Screen</b> — the installed app keeps the permission.' +
+             '</div>';
+    }
+    return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;' +
+           'padding:11px 13px;margin:14px 0 0;font-size:10.5px;color:var(--text2);line-height:1.65">' +
+           '<b style="color:var(--accent)">Stop being asked every time</b><br>' +
+           'Tap the padlock in the address bar &rarr; <b>Permissions</b> &rarr; set <b>Location</b> to <b>Allow</b>.' +
+           '</div>';
+  }
+
+  // ── Primer: explain BEFORE the browser prompt, once ever ─────────
+  var _primerCbs = null;
+  function showPrimer(reason, onAccept, onDecline){
+    _primerCbs = { accept:onAccept, decline:onDecline };
+    sheet('kfgGeoPrimer',
+      '<div style="font-size:30px;text-align:center;margin-bottom:10px">&#x1F4CD;</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px">' +
+        'Use your location?</div>' +
+      '<div style="font-size:12px;color:var(--text2);line-height:1.6;text-align:center">' +
+        'The guide needs your position to ' + reason + '. Your location stays on your phone — ' +
+        'it is never sent anywhere except on a sighting you choose to share.</div>' +
+      safariSteps() +
+      '<div style="display:flex;gap:10px;margin-top:18px">' +
+        '<button onclick="KFGGeo._primerDecline()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);' +
+          'color:var(--text2);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;font-size:12px;' +
+          'font-weight:700;cursor:pointer">Not now</button>' +
+        '<button onclick="KFGGeo._primerAccept()" style="flex:1.4;background:var(--accent);border:none;' +
+          'color:var(--bg);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;font-size:12px;' +
+          'font-weight:700;cursor:pointer">Continue</button>' +
+      '</div>');
+  }
+  function primerAccept(){
+    closeSheet('kfgGeoPrimer');
+    lsSet('kfg_geo_primed','1');
+    var cb = _primerCbs; _primerCbs = null;
+    if(cb && cb.accept) cb.accept();
+  }
+  function primerDecline(){
+    closeSheet('kfgGeoPrimer');
+    var cb = _primerCbs; _primerCbs = null;
+    if(cb && cb.decline) cb.decline();
+  }
+
+  // ── Recovery card when the browser has a hard 'denied' on record ──
+  function showDeniedCard(reason){
+    sheet('kfgGeoDenied',
+      '<div style="font-size:30px;text-align:center;margin-bottom:10px">&#x1F6AB;</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px">' +
+        'Location is blocked</div>' +
+      '<div style="font-size:12px;color:var(--text2);line-height:1.6;text-align:center">' +
+        'Your browser is set to refuse this site, so we can&rsquo;t ' + reason + '. ' +
+        'Re-enable it below, then try again.</div>' +
+      (isIOS()
+        ? '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;' +
+          'margin-top:14px;font-size:10.5px;color:var(--text2);line-height:1.75">' +
+          '<b style="color:var(--accent)">iPhone / iPad</b><br>' +
+          '1. Tap <b>aA</b> in the Safari address bar<br>' +
+          '2. <b>Website Settings</b> &rarr; <b>Location</b> &rarr; <b>Allow</b><br>' +
+          '3. Also check <b>Settings &rarr; Privacy &amp; Security &rarr; Location Services &rarr; ' +
+          'Safari Websites</b> is set to <b>While Using the App</b>, with <b>Precise Location</b> on' +
+          '</div>'
+        : '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;' +
+          'margin-top:14px;font-size:10.5px;color:var(--text2);line-height:1.75">' +
+          '<b style="color:var(--accent)">Android / desktop</b><br>' +
+          '1. Tap the padlock in the address bar<br>' +
+          '2. <b>Permissions</b> &rarr; <b>Location</b> &rarr; <b>Allow</b><br>' +
+          '3. Reload the page' +
+          '</div>') +
+      '<button onclick="KFGGeo._closeDenied()" style="width:100%;margin-top:16px;background:var(--accent);' +
+        'border:none;color:var(--bg);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;' +
+        'font-size:12px;font-weight:700;cursor:pointer">Got it</button>');
+  }
+  function closeDenied(){ lsDel('kfg_geo_denied'); closeSheet('kfgGeoDenied'); }
+
+  // ── One-time "make it permanent" tip after a repeat grant ────────
+  function showPersistTip(){
+    sheet('kfgGeoTip',
+      '<div style="font-size:30px;text-align:center;margin-bottom:10px">&#x1F4A1;</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px">' +
+        'Tired of the location prompt?</div>' +
+      '<div style="font-size:12px;color:var(--text2);line-height:1.6;text-align:center">' +
+        'Your browser asks again each session — that is a browser rule we can&rsquo;t override from inside ' +
+        'the app. Two ways to stop it for good:</div>' +
+      safariSteps() +
+      '<button onclick="KFGGeo._closeTip()" style="width:100%;margin-top:16px;background:var(--accent);' +
+        'border:none;color:var(--bg);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;' +
+        'font-size:12px;font-weight:700;cursor:pointer">Got it</button>');
+  }
+
+  // ── Public: the ONLY way the app should request location ─────────
+  // reason: short verb phrase, e.g. 'find the nearest facilities'
+  function ensure(reason, ok, fail, opts){
+    if(!supported()){
+      if(typeof showToast === 'function') showToast('GPS not available on this device', 2200);
+      if(fail) fail({ code:2, message:'unsupported' });
+      return;
+    }
+    if(fresh()){ ok(_gpsCache); return; }
+
+    // Carry the reason into the options so any denial card can name it.
+    var o = {};
+    if(opts){ for(var k in opts){ if(Object.prototype.hasOwnProperty.call(opts,k)) o[k] = opts[k]; } }
+    o.reason = reason;
+
+    state(function(st){
+      if(st === 'denied'){
+        if(!o.silentDenial) showDeniedCard(reason);
+        if(fail) fail({ code:1, message:'denied' });
+        return;
+      }
+      // Already granted, or the user has seen the primer before — go straight through.
+      if(st === 'granted' || lsGet('kfg_geo_primed') === '1'){
+        fetchPosition(ok, fail, o);
+        return;
+      }
+      // First ever request on this device: explain, then prompt.
+      showPrimer(reason,
+        function(){ fetchPosition(ok, fail, o); },
+        function(){ if(fail) fail({ code:1, message:'declined-in-app', declinedInApp:true }); });
+    });
+  }
+
+  // Force a fresh fix (used on resume — a cached position from before you
+  // backgrounded the app is worse than useless while driving).
+  function invalidate(){ _gpsCache = null; _gpsCacheTime = 0; }
+
+  return {
+    ensure: ensure,
+    raw: fetchPosition,
+    state: state,
+    invalidate: invalidate,
+    fresh: fresh,
+    supported: supported,
+    isStandalone: isStandalone,
+    isIOS: isIOS,
+    help: showDeniedCard,
+    showPersistTip: showPersistTip,
+    _primerAccept: primerAccept,
+    _primerDecline: primerDecline,
+    _closeDenied: closeDenied,
+    _closeTip: function(){ closeSheet('kfgGeoTip'); }
+  };
+})();
+
+// Back-compat shim — existing callers keep working, but everything now shares
+// one cache and one prompt.
 function getCachedGPS(ok, fail) {
-  if(_gpsCache && Date.now()-_gpsCacheTime<300000){ ok(_gpsCache); return; }
-  navigator.geolocation.getCurrentPosition(function(p){ _gpsCache=p; _gpsCacheTime=Date.now(); ok(p); }, fail||function(){}, {timeout:6000,enableHighAccuracy:true});
+  // findNearest renders its own permission card, so suppress the shared one.
+  KFGGeo.ensure('find what is nearest to you', ok, fail, { timeout:6000, silentDenial:true });
 }
 
 function setWildlifeFilter(filter, btn) {
@@ -9088,7 +9356,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.74';
+var APP_VERSION = '5.75';
 
 // Clear stale caches when version changes
 (function() {
@@ -9728,10 +9996,16 @@ function _startNavTracking() {
   if(!navigator.geolocation) return;
 
   _navWatcher = navigator.geolocation.watchPosition(
-    function(pos) { _onNavPosition(pos); },
+    function(pos) {
+      _gpsCache = pos; _gpsCacheTime = Date.now(); // feed the shared cache
+      _onNavPosition(pos);
+    },
     function()    { /* silent fail — GPS may briefly drop */ },
     { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
   );
+
+  // Navigation is started by a user tap, so this is a valid gesture context.
+  KFGWake.acquire();
 }
 
 function _onNavPosition(pos) {
@@ -9877,8 +10151,103 @@ function endNavigation() {
   // Reset state
   _navDest = null;
   _navRoute = null;
+  KFGWake.release();
   showToast('Navigation ended');
 }
+
+// ============================================
+// SCREEN WAKE LOCK
+// ============================================
+// iOS 16.4+ / Chrome / Edge. Keeps the screen awake while navigating so the
+// phone doesn't sleep mid-drive. iOS drops the lock whenever the page is
+// backgrounded, so we re-request it every time we come back to the foreground.
+var KFGWake = (function(){
+  var lock = null, want = false;
+
+  function supported(){ try { return 'wakeLock' in navigator; } catch(e){ return false; } }
+
+  function request(){
+    if(!supported() || !want || lock) return;
+    if(document.visibilityState !== 'visible') return;
+    try {
+      navigator.wakeLock.request('screen').then(function(l){
+        lock = l;
+        l.addEventListener('release', function(){ lock = null; });
+      }).catch(function(){ /* denied or low battery — not fatal */ });
+    } catch(e){}
+  }
+
+  function acquire(){ want = true; request(); }
+
+  function release(){
+    want = false;
+    if(lock){ try { lock.release(); } catch(e){} lock = null; }
+  }
+
+  return { acquire:acquire, release:release, refresh:request,
+           supported:supported, active:function(){ return !!lock; } };
+})();
+
+// ============================================
+// APP LIFECYCLE — background / foreground
+// ============================================
+// iOS freezes all JavaScript the moment this page loses the foreground:
+// timers stop, watchPosition stops firing, fetches stall. We cannot prevent
+// that — only a native app can run in the background. What we CAN do is make
+// coming back seamless, so the app never has to be "kept open" to stay correct.
+var KFGLifecycle = (function(){
+  var hiddenAt = 0;
+  var STALE_MS = 120000; // 2 min backgrounded = treat GPS fix as stale
+
+  function onHidden(){
+    hiddenAt = Date.now();
+  }
+
+  function onVisible(){
+    var away = hiddenAt ? (Date.now() - hiddenAt) : 0;
+    hiddenAt = 0;
+
+    // 1. Countdown recomputes from the wall clock, so one call resyncs it.
+    try { if(typeof updateCountdown === 'function') updateCountdown(); } catch(e){}
+
+    // 2. A GPS fix taken before backgrounding is worse than no fix while driving.
+    if(away > STALE_MS){ try { KFGGeo.invalidate(); } catch(e){} }
+
+    // 3. Restart the navigation watcher — iOS kills it silently on suspend,
+    //    which is exactly why the route used to freeze after switching apps.
+    try {
+      if(typeof _navDest !== 'undefined' && _navDest){
+        if(typeof _navWatcher !== 'undefined' && _navWatcher !== null){
+          navigator.geolocation.clearWatch(_navWatcher);
+          _navWatcher = null;
+        }
+        if(typeof _startNavTracking === 'function') _startNavTracking();
+      }
+    } catch(e){}
+
+    // 4. Re-acquire the screen lock iOS released while we were away.
+    try { KFGWake.refresh(); } catch(e){}
+
+    // 5. Pull anything time-sensitive that went stale while frozen.
+    if(away > 60000){
+      try { if(typeof loadFeed === 'function') loadFeed(); } catch(e){}
+      try { if(typeof loadWeather === 'function') loadWeather(); } catch(e){}
+    }
+  }
+
+  function init(){
+    document.addEventListener('visibilitychange', function(){
+      if(document.visibilityState === 'hidden') onHidden(); else onVisible();
+    });
+    // Safari fires pageshow/pagehide more reliably than visibilitychange on
+    // back-forward cache restores.
+    window.addEventListener('pageshow', function(e){ if(e.persisted) onVisible(); });
+    window.addEventListener('pagehide', function(){ onHidden(); try { KFGWake.release(); } catch(e){} });
+  }
+
+  return { init: init, onVisible: onVisible };
+})();
+
 // Preload Leaflet JS immediately so it's ready when Nav or Map tab is used
 (function() {
   if(window._leafletScriptLoaded) return;
@@ -10103,17 +10472,18 @@ function mapFilterToggle(type) {
 
 // Manual re-centre on user position (used by nav panel ⊕ button)
 function mapCentreOnMe() {
-  if(!_map || !navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(function(pos) {
+  if(!_map) return;
+  KFGGeo.ensure('centre the map on you', function(pos) {
     _map.setView([pos.coords.latitude, pos.coords.longitude], _map.getZoom(), { animate: true, duration: 0.6 });
-  }, function() { showToast('Could not get GPS location', 2000); }, { enableHighAccuracy: true, timeout: 8000 });
+  }, function(err) {
+    if(!err || !err.declinedInApp) showToast('Could not get GPS location', 2000);
+  }, { timeout: 8000 });
 }
 
 function mapCenterOnUser() {
-  if(!navigator.geolocation) { showToast('GPS not available', 2000); return; }
   var _locBtn = document.getElementById('mapFlt-myloc');
   if(_locBtn) { _locBtn.classList.add('active'); setTimeout(function(){ _locBtn.classList.remove('active'); }, 1500); }
-  navigator.geolocation.getCurrentPosition(function(pos) {
+  KFGGeo.ensure('show your position on the map', function(pos) {
     var lat = pos.coords.latitude;
     var lng = pos.coords.longitude;
     var latlng = [lat, lng];
@@ -10124,9 +10494,9 @@ function mapCenterOnUser() {
       weight: 3, opacity: 1, fillOpacity: 1
     }).addTo(_map).bindPopup('You are here').openPopup();
     showToast('GPS location found', 1500);
-  }, function() {
-    showToast('Could not get GPS location', 2000);
-  }, { enableHighAccuracy: true, timeout: 10000 });
+  }, function(err) {
+    if(!err || !err.declinedInApp) showToast('Could not get GPS location', 2000);
+  }, { timeout: 10000 });
 }
 
 // ============================================
@@ -10464,18 +10834,17 @@ function captureGPSForSighting(callback) {
     callback(lat, lng, findNearestRoad(lat, lng));
     return;
   }
-  navigator.geolocation.getCurrentPosition(
+  KFGGeo.ensure('tag this sighting with where you saw it',
     function(pos) {
-      _gpsCache = pos; _gpsCacheTime = Date.now();
       var lat = pos.coords.latitude;
       var lng = pos.coords.longitude;
       var road = findNearestRoad(lat, lng);
       callback(lat, lng, road);
     },
     function() {
-      callback(null, null, null);
+      callback(null, null, null); // sighting still logs, just without a position
     },
-    {timeout: 10000, enableHighAccuracy: true, maximumAge: 300000}
+    {timeout: 10000}
   );
 }
 
@@ -10664,14 +11033,27 @@ function initApp() {
   // Guard: never run more than once - prevents multiple poll loops
   if(window._appInitialised) { return; }
   window._appInitialised = true;
-  // Fix 3: Request GPS permission upfront so sightings always have location
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(){}, // permission granted - sightings always get their own fresh high-accuracy fix
-      function(){},
-      { timeout: 8000, enableHighAccuracy: false }
-    );
-  }
+
+  // Background/foreground handling — must be first so a resume during boot
+  // is still caught.
+  safe(function(){ KFGLifecycle.init(); });
+
+  // NOTE: we deliberately do NOT request GPS on startup any more.
+  // Asking cold, before the user has touched anything, meant every single
+  // launch opened with a permission prompt and a high refusal rate. Location
+  // is now requested at the moment of use via KFGGeo.ensure() — the Finder,
+  // the map, the departure calculator and sighting capture each ask with
+  // obvious context, and they all share one grant and one cache per session.
+  // If the browser already has a grant on record, no prompt appears at all.
+  //
+  // Warm the cache silently ONLY when permission is already granted, so the
+  // first real use is instant and still prompt-free.
+  safe(function(){
+    KFGGeo.state(function(st){
+      if(st === 'granted') KFGGeo.raw(function(){}, function(){}, { enableHighAccuracy:false, timeout:8000 });
+    });
+  });
+
   // Request notification permission upfront - notify is ON by default
   if(localStorage.getItem('kfg_feed_notify') !== '0') {
     if('Notification' in window && Notification.permission === 'default') {
@@ -11604,9 +11986,8 @@ function calcDepartureTime() {
   var titleEl = document.getElementById('deptResultTitle');
   var bodyEl  = document.getElementById('deptResultBody');
   if(!gate) { showToast('Please select an exit gate', 2000); return; }
-  if(!navigator.geolocation) { showToast('GPS not available', 2000); return; }
   resEl.style.display = 'block'; titleEl.textContent = 'Getting GPS...'; bodyEl.textContent = '';
-  navigator.geolocation.getCurrentPosition(function(pos) {
+  KFGGeo.ensure('calculate your safe departure time', function(pos) {
     var uLat = pos.coords.latitude, uLng = pos.coords.longitude;
     var gc = GATE_COORDS[gate]; if(!gc) { titleEl.textContent = 'Gate not found'; return; }
     var R=6371, dLat=(gc.lat-uLat)*Math.PI/180, dLng=(gc.lng-uLng)*Math.PI/180;
@@ -11624,7 +12005,11 @@ function calcDepartureTime() {
     if(minsLeft<0) bodyEl.innerHTML='<span style="color:#e05545;font-weight:700">⚠️ Past safe departure time! Drive immediately.</span><br>'+dist.toFixed(1)+'km · Gate closes '+closeStr;
     else if(minsLeft<20) bodyEl.innerHTML='<span style="color:var(--accent);font-weight:700">⏰ Only '+minsLeft+' min left — leave now!</span><br>'+dist.toFixed(1)+'km · Gate closes '+closeStr;
     else bodyEl.innerHTML=dist.toFixed(1)+'km to gate · ~'+travelMins+' min drive at 40km/h<br>Gate closes '+closeStr+' · '+minsLeft+' min until you must leave · +15 min buffer included';
-  }, function(){ titleEl.textContent='Could not get GPS'; bodyEl.textContent='Enable location and try again.'; }, {enableHighAccuracy:true,timeout:10000});
+  }, function(err){
+    if(err && err.declinedInApp){ resEl.style.display='none'; return; }
+    titleEl.textContent='Could not get GPS';
+    bodyEl.textContent='Enable location and try again.';
+  }, {timeout:10000});
 }
 
 // ── GAME DRIVE TIPS ───────────────────────────────────────────────
