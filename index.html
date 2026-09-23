@@ -8160,7 +8160,31 @@ var _lastFinderType = null;
 function retryFinder() {
   if(_lastFinderType) findNearest(_lastFinderType, null);
 }
-function findNearest(type, btn) {
+// Banner shown above Finder results when the position isn't a live GPS fix.
+function _finderSourceBanner(meta, type){
+  if(!meta || meta.source === 'fresh') return '';
+  var t = "'" + type + "'";
+  var btn = 'background:var(--bg2);border:1px solid var(--border2);color:var(--accent);border-radius:7px;' +
+            'padding:6px 11px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0';
+  var txt, actions;
+  if(meta.source === 'manual'){
+    txt = 'Distances from <b style="color:var(--accent)">' + meta.name + '</b>';
+    actions = '<button style="' + btn + '" onclick="KFGGeo.clearManual();findNearest(' + t + ',null,true)">Use GPS</button>' +
+              '<button style="' + btn + '" onclick="KFGGeo.pickManual(function(){findNearest(' + t + ')})">Change</button>';
+  } else {
+    var mins = Math.round((meta.ageMs || 0) / 60000);
+    var age = mins < 1 ? 'a moment ago' : (mins < 60 ? mins + ' min ago' : Math.round(mins/60) + 'h ago');
+    txt = 'From your last known position, ' + age;
+    actions = '<button style="' + btn + '" onclick="findNearest(' + t + ',null,true)">Update GPS</button>' +
+              '<button style="' + btn + '" onclick="KFGGeo.pickManual(function(){findNearest(' + t + ')})">Set manually</button>';
+  }
+  return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;' +
+         'background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">' +
+         '<div style="font-size:10.5px;color:var(--text2);line-height:1.5">' + txt + '</div>' +
+         '<div style="display:flex;gap:6px">' + actions + '</div></div>';
+}
+
+function findNearest(type, btn, forceFresh) {
   if(window._lastFinderType !== type) window._finderShowCount = 6;
   _lastFinderType = type;
   // Map finder button types to FACILITIES keys
@@ -8175,17 +8199,23 @@ function findNearest(type, btn) {
   var results = document.getElementById('finderResults');
   if(!results) return;
 
-  if(!navigator.geolocation) {
-    results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">GPS Required</div><p>Enable location services to find nearest facilities.</p></div>';
+  if(!navigator.geolocation && !KFGGeo.getManual() && !KFGGeo.lastKnown()) {
+    results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">Location needed</div>' +
+      '<p>This device has no GPS available. Pick where you are instead and the Finder will work from there.</p>' +
+      '<button onclick="KFGGeo.pickManual(function(){findNearest(\'' + type + '\')})" style="margin-top:10px;' +
+      'background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:9px 16px;' +
+      'font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Set my location</button></div>';
     if(label) label.style.display = 'block';
     return;
   }
 
-  results.innerHTML = '<div class="tip tip-blue"><div class="tip-title">Getting your location...</div><p>Please allow location access when prompted.</p></div>';
+  results.innerHTML = '<div class="tip tip-blue"><div class="tip-title">Getting your location...</div><p>One moment.</p></div>';
   if(label) label.style.display = 'block';
 
-  getCachedGPS(
-    function(pos) {
+  var _srcBanner = '';
+  KFGGeo.position('find the nearest facilities',
+    function(pos, meta) {
+      _srcBanner = _finderSourceBanner(meta, type);
       var lat = pos.coords.latitude;
       var lng = pos.coords.longitude;
       var facilities = FACILITIES[facilityType] ? FACILITIES[facilityType].slice() : [];
@@ -8267,7 +8297,7 @@ function findNearest(type, btn) {
       var typeLabels = {fuel:'Fuel',toilet:'Restrooms',food:'Restaurants',shops:'Shops',wifi:'Wi-Fi',medical:'Medical',lookout:'Lookout Points',picnic:'Picnic Spots',dams:'Dams',landmarks:'Landmarks',gate:'Gates'};
       var typeLabel = typeLabels[facilityType] || type;
 
-      results.innerHTML = top3.map(function(item, i) {
+      results.innerHTML = _srcBanner + top3.map(function(item, i) {
         var f = item.f;
         var distStr = item.km < 1 ? 'Nearby' : item.km + 'km away';
         var timeStr = item.mins < 60 ? item.mins + ' min drive' : Math.floor(item.mins/60) + 'h ' + (item.mins%60) + 'min drive';
@@ -8298,18 +8328,23 @@ function findNearest(type, btn) {
         results.innerHTML = '<div style="background:var(--bg3);border:1px solid var(--amber);border-radius:12px;padding:16px;text-align:center">' +
           '<div style="font-size:24px;margin-bottom:8px">📍</div>' +
           '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Location Access Needed</div>' +
-          '<div style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5">To find the nearest facilities, please enable location access for this app.</div>' +
-          '<div style="display:flex;gap:8px;justify-content:center">' +
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5">Allow location to find the nearest facilities &mdash; or just tell us where you are.</div>' +
+          '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
+            '<button onclick="KFGGeo.pickManual(function(){findNearest(\''+type+'\')})" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:10px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Set my location</button>' +
             '<button onclick="KFGGeo.help(\'find the nearest facilities\')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">How to fix</button>' +
-            '<button onclick="findNearest(\''+type+'\',null)" style="background:var(--accent);border:none;color:var(--bg);border-radius:9px;padding:10px 20px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button>' +
+            '<button onclick="findNearest(\''+type+'\',null,true)" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:9px;padding:10px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button>' +
           '</div>' +
         '</div>';
       } else {
         var msg = err.code === 2 ? 'Location unavailable. Try moving to open ground.' : 'Location request timed out. Try again.';
-        results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">Location Error</div><p>' + msg + '</p><button onclick="findNearest(\''+type+'\',null)" style="margin-top:10px;background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button></div>';
+        results.innerHTML = '<div class="tip tip-amber"><div class="tip-title">Location Error</div><p>' + msg + '</p>' +
+          '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
+          '<button onclick="findNearest(\''+type+'\',null,true)" style="background:var(--accent);border:none;color:var(--bg);border-radius:8px;padding:8px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Try Again</button>' +
+          '<button onclick="KFGGeo.pickManual(function(){findNearest(\''+type+'\')})" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:8px 16px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Set manually</button>' +
+          '</div></div>';
       }
     },
-    { timeout: 10000, enableHighAccuracy: true }
+    { timeout: 10000, forceFresh: !!forceFresh, silentDenial: true }
   );
 }
 
@@ -8377,6 +8412,7 @@ var KFGGeo = (function(){
     navigator.geolocation.getCurrentPosition(
       function(pos){
         _gpsCache = pos; _gpsCacheTime = Date.now();
+        saveLastKnown(pos);
         inFlight = false;
         var q = queue; queue = [];
         markGranted();
@@ -8528,6 +8564,150 @@ var KFGGeo = (function(){
         'font-size:12px;font-weight:700;cursor:pointer">Got it</button>');
   }
 
+  // ── Last known position — survives closing the app ───────────────
+  // iOS forgets the permission every session, but it cannot forget this.
+  // A 20-minute-old position is still perfectly good for "nearest fuel".
+  function saveLastKnown(pos){
+    if(!pos || !pos.coords) return;
+    lsSet('kfg_last_pos', JSON.stringify({
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      acc: pos.coords.accuracy || null,
+      t:   Date.now()
+    }));
+  }
+  function lastKnown(){
+    try {
+      var raw = lsGet('kfg_last_pos'); if(!raw) return null;
+      var p = JSON.parse(raw);
+      if(!p || typeof p.lat !== 'number' || typeof p.lng !== 'number') return null;
+      return p;
+    } catch(e){ return null; }
+  }
+
+  // ── Manual location — works with no GPS and no prompt at all ─────
+  function setManual(name, lat, lng){
+    lsSet('kfg_manual_pos', JSON.stringify({ name:name, lat:lat, lng:lng, t:Date.now() }));
+  }
+  function getManual(){
+    try {
+      var raw = lsGet('kfg_manual_pos'); if(!raw) return null;
+      var p = JSON.parse(raw);
+      return (p && typeof p.lat === 'number') ? p : null;
+    } catch(e){ return null; }
+  }
+  function clearManual(){ lsDel('kfg_manual_pos'); }
+
+  function asPosition(p){
+    return { coords:{ latitude:p.lat, longitude:p.lng, accuracy:p.acc || null } };
+  }
+
+  // ── Stale-tolerant resolver ──────────────────────────────────────
+  // Use this for anything where an approximate position is genuinely useful,
+  // i.e. the Finder. Callers get (position, meta) where meta.source is
+  // 'fresh' | 'manual' | 'stale', so the UI can say which it used.
+  //
+  // DO NOT use this for the departure calculator or live navigation. A stale
+  // fix there could tell someone they have time to reach a gate when they
+  // don't. Those keep calling ensure() for a fresh fix.
+  function position(reason, ok, fail, opts){
+    var o = opts || {};
+    if(!o.forceFresh){
+      if(fresh()){ ok(_gpsCache, { source:'fresh', ageMs: Date.now()-_gpsCacheTime }); return; }
+      var man = getManual();
+      if(man){ ok(asPosition(man), { source:'manual', name: man.name }); return; }
+      var last = lastKnown();
+      if(last){ ok(asPosition(last), { source:'stale', ageMs: Date.now()-last.t }); return; }
+    }
+    ensure(reason, function(p){ ok(p, { source:'fresh', ageMs:0 }); }, fail, o);
+  }
+
+  // ── Manual location picker ───────────────────────────────────────
+  function manualOptions(){
+    var items = [];
+    try {
+      if(typeof CAMPS !== 'undefined' && CAMPS.length){
+        CAMPS.forEach(function(c){
+          if(typeof c.lat === 'number' && typeof c.lng === 'number'){
+            items.push({ name:c.name, sub:c.type || 'Camp', lat:c.lat, lng:c.lng });
+          }
+        });
+      }
+    } catch(e){}
+    try {
+      if(typeof GATE_COORDS !== 'undefined' && GATE_COORDS){
+        for(var g in GATE_COORDS){
+          if(Object.prototype.hasOwnProperty.call(GATE_COORDS, g)){
+            items.push({ name:g, sub:'Gate', lat:GATE_COORDS[g].lat, lng:GATE_COORDS[g].lng });
+          }
+        }
+      }
+    } catch(e){}
+    items.sort(function(a,b){ return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1; });
+    return items;
+  }
+
+  var _manualDone = null;
+
+  function renderManualList(q){
+    var box = document.getElementById('kfgManualList'); if(!box) return;
+    var items = window._kfgManualItems || [];
+    var needle = (q || '').toLowerCase().trim();
+    var shown = needle
+      ? items.filter(function(it){ return it.name.toLowerCase().indexOf(needle) >= 0; })
+      : items;
+    if(!shown.length){
+      box.innerHTML = '<div style="padding:18px;text-align:center;font-size:11px;color:var(--text3)">No match</div>';
+      return;
+    }
+    box.innerHTML = shown.slice(0, 80).map(function(it){
+      var i = items.indexOf(it);
+      return '<div onclick="KFGGeo._chooseManual(' + i + ')" style="display:flex;align-items:center;' +
+        'justify-content:space-between;gap:10px;padding:12px 13px;border-bottom:1px solid var(--border);' +
+        'cursor:pointer;-webkit-tap-highlight-color:transparent">' +
+        '<div style="font-size:12.5px;font-weight:600;color:var(--text)">' + it.name + '</div>' +
+        '<div style="font-size:10px;color:var(--text3);flex-shrink:0">' + it.sub + '</div></div>';
+    }).join('');
+  }
+
+  function pickManual(onDone){
+    window._kfgManualItems = manualOptions();
+    _manualDone = onDone || function(){};
+    var cur = getManual();
+    sheet('kfgManualPick',
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">Set your location</div>' +
+      '<div style="font-size:11px;color:var(--text3);line-height:1.55;margin-bottom:12px">' +
+        'Pick the camp or gate you are at. Distances work from there — no GPS, no permission prompt.' +
+        (cur ? '<br>Currently set to <b style="color:var(--accent)">' + cur.name + '</b>.' : '') +
+      '</div>' +
+      '<input id="kfgManualSearch" type="text" placeholder="Search camps and gates..." ' +
+        'oninput="KFGGeo._filterManual(this.value)" autocomplete="off" ' +
+        'style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border2);' +
+        'color:var(--text);border-radius:10px;padding:12px;font-family:Montserrat,sans-serif;font-size:12px;' +
+        'margin-bottom:10px;-webkit-appearance:none">' +
+      '<div id="kfgManualList" style="max-height:44vh;overflow-y:auto;-webkit-overflow-scrolling:touch;' +
+        'background:var(--bg3);border:1px solid var(--border);border-radius:10px"></div>' +
+      '<div style="display:flex;gap:10px;margin-top:14px">' +
+        (cur ? '<button onclick="KFGGeo._clearManualAndClose()" style="flex:1;background:var(--bg3);' +
+               'border:1px solid var(--border2);color:var(--text2);border-radius:11px;padding:13px;' +
+               'font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Use GPS instead</button>' : '') +
+        '<button onclick="KFGGeo._closeManual()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);' +
+          'color:var(--text2);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;font-size:12px;' +
+          'font-weight:700;cursor:pointer">Cancel</button>' +
+      '</div>');
+    renderManualList('');
+  }
+
+  function chooseManual(i){
+    var items = window._kfgManualItems || [];
+    var it = items[i]; if(!it) return;
+    setManual(it.name, it.lat, it.lng);
+    closeSheet('kfgManualPick');
+    if(typeof showToast === 'function') showToast('Location set to ' + it.name, 1800);
+    var cb = _manualDone; _manualDone = null;
+    if(cb) cb(it);
+  }
+
   // ── Public: the ONLY way the app should request location ─────────
   // reason: short verb phrase, e.g. 'find the nearest facilities'
   function ensure(reason, ok, fail, opts){
@@ -8567,6 +8747,13 @@ var KFGGeo = (function(){
 
   return {
     ensure: ensure,
+    position: position,
+    lastKnown: lastKnown,
+    remember: saveLastKnown,
+    setManual: setManual,
+    getManual: getManual,
+    clearManual: clearManual,
+    pickManual: pickManual,
     raw: fetchPosition,
     state: state,
     invalidate: invalidate,
@@ -8579,7 +8766,15 @@ var KFGGeo = (function(){
     _primerAccept: primerAccept,
     _primerDecline: primerDecline,
     _closeDenied: closeDenied,
-    _closeTip: function(){ closeSheet('kfgGeoTip'); }
+    _closeTip: function(){ closeSheet('kfgGeoTip'); },
+    _filterManual: renderManualList,
+    _chooseManual: chooseManual,
+    _closeManual: function(){ closeSheet('kfgManualPick'); _manualDone = null; },
+    _clearManualAndClose: function(){
+      clearManual(); closeSheet('kfgManualPick');
+      if(typeof showToast === 'function') showToast('Back to GPS', 1500);
+      var cb = _manualDone; _manualDone = null; if(cb) cb(null);
+    }
   };
 })();
 
@@ -9356,7 +9551,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.75';
+var APP_VERSION = '5.76';
 
 // Clear stale caches when version changes
 (function() {
@@ -9998,6 +10193,11 @@ function _startNavTracking() {
   _navWatcher = navigator.geolocation.watchPosition(
     function(pos) {
       _gpsCache = pos; _gpsCacheTime = Date.now(); // feed the shared cache
+      // Persist at most every 30s so the Finder still works after a restart.
+      if(!window._lastPosSaved || Date.now() - window._lastPosSaved > 30000){
+        window._lastPosSaved = Date.now();
+        try { KFGGeo.remember(pos); } catch(e){}
+      }
       _onNavPosition(pos);
     },
     function()    { /* silent fail — GPS may briefly drop */ },
