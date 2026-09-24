@@ -4748,7 +4748,105 @@ function logSightingDirect(spId, isProtected, stars) {
   }
 }
 
-async function pushSightingToFeed(entry, nickname) {
+// ============================================
+// FEED RETRY QUEUE
+// ============================================
+// The app already told users "Saved locally — no connection" when a feed post
+// failed. It wasn't true: nothing was stored, so the sighting was lost the
+// moment the request failed.
+//
+// This makes that message honest. It does NOT change how a sighting is posted
+// — it calls the same pushSightingToFeedDirect() that has always been used.
+// It only remembers the ones that didn't land and calls it again later.
+var KFGFeedRetry = (function(){
+  var KEY = 'kfg_feed_retry';
+  var MAX_AGE = 7 * 24 * 60 * 60 * 1000;  // give up after a week
+  var MAX_ITEMS = 50;
+  var flushing = false;
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; }
+  }
+  function write(list){
+    try { localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX_ITEMS))); } catch(e){}
+  }
+
+  function add(entry, nickname){
+    var list = read();
+    // Same sighting queued twice (double tap, or a retry that half-worked)
+    // should not become two feed posts.
+    var sig = (entry && entry.name || '') + '|' + (entry && entry.time || '');
+    for(var i = 0; i < list.length; i++){
+      if(list[i].sig === sig) return list.length;
+    }
+    list.push({ sig: sig, entry: entry, nickname: nickname || null, queued: Date.now(), tries: 0 });
+    write(list);
+    updateBadge();
+    return list.length;
+  }
+
+  function pending(){ return read().length; }
+
+  async function flush(){
+    if(flushing || !navigator.onLine) return;
+    var list = read();
+    if(!list.length) return;
+    flushing = true;
+    var remaining = [];
+    for(var i = 0; i < list.length; i++){
+      var item = list[i];
+      if(Date.now() - item.queued > MAX_AGE) continue;   // too old, drop
+      var ok = false;
+      try { ok = await pushSightingToFeedDirect(item.entry, item.nickname); } catch(e){ ok = false; }
+      if(!ok){
+        item.tries = (item.tries || 0) + 1;
+        remaining.push(item);
+        // One failure means we are probably still offline; stop hammering.
+        remaining = remaining.concat(list.slice(i + 1));
+        break;
+      }
+    }
+    write(remaining);
+    flushing = false;
+    updateBadge();
+    var sent = list.length - remaining.length;
+    if(sent > 0 && typeof showToast === 'function'){
+      showToast('\u{1F4E1} ' + sent + ' sighting' + (sent > 1 ? 's' : '') + ' uploaded to feed', 2500);
+    }
+    if(remaining.length === 0 && typeof KFGSync !== 'undefined'){
+      try { KFGSync.setDot('ok'); } catch(e){}
+    }
+  }
+
+  // Show the backlog on the sync dot so a red dot always has an explanation.
+  function updateBadge(){
+    var n = pending();
+    var dot = document.getElementById('syncDot');
+    if(!dot) return;
+    if(n > 0){
+      dot.title = n + ' sighting' + (n > 1 ? 's' : '') + ' waiting to upload';
+    }
+  }
+
+  return { add:add, flush:flush, pending:pending, updateBadge:updateBadge };
+})();
+
+// Same name and signature as before, so every existing caller is untouched.
+async function pushSightingToFeed(entry, nickname){
+  var ok = false;
+  if(navigator.onLine){
+    try { ok = await pushSightingToFeedDirect(entry, nickname); } catch(e){ ok = false; }
+  }
+  if(!ok){
+    var n = KFGFeedRetry.add(entry, nickname);
+    if(typeof showToast === 'function'){
+      showToast('Saved \u2014 will upload when signal returns (' + n + ' waiting)', 2200);
+    }
+  }
+  return ok;
+}
+
+async function pushSightingToFeedDirect(entry, nickname) {
   try {
     var nick = nickname || getUserNickname() || 'Kruger Field Guide';
     var t = new Date(entry.time);
@@ -4803,12 +4901,13 @@ async function pushSightingToFeed(entry, nickname) {
       renderFeed(window._feedAllItems);
       showToast('&#x1F98F; Sighting live on feed!', 2000);
       // Do NOT notify the person who just logged their own sighting
+      return true;
     } else {
-      showToast('Saved locally \u2014 no connection', 1800);
+      return false;
     }
   } catch(e) {
     console.warn('Feed push failed:', e);
-    showToast('Saved locally \u2014 no connection', 1800);
+    return false;
   }
 }
 
@@ -9556,7 +9655,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.77';
+var APP_VERSION = '5.78';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -9596,6 +9695,9 @@ function forceUpdate() {
 }
 
 async function checkForUpdate() {
+  // Don't attempt this with no connection — a failed request is what makes
+  // iOS throw up its "Turn Off Airplane Mode" dialog on launch.
+  if(!navigator.onLine) return;
   try {
     var r = await fetch(VERSION_URL + '?t=' + Date.now(), {cache: 'no-store'});
     if(!r.ok) return;
@@ -10193,7 +10295,21 @@ function drawFallbackRoute(fLat, fLng, lat, lng, name) {
     weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
   }).addTo(_map).bindPopup('Your position').openPopup();
   _startNavTracking();
-  showToast('Offline mode: straight line to ' + name);
+  showToast('\u26A0\uFE0F No signal \u2014 showing straight-line direction only, NOT a drivable route', 4500);
+  // Persistent on-map label. A dashed line across 400km of bush can otherwise
+  // be mistaken for a road, which in Kruger is a dangerous misreading.
+  var warn = document.getElementById('kfgRouteWarn');
+  if(warn) warn.remove();
+  var host = document.getElementById('screen-map') || document.body;
+  warn = document.createElement('div');
+  warn.id = 'kfgRouteWarn';
+  warn.style.cssText = 'position:absolute;left:12px;right:12px;bottom:74px;z-index:900;' +
+    'background:rgba(204,51,34,.94);color:#fff;border-radius:10px;padding:9px 12px;' +
+    'font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:600;line-height:1.5;' +
+    'text-align:center;box-shadow:0 3px 14px rgba(0,0,0,.5)';
+  warn.innerHTML = '\u26A0\uFE0F Straight-line distance only \u2014 no routing without signal.<br>' +
+    '<span style="font-weight:400;opacity:.9">This is not a road. Follow actual park roads and signage.</span>';
+  host.appendChild(warn);
 }
 
 // ── Haversine distance helper ─────────────────────────────────────
@@ -10374,6 +10490,8 @@ function endNavigation() {
   // Reset state
   _navDest = null;
   _navRoute = null;
+  var warn = document.getElementById('kfgRouteWarn');
+  if(warn) warn.remove();
   KFGWake.release();
   showToast('Navigation ended');
 }
@@ -10456,6 +10574,10 @@ var KFGLifecycle = (function(){
       try { if(typeof loadFeed === 'function') loadFeed(); } catch(e){}
       try { if(typeof loadWeather === 'function') loadWeather(); } catch(e){}
     }
+
+    // 6. Signal may have returned while we were in the background, and iOS
+    //    does not always fire the online event in that case.
+    try { if(typeof kfgResumeNetwork === 'function') kfgResumeNetwork(); } catch(e){}
   }
 
   function init(){
@@ -11270,6 +11392,12 @@ function initApp() {
   safe(function(){ KFGSW.register(); });
   safe(function(){ KFGSW.requestPersistence(); });
   safe(function(){ KFGSession.init(); });
+
+  // Anything queued in a previous session uploads as soon as we have signal.
+  safe(function(){
+    KFGFeedRetry.updateBadge();
+    if(navigator.onLine) setTimeout(kfgResumeNetwork, 2500);
+  });
 
   // NOTE: we deliberately do NOT request GPS on startup any more.
   // Asking cold, before the user has touched anything, meant every single
@@ -12134,7 +12262,29 @@ var ImgCache = (function() {
 window.addEventListener('online', function(){ 
   var ob = document.getElementById('offlineBanner'); 
   if(ob) ob.classList.remove('show'); 
+  // Previously this only hid the banner, so a sighting logged with no signal
+  // stayed stuck and the sync dot stayed red until the app was restarted.
+  setTimeout(kfgResumeNetwork, 800);  // let the connection settle first
 });
+// Everything that should happen when the connection comes back. Called from
+// the 'online' event, from app resume, and from a slow timer — iOS does not
+// fire 'online' reliably, which is why a single listener was not enough.
+function kfgResumeNetwork(){
+  if(!navigator.onLine) return;
+  try { if(typeof KFGFeedRetry !== 'undefined') KFGFeedRetry.flush(); } catch(e){}
+  try { if(typeof KFGSync !== 'undefined'){ KFGSync.push(); KFGSync.pull(); } } catch(e){}
+}
+
+// Safety net: check every 60s while the app is open. Cheap, and it covers the
+// case where iOS never fires the online event at all.
+setInterval(function(){
+  try {
+    if(navigator.onLine && typeof KFGFeedRetry !== 'undefined' && KFGFeedRetry.pending() > 0){
+      kfgResumeNetwork();
+    }
+  } catch(e){}
+}, 60000);
+
 window.addEventListener('offline', function(){ 
   var ob = document.getElementById('offlineBanner'); 
   if(ob) ob.classList.add('show'); 
