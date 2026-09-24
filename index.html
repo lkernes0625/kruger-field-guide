@@ -1384,6 +1384,12 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div class="about-link-arrow">&rsaquo;</div>
         </div>
 
+        <!-- OFFLINE CONTROLS -->
+        <div style="display:flex;gap:9px;margin-top:10px">
+          <button onclick="KFGSW.showStatus()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:11px;padding:12px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4E6; Offline status</button>
+          <button onclick="KFGOffline.open()" style="flex:1;background:var(--accent);border:none;color:var(--bg);border-radius:11px;padding:12px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x2B07;&#xFE0F; Download offline</button>
+        </div>
+
         <!-- LICENSE STATUS PANEL -->
         <div id="licensePanel" style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 15px;margin-top:4px">
           <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">License</div>
@@ -1429,10 +1435,6 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         </div>
         <div style="text-align:center;padding:16px 0 8px">
           <div style="margin:0 0 14px">
-            <div style="display:flex;gap:9px;justify-content:center;max-width:380px;margin:0 auto">
-              <button onclick="KFGOffline.open()" style="flex:1.3;background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:11px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x2B07;&#xFE0F; Download offline</button>
-              <button onclick="KFGSW.showStatus()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:11px 10px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4E6; Status</button>
-            </div>
           </div>
           <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span id="footerVersion" style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.77</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
@@ -4706,6 +4708,259 @@ function dismissOfflineOffer(){
   try { localStorage.setItem('kfg_offline_offer_seen','1'); } catch(e){}
   var el = document.getElementById('kfgOfflineOffer');
   if(el) el.remove();
+}
+
+// ============================================
+// SETUP FLOW
+// ============================================
+// Order matters and is not cosmetic.
+//
+// On iOS a Home Screen app and Safari do not share storage. Downloading 40 MB
+// of photos in a Safari tab and then installing to the Home Screen can leave
+// the installed app with an empty cache and the customer downloading twice.
+// So the install comes first, and the download happens inside the app that
+// will actually be used in the park.
+//
+// Location is deliberately NOT here. It is asked for the first time the
+// Finder, map or departure calculator needs it, where the reason is obvious.
+var KFGSetup = (function(){
+  var KEY = 'kfg_setup_done';
+
+  function isStandalone(){
+    try {
+      return window.navigator.standalone === true ||
+             (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    } catch(e){ return false; }
+  }
+  function isIOS(){
+    try { return /iphone|ipad|ipod/i.test(navigator.userAgent); } catch(e){ return false; }
+  }
+  // Chrome on iOS cannot install a web app at all, nor can in-app browsers.
+  // Blocking those users without explanation would lock them out of something
+  // they paid for, so we tell them what to do instead.
+  function isSafari(){
+    try {
+      var ua = navigator.userAgent;
+      return isIOS() && !/CriOS|FxiOS|EdgiOS|OPiOS|FBAN|FBAV|Instagram|Line|MicroMessenger/i.test(ua);
+    } catch(e){ return true; }
+  }
+
+  function done(){ try { localStorage.setItem(KEY,'1'); } catch(e){} close(); }
+  function isDone(){ try { return localStorage.getItem(KEY) === '1'; } catch(e){ return false; } }
+  function close(){ var el = document.getElementById('kfgSetup'); if(el) el.remove(); }
+
+  function check(){
+    if(isDone()) return;
+    // No licence yet means the gate is still up; setup waits its turn.
+    try { if(!localStorage.getItem('kfg_v2_license')) return; } catch(e){}
+    if(isStandalone() || !isIOS()) stepDownload();
+    else stepInstall();
+  }
+
+  function shell(inner){
+    close();
+    var el = document.createElement('div');
+    el.id = 'kfgSetup';
+    el.style.cssText = 'position:fixed;inset:0;z-index:4400;background:var(--bg);display:flex;' +
+      'flex-direction:column;align-items:center;justify-content:center;text-align:center;' +
+      'padding:28px 24px calc(28px + env(safe-area-inset-bottom,0px));font-family:Montserrat,sans-serif;overflow-y:auto';
+    el.innerHTML = inner;
+    document.body.appendChild(el);
+  }
+
+  var BTN = 'background:var(--accent);border:none;color:var(--bg);border-radius:12px;padding:14px 32px;' +
+            'font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%;max-width:300px';
+  var LINK = 'background:none;border:none;color:var(--text3);font-family:Montserrat,sans-serif;' +
+             'font-size:11px;cursor:pointer;margin-top:14px;text-decoration:underline';
+
+  // ── Step 1: install to the Home Screen ──────────────────────────
+  function stepInstall(){
+    if(!isSafari()){
+      shell(
+        '<div style="font-size:52px;margin-bottom:14px">&#x1F9ED;</div>' +
+        '<div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:12px">Open this in Safari</div>' +
+        '<div style="font-size:12.5px;color:var(--text2);line-height:1.7;max-width:310px;margin-bottom:18px">' +
+          'The browser you are using cannot install apps on iPhone. To use the guide offline in the park, ' +
+          'open <b style="color:var(--accent)">kruger.krantzoutdoors.com</b> in <b>Safari</b> and come back to this step.</div>' +
+        '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 15px;' +
+          'font-size:11px;color:var(--text2);line-height:1.8;max-width:310px;margin-bottom:20px">' +
+          'Copy the address, open Safari, paste it in, then tap <b>Share &rarr; Add to Home Screen</b>.</div>' +
+        '<button onclick="KFGSetup.copyLink()" style="' + BTN + '">Copy the address</button>' +
+        '<button onclick="KFGSetup.skipInstall()" style="' + LINK + '">Continue without offline use</button>');
+      return;
+    }
+    shell(
+      '<div style="font-size:52px;margin-bottom:14px">&#x1F4F2;</div>' +
+      '<div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:10px">Add to your Home Screen</div>' +
+      '<div style="font-size:12.5px;color:var(--text2);line-height:1.7;max-width:310px;margin-bottom:18px">' +
+        'This is the step that makes the guide work in the park. Installed, the app keeps its own permanent ' +
+        'storage &mdash; so everything you download stays put and opens with no signal.</div>' +
+      '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:14px 16px;' +
+        'font-size:12px;color:var(--text2);line-height:2;max-width:310px;text-align:left;margin-bottom:18px">' +
+        '<div><b style="color:var(--accent)">1.</b> Tap the <b>Share</b> button in Safari</div>' +
+        '<div><b style="color:var(--accent)">2.</b> Scroll and tap <b>Add to Home Screen</b></div>' +
+        '<div><b style="color:var(--accent)">3.</b> Tap <b>Add</b>, then open the new icon</div>' +
+      '</div>' +
+      '<div style="font-size:10.5px;color:var(--text3);line-height:1.6;max-width:300px;margin-bottom:16px">' +
+        'Once added, close Safari and open the new icon. Setup carries on from there.</div>' +
+      '<button onclick="KFGSetup.skipInstall()" style="' + LINK + '">I cannot do this right now</button>');
+  }
+
+  function copyLink(){
+    try {
+      if(navigator.clipboard) navigator.clipboard.writeText('https://kruger.krantzoutdoors.com/');
+      if(typeof showToast === 'function') showToast('Address copied', 2000);
+    } catch(e){}
+  }
+
+  // Never trap a paying customer. Skipping is allowed, but it is honest about
+  // the consequence and the app still works online.
+  function skipInstall(){
+    shell(
+      '<div style="font-size:46px;margin-bottom:14px">&#x26A0;&#xFE0F;</div>' +
+      '<div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:10px">Without installing</div>' +
+      '<div style="font-size:12.5px;color:var(--text2);line-height:1.7;max-width:310px;margin-bottom:18px">' +
+        'The guide will still work wherever you have signal. But a browser tab can lose its stored data, ' +
+        'so offline use in the park is not reliable, and anything you download now may need downloading ' +
+        'again after you install.</div>' +
+      '<button onclick="KFGSetup.back()" style="' + BTN + '">Show me how to install</button>' +
+      '<button onclick="KFGSetup.download()" style="' + LINK + '">Continue anyway</button>');
+  }
+
+  // ── Step 2: download the photos ─────────────────────────────────
+  function stepDownload(){
+    var urls = [];
+    try { urls = KFGOffline.collectUrls(); } catch(e){}
+    if(!urls.length){ stepLocation(); return; }
+
+    KFGOffline.countCached(urls).then(function(have){
+      var missing = urls.length - have;
+      if(missing <= 0){ stepLocation(); return; }
+      var mb = Math.round(missing * 0.08);
+      shell(
+        '<div style="font-size:52px;margin-bottom:14px">&#x1F4F6;</div>' +
+        '<div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:10px">Download for the park</div>' +
+        '<div style="font-size:12.5px;color:var(--text2);line-height:1.7;max-width:320px;margin-bottom:16px">' +
+          'Signal drops across most of Kruger. Camps, roads, gate times, species information and your ' +
+          'trip log already work without it. Species <b>photos</b> are the one thing that has to be ' +
+          'downloaded first.</div>' +
+        '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:13px 15px;' +
+          'font-size:11.5px;color:var(--text2);line-height:1.9;max-width:320px;text-align:left;margin-bottom:18px">' +
+          '<div><span style="color:#3a8a4a">&#10003;</span> Already offline: camps, roads, gates, species, sightings</div>' +
+          '<div><span style="color:var(--accent)">&#8595;</span> Download now: ' + missing + ' photos, about ' + mb + ' MB</div>' +
+          '<div><span style="color:var(--text3)">&#9679;</span> Always needs signal: live feed, weather, unvisited map areas</div>' +
+        '</div>' +
+        '<button onclick="KFGSetup.download()" style="' + BTN + '">Download now</button>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:10px">Best on Wi-Fi &middot; keep the screen open</div>' +
+        '<button onclick="KFGSetup.stepLocation()" style="' + LINK + '">Do this later</button>');
+    }).catch(function(){ stepLocation(); });
+  }
+
+  function download(){
+    close();
+    // Location is the next step, but only once the download sheet is closed.
+    window._kfgAfterDownload = stepLocation;
+    try { KFGOffline.open(); } catch(e){}
+  }
+
+  // ── Step 3: location ────────────────────────────────────────────
+  // Asked here rather than later for one reason: the app has just been
+  // installed to the Home Screen, and an installed app holds onto a location
+  // grant far better than a Safari tab does. This is the moment it is most
+  // likely to stick.
+  function stepLocation(){
+    var tip = isIOS()
+      ? '<span style="color:var(--accent);font-weight:700">Make it permanent</span><br>' +
+        'Safari can forget this between sessions. To stop it asking again, go to ' +
+        '<b>Settings &rarr; Safari &rarr; Location</b> and choose <b>Allow</b>.'
+      : '<span style="color:var(--accent);font-weight:700">Make it permanent</span><br>' +
+        'Tap the padlock in the address bar &rarr; <b>Permissions</b> &rarr; <b>Location</b> &rarr; <b>Allow</b>.';
+
+    shell(
+      '<div style="font-size:52px;margin-bottom:14px">&#x1F4CD;</div>' +
+      '<div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:10px">Allow location</div>' +
+      '<div style="font-size:12.5px;color:var(--text2);line-height:1.7;max-width:320px;margin-bottom:16px">' +
+        'Your position is what makes the guide useful on a drive &mdash; nearest fuel, toilets and gates, ' +
+        'distances, routes, and the safe departure time before a gate closes. It works from satellites, ' +
+        'so it keeps working with no signal.</div>' +
+      '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:12px 15px;' +
+        'font-size:11px;color:var(--text2);line-height:1.7;max-width:320px;text-align:left;margin-bottom:10px">' +
+        'Your location stays on your phone. It is never sent anywhere except on a sighting you choose to share.' +
+      '</div>' +
+      '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:12px 15px;' +
+        'font-size:11px;color:var(--text2);line-height:1.7;max-width:320px;text-align:left;margin-bottom:18px">' +
+        tip + '</div>' +
+      '<button onclick="KFGSetup.allowLocation()" style="' + BTN + '">Allow location</button>' +
+      '<div style="font-size:10px;color:var(--text3);margin-top:10px">Your phone will ask next &mdash; tap Allow</div>' +
+      '<button onclick="KFGSetup.skipLocation()" style="' + LINK + '">Not now</button>');
+  }
+
+  function allowLocation(){
+    // Mark as explained so the in-app primer does not repeat this later.
+    try { localStorage.setItem('kfg_geo_primed','1'); } catch(e){}
+    close();
+    done();
+    // Triggers the browser's own prompt. Nothing we show can replace it.
+    setTimeout(function(){
+      try { KFGGeo.raw(function(){}, function(){}, { quiet:true, silentDenial:true }); } catch(e){}
+    }, 350);
+  }
+
+  function skipLocation(){
+    shell(
+      '<div style="font-size:46px;margin-bottom:14px">&#x26A0;&#xFE0F;</div>' +
+      '<div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:10px">Without location</div>' +
+      '<div style="font-size:12.5px;color:var(--text2);line-height:1.7;max-width:310px;margin-bottom:18px">' +
+        'The Finder, distances, routes and the gate departure calculator all need your position, so they ' +
+        'will not work. You can allow it later &mdash; the app will ask again the first time you use one ' +
+        'of them.</div>' +
+      '<button onclick="KFGSetup.allowLocation()" style="' + BTN + '">Allow location</button>' +
+      '<button onclick="KFGSetup.finish()" style="' + LINK + '">Continue without it</button>');
+  }
+
+  return { check:check, copyLink:copyLink, skipInstall:skipInstall, back:stepInstall,
+           finish:done, download:download, stepLocation:stepLocation,
+           allowLocation:allowLocation, skipLocation:skipLocation,
+           isStandalone:isStandalone, close:close };
+})();
+
+// New photos in a new build should find the user, not wait to be discovered.
+// Someone who downloaded everything last month has no reason to open the
+// status panel, so without this they would simply have gaps in the park.
+// Checked once per version, and only for people who already finished setup.
+function checkNewPhotos(){
+  try {
+    if(localStorage.getItem('kfg_setup_done') !== '1') return;   // setup handles them
+    if(!navigator.onLine) return;
+    if(localStorage.getItem('kfg_photos_notified') === APP_VERSION) return;
+    if(typeof KFGOffline === 'undefined' || !window.caches) return;
+
+    var urls = KFGOffline.collectUrls();
+    if(!urls.length) return;
+
+    KFGOffline.countCached(urls).then(function(have){
+      var missing = urls.length - have;
+      // Only speak up if they had most of them already — otherwise they never
+      // downloaded in the first place and this is not news.
+      if(missing <= 0 || have < urls.length * 0.5) return;
+      localStorage.setItem('kfg_photos_notified', APP_VERSION);
+      setTimeout(function(){
+        if(typeof showToast === 'function'){
+          showToast('\u{1F4F8} ' + missing + ' new species photo' + (missing > 1 ? 's' : '') +
+                    ' in this update \u2014 tap to download for offline', 9000);
+          var t = document.getElementById('kfg-toast');
+          if(t){
+            t.style.cursor = 'pointer';
+            t.style.borderColor = 'rgba(232,160,32,.5)';
+            t.addEventListener('click', function(){
+              t.remove();
+              try { KFGOffline.open(); } catch(e){}
+            });
+          }
+        }
+      }, 6000);
+    }).catch(function(){});
+  } catch(e){}
 }
 
 function triggerSightingNotification(spName) {
@@ -9873,7 +10128,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.89';
+var APP_VERSION = '5.94';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -11805,10 +12060,8 @@ function initApp() {
   safe(renderSavedTrips);
   safe(renderRecentlyViewed);
   safe(renderTripJournal);
-  safe(checkInstallNudge);
-  // Offer the offline download once, early, so nobody discovers the gap
-  // halfway through a game drive.
-  safe(checkOfflineOffer);
+  // checkInstallNudge and checkOfflineOffer are superseded by KFGSetup,
+  // which runs them as one ordered flow instead of two stacked banners.
   // Family feed — load on startup if member, poll every 30s
   safe(function(){
     if(isFamilyMember()) {
@@ -11822,7 +12075,13 @@ function initApp() {
   // Render license panel in About screen
   safe(renderLicensePanel);
   // Show onboarding on first launch
-  setTimeout(showOnboarding, 500);
+  // The four welcome slides are retired. They explained things the app makes
+  // obvious and delayed people getting in. Setup now covers only what the app
+  // genuinely cannot do for itself: install to the Home Screen so offline
+  // storage persists, then download the photos into that storage.
+  setTimeout(function(){ try { KFGSetup.check(); } catch(e){} }, 600);
+  // For users already past setup: tell them when a build adds photos.
+  setTimeout(function(){ try { checkNewPhotos(); } catch(e){} }, 1500);
   safe(loadChecklistState);
   safe(renderChecklist);
   // Cloud sync: pull on boot
@@ -12731,6 +12990,12 @@ var KFGOffline = (function(){
     cancel();
     var el = document.getElementById('kfgDlSheet');
     if(el) el.remove();
+    // If setup sent us here, hand control back so the flow continues.
+    if(window._kfgAfterDownload){
+      var next = window._kfgAfterDownload;
+      window._kfgAfterDownload = null;
+      setTimeout(function(){ try { next(); } catch(e){} }, 250);
+    }
   }
 
   return { open:open, go:go, stop:stop, close:close, start:start, cancel:cancel, verify:verify,
@@ -13026,6 +13291,12 @@ var KFGSW = (function(){
   // happened. Wired to the "last updated" line in the About screen.
   function showStatus(){
     status(function(s){
+      // Compare the photos this build expects against what is actually
+      // stored. A counter alone cannot tell you that a new release added
+      // five species — this can, because it recounts from the app's own data
+      // every time it runs.
+      var expected = 0, have = 0, photoLine = '';
+      try { expected = KFGOffline.collectUrls().length; } catch(e){}
       var mb = function(b){ return (b == null) ? '?' : (b/1048576).toFixed(1) + ' MB'; };
       var lines =
         '<div style="font-size:30px;text-align:center;margin-bottom:10px">&#x1F4E6;</div>' +
@@ -13033,7 +13304,7 @@ var KFGSW = (function(){
         '<div style="font-size:10px;color:var(--text3);text-align:center;margin-bottom:12px">Running v' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '?') + '</div>' +
         '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px;font-size:11.5px;color:var(--text2);line-height:2">' +
           '<div>App shell cached: <b style="color:' + (s.shell ? '#3a8a4a' : '#cc3322') + '">' + (s.shell ? 'yes (' + s.shell + ' files)' : 'NO') + '</b></div>' +
-          '<div>Photos cached: <b style="color:var(--accent)">' + (s.images || 0) + '</b></div>' +
+          '<div id="kfgStPhotos">Species photos: <b style="color:var(--text3)">checking...</b></div>' +
           '<div>Map tiles cached: <b style="color:var(--accent)">' + (s.tiles || 0) + '</b></div>' +
           '<div>Storage used: <b>' + mb(s.usage) + '</b> of ' + mb(s.quota) + '</div>' +
           '<div>Eviction-protected: <b style="color:' + (s.persistent ? '#3a8a4a' : '#d4741a') + '">' + (s.persistent ? 'yes' : 'not yet') + '</b></div>' +
@@ -13051,6 +13322,28 @@ var KFGSW = (function(){
       wrap.innerHTML = '<div style="width:100%;max-width:520px;background:var(--bg2);border:1px solid var(--border2);' +
         'border-radius:18px 18px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))">' + lines + '</div>';
       document.body.appendChild(wrap);
+
+      // Fill in the species photo comparison once the cache has been read.
+      try {
+        var urls = KFGOffline.collectUrls();
+        KFGOffline.countCached(urls).then(function(done){
+          var row = document.getElementById('kfgStPhotos');
+          if(!row) return;
+          var missing = urls.length - done;
+          if(missing <= 0){
+            row.innerHTML = 'Species photos: <b style="color:#3a8a4a">' + done + ' of ' + urls.length +
+              ' \u2014 complete</b>';
+          } else {
+            row.innerHTML = 'Species photos: <b style="color:#d4741a">' + done + ' of ' + urls.length + '</b>' +
+              '<div style="font-size:10px;color:var(--text3);line-height:1.5;margin:3px 0 2px">' +
+                missing + ' missing \u2014 this build added photos you have not downloaded yet.</div>' +
+              '<button onclick="document.getElementById(\'kfgSwStatus\').remove();KFGOffline.open()" ' +
+              'style="background:var(--accent);border:none;color:var(--bg);border-radius:7px;padding:6px 12px;' +
+              'font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;margin:4px 0 2px">' +
+              'Download the missing ' + missing + '</button>';
+          }
+        }).catch(function(){});
+      } catch(e){}
     });
   }
 
