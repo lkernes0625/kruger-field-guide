@@ -9669,7 +9669,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.81';
+var APP_VERSION = '5.82';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -9701,9 +9701,27 @@ if(document.readyState === 'loading'){
 })();
 var VERSION_URL = 'https://raw.githubusercontent.com/lkernes0625/kruger-live/main/version.json';
 
-function forceUpdate() {
-  // Cache-busting: reload the page with a timestamp query param
-  // This forces the browser to fetch a completely fresh copy
+async function forceUpdate() {
+  // The old cache-busting query param no longer works on its own: the service
+  // worker answers navigation requests from cache before the network is
+  // consulted, so a plain reload would serve the same old version and the
+  // update would appear to do nothing.
+  //
+  // Refresh the cached copy first, then reload into it.
+  try {
+    if(window.caches){
+      var res = await fetch('/index.html', { cache: 'reload' });
+      if(res && res.ok){
+        var names = await caches.keys();
+        for(var i = 0; i < names.length; i++){
+          var c = await caches.open(names[i]);
+          var hit = await c.match('/index.html');
+          if(hit) await c.put('/index.html', res.clone());
+        }
+      }
+    }
+  } catch(e){ console.warn('[update] shell refresh failed, reloading anyway', e); }
+
   var url = window.location.href.split('?')[0];
   window.location.href = url + '?v=' + Date.now();
 }
