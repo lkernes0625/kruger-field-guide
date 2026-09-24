@@ -8327,8 +8327,17 @@ function findNearest(type, btn, forceFresh) {
     return;
   }
 
-  results.innerHTML = '<div class="tip tip-blue"><div class="tip-title">Getting your location...</div><p>One moment.</p></div>';
+  results.innerHTML = '<div class="tip tip-blue"><div class="tip-title">Getting your location...</div><p>One moment. With no signal this can take up to a minute.</p></div>';
   if(label) label.style.display = 'block';
+  // Bring the results into view. The buttons fill the screen on a phone, so
+  // without this the "getting your location" message renders below the fold
+  // and tapping a category looks like it does nothing at all.
+  try {
+    setTimeout(function(){
+      if(label && label.scrollIntoView) label.scrollIntoView({ behavior:'smooth', block:'start' });
+      else if(results.scrollIntoView) results.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 60);
+  } catch(e){}
 
   var _srcBanner = '';
   KFGGeo.position('find the nearest facilities',
@@ -9775,7 +9784,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.84';
+var APP_VERSION = '5.85';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
