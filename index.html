@@ -8618,6 +8618,11 @@ var KFGGeo = (function(){
       var last = lastKnown();
       if(last && !o.forceFresh){
         var stale = asPosition(last);
+        // Tag it. A caller must never be handed an old position that looks
+        // like a live fix — position() reads these flags and labels it, and
+        // the map shows a warning instead of silently placing you elsewhere.
+        stale.kfgStale = true;
+        stale.kfgAgeMs = Date.now() - last.t;
         cleanup(); hideAcquiring();
         var q = queue; queue = [];
         q.forEach(function(c){ try { c.ok(stale); } catch(e){} });
@@ -8833,7 +8838,12 @@ var KFGGeo = (function(){
       var last = lastKnown();
       if(last){ ok(asPosition(last), { source:'stale', ageMs: Date.now()-last.t }); return; }
     }
-    ensure(reason, function(p){ ok(p, { source:'fresh', ageMs:0 }); }, fail, o);
+    ensure(reason, function(p){
+      // Acquisition can fall back to a stored position when the satellites
+      // do not answer in time. Report what it actually is.
+      if(p && p.kfgStale) ok(p, { source:'stale', ageMs: p.kfgAgeMs || 0 });
+      else ok(p, { source:'fresh', ageMs:0 });
+    }, fail, o);
   }
 
   // ── Manual location picker ───────────────────────────────────────
@@ -9765,7 +9775,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.83';
+var APP_VERSION = '5.84';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -11068,6 +11078,7 @@ function mapCentreOnMe() {
   if(!_map) return;
   KFGGeo.ensure('centre the map on you', function(pos) {
     _map.setView([pos.coords.latitude, pos.coords.longitude], _map.getZoom(), { animate: true, duration: 0.6 });
+    if(pos.kfgStale) showToast('\u26A0\uFE0F No GPS fix \u2014 showing your last known position', 3000);
   }, function(err) {
     if(!err || !err.declinedInApp) showToast('Could not get GPS location', 2000);
   });
