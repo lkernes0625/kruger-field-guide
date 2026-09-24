@@ -3767,7 +3767,7 @@ function showScreen(id) {
   window._currentScreenId = id;
   setTimeout(function(){ if(window._updateAZ) window._updateAZ(); }, 50);
   // Init map on first visit
-  if(id === 'map') setTimeout(function(){ initMap(); if(_map) _map.invalidateSize(); if(!window._heatmapActive){ toggleHeatmap(); } }, 300);
+  if(id === 'map') setTimeout(function(){ initMap(); if(_map) _map.invalidateSize(); if(!window._heatmapActive){ toggleHeatmap(); } try { KFGRoute.restore(); } catch(e){} }, 300);
   if(id === 'games') {
     // Reset all game tabs cleanly, then activate challenge
     try {
@@ -4787,6 +4787,20 @@ var KFGFeedRetry = (function(){
 
   function pending(){ return read().length; }
 
+  // Cancel a queued upload. Needed because a sighting logged with no signal
+  // and then deleted before reconnecting would otherwise still be uploaded
+  // when signal returned — the queue would resurrect something the user
+  // had already removed.
+  function remove(entry){
+    if(!entry) return 0;
+    var sig = (entry.name || '') + '|' + (entry.time || '');
+    var list = read();
+    var kept = list.filter(function(it){ return it.sig !== sig; });
+    var dropped = list.length - kept.length;
+    if(dropped > 0){ write(kept); updateBadge(); }
+    return dropped;
+  }
+
   async function flush(){
     if(flushing || !navigator.onLine) return;
     var list = read();
@@ -4828,7 +4842,7 @@ var KFGFeedRetry = (function(){
     }
   }
 
-  return { add:add, flush:flush, pending:pending, updateBadge:updateBadge };
+  return { add:add, remove:remove, flush:flush, pending:pending, updateBadge:updateBadge };
 })();
 
 // Same name and signature as before, so every existing caller is untouched.
@@ -9655,7 +9669,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.78';
+var APP_VERSION = '5.80';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -9820,6 +9834,8 @@ function deleteSighting(idx) {
   var i = sightings.indexOf(s);
   if(i >= 0) sightings.splice(i, 1);
   saveSightings(sightings);
+  // If this one was still waiting to upload, cancel it.
+  try { if(typeof KFGFeedRetry !== 'undefined') KFGFeedRetry.remove(s); } catch(e){}
   renderSightings();
   try{renderSpecies();}catch(e){}
   try{renderBirds();}catch(e){}
@@ -10267,6 +10283,10 @@ function navigateTo(name, lat, lng) {
             weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
           }).addTo(_map).bindPopup('Your position').openPopup();
           _startNavTracking();
+          // Keep the route so it survives a force-quit or an iOS page discard.
+          // Restoring never re-calls OSRM, so it works with no signal.
+          try { KFGRoute.save({ kind:'osrm', dest:{name:name,lat:lat,lng:lng},
+                                from:{lat:fLat,lng:fLng}, geometry:_navRoute, km:km, t:t }); } catch(e){}
         })
         .catch(function() { clearTimeout(osrmTimer); drawFallbackRoute(fLat, fLng, lat, lng, name); });
     }, function(){
@@ -10277,6 +10297,102 @@ function navigateTo(name, lat, lng) {
     });
   }
   setTimeout(tryNav, 500);
+}
+
+// ============================================
+// ROUTE PERSISTENCE
+// ============================================
+// The active route used to live only in memory. Losing signal mid-route was
+// always fine — tracking runs on GPS, which needs no network. But if iOS
+// discarded the page (a phone call, checking photos) or the user force-quit,
+// the route vanished and had to be re-created, which offline meant it could
+// not be re-created at all.
+//
+// This stores the route as drawn. Restoring does not call OSRM again, so a
+// route worked out while you had signal stays usable for the rest of the
+// drive with no signal at all.
+var KFGRoute = (function(){
+  var KEY = 'kfg_active_route';
+  var MAX_AGE = 12 * 60 * 60 * 1000;  // a day's drive, not last week
+
+  function save(data){
+    try {
+      data.savedAt = Date.now();
+      localStorage.setItem(KEY, JSON.stringify(data));
+    } catch(e){}
+  }
+
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY); if(!raw) return null;
+      var d = JSON.parse(raw);
+      if(!d || !d.dest || !d.savedAt) return null;
+      if(Date.now() - d.savedAt > MAX_AGE){ clear(); return null; }
+      return d;
+    } catch(e){ return null; }
+  }
+
+  function clear(){ try { localStorage.removeItem(KEY); } catch(e){} }
+
+  // Redraw a stored route. Waits for the map, since this can be called
+  // before the map screen has ever been opened.
+  function restore(){
+    var d = load(); if(!d) return;
+    var tries = 0;
+    (function wait(){
+      tries++;
+      if(!_map || !window.L){
+        if(tries < 40) { setTimeout(wait, 250); return; }
+        return;   // map never opened; the route stays stored for next time
+      }
+      if(_navDest) return;   // a live route is already running, leave it alone
+      try { redraw(d); } catch(e){ console.warn('[route] restore failed', e); }
+    })();
+  }
+
+  function redraw(d){
+    _navDest = { name: d.dest.name, lat: d.dest.lat, lng: d.dest.lng };
+    if(_navLayer){ _map.removeLayer(_navLayer); _navLayer = null; }
+
+    if(d.kind === 'osrm' && d.geometry){
+      _navRoute = d.geometry;
+      _navLayer = L.geoJSON(_navRoute, { style: { color: '#e8a020', weight: 6, opacity: .95, lineJoin: 'round', lineCap: 'round' } }).addTo(_map);
+    } else {
+      _navLayer = L.polyline([[d.from.lat, d.from.lng], [d.dest.lat, d.dest.lng]],
+        { color: '#e8a020', weight: 5, dashArray: '10,7', opacity: .9 }).addTo(_map);
+      showStraightLineWarning();
+    }
+    _map.fitBounds(_navLayer.getBounds(), { padding: [40, 40] });
+
+    _showNavPanel(d.dest.name, d.km, d.t);
+    if(_map._destMarker) _map.removeLayer(_map._destMarker);
+    _map._destMarker = L.marker([d.dest.lat, d.dest.lng]).addTo(_map).bindPopup('<b>' + d.dest.name + '</b>');
+    _startNavTracking();
+
+    var mins = Math.round((Date.now() - d.savedAt) / 60000);
+    var ago = mins < 1 ? 'just now' : (mins < 60 ? mins + ' min ago' : Math.round(mins/60) + 'h ago');
+    if(typeof showToast === 'function'){
+      showToast('\u{1F9ED} Route to ' + d.dest.name + ' restored (set ' + ago + ')', 3000);
+    }
+  }
+
+  return { save:save, load:load, clear:clear, restore:restore };
+})();
+
+// Shared so both the live fallback and a restored one show the same warning.
+function showStraightLineWarning(){
+  var warn = document.getElementById('kfgRouteWarn');
+  if(warn) warn.remove();
+  warn = document.createElement('div');
+  warn.id = 'kfgRouteWarn';
+  // Sits above the "x route" button so the two never overlap.
+  warn.style.cssText = 'position:fixed;left:12px;right:12px;bottom:152px;z-index:900;' +
+    'background:rgba(204,51,34,.94);color:#fff;border-radius:10px;padding:9px 12px;' +
+    'font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:600;line-height:1.5;' +
+    'text-align:center;box-shadow:0 3px 14px rgba(0,0,0,.5)';
+  warn.innerHTML = '\u26A0\uFE0F Straight-line distance only \u2014 no routing without signal.<br>' +
+    '<span style="font-weight:400;opacity:.9">This is not a road. Follow actual park roads and signage.</span>';
+  document.body.appendChild(warn);
 }
 
 function drawFallbackRoute(fLat, fLng, lat, lng, name) {
@@ -10295,21 +10411,10 @@ function drawFallbackRoute(fLat, fLng, lat, lng, name) {
     weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
   }).addTo(_map).bindPopup('Your position').openPopup();
   _startNavTracking();
-  showToast('\u26A0\uFE0F No signal \u2014 showing straight-line direction only, NOT a drivable route', 4500);
-  // Persistent on-map label. A dashed line across 400km of bush can otherwise
-  // be mistaken for a road, which in Kruger is a dangerous misreading.
-  var warn = document.getElementById('kfgRouteWarn');
-  if(warn) warn.remove();
-  var host = document.getElementById('screen-map') || document.body;
-  warn = document.createElement('div');
-  warn.id = 'kfgRouteWarn';
-  warn.style.cssText = 'position:absolute;left:12px;right:12px;bottom:74px;z-index:900;' +
-    'background:rgba(204,51,34,.94);color:#fff;border-radius:10px;padding:9px 12px;' +
-    'font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:600;line-height:1.5;' +
-    'text-align:center;box-shadow:0 3px 14px rgba(0,0,0,.5)';
-  warn.innerHTML = '\u26A0\uFE0F Straight-line distance only \u2014 no routing without signal.<br>' +
-    '<span style="font-weight:400;opacity:.9">This is not a road. Follow actual park roads and signage.</span>';
-  host.appendChild(warn);
+  // One message, not two: the persistent banner replaces the old toast.
+  showStraightLineWarning();
+  try { KFGRoute.save({ kind:'fallback', dest:{name:name,lat:lat,lng:lng},
+                        from:{lat:fLat,lng:fLng}, km:km, t:t }); } catch(e){}
 }
 
 // ── Haversine distance helper ─────────────────────────────────────
@@ -10492,6 +10597,7 @@ function endNavigation() {
   _navRoute = null;
   var warn = document.getElementById('kfgRouteWarn');
   if(warn) warn.remove();
+  try { KFGRoute.clear(); } catch(e){}
   KFGWake.release();
   showToast('Navigation ended');
 }
@@ -11205,6 +11311,8 @@ function deleteSightingFromWildlife(idx) {
   var i = sightings.indexOf(s);
   if(i >= 0) sightings.splice(i, 1);
   saveSightings(sightings);
+  // If this one was still waiting to upload, cancel it.
+  try { if(typeof KFGFeedRetry !== 'undefined') KFGFeedRetry.remove(s); } catch(e){}
   // Re-render ALL grids so tick clears instantly
   try{renderSpecies();}catch(e){}
   try{renderBirds();}catch(e){}
