@@ -430,7 +430,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 <div class="license-gate" id="licenseGate">
   <div class="license-box">
     <div class="license-logo"><img id="logo1Img" src="https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-main-app-trans.png?alt=media&token=91b71f50-05e9-4bca-9fea-84a490dd83ed" alt="Krantz Outdoors"></div>
-    <div class="license-tagline">Kruger National Park &bull; v5.21</div>
+    <div class="license-tagline">Kruger National Park &bull; <span id="licenseVersion">v5.77</span></div>
     <div class="license-edition">Field Intelligence Guide</div>
 
     <!-- TWO CHOICE CARDS -->
@@ -9558,6 +9558,24 @@ function showToast(msg, duration) {
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
 var APP_VERSION = '5.77';
 
+// Single source of truth for every version string on screen. Bound here as
+// early as possible (the license gate can render before initApp finishes) and
+// again in initApp. Idempotent, so running twice is harmless.
+function applyVersionStrings(){
+  try {
+    var v = 'v' + APP_VERSION;
+    var fv = document.getElementById('footerVersion');      if(fv) fv.textContent = v;
+    var bn = document.getElementById('buildNotesVersion');  if(bn) bn.textContent = v + ' \u2014 BUILD NOTES';
+    var lv = document.getElementById('licenseVersion');     if(lv) lv.textContent = v;
+    document.title = 'Kruger Field Guide ' + v + ' - Krantz Outdoors';
+  } catch(e){}
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', applyVersionStrings);
+} else {
+  applyVersionStrings();
+}
+
 // Clear stale caches when version changes
 (function() {
   var lastVersion = localStorage.getItem('kfg_app_version');
@@ -11244,16 +11262,9 @@ function initApp() {
   safe(function(){ KFGLifecycle.init(); });
 
   // Every on-screen version string is driven from APP_VERSION alone. Change
-  // that one constant and the footer, the build notes heading and the offline
-  // status panel all follow. Nothing else to remember on a release.
-  safe(function(){
-    var v = 'v' + APP_VERSION;
-    var fv = document.getElementById('footerVersion');
-    if(fv) fv.textContent = v;
-    var bn = document.getElementById('buildNotesVersion');
-    if(bn) bn.textContent = v + ' \u2014 BUILD NOTES';
-    document.title = 'Kruger Field Guide ' + v + ' - Krantz Outdoors';
-  });
+  // that one constant and the footer, build notes heading, license screen,
+  // page title and offline status panel all follow.
+  safe(applyVersionStrings);
 
   // Offline foundation: cache the shell, and ask to be exempt from eviction.
   safe(function(){ KFGSW.register(); });
