@@ -8278,31 +8278,14 @@ var _lastFinderType = null;
 function retryFinder() {
   if(_lastFinderType) findNearest(_lastFinderType, null);
 }
-// Banner shown above Finder results when the position isn't a live GPS fix.
-function _finderSourceBanner(meta, type){
-  if(!meta || meta.source === 'fresh') return '';
-  var t = "'" + type + "'";
-  var btn = 'background:var(--bg2);border:1px solid var(--border2);color:var(--accent);border-radius:7px;' +
-            'padding:6px 11px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0';
-  var txt, actions;
-  if(meta.source === 'manual'){
-    txt = 'Distances from <b style="color:var(--accent)">' + meta.name + '</b>';
-    actions = '<button style="' + btn + '" onclick="KFGGeo.clearManual();findNearest(' + t + ',null,true)">Use GPS</button>' +
-              '<button style="' + btn + '" onclick="KFGGeo.pickManual(function(){findNearest(' + t + ')})">Change</button>';
-  } else {
-    var mins = Math.round((meta.ageMs || 0) / 60000);
-    var age = mins < 1 ? 'a moment ago' : (mins < 60 ? mins + ' min ago' : Math.round(mins/60) + 'h ago');
-    txt = 'From your last known position, ' + age;
-    actions = '<button style="' + btn + '" onclick="findNearest(' + t + ',null,true)">Update GPS</button>' +
-              '<button style="' + btn + '" onclick="KFGGeo.pickManual(function(){findNearest(' + t + ')})">Set manually</button>';
-  }
-  return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;' +
-         'background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">' +
-         '<div style="font-size:10.5px;color:var(--text2);line-height:1.5">' + txt + '</div>' +
-         '<div style="display:flex;gap:6px">' + actions + '</div></div>';
-}
+// The Finder used to show a banner with "Update GPS" and "Set manually"
+// buttons whenever the position was not a live fix. That exposed plumbing no
+// user asked about or understood. The app now does it itself: results appear
+// instantly from the last known position, a better fix is sought silently in
+// the background, and the distances update on their own when it arrives.
+// Nothing is shown unless there is a genuine problem.
 
-function findNearest(type, btn, forceFresh) {
+function findNearest(type, btn, forceFresh, silentRefresh) {
   if(window._lastFinderType !== type) window._finderShowCount = 6;
   _lastFinderType = type;
   // Map finder button types to FACILITIES keys
@@ -8327,22 +8310,36 @@ function findNearest(type, btn, forceFresh) {
     return;
   }
 
-  results.innerHTML = '<div class="tip tip-blue"><div class="tip-title">Getting your location...</div><p>One moment. With no signal this can take up to a minute.</p></div>';
+  if(!silentRefresh){
+    results.innerHTML = '<div class="tip tip-blue"><div class="tip-title">Finding nearest ' + type + '...</div><p>One moment.</p></div>';
+  }
   if(label) label.style.display = 'block';
   // Bring the results into view. The buttons fill the screen on a phone, so
   // without this the "getting your location" message renders below the fold
   // and tapping a category looks like it does nothing at all.
-  try {
-    setTimeout(function(){
-      if(label && label.scrollIntoView) label.scrollIntoView({ behavior:'smooth', block:'start' });
-      else if(results.scrollIntoView) results.scrollIntoView({ behavior:'smooth', block:'start' });
-    }, 60);
-  } catch(e){}
+  if(!silentRefresh){
+    try {
+      setTimeout(function(){
+        if(label && label.scrollIntoView) label.scrollIntoView({ behavior:'smooth', block:'start' });
+        else if(results.scrollIntoView) results.scrollIntoView({ behavior:'smooth', block:'start' });
+      }, 60);
+    } catch(e){}
+  }
 
   var _srcBanner = '';
   KFGGeo.position('find the nearest facilities',
     function(pos, meta) {
-      _srcBanner = _finderSourceBanner(meta, type);
+      _srcBanner = '';
+      // Results are on screen now. If this was not a live fix, go and get one
+      // in the background and re-render quietly when it lands. The user sees
+      // distances sharpen on their own rather than being asked to do anything.
+      if(meta && meta.source !== 'fresh' && !forceFresh && !window._finderRefreshing){
+        window._finderRefreshing = true;
+        KFGGeo.refresh(function(better){
+          window._finderRefreshing = false;
+          if(better && window._lastFinderType === type) findNearest(type, null, false, true);
+        });
+      }
       var lat = pos.coords.latitude;
       var lng = pos.coords.longitude;
       var facilities = FACILITIES[facilityType] ? FACILITIES[facilityType].slice() : [];
@@ -8593,7 +8590,10 @@ var KFGGeo = (function(){
 
     // Tell the user what is happening if the fix is taking a while, rather
     // than leaving a dead button. Only for foreground requests.
-    if(!o.quiet){
+    // Only tell the user we are waiting when there is genuinely nothing to
+    // show. If a stored position already put results on screen, the refresh
+    // happens silently — an indicator there would just be noise.
+    if(!o.quiet && !lastKnown() && !getManual()){
       _softTimer = setTimeout(function(){ showAcquiring(); }, 3500);
     }
 
@@ -8949,7 +8949,9 @@ var KFGGeo = (function(){
       if(fail) fail({ code:2, message:'unsupported' });
       return;
     }
-    if(fresh()){ ok(_gpsCache); return; }
+    // forceFresh must beat the cache. Previously an explicit refresh could be
+    // answered from the 5-minute cache, so nothing actually refreshed.
+    if(fresh() && !(opts && opts.forceFresh)){ ok(_gpsCache); return; }
 
     // Carry the reason into the options so any denial card can name it.
     var o = {};
@@ -8974,6 +8976,20 @@ var KFGGeo = (function(){
     });
   }
 
+  // Quietly try for a better fix in the background. Shows nothing, blocks
+  // nothing, and calls back only if it actually succeeds. This is how the app
+  // improves a stale position without the user having to ask.
+  function refresh(cb){
+    if(!supported() || lsGet('kfg_geo_denied') === '1'){ if(cb) cb(null); return; }
+    state(function(st){
+      if(st === 'denied'){ if(cb) cb(null); return; }
+      if(st !== 'granted' && lsGet('kfg_geo_primed') !== '1'){ if(cb) cb(null); return; }
+      fetchPosition(function(pos){ if(cb) cb(pos); },
+                    function(){ if(cb) cb(null); },
+                    { forceFresh:true, quiet:true, silentDenial:true });
+    });
+  }
+
   // Force a fresh fix (used on resume — a cached position from before you
   // backgrounded the app is worse than useless while driving).
   function invalidate(){ _gpsCache = null; _gpsCacheTime = 0; }
@@ -8981,6 +8997,7 @@ var KFGGeo = (function(){
   return {
     ensure: ensure,
     position: position,
+    refresh: refresh,
     lastKnown: lastKnown,
     remember: saveLastKnown,
     setManual: setManual,
@@ -9784,7 +9801,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.85';
+var APP_VERSION = '5.86';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
