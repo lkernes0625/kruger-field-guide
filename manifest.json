@@ -1,0 +1,31 @@
+{
+  "name": "Kruger Field Guide",
+  "short_name": "Kruger Guide",
+  "description": "Offline field guide to the Kruger National Park - species, camps, roads, gate times and sightings. Works with no signal.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#15191c",
+  "theme_color": "#15191c",
+  "categories": ["travel", "education", "navigation"],
+  "lang": "en-ZA",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-homescreen.webp?alt=media",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/kruger-feed.firebasestorage.app/o/images%2Flogos%2Fkrantz-outdoors-homescreen.webp?alt=media",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ]
+}
