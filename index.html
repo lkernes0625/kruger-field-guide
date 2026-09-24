@@ -1431,9 +1431,9 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div style="margin:0 0 14px">
             <button onclick="KFGSW.showStatus()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:10px 18px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4E6; Offline status</button>
           </div>
-          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.74</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span id="footerVersion" style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.77</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
           <div id="buildNotesPanel" style="display:none;margin-top:10px;padding:12px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);text-align:left">
-            <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.77 — BUILD NOTES</div>
+            <div id="buildNotesVersion" style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:6px">v5.77 — BUILD NOTES</div>
             <div style="font-size:10px;color:var(--text2);line-height:1.7">
               • NEW: My Trip &rarr; Journal — Outside-park camp support. Select "Other / Outside Park..." in any night row to type your own accommodation name (guesthouses, farm stays, private lodges). Shows with 🏡 icon in journal &amp; export.<br>
               • FIXED: Daily Challenge — tap any animal card to open species &amp; log sighting without leaving Games<br>
@@ -11243,6 +11243,18 @@ function initApp() {
   // is still caught.
   safe(function(){ KFGLifecycle.init(); });
 
+  // Every on-screen version string is driven from APP_VERSION alone. Change
+  // that one constant and the footer, the build notes heading and the offline
+  // status panel all follow. Nothing else to remember on a release.
+  safe(function(){
+    var v = 'v' + APP_VERSION;
+    var fv = document.getElementById('footerVersion');
+    if(fv) fv.textContent = v;
+    var bn = document.getElementById('buildNotesVersion');
+    if(bn) bn.textContent = v + ' \u2014 BUILD NOTES';
+    document.title = 'Kruger Field Guide ' + v + ' - Krantz Outdoors';
+  });
+
   // Offline foundation: cache the shell, and ask to be exempt from eviction.
   safe(function(){ KFGSW.register(); });
   safe(function(){ KFGSW.requestPersistence(); });
@@ -12223,7 +12235,8 @@ var KFGSW = (function(){
       var mb = function(b){ return (b == null) ? '?' : (b/1048576).toFixed(1) + ' MB'; };
       var lines =
         '<div style="font-size:30px;text-align:center;margin-bottom:10px">&#x1F4E6;</div>' +
-        '<div style="font-size:15px;font-weight:700;color:var(--text);text-align:center;margin-bottom:12px">Offline status</div>' +
+        '<div style="font-size:15px;font-weight:700;color:var(--text);text-align:center;margin-bottom:4px">Offline status</div>' +
+        '<div style="font-size:10px;color:var(--text3);text-align:center;margin-bottom:12px">Running v' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '?') + '</div>' +
         '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px;font-size:11.5px;color:var(--text2);line-height:2">' +
           '<div>App shell cached: <b style="color:' + (s.shell ? '#3a8a4a' : '#cc3322') + '">' + (s.shell ? 'yes (' + s.shell + ' files)' : 'NO') + '</b></div>' +
           '<div>Photos cached: <b style="color:var(--accent)">' + (s.images || 0) + '</b></div>' +
