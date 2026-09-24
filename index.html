@@ -9669,7 +9669,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.80';
+var APP_VERSION = '5.81';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -10283,6 +10283,8 @@ function navigateTo(name, lat, lng) {
             weight: 3, opacity: 1, fillOpacity: 1, zIndexOffset: 500
           }).addTo(_map).bindPopup('Your position').openPopup();
           _startNavTracking();
+          // A real road route replaces any straight-line warning on screen.
+          var sw = document.getElementById('kfgRouteWarn'); if(sw) sw.remove();
           // Keep the route so it survives a force-quit or an iOS page discard.
           // Restoring never re-calls OSRM, so it works with no signal.
           try { KFGRoute.save({ kind:'osrm', dest:{name:name,lat:lat,lng:lng},
@@ -10374,9 +10376,32 @@ var KFGRoute = (function(){
     if(typeof showToast === 'function'){
       showToast('\u{1F9ED} Route to ' + d.dest.name + ' restored (set ' + ago + ')', 3000);
     }
+    // Restored a straight line but we have signal now? Get the real route.
+    if(d.kind !== 'osrm' && navigator.onLine) setTimeout(upgradeIfFallback, 1500);
   }
 
-  return { save:save, load:load, clear:clear, restore:restore };
+  // A straight-line fallback is a degraded state, not a destination. Once
+  // signal is back it should become a real road route by itself — the user
+  // should not have to notice and re-set it.
+  var _upgrading = false, _lastTry = 0;
+  function upgradeIfFallback(){
+    if(!navigator.onLine || _upgrading) return;
+    if(Date.now() - _lastTry < 120000) return;   // don't retry more than every 2 min
+    var d = load();
+    if(!d || d.kind !== 'fallback' || !d.dest) return;
+    if(!_navDest) return;                                  // no active navigation
+    if(window._currentScreenId !== 'map') return;          // don't yank the user to the map
+    _upgrading = true; _lastTry = Date.now();
+    if(typeof showToast === 'function'){
+      showToast('\u{1F4F6} Signal back \u2014 recalculating route to ' + d.dest.name, 2500);
+    }
+    setTimeout(function(){
+      _upgrading = false;
+      try { navigateTo(d.dest.name, d.dest.lat, d.dest.lng); } catch(e){}
+    }, 500);
+  }
+
+  return { save:save, load:load, clear:clear, restore:restore, upgradeIfFallback:upgradeIfFallback };
 })();
 
 // Shared so both the live fallback and a restored one show the same warning.
@@ -12381,15 +12406,18 @@ function kfgResumeNetwork(){
   if(!navigator.onLine) return;
   try { if(typeof KFGFeedRetry !== 'undefined') KFGFeedRetry.flush(); } catch(e){}
   try { if(typeof KFGSync !== 'undefined'){ KFGSync.push(); KFGSync.pull(); } } catch(e){}
+  try { if(typeof KFGRoute !== 'undefined') KFGRoute.upgradeIfFallback(); } catch(e){}
 }
 
 // Safety net: check every 60s while the app is open. Cheap, and it covers the
 // case where iOS never fires the online event at all.
 setInterval(function(){
   try {
-    if(navigator.onLine && typeof KFGFeedRetry !== 'undefined' && KFGFeedRetry.pending() > 0){
-      kfgResumeNetwork();
-    }
+    if(!navigator.onLine) return;
+    var work = (typeof KFGFeedRetry !== 'undefined' && KFGFeedRetry.pending() > 0);
+    var r = (typeof KFGRoute !== 'undefined') ? KFGRoute.load() : null;
+    if(r && r.kind === 'fallback') work = true;
+    if(work) kfgResumeNetwork();
   } catch(e){}
 }, 60000);
 
