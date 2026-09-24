@@ -1429,6 +1429,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         </div>
         <div style="text-align:center;padding:16px 0 8px">
           <div style="margin:0 0 14px">
+            <button onclick="KFGOffline.open()" style="background:var(--accent);border:none;color:var(--bg);border-radius:10px;padding:11px 18px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:8px;display:block;width:100%;max-width:260px;margin-left:auto;margin-right:auto">&#x2B07;&#xFE0F; Download for offline use</button>
             <button onclick="KFGSW.showStatus()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:10px 18px;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#x1F4E6; Offline status</button>
           </div>
           <div style="font-size:9px;color:var(--text3);line-height:1.8;letter-spacing:.04em">Kruger Field Guide <span id="footerVersion" style="text-decoration:underline;cursor:pointer;color:var(--text2)" onclick="toggleBuildNotes()">v5.77</span><br>&copy; 2026 Krantz Outdoors<br>Wild by Nature. Africa by Choice.</div>
@@ -9801,7 +9802,7 @@ function showToast(msg, duration) {
 // VERSION CHECK
 // ============================================
 /* GPS RULE: ADD coords for new locations only. NEVER change existing lat/lng without owner confirmation. */
-var APP_VERSION = '5.86';
+var APP_VERSION = '5.87';
 
 // Single source of truth for every version string on screen. Bound here as
 // early as possible (the license gate can render before initApp finishes) and
@@ -12392,6 +12393,197 @@ var KFGSync = (function() {
   }
 
   return { push: push, pull: pull, showStatus: showStatus, setDot: setDot };
+})();
+
+// ============================================
+// OFFLINE DOWNLOAD
+// ============================================
+// Pre-fetches every species photo so the guide is complete with no signal.
+//
+// It does not cache anything itself. Every request goes through the service
+// worker, which already stores Firebase images cache-first — so simply asking
+// for a URL puts it in the cache. That keeps one caching path, not two.
+//
+// iOS freezes the page the moment it loses the foreground, which stops the
+// download dead. The UI says so, and progress is resumable, so coming back
+// and pressing start again picks up where it stopped.
+var KFGOffline = (function(){
+  var CONCURRENCY = 6;
+  var cancelled = false, running = false;
+
+  function collectUrls(){
+    var seen = {}, out = [];
+    function take(v){
+      if(!v) return;
+      if(typeof v === 'string'){
+        if(v.indexOf('firebasestorage') >= 0 && !seen[v]){ seen[v] = 1; out.push(v); }
+        return;
+      }
+      if(typeof v === 'object'){ for(var k in v){ if(Object.prototype.hasOwnProperty.call(v,k)) take(v[k]); } }
+    }
+    try { if(typeof ANIMAL_IMG !== 'undefined') take(ANIMAL_IMG); } catch(e){}
+    try { if(typeof BIRD_IMG   !== 'undefined') take(BIRD_IMG);   } catch(e){}
+    try { if(typeof INSECT_IMG !== 'undefined') take(INSECT_IMG); } catch(e){}
+    return out;
+  }
+
+  // How many are already stored. Asking the cache directly means progress is
+  // accurate after a restart without tracking anything ourselves.
+  function countCached(urls){
+    if(!window.caches) return Promise.resolve(0);
+    return caches.keys().then(function(names){
+      var imgCaches = names.filter(function(n){ return n.indexOf('kfg-img') >= 0; });
+      if(!imgCaches.length) return 0;
+      return caches.open(imgCaches[0]).then(function(c){
+        var done = 0;
+        return urls.reduce(function(chain, u){
+          return chain.then(function(){
+            return c.match(u).then(function(hit){ if(hit) done++; });
+          });
+        }, Promise.resolve()).then(function(){ return done; });
+      });
+    }).catch(function(){ return 0; });
+  }
+
+  function fetchOne(url){
+    // no-cors: Firebase Storage does not send CORS headers for these, and an
+    // opaque response is all the cache needs.
+    return fetch(url, { mode:'no-cors', cache:'no-cache' })
+      .then(function(){ return true; })
+      .catch(function(){ return false; });
+  }
+
+  function run(urls, startIndex, onProgress, onDone){
+    var i = startIndex, ok = 0, failed = 0, total = urls.length;
+    var active = 0, finished = false;
+
+    function next(){
+      if(finished) return;
+      if(cancelled || i >= total){
+        if(active === 0 && !finished){ finished = true; running = false; onDone(ok, failed, cancelled); }
+        return;
+      }
+      var url = urls[i++];
+      active++;
+      fetchOne(url).then(function(good){
+        if(good) ok++; else failed++;
+        active--;
+        onProgress(ok + failed, total, failed);
+        next();
+      });
+    }
+    for(var n = 0; n < CONCURRENCY; n++) next();
+  }
+
+  function start(onProgress, onDone){
+    if(running) return;
+    running = true; cancelled = false;
+    var urls = collectUrls();
+    if(!urls.length){ running = false; onDone(0, 0, false); return; }
+    run(urls, 0, onProgress, onDone);
+  }
+
+  function cancel(){ cancelled = true; }
+  function isRunning(){ return running; }
+
+  // ── UI ───────────────────────────────────────────────────────────
+  function open(){
+    var urls = collectUrls();
+    var total = urls.length;
+    var wrap = document.getElementById('kfgDlSheet'); if(wrap) wrap.remove();
+    wrap = document.createElement('div');
+    wrap.id = 'kfgDlSheet';
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:4200;background:rgba(0,0,0,.78);display:flex;' +
+      'align-items:flex-end;justify-content:center;font-family:Montserrat,sans-serif';
+    wrap.innerHTML =
+      '<div style="width:100%;max-width:520px;background:var(--bg2);border:1px solid var(--border2);' +
+        'border-radius:18px 18px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))">' +
+        '<div style="font-size:30px;text-align:center;margin-bottom:8px">&#x1F4F6;</div>' +
+        '<div style="font-size:16px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px">Download for offline</div>' +
+        '<div id="kfgDlSub" style="font-size:11.5px;color:var(--text2);line-height:1.6;text-align:center;margin-bottom:16px">' +
+          'Checking what you already have...</div>' +
+        '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;height:12px;overflow:hidden;margin-bottom:8px">' +
+          '<div id="kfgDlBar" style="height:100%;width:0%;background:var(--accent);transition:width .25s"></div>' +
+        '</div>' +
+        '<div id="kfgDlCount" style="font-size:10.5px;color:var(--text3);text-align:center;margin-bottom:16px">&nbsp;</div>' +
+        '<div id="kfgDlWarn" style="display:none;background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.35);' +
+          'border-radius:9px;padding:10px 12px;font-size:10.5px;color:var(--text2);line-height:1.6;margin-bottom:14px">' +
+          '<b style="color:var(--accent)">Keep this screen open.</b> Switching apps or locking the phone pauses the ' +
+          'download &mdash; you can come back and continue where it stopped.</div>' +
+        '<div style="display:flex;gap:10px">' +
+          '<button id="kfgDlClose" onclick="KFGOffline.close()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);' +
+            'color:var(--text2);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Close</button>' +
+          '<button id="kfgDlGo" onclick="KFGOffline.go()" style="flex:1.5;background:var(--accent);border:none;' +
+            'color:var(--bg);border-radius:11px;padding:13px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Download</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+
+    countCached(urls).then(function(done){
+      var sub = document.getElementById('kfgDlSub');
+      var cnt = document.getElementById('kfgDlCount');
+      var bar = document.getElementById('kfgDlBar');
+      var go  = document.getElementById('kfgDlGo');
+      if(!sub) return;
+      var remaining = total - done;
+      var mb = Math.round(remaining * 0.08);
+      if(bar) bar.style.width = (total ? Math.round(done/total*100) : 0) + '%';
+      if(cnt) cnt.textContent = done + ' of ' + total + ' photos stored';
+      if(remaining <= 0){
+        sub.innerHTML = '<b style="color:#3a8a4a">All ' + total + ' species photos are stored.</b><br>' +
+          'The guide is complete offline. Camps, roads, gate times and species information already work without signal.';
+        if(go) go.textContent = 'Re-check';
+      } else {
+        sub.innerHTML = 'Store all <b>' + total + '</b> species photos on this phone so the guide is complete ' +
+          'with no signal. About <b>' + mb + ' MB</b> still to download.<br>' +
+          '<span style="color:var(--text3)">Best done on Wi-Fi before you travel.</span>';
+      }
+    });
+  }
+
+  function go(){
+    var warn = document.getElementById('kfgDlWarn');
+    var go   = document.getElementById('kfgDlGo');
+    var sub  = document.getElementById('kfgDlSub');
+    if(warn) warn.style.display = 'block';
+    if(go){ go.textContent = 'Stop'; go.setAttribute('onclick', 'KFGOffline.stop()'); }
+    if(sub) sub.innerHTML = 'Downloading. This can take a few minutes on a slow connection.';
+
+    start(function(done, total, failed){
+      var bar = document.getElementById('kfgDlBar');
+      var cnt = document.getElementById('kfgDlCount');
+      if(bar) bar.style.width = Math.round(done/total*100) + '%';
+      if(cnt) cnt.textContent = done + ' of ' + total + (failed ? '  \u00b7  ' + failed + ' failed' : '');
+    }, function(ok, failed, wasCancelled){
+      var g = document.getElementById('kfgDlGo');
+      var s = document.getElementById('kfgDlSub');
+      var w = document.getElementById('kfgDlWarn');
+      if(w) w.style.display = 'none';
+      if(g){ g.textContent = 'Done'; g.setAttribute('onclick', 'KFGOffline.close()'); }
+      if(s){
+        if(wasCancelled) s.innerHTML = 'Stopped. Your progress is saved &mdash; open this again to continue.';
+        else if(failed)  s.innerHTML = '<b>' + ok + '</b> photos stored, ' + failed + ' could not be downloaded. ' +
+                                       'Open this again on a better connection to finish.';
+        else             s.innerHTML = '<b style="color:#3a8a4a">Done.</b> All species photos are now on your phone.';
+      }
+      try { KFGSW.requestPersistence(); } catch(e){}
+    });
+  }
+
+  function stop(){
+    cancel();
+    var g = document.getElementById('kfgDlGo');
+    if(g) g.textContent = 'Stopping...';
+  }
+
+  function close(){
+    cancel();
+    var el = document.getElementById('kfgDlSheet');
+    if(el) el.remove();
+  }
+
+  return { open:open, go:go, stop:stop, close:close, start:start, cancel:cancel,
+           isRunning:isRunning, collectUrls:collectUrls, countCached:countCached };
 })();
 
 // ============================================
